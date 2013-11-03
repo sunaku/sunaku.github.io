@@ -1,0 +1,363 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+           "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="GENERATOR" content="TtH 3.67" />
+ <style type="text/css"> div.p { margin-top: 7pt;}</style>
+ <style type="text/css"><!--
+ td div.comp { margin-top: -0.6ex; margin-bottom: -1ex;}
+ td div.comb { margin-top: -0.6ex; margin-bottom: -.6ex;}
+ td div.hrcomp { line-height: 0.9; margin-top: -0.8ex; margin-bottom: -1ex;}
+ td div.norm {line-height:normal;}
+ span.roman {font-family: serif; font-style: normal; font-weight: normal;} 
+ span.overacc2 {position: relative;  left: .8em; top: -1.2ex;}
+ span.overacc1 {position: relative;  left: .6em; top: -1.2ex;} --></style>
+ 
+
+                       
+<title> A Brief Survey of High-Level Approaches to Implementing Distributed
+Applications </title>
+</head>
+<body>
+ 
+<h1 align="center">A Brief Survey of High-Level Approaches to Implementing Distributed
+Applications </h1>
+
+<div class="p"><!----></div>
+
+<h3 align="center">Suraj N. Kurapati<br />
+Technical Writing<br />
+University of California Santa Cruz </h3>
+
+<div class="p"><!----></div>
+
+<h3 align="center">November 2004 </h3>
+
+<div class="p"><!----></div>
+
+<h2> Abstract</h2>
+Using a low-level approach in implementing inter-process communication
+for distributed applications burdens the programmer with synchronization
+issues that are usually irrelevant to the piece of business logic
+being implemented. This article surveys various high-level approaches
+which encapsulate inter-process communication whilst enabling the
+programmer to focus on implementing business logic.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc1">
+1</a>&nbsp;&nbsp;Asynchronous Communication</h2>
+
+<div class="p"><!----></div>
+Asynchronous methods of inter-process communication are well suited
+for distributed applications involving the computation of independent
+tasks. For example, consider a distributed business application which
+retrieves the number of new employees hired every year in the last
+50 years. Assuming that the process of retrieving the number of new
+employees hired in a given year does not depend on that of the previous
+year, we can distribute the overall calculation across 50 different
+processes-each of which calculates the number of new employees hired
+during a single year-and combine their individual results into one
+suitable for the overall calculation.
+
+<div class="p"><!----></div>
+In addition, asynchronous methods are error-prone when in multi-threaded
+programming environments&nbsp;[<a href="#survey" name="CITEsurvey">1</a>] due to lack of built-in synchronization
+facilities, such as semaphores, to prevent communication of obsolete
+or incorrect data.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc1.1">
+1.1</a>&nbsp;&nbsp;Shared Memory</h3>
+
+<div class="p"><!----></div>
+Before the introduction of message-passing models of asynchronous
+communication in the late 1970's&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>], a technique
+called "shared memory" was widely in use by supercomputers as
+a means of inter-process and -processor communication&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>].
+As the name suggests, this technique involves the reading and writing
+of data or messages to an area of shared memory. However, the disadvantages
+of this approach are that (1) it does not scale well for distributed
+applications running on computing clusters&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>]
+and (2) it has synchronization issues such as race conditions-which
+further complicate a distributed application because semaphores are
+necessary to mitigate them. In addition, a shared memory model is
+quite susceptible to failure because the corruption of the shared
+memory by a disgruntled process or the loss of electrical power can
+bring it down, so to speak.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc1.1.1">
+1.1.1</a>&nbsp;&nbsp;Component Object Model (COM)<a name="sub:Component-Object-Model">
+</a></h4>
+
+<div class="p"><!----></div>
+COM is a shared-memory model of inter-process communication for the
+Microsoft Windows operating system&nbsp;[<a href="#survey" name="CITEsurvey">1</a>]. It was originally
+implemented through the "clipboard" facility and provided naming
+services through the "registry" facility of said operating system&nbsp;[<a href="#survey" name="CITEsurvey">1</a>].
+Though the use of COM is widespread in Microsoft Windows based applications,
+their programming interface can be quite inhibiting. In particular,
+(1) "there is no implementation inheritance, thus a component
+defining a derived interface must implement all functions of the base
+interfaces again"&nbsp;[<a href="#survey" name="CITEsurvey">1</a>], (2) COM is susceptible to failure
+because the event of a "registry" corruption&nbsp;[<a href="#survey" name="CITEsurvey">1</a>]
+can render inter-process communication nonfunctional, and (3) destabilize
+the remainder of the operating system&nbsp;[<a href="#survey" name="CITEsurvey">1</a>]. In addition,
+COM functions over a single processor and does not facilitate communication
+over a network&nbsp;[<a href="#survey" name="CITEsurvey">1</a>,<a href="#metacomputing" name="CITEmetacomputing">2</a>].
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc1.2">
+1.2</a>&nbsp;&nbsp;Parallel Virtual Machine (PVM)</h3>
+
+<div class="p"><!----></div>
+PVM is a programming interface for distributed applications which
+can function over a heterogeneous network composed of machines of
+different architectures and processes implemented in different programming
+languages&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>,<a href="#sunderam" name="CITEsunderam">3</a>]. PVM achieves such portability
+because it provides the necessary "message format transformation
+to hide differences in computer architectures"&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>].
+In addition, PVM is "based on the premise that a collection of
+independent computer systems, interconnected by networks, can be transformed
+into a coherent, powerful, and cost-effective concurrent computing
+resource"&nbsp;[<a href="#sunderam" name="CITEsunderam">3</a>]. In other words, the aim of PVM is to
+give its user the illusion that her computation is occurring on a
+single machine&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>]. This enables developers to
+focus on implementing the calculation performed by their distributed
+application instead of the myriad of complexities introduced by low-level
+inter-process communication.
+
+<div class="p"><!----></div>
+PVM is very dynamic, in the sense that processes and machines on the
+network can be added to and removed from the distributed computation
+without having to bring it down&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>]. It also provides
+a naming service, which allows processes to dynamically discover other
+processes and services without being hard-coded to do so&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>].
+Lastly, PVM is quite fault tolerant as it can dynamically detect and
+send a notice, indicating which computer became faulty, to functional
+computers&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>]. Alternatively, PVM could command
+a faulty machine to reboot itself, thereby minimizing the down-time
+of computational resources in the network.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc1.3">
+1.3</a>&nbsp;&nbsp;Message Passing Interface (MPI)</h3>
+
+<div class="p"><!----></div>
+MPI is a programming interface for distributed applications which
+was originally developed by supercomputer vendors so that their applications
+could be compatible with each other&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>]. It was
+designed to function over a homogeneous network of processes and processors,
+allowing it to take advantage of native network calls to make inter-process
+communication more efficient&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>]. In addition,
+MPI provides a powerful library of communication procedures that allow
+point-to-point communication between two processes and point-to-group
+communication between a single process and a group of processes&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>].
+However, due to its reliance on network homogeneity, it cannot function
+over a network of machines with different architectures or processes
+implemented in different programming languages.
+
+<div class="p"><!----></div>
+MPI is static, in the sense that processes and machines on the network
+cannot be added to and removed from a distributed computation without
+having to bring it down&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>]. In addition, it does
+not provide a common naming service which allows processes and groups
+of processes to discover each other. Consequently, the allocation
+of groups and communication paths must be configured before the distributed
+computation has started. Also, MPI does not have a failure resolution
+mechanism to revive faulty machines in the computational network&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>]. 
+
+<div class="p"><!----></div>
+Despite these shortcomings, MPI goes a step further, in terms of message-passing
+communication methods, in providing support for seamless communication
+of derived data-types&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>,<a href="#sunderam" name="CITEsunderam">3</a>]. That is, one
+is not strictly limited to primitive<a href="#tthFtNtAAB" name="tthFrefAAB"><sup>1</sup></a> data-types in inter-process communication.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc2">
+2</a>&nbsp;&nbsp;Synchronous Communication</h2>
+
+<div class="p"><!----></div>
+Synchronous methods of inter-process communication are well suited
+for distributed applications involving the computation of interdependent
+tasks. For example, consider a distributed business application which
+calculates a statistical correlation between the number of new employees
+hired in a given year with that of the previous year, for each year
+in the last 50 years. In this situation, we cannot simply delegate
+the computation onto 50 different processes, which perform independently
+of each other, and combine their results at the end. Instead, each
+process must communicate with one which is computing the statistical
+correlation of the year before that of itself. Consequently, synchronous
+communication, if implemented using low-level methods, become quite
+complex as the number of dependencies in the functional decomposition
+of a computation increases.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc2.1">
+2.1</a>&nbsp;&nbsp;Remote Procedure Call (RPC)</h3>
+
+<div class="p"><!----></div>
+RPC, introduced in 1984&nbsp;[<a href="#waldo" name="CITEwaldo">5</a>], is a programming interface
+allows a process to execute a procedure or routine on a remote processor
+as if it was executed on its own processor&nbsp;[<a href="#survey" name="CITEsurvey">1</a>]. It seamlessly
+encapsulates the synchronous communication necessary to perform such
+remote procedure calls while also providing support for automatic
+transmission of procedure-call arguments and return values&nbsp;[<a href="#survey" name="CITEsurvey">1</a>].
+However, one can only pass to and receive primitive data-types from
+RPC&nbsp;[<a href="#survey" name="CITEsurvey">1</a>,<a href="#metacomputing" name="CITEmetacomputing">2</a>]. 
+
+<div class="p"><!----></div>
+The following sections describe methods of synchronous communication
+which are based upon RPC.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc2.1.1">
+2.1.1</a>&nbsp;&nbsp;Distributed Common Object Model (DCOM)</h4>
+
+<div class="p"><!----></div>
+DCOM is a programming interface for the Microsoft Windows operating
+system&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>], which is described by Microsoft as
+"COM with a long wire"&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>] because it adds
+networking functionality to COM via RPC&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>]. Like
+COM, DCOM utilizes the "registry" facility of said operating
+system for naming services and is therefore susceptible to failure
+(See Section <a href="#sub:Component-Object-Model">1.1.1</a>). In addition, DCOM
+can function across a homogeneous network of processes and heterogeneous
+network of processors-which run the Microsoft Windows operating
+system&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>].
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc2.1.2">
+2.1.2</a>&nbsp;&nbsp;Remote Method Invocation (RMI)</h4>
+
+<div class="p"><!----></div>
+RMI, introduced with the Java Developer's Kit 1.1&nbsp;[<a href="#waldo" name="CITEwaldo">5</a>],
+is a programming interface specific to the Java programming language.
+It can be thought of as an object-oriented version of RPC which allows
+an object in one Java Virtual Machine (JVM) to invoke a method on
+an object within another JVM-be it local or remote&nbsp;[<a href="#waldo" name="CITEwaldo">5</a>,<a href="#RMI spec" name="CITERMI spec">6</a>].
+In particular, RMI facilitates transparent serialization of objects
+and entire trees of their references-which allows the developer
+to pass complex (local <em>and</em> remote&nbsp;[<a href="#survey" name="CITEsurvey">1</a>]) data-structures
+as arguments in addition to primitive data-types-and provides a
+naming service which allows Java objects to discover each other. Also,
+because the JVM can function on a majority of processor architectures&nbsp;[<a href="#RMI spec" name="CITERMI spec">6</a>,<a href="#waldo" name="CITEwaldo">5</a>],
+RMI can function over a heterogeneous network of processors and homogeneous
+network of JVM processes.
+
+<div class="p"><!----></div>
+Furthermore, RMI changes the way developers think about and design
+distributed applications&nbsp;[<a href="#waldo" name="CITEwaldo">5</a>] by introducing the notion
+of "stubs" and "skeletons" in decoupling the inter-process
+communication interfaces<a href="#tthFtNtAAC" name="tthFrefAAC"><sup>2</sup></a> and their implementation&nbsp;[<a href="#waldo" name="CITEwaldo">5</a>,<a href="#RMI spec" name="CITERMI spec">6</a>]. The term "stub"
+refers to the interface seen by a Java application that wishes to
+invoke a remote procedure, while the term "skeleton" refers
+to the implementation of the stub's Java programming interface&nbsp;[<a href="#waldo" name="CITEwaldo">5</a>,<a href="#RMI spec" name="CITERMI spec">6</a>].
+When a remote procedure is invoked through the stub's interface, the
+stub communicates with the skeleton in the remote JVM, thereby performing
+a remote procedure call&nbsp;[<a href="#waldo" name="CITEwaldo">5</a>,<a href="#RMI spec" name="CITERMI spec">6</a>]. In addition, stubs
+can be downloaded from a remote JVM on demand&nbsp;[<a href="#survey" name="CITEsurvey">1</a>], which
+makes RMI ideal for dynamic ad-hoc wireless or mobile networks.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc2.1.3">
+2.1.3</a>&nbsp;&nbsp;Common Object Request Broker Architecture (CORBA)</h4>
+
+<div class="p"><!----></div>
+CORBA is a programming interface which functions over a heterogeneous
+network of processes and processors&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>] and is
+"supported by a large industry consortium"&nbsp;[<a href="#survey" name="CITEsurvey">1</a>].
+It centralizes inter-process communication through a primary proxy
+known as the Object Request Broker (ORB)&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>], which
+separates the implementation of computational procedures-known as
+"object services"&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>]-from their RPC interfaces&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>,<a href="#survey" name="CITEsurvey">1</a>].
+Like MPI, CORBA is particularly useful for static computational networks,
+but ill-suited for dynamic ones, such as ad-hoc wireless or mobile
+networks&nbsp;[<a href="#survey" name="CITEsurvey">1</a>].
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc3">
+3</a>&nbsp;&nbsp;Graphical Programming</h2>
+
+<div class="p"><!----></div>
+In addition to asynchronous and synchronous programming interfaces
+for implementing distributed applications, there exist graphical methods
+which allow one to implement "program decomposition, communication
+primitives (like PVM and MPI calls) and task assignment to network
+topologies"&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>]. In particular,&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>]
+cites a relatively successful project, which implements the aforementioned
+goals of graphical programming, named "GRAPNEL". This project
+also supports an integrated development environment, named "GRADE"&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>],
+which features a distributed debugger, performance monitor, and visualization
+tools&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>]. However,&nbsp;[<a href="#sunderam" name="CITEsunderam">3</a>] notes that
+these graphical systems have not had much main-stream acceptance as
+methods of inter-process communication.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc4">
+4</a>&nbsp;&nbsp;Future Research</h2>
+
+<div class="p"><!----></div>
+With the massive transition from low- to high-level methods of inter-process
+communication in effect during the last twenty years, it would seem
+that there is a trend in favor of encapsulating complex system-dependent
+communication routines&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">2</a>,<a href="#survey" name="CITEsurvey">1</a>] in standard high-level
+programming interfaces. With the advent of high-level methods discussed
+in this article, the creation and management of communication paths
+between various processes may very well become the next problem-especially
+in static methods such as MPI and CORBA. 
+
+<div class="p"><!----></div>
+Upcoming graphical programming interfaces seek to facilitate the management
+of communication paths and resource allocation by allowing one to
+visually connect processes together. Though they may not have received
+much attention as of yet&nbsp;[<a href="#sunderam" name="CITEsunderam">3</a>], graphical programming
+methods may prove useful in managing computational networks in the
+future-as the number of machines available to perform distributed
+computations increases dramatically.
+
+<div class="p"><!----></div>
+
+<h2>References</h2>
+
+<dl compact="compact">
+ <dt><a href="#CITEsurvey" name="survey">[1]</a></dt><dd>F. Mattern and P. Sturm, "From Distributed Systems to Ubiquitous
+Computing - The State of the Art, Trends, and Prospects of Future
+Networked Systems," presented at <u>Kommunikation in Verteilten
+Systemen (KiVS)</u>, Leipzig, Germany, 2003.
+</dd>
+ <dt><a href="#CITEmetacomputing" name="metacomputing">[2]</a></dt><dd>P. Kacsuk and F. Vajda, "Network-based Distributed Computing (Metacomputing),"
+presented at <u>European Research Consortium for Informatics
+and Mathematics (ERCIM</u>), Computer and Automation Research Institute
+of the Hungarian Academy of Sciences (MTA SZTAKI), Hungary, 1999.
+</dd>
+ <dt><a href="#CITEsunderam" name="sunderam">[3]</a></dt><dd>V. Sunderam, "Heterogeneous network computing: the next generation,"
+<u>Parallel Computing</u>, vol. 23, no. 1-2, Apr. 1997, pp. 121-135.
+</dd>
+ <dt><a href="#CITEusenix" name="usenix">[4]</a></dt><dd>A. Wollrath, R. Riggs, and J. Waldo, "A Distributed Object Model
+for the Java System," presented at <u>Second USENIX Conference
+on Object-Oriented Technologies (COOTS)</u>, Toronto, Ontario, Canada,
+June 17-21, 1996.
+</dd>
+ <dt><a href="#CITEwaldo" name="waldo">[5]</a></dt><dd>J. Waldo, "Remote procedure calls and Java Remote Method Invocation,"
+<u>IEEE Concurrency</u>, vol. 6, no. 3, Jul. 1998, pp. 5-7.
+</dd>
+ <dt><a href="#CITERMI spec" name="RMI spec">[6]</a></dt><dd>Sun Microsystems, Inc. "Java Remote Method Invocation," [Online
+document], 2003 Dec 11, [cited 6 Feb 2005], Available HTTP:
+<a href="http://java.sun.com/j2se/1.5.0/docs/guide/rmi/spec/rmiTOC.html"><tt>http://java.sun.com/j2se/1.5.0/docs/guide/rmi/spec/rmiTOC.html</tt></a></dd>
+</dl>
+
+<div class="p"><!----></div>
+<hr /><h3>Footnotes:</h3>
+
+<div class="p"><!----></div>
+<a name="tthFtNtAAB"></a><a href="#tthFrefAAB"><sup>1</sup></a>Data-types integral to a programming language, such as an integer,
+character, or floating-point number.
+<div class="p"><!----></div>
+<a name="tthFtNtAAC"></a><a href="#tthFrefAAC"><sup>2</sup></a>The <em>interface</em> construct of the Java programming language.
+<br /><br /><hr /><small>File translated from
+T<sub><font size="-1">E</font></sub>X
+by <a href="http://hutchinson.belmont.ma.us/tth/">
+T<sub><font size="-1">T</font></sub>H</a>,
+version 3.67.<br />On  9 Jun 2006, 00:33.</small>
+</body></html>

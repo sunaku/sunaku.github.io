@@ -1,0 +1,557 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+           "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="GENERATOR" content="TtH 3.67" />
+ <style type="text/css"> div.p { margin-top: 7pt;}</style>
+ <style type="text/css"><!--
+ td div.comp { margin-top: -0.6ex; margin-bottom: -1ex;}
+ td div.comb { margin-top: -0.6ex; margin-bottom: -.6ex;}
+ td div.hrcomp { line-height: 0.9; margin-top: -0.8ex; margin-bottom: -1ex;}
+ td div.norm {line-height:normal;}
+ span.roman {font-family: serif; font-style: normal; font-weight: normal;} 
+ span.overacc2 {position: relative;  left: .8em; top: -1.2ex;}
+ span.overacc1 {position: relative;  left: .6em; top: -1.2ex;} --></style>
+ 
+
+                       
+   
+    
+<title>Heap-Sort Accelerates  DINKY DATABASE DANTAI's Zip-Code-Sorting Operation</title>
+</head>
+<body>
+
+
+<h3 align="center">Suraj Kurapati <br />
+CMPE-185, Winter 2005 </h3>
+
+<div class="p"><!----></div>
+
+<h1 align="center">Heap-Sort Accelerates  D<font size="-2">INKY</font> D<font size="-2">ATABASE</font> D<font size="-2">ANTAI</font>'s Zip-Code-Sorting
+Operation </h1>
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc0.1">
+0.1</a>&nbsp;&nbsp;Executive Summary</h2>
+
+<div class="p"><!----></div>
+
+<b>Problem&nbsp;&nbsp;</b>
+
+<div class="p"><!----></div>
+Our most <em>respected</em> customers are unsatisfied with the slow
+<em></em>performance of our database's zip-code-sorting operation. A
+variant of the bubble-sort algorithm, used by our zip-code-sorting
+operation to sort zip-codes, yields substandard performance when sorting
+a large number of zip-codes. Thereby damaging customer-relations,
+incurring revenue-loss, and tainting our unparalleled reputation of
+engineering egregious software.
+
+<div class="p"><!----></div>
+
+<b>Solution&nbsp;&nbsp;</b>
+
+<div class="p"><!----></div>
+Replace our variant of the bubble-sort algorithm with the heap-sort
+algorithm-which can significantly improve the performance of our
+zip-code-sorting operation while preserving existing data-structures
+and their related procedures [<a href="#heap-sort info" name="CITEheap-sort info">7</a>].
+
+<div class="p"><!----></div>
+
+<b>Difficulty&nbsp;&nbsp;</b>
+
+<div class="p"><!----></div>
+Implementing the proposed algorithm, precisely detailed in Section
+, requires no technical expertise
+in excess of that possessed by our entry-level programmers, and therefore
+can be realized<a href="#tthFtNtAAB" name="tthFrefAAB"><sup>1</sup></a> quickly enough to salvage our reputation and possibly strengthen
+customer-relations. 
+
+<div class="p"><!----></div>
+Hence, the process of applying the proposed solution can be summarized
+as: the (1) realization and (2) testing of the heap-sort algorithm,
+and (3) its incorporation with our zip-code-sorting operation; all
+of which can be performed by our entry-level programmers.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc0.2">
+0.2</a>&nbsp;&nbsp;<a name="sec:heap-sort description">
+</a>Technical Description of Heap-Sort</h2>
+
+<div class="p"><!----></div>
+
+<blockquote>"In order to understand recursion, one must first understand recursion;
+after that, it's easy." -Andrew Koenig [<a href="#recursion quote" name="CITErecursion quote">3</a>]
+</blockquote>
+The reader's knowledge of arrays, binary trees, character-string comparison
+and exchange operations, and our zip-code-sorting operation's variant
+of bubble-sort algorithm-abbreviated as "BS" henceforth-is
+assumed.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc0.2.1">
+0.2.1</a>&nbsp;&nbsp;Overview</h3>
+
+<div class="p"><!----></div>
+Heap-Sort is a recursive divide-and-conquer sorting-algorithm that
+arranges a given input-sequence into non-decreasing<a href="#tthFtNtAAC" name="tthFrefAAC"><sup>2</sup></a> or non-increasing<a href="#tthFtNtAAD" name="tthFrefAAD"><sup>3</sup></a> order. Such algorithms simplify a given task, such as sorting a sequence
+of zip-codes, into smaller <em>sub-tasks</em>; each of which are easier
+to perform and require less time to finish than the original task-due
+to their reduced size. For example, a task of sorting a hundred zip-codes
+can be simplified into two sub-tasks which sort fifty zip-codes respectively.
+
+<div class="p"><!----></div>
+
+<blockquote>"Wait a minute...," cautions the reader. "Why don't we
+simplify those sub-tasks into <em>yet</em> smaller sub-tasks? Doing
+so would allow for faster completion each sub-task and thus increase
+the efficiency of the overall task."
+</blockquote>
+Why, of course! Each sub-task can indeed be simplified once more,
+each of its resulting sub-tasks can be simplified yet again, and this
+<em>recursive</em> process can continue indefinitely. However, businesses,
+and customers alike, require that an algorithm compute its result
+within a finite period of time. In other words, algorithms that compute
+results in a shorter amount of time are preferred. Therefore, a recursive
+algorithm must only simplify sub-tasks until a termination-condition
+is reached; that is, until the task at hand is so simple that its
+result can be computed without further simplification.
+
+<div class="p"><!----></div>
+Now, suppose the algorithm has finished computing the results of all
+maximally-simplified sub-tasks. The independent result of any one
+of these sub-tasks is an insufficient substitute for the original
+task's result. Therefore, a method of combination <em></em>is necessary
+to transform these independent results into a collective-result sufficient
+for original task. Likewise, a method of division is necessary to
+help the algorithm decide how each task should be simplified. These
+methods are detailed, with respect to our zip-code-sorting operation,
+in Section .
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc0.2.2">
+0.2.2</a>&nbsp;&nbsp;Data-Structures</h3>
+
+<div class="p"><!----></div>
+The heap-sort algorithm shall reuse BS's existing data-structures
+and their related operations. Namely, an array of zip-codes-each
+of which is a variable-length character-string-and its associated
+zip-code comparison and exchange operations.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc0.2.2.1">
+0.2.2.1</a>&nbsp;&nbsp;The Heap</h4>
+
+<div class="p"><!----></div>
+A heap, shown in Figure , is a kind of
+tree. Each node in the heap has an associated comparable and exchangeable
+value, and all sequences of nodes from the heap's root to each of
+its leaves are of either non-decreasing-the property of a <em>min-heap</em>-xor<a href="#tthFtNtAAE" name="tthFrefAAE"><sup>4</sup></a> non-increasing-the property of a <em>max-heap</em>-order [<a href="#algo. text-book" name="CITEalgo. text-book">2</a>].
+Also, sequences of sibling nodes, such as &#9001; d,e,f&#9002; 
+in Figure <a href="#fig:binary min-heap">1</a>, are not guaranteed to be in
+any particular order [<a href="#algo. text-book" name="CITEalgo. text-book">2</a>].
+
+<div class="p"><!----></div>
+
+<b>Array-Representation&nbsp;&nbsp;</b>
+
+<div class="p"><!----></div>
+A binary min-heap, whose nodes may have a maximum of two children,
+is often represented by an array. The following set of functions [<a href="#algo. text-book" name="CITEalgo. text-book">2</a>,<a href="#heap-sort info" name="CITEheap-sort info">7</a>]
+translate its hierarchical structure into a linear form, for storage
+in an array.
+
+<div class="p"><!----></div>
+
+<ul>
+<li> The first array-position is always occupied by the root node.
+<div class="p"><!----></div>
+</li>
+
+<li> The remaining array-positions are occupied by non-root nodes-one
+node per position-whose children are accessible via:<br />
+<a name="eq:child1">
+</a><a name="eq:child2">
+</a>
+<br clear="all" /><table border="0" width="95%"><tr><td>
+<table border="0" cellspacing="0" cellpadding="0">
+ <tr><td width="50%"></td><td nowrap="nowrap" align="right" colspan="1"><table border="0" cellspacing="0" cellpadding="2"><tr><td nowrap="nowrap" align="left">
+child<sub>1</sub>(x) </td></tr></table></td><td nowrap="nowrap" align="left">
+<table border="0" cellspacing="0" cellpadding="2"><tr><td nowrap="nowrap" align="left">
+ = </td></tr></table></td><td nowrap="nowrap" align="left">
+<table border="0" cellspacing="0" cellpadding="2"><tr><td nowrap="nowrap" align="left">
+2x</td></tr></table></td><td width="50%"></td><td width="1" align="right">(0.1)</td></tr>
+ <tr><td width="50%"></td><td nowrap="nowrap" align="right" colspan="1"><table border="0" cellspacing="0" cellpadding="2"><tr><td nowrap="nowrap" align="left">
+child<sub>2</sub>(x) </td></tr></table></td><td nowrap="nowrap" align="left">
+<table border="0" cellspacing="0" cellpadding="2"><tr><td nowrap="nowrap" align="left">
+ = </td></tr></table></td><td nowrap="nowrap" align="left">
+<table><tr><td nowrap="nowrap" align="right" colspan="1">2x+1</td></tr></table></td><td width="50%"></td><td width="1" align="right">(0.2)</td></tr></table>
+</td></tr></table>
+
+
+<br />
+Here, x denotes the array-position occupied by a certain node.
+Equations <a href="#eq:child1">1</a> and <a href="#eq:child2">2</a> respectively define
+the array-positions of its first and second child.
+<div class="p"><!----></div>
+</li>
+</ul>
+For example, Figure <a href="#fig:binary min-heap">1</a> shows an alphabetical
+binary min-heap whose array-representation is &#9001; a,b,c,d,e,f,Ø&#9002; .
+Since node c has only one child, the array-position of the second
+child is occupied by Ø-the empty node.
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg0.1">
+</a> 
+<center><img src="algorithm_description/alphabetical_binary_min-heap.png" alt="Figure" /></center>
+
+<div class="p"><!----></div>
+<center>Figure 0.1: <a name="fig:binary min-heap">
+</a>Illustrated above is an alphabetical
+binary min-heap. Notice how all sequences of nodes from its root a
+to each of its leaves &#9001; d,e,f&#9002;  produces
+a non-decreasing sequence of alphabets.</center>
+
+<div class="p"><!----></div>
+
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+
+<div class="p"><!----></div>
+</dd>
+</dl>     <h3><a name="tth_sEc0.2.3">
+0.2.3</a>&nbsp;&nbsp;<a name="sub:Technique">
+</a>Technique</h3>
+
+<div class="p"><!----></div>
+Our implementation of the heap-sort algorithm shall arrange an array
+of zip-codes in an alphabetically non-decreasing order through the
+use of a binary min-heap.
+
+<div class="p"><!----></div>
+
+<b>Method of Division&nbsp;&nbsp;</b>
+
+<div class="p"><!----></div>
+Each node in the binary min-heap has an associated zip-code that is
+smaller than those of its children. Thus, sequences of zip-codes from
+the root of the binary min-heap to each of its leaves shall be in
+non-decreasing order.
+
+<div class="p"><!----></div>
+
+<b>Method of Combination&nbsp;&nbsp;</b>
+
+<div class="p"><!----></div>
+Two nodes are compared to determine if one has an associated zip-code
+larger than, smaller than, or the same as the other. Depending upon
+this result, the two values are either exchanged xor ignored because
+they are already in the desired order. For example, if a parent node
+has an associated zip-code larger than that of its child, then their
+positions within the binary min-heap are exchanged. Therefore, the
+method of combination maintains the method of division.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc0.2.3.1">
+0.2.3.1</a>&nbsp;&nbsp;Pseudo-Code</h4>
+
+<div class="p"><!----></div>
+The following procedure, adapted from [<a href="#heap-sort animation" name="CITEheap-sort animation">1</a>],
+is written in high-level pseudo-code to illustrate the conceptual
+steps performed by the heap-sort algorithm during sorting. [<a href="#heap-sort info" name="CITEheap-sort info">7</a>]
+provides a pseudo-code listing that readily translates into a procedure
+for use in an actual programming language.
+
+<div class="p"><!----></div>
+
+<ol type="1">
+<li> An array of zip-codes, which is to be sorted, is prepared for use
+as an input-sequence.
+<div class="p"><!----></div>
+</li>
+
+<li> An empty binary min-heap and is prepared for use.
+<div class="p"><!----></div>
+</li>
+
+<li> <a name="enu:zip-code inserted">
+</a>A zip-code is removed from the input-sequence
+and inserted into the binary min-heap via the method of combination.
+
+<div class="p"><!----></div>
+
+<ol type="a">
+<li> <a name="enu:zip-code insert rules">
+</a>If a node x is to be inserted
+as the child of a node y, then the zip-code associated with x
+must be larger than that of y. Otherwise, the two nodes x and
+y must be exchanged.
+<div class="p"><!----></div>
+</li>
+</ol>
+<div class="p"><!----></div>
+</li>
+
+<li> Step <a href="#enu:zip-code inserted">3</a> is repeated until all zip-codes
+from the input-sequence have been inserted into the binary min-heap.
+<div class="p"><!----></div>
+</li>
+
+<li> An empty output-sequence is prepared for use.
+<div class="p"><!----></div>
+</li>
+
+<li> <a name="enu:heap-root removed">
+</a>The root of the binary min-heap is detached
+and its associated zip-code is placed at the end of the output-sequence.
+
+<div class="p"><!----></div>
+
+<ol type="a">
+<li> The right-most sibling node, located within the sequence of sibling
+nodes that are at the very bottom of the binary min-heap, is placed
+at the root of the binary min-heap. (See node f in Figure <a href="#fig:binary min-heap">1</a>.)
+<div class="p"><!----></div>
+</li>
+
+<li> The new root node is sifted down through the binary min-heap, using
+the rules defined in Step <a href="#enu:zip-code insert rules">3a</a>. For example,
+in Figure <a href="#fig:binary min-heap">1</a>, if node f was the new root,
+then it would be exchanged with node b.
+<div class="p"><!----></div>
+</li>
+</ol>
+<div class="p"><!----></div>
+</li>
+
+<li> Step <a href="#enu:heap-root removed">6</a> is repeated until all nodes have
+been removed from the binary min-heap and their associated zip-codes
+have been placed into the output-sequence.
+<div class="p"><!----></div>
+</li>
+
+<li> The output-sequence now contains zip-codes arranged in an alphabetically
+non-decreasing order.
+<div class="p"><!----></div>
+</li>
+</ol>
+Note that the binary min-heap and output-sequence are purely theoretical
+constructions. Hence, one can implement this algorithm in such a way
+that these abstractions use the same data-storage space as the input-sequence-a
+technique called "in-place" sort [<a href="#algo. text-book" name="CITEalgo. text-book">2</a>,<a href="#heap-sort info" name="CITEheap-sort info">7</a>].
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc0.2.4">
+0.2.4</a>&nbsp;&nbsp;Justification</h3>
+
+<div class="p"><!----></div>
+Heap-Sort is a well known, time-tested sorting-algorithm which has
+been thoroughly analyzed by professional computer-scientists and researchers
+in major universities during its heyday. The creation and verification
+of a formal proof of correctness for this algorithm are left as an
+exercise for the interested reader.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc0.2.5">
+0.2.5</a>&nbsp;&nbsp;Analysis</h3>
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc0.2.5.1">
+0.2.5.1</a>&nbsp;&nbsp;Measuring Complexity</h4>
+
+<div class="p"><!----></div>
+In order to compare sorting-algorithms, computer-scientists often
+employ the theoretical asymptotic-measure of running-time complexity,
+or "complexity-measurement" for short, which models the number
+of comparisons, exchanges, or similar operations performed by an algorithm
+[<a href="#bubble-sort complexity" name="CITEbubble-sort complexity">4</a>]. These measurements accurately model
+the complexity of algorithms for sufficiently large<a href="#tthFtNtAAF" name="tthFrefAAF"><sup>5</sup></a> input-sequences in practice; thus enabling one to gauge the efficiency
+of algorithms without having to implement them [<a href="#asymptotic growth" name="CITEasymptotic growth">5</a>].
+
+<div class="p"><!----></div>
+The tightly bounded complexity-measurement, defined by the following
+big-theta notation [<a href="#asymptotic growth" name="CITEasymptotic growth">5</a>], is most useful in our
+analysis because it provides both a lower- and upper-bound measure
+of complexity. For example, the function f is asymptotically bounded
+both from above, by &#946;g; and from below, by &#945;g.
+
+<div class="p"><!----></div>
+
+<br clear="all" /><table border="0" width="100%"><tr><td>
+<table align="center" cellspacing="0"  cellpadding="2"><tr><td nowrap="nowrap" align="center">
+&#920;(g) &#8801; { f | (&#8707;&#945;,&#946;,&#947; &gt; 0&#8743;&#8704;x &#8805; &#947; | 0 &#8804; &#945;g &#8804; f &#8804; &#946;g)} </td></tr></table>
+</td></tr></table>
+
+
+
+<div class="p"><!----></div>
+To further illustrate this point, consider a sorting-algorithm, which
+requires f(x)=x<sup>2</sup>+5x+10 number of instructions to
+sort an input-sequence. Using the aforementioned definition, we determine
+that this function has a complexity-measurement of &#920;(x<sup>2</sup>)
+when &#945; = 1, &#946; = 2, and &#947; = 7.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc0.2.5.2">
+0.2.5.2</a>&nbsp;&nbsp;Special Conditions</h4>
+
+<div class="p"><!----></div>
+Conditions known as <em>best-</em>, <em>worst-</em>, and <em>average-cases</em>
+aid in the comparison of complexity-measurements from different algorithms. 
+
+<div class="p"><!----></div>
+
+<dl compact="compact">
+ <dt><b>Best-Case</b></dt>
+	<dd>refers to sorting an input-sequence that is already in
+the wanted order. For example, a best-case input-sequence for our
+zip-code-sorting operation would be &#9001; 1,2,2,3&#9002; .</dd>
+ <dt><b>Worst-Case</b></dt>
+	<dd>refers to sorting an input-sequence that is in the exact
+<em>opposite</em> of the wanted order. For example, a worst-case input-sequence
+for our zip-code-sorting operation would be &#9001; 3,2,2,1&#9002; .</dd>
+ <dt><b>Average-Case</b></dt>
+	<dd>refers to sorting an input-sequence whose contents
+are in no particular order. Thus, an input-sequence classified as
+best- xor worst-case can also be classified as an average-case.</dd>
+</dl>
+The probability of a best- xor worst-case condition, modeled by <br clear="all" /><table border="0" align="left" cellspacing="0" cellpadding="0"><tr><td nowrap="nowrap">P(x)=</td><td nowrap="nowrap" align="center">
+1
+<div class="hrcomp"><hr noshade="noshade" size="1"/></div>x!<br /></td><td nowrap="nowrap" align="center">
+
+</td></tr></table><br />
+where x &#8805; 2, is shown in Figure . Notice
+how the likelihood of an input-sequence being classified as a best-
+xor worst-case diminishes as the size of the input-sequence grows
+sufficiently large. Thus, complexity-measurements observed under these
+cases can be, more or less, disregarded for input-sequences containing
+at least five elements-as inferred from Figure <a href="#fig:probability">2</a>.
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg0.2">
+</a> 
+<center><img src="algorithm_description/How_Common_is_the_Best-_xor_Worst-Case_Input-Sequence.png" alt="Figure" /></center>
+
+<div class="p"><!----></div>
+<center>Figure 0.2: <a name="fig:probability">
+</a>The probability of a best- xor worst-case
+shrinks as the input-sequence grows in length. The continuous approximation
+[<a href="#stirling approx" name="CITEstirling approx">6</a>] illustrates this trend within the non-integer
+intervals of <br clear="all" /><table border="0" align="left" cellspacing="0" cellpadding="0"><tr><td nowrap="nowrap">\mathbbR&#8745;</td><td nowrap="nowrap" align="center">
+
+<div class="hrcomp"><hr noshade="noshade" size="1"/></div>
+<div class="norm">\mathbbZ<br /></div>
+<div class="comb">&nbsp;</div>
+</td><td nowrap="nowrap" align="center">
+
+</td></tr></table><br />.</center>
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc0.2.5.3">
+0.2.5.3</a>&nbsp;&nbsp;Algorithm Comparison</h4>
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg0.3">
+</a> 
+<center><img src="algorithm_description/Complexity-Measurements_of_Zip-Code-Sorting_Algorithms.png" alt="Figure" /></center>
+
+<div class="p"><!----></div>
+<center>Figure 0.3: <a name="fig:complexity">
+</a>The complexity-measurements shown above model
+the number of comparisons needed by each algorithm to sort an entire
+input-sequence. Also, note the use of logarithmic scales; the worst-
+and average-case complexities of bubble-sort dwarf those of heap-sort.</center>
+
+<div class="p"><!----></div>
+As table <a href="#tbl:complexity">1</a> shows, the heap-sort algorithm has
+lower complexity-measurements than those of the bubble-sort algorithm,
+and thus BS, in all but the best-case. However, the best-case will
+rarely occur (See Figure <a href="#fig:probability">2</a>) as the length of
+an input-sequence grows large. Hence, the heap-sort algorithm is the
+better choice and its employment will yield faster performance of
+our zip-code-sorting operation.
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_tAb0.1">
+</a> 
+<center>
+<table border="1">
+<tr><td align="center">Algorithm</td><td align="center">Best-Case</td><td align="center">Worst-Case</td><td align="center">Average-Case</td></tr>
+<tr><td></td></tr>
+<tr><td align="center">Bubble-Sort</td><td align="center">&#920;(n)</td><td align="center">&#920;(n<sup>2</sup>)</td><td align="center">&#920;(n<sup>2</sup>)</td></tr>
+
+<tr><td align="center">Heap-Sort</td><td align="center">&#920;(n*log(n))</td><td align="center">&#920;(n*log(n))</td><td align="center">&#920;(n*log(n))</td></tr>
+</table>
+</center>
+
+<div class="p"><!----></div>
+<center>Table 0.1: <a name="tbl:complexity">
+</a>Various complexity-measurements of bubble-
+and heap-sort-provided by [<a href="#bubble-sort complexity" name="CITEbubble-sort complexity">4</a>,<a href="#table of algo. complexity" name="CITEtable of algo. complexity">8</a>]-are
+shown above. Notice that heap-sort exhibits the same complexity in
+all cases.</center>
+
+<div class="p"><!----></div>
+
+<h2>Bibliography</h2>
+
+<dl compact="compact">
+ <dt><a href="#CITEheap-sort animation" name="heap-sort animation">[1]</a></dt><dd>W. Ang, "Heap Sort Animation," [Online document], 1998 Sep
+28, [cited 25 Jan 2005], Available HTTP: <a href="http://ciips.ee.uwa.edu.au/~morris/Year2/PLDS210/heapsort.html"><tt>http://ciips.ee.uwa.edu.au/~morris/Year2/PLDS210/heapsort.html</tt></a>
+</dd>
+ <dt><a href="#CITEalgo. text-book" name="algo. text-book">[2]</a></dt><dd>R. Johnsonbaugh and M. Schaefer, <em>Algorithms</em>, Upper Saddle River,
+N.J.: Pearson Education, 2004.
+</dd>
+ <dt><a href="#CITErecursion quote" name="recursion quote">[3]</a></dt><dd>Portland Pattern Repository, "Moment Of Understanding," [Online
+document], 28 Jul 2003, [cited 21 Jan 2005], Available HTTP:
+<a href="http://c2.com/cgi/wiki?MomentOfUnderstanding"><tt>http://c2.com/cgi/wiki?MomentOfUnderstanding</tt></a>
+</dd>
+ <dt><a href="#CITEbubble-sort complexity" name="bubble-sort complexity">[4]</a></dt><dd>SparkNotes LLC, "BubbleSort: The BubbleSort Algorithm," [Online
+document], 11 Jan 2005, [cited 21 Jan 2005], Available HTTP:
+<a href="http://www.sparknotes.com/cs/sorting/bubble/section1.html"><tt>http://www.sparknotes.com/cs/sorting/bubble/section1.html</tt></a>
+</dd>
+ <dt><a href="#CITEasymptotic growth" name="asymptotic growth">[5]</a></dt><dd>P. Tantalo, "Asymptotic Growth of Functions," [Online document],
+8 Jul 2004, [cited 22 Jan 2005], Available HTTP: <a href="http://www.soe.ucsc.edu/classes/cmps101/Summer04/asymptotic.pdf"><tt>http://www.soe.ucsc.edu/classes/cmps101/Summer04/asymptotic.pdf</tt></a>
+</dd>
+ <dt><a href="#CITEstirling approx" name="stirling approx">[6]</a></dt><dd>E. W. Weisstein, "Stirling's Approximation," [Online document],
+1999, [cited 23 Jan 2005], Available HTTP: <a href="http://mathworld.wolfram.com/StirlingsApproximation.html"><tt>http://mathworld.wolfram.com/StirlingsApproximation.html</tt></a>
+</dd>
+ <dt><a href="#CITEheap-sort info" name="heap-sort info">[7]</a></dt><dd>Wikimedia Foundation, Inc. "Heapsort," [Online document],
+2005 Jan 21, [cited 2005 Jan 22], Available HTTP: <a href="http://en.wikipedia.org/wiki/Heapsort"><tt>http://en.wikipedia.org/wiki/Heapsort</tt></a>
+</dd>
+ <dt><a href="#CITEtable of algo. complexity" name="table of algo. complexity">[8]</a></dt><dd>O. d. Vel, "CP2001 Lecture Notes - Table ADT and Hashing," [Online
+document], 1998, [cited 22 Jan 2005], Available HTTP: <a href="http://www.it.jcu.edu.au/Subjects/cp2001/1998/LectureNotes/Sorting/node2.html"><tt>http://www.it.jcu.edu.au/Subjects/cp2001/1998/LectureNotes/Sorting/node2.html</tt></a></dd>
+</dl>
+
+<div class="p"><!----></div>
+<hr /><h3>Footnotes:</h3>
+
+<div class="p"><!----></div>
+<a name="tthFtNtAAB"></a><a href="#tthFrefAAB"><sup>1</sup></a>Brought into existence.
+<div class="p"><!----></div>
+<a name="tthFtNtAAC"></a><a href="#tthFrefAAC"><sup>2</sup></a>Each successive element is either the same as or larger than the preceding
+one.
+<div class="p"><!----></div>
+<a name="tthFtNtAAD"></a><a href="#tthFrefAAD"><sup>3</sup></a>Each successive element is either the same as or smaller than the
+preceding one.
+<div class="p"><!----></div>
+<a name="tthFtNtAAE"></a><a href="#tthFrefAAE"><sup>4</sup></a>Either this or that, but not both.
+<div class="p"><!----></div>
+<a name="tthFtNtAAF"></a><a href="#tthFrefAAF"><sup>5</sup></a>Approaching &#8734;.
+<br /><br /><hr /><small>File translated from
+T<sub><font size="-1">E</font></sub>X
+by <a href="http://hutchinson.belmont.ma.us/tth/">
+T<sub><font size="-1">T</font></sub>H</a>,
+version 3.67.<br />On  9 Jun 2006, 00:20.</small>
+</body></html>

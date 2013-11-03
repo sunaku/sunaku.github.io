@@ -1,0 +1,4003 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+           "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="GENERATOR" content="TtH 3.67" />
+ <style type="text/css"> div.p { margin-top: 7pt;}</style>
+ <style type="text/css"><!--
+ td div.comp { margin-top: -0.6ex; margin-bottom: -1ex;}
+ td div.comb { margin-top: -0.6ex; margin-bottom: -.6ex;}
+ td div.hrcomp { line-height: 0.9; margin-top: -0.8ex; margin-bottom: -1ex;}
+ td div.norm {line-height:normal;}
+ span.roman {font-family: serif; font-style: normal; font-weight: normal;} 
+ span.overacc2 {position: relative;  left: .8em; top: -1.2ex;}
+ span.overacc1 {position: relative;  left: .6em; top: -1.2ex;} --></style>
+ 
+
+                      
+
+   
+<title> Specification-driven functional verification with Verilog PLI \&amp;
+VPI and SystemVerilog~DPI </title>
+</head>
+<body>
+ 
+<h1 align="center">Specification-driven functional verification with Verilog PLI &amp;
+VPI and SystemVerilog&nbsp;DPI </h1>
+
+<div class="p"><!----></div>
+
+<h3 align="center">Suraj N. Kurapati </h3>
+
+<div class="p"><!----></div>
+
+<h2> Abstract</h2>
+Verilog-through its Programming Language Interface (PLI) and Verilog
+Procedural Interface (VPI)-and SystemVerilog-through its Direct
+Programming Interface (DPI)-enable simulators to invoke user-defined
+C functions, which then verify some aspect of an instantiated Verilog
+or SystemVerilog design.
+
+<div class="p"><!----></div>
+This simulator-centric transfer of control inhibits <b>specification-driven</b>
+functional verification, where an executable <em></em>specification
+verifies a design firsthand by progressively (1) applying a stimulus
+to the design, (2) simulating the design by <em>temporarily</em> transferring
+control to the simulator, and (3) verifying the design's response
+to the applied stimulus.
+
+<div class="p"><!----></div>
+This thesis presents (1) a way to achieve specification-driven <b></b>functional
+verification with Verilog PLI &amp; VPI and SystemVerilog DPI; (2) a
+technique that eliminates unnecessary code coupling between a design
+and its executable specification; and (3) an application of these
+ideas using Verilog VPI and the Ruby programming language.
+
+<div class="p"><!----></div>
+  
+<div class="p"><!----></div>
+
+<h1>Contents </h1>
+<a href="#tth_chAp1"
+>1&nbsp; Motivation</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc1.1"
+>1.1&nbsp; Agile practices in hardware development</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc1.2"
+>1.2&nbsp; Simulation-based functional verification</a><br />
+<a href="#tth_chAp2"
+>2&nbsp; Problem</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc2.1"
+>2.1&nbsp; Problems with simulator-driven approach</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc2.1.1"
+>2.1.1&nbsp; Dislocation of power</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc2.1.2"
+>2.1.2&nbsp; Communications overhead</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc2.1.3"
+>2.1.3&nbsp; Re-entrant C functions</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc2.2"
+>2.2&nbsp; Reason for simulator-driven approach</a><br />
+
+<a href="#tth_chAp3"
+>3&nbsp; Solution</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc3.1"
+>3.1&nbsp; Separate call stacks</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc3.1.1"
+>3.1.1&nbsp; Separation through POSIX threads and semaphores</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc3.1.2"
+>3.1.2&nbsp; Emulation through explicit finite state machines</a><br />
+<a href="#tth_chAp4"
+>4&nbsp; Related works</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc4.1"
+>4.1&nbsp; Design-driven approaches</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc4.1.1"
+>4.1.1&nbsp; Co-simulation with cycle-accurate emulator</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc4.2"
+>4.2&nbsp; Simulator-driven approaches</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc4.2.1"
+>4.2.1&nbsp; Co-simulation of Verilog and System C</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc4.3"
+>4.3&nbsp; Specification-driven approaches</a><br />
+<a href="#tth_chAp5"
+>5&nbsp; Application with Ruby-VPI</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.1"
+>5.1&nbsp; Overview</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.2"
+>5.2&nbsp; Motivation</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.2.1"
+>5.2.1&nbsp; Leveling up</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.2.2"
+>5.2.2&nbsp; Irony of the system task</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.2.3"
+>5.2.3&nbsp; Reading and writing integers</a><br />
+
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.2.4"
+>5.2.4&nbsp; Verbosity of expression</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.2.5"
+>5.2.5&nbsp; Appeasing the simulator</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.3"
+>5.3&nbsp; Organization</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.3.1"
+>5.3.1&nbsp; Tests</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.3.1.1"
+>5.3.1.1&nbsp; Automated test generation</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.3.2"
+>5.3.2&nbsp; Interface to VPI</a><br />
+
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.3.2.1"
+>5.3.2.1&nbsp; Handles</a><br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.3.2.2"
+>5.3.2.2&nbsp; Accessing a handle's relatives</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.3.2.3"
+>5.3.2.3&nbsp; Accessing a handle's properties</a><br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.3.3"
+>5.3.3&nbsp; Interaction with Verilog</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.4"
+>5.4&nbsp; Mechanics</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.4.1"
+>5.4.1&nbsp; Execution of a test</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.4.2"
+>5.4.2&nbsp; Transfer of control</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.4.3"
+>5.4.3&nbsp; Seamless prototyping</a><br />
+
+
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.5"
+>5.5&nbsp; Usage</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.5.1"
+>5.5.1&nbsp; Start with a design</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.5.2"
+>5.5.2&nbsp; Generate a test</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.5.3"
+>5.5.3&nbsp; Specify your expectations</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.5.4"
+>5.5.4&nbsp; Prototype the design</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.5.5"
+>5.5.5&nbsp; Verify the prototype</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.5.6"
+>5.5.6&nbsp; Implement the design</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.5.7"
+>5.5.7&nbsp; Verify the design</a><br />
+<a href="#tth_chAp6"
+>6&nbsp; Evaluation </a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc6.1"
+>6.1&nbsp; Proposed solution</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc6.1.1"
+>6.1.1&nbsp; Contribution</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc6.2"
+>6.2&nbsp; Ruby-VPI project</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc6.2.1"
+>6.2.1&nbsp; Contribution</a><br />
+<a href="#tth_chAp7"
+>7&nbsp; Conclusion</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc7.1"
+>7.1&nbsp; Future work</a><br />
+<a href="#tth_chApA"
+>A&nbsp; Background</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.1"
+>A.1&nbsp; Reason for PLI, VPI, and DPI interfaces</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.2"
+>A.2&nbsp; Functional verification</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.2.1"
+>A.2.1&nbsp; Simulator-driven functional verification</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.2.2"
+>A.2.2&nbsp; Design-driven functional verification</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.2.3"
+>A.2.3&nbsp; Specification-driven functional verification</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.3"
+>A.3&nbsp; Inter-process communication</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.3.1"
+>A.3.1&nbsp; Asynchronous communication</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.3.1.1"
+>A.3.1.1&nbsp; Shared memory</a><br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.3.1.2"
+>A.3.1.2&nbsp; Parallel Virtual Machine</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.3.1.3"
+>A.3.1.3&nbsp; Message Passing Interface</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.3.2"
+>A.3.2&nbsp; Synchronous communication</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.3.2.1"
+>A.3.2.1&nbsp; Remote Procedure Call</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.3.2.2"
+>A.3.2.2&nbsp; Distributed Common Object Model</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.3.2.3"
+>A.3.2.3&nbsp; Remote Method Invocation</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.3.2.4"
+>A.3.2.4&nbsp; Common Object Request Broker Architecture</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.3.3"
+>A.3.3&nbsp; Graphical programming</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.3.4"
+>A.3.4&nbsp; Conclusions</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.4"
+>A.4&nbsp; Agile practices</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.4.1"
+>A.4.1&nbsp; Test driven development</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.4.2"
+>A.4.2&nbsp; Behavior driven development</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.5"
+>A.5&nbsp; Domain specific languages</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.5.1"
+>A.5.1&nbsp; Alternatives</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.6"
+>A.6&nbsp; Ruby programming language</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.6.1"
+>A.6.1&nbsp; Object oriented</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.6.2"
+>A.6.2&nbsp; Anytime processing</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.6.3"
+>A.6.3&nbsp; Scripting language</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.6.4"
+>A.6.4&nbsp; A platform for DSLs</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcA.6.5"
+>A.6.5&nbsp; On the rise</a><br />
+<a href="#tth_chApB"
+>B&nbsp; Glossary</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcB.1"
+>B.1&nbsp; Tight coupling</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcB.2"
+>B.2&nbsp; Executable specification</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcB.3"
+>B.3&nbsp; System tasks and functions</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcB.4"
+>B.4&nbsp; Callbacks</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEcB.4.1"
+>B.4.1&nbsp; Self-generative callbacks</a><br />
+
+
+<div class="p"><!----></div>
+
+<h1>List of Figures </h1>
+
+
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg2.1"
+>2.1&nbsp;  Call stack shared by a simulator and the user-defined C function it invokes. The times marked along the horizontal axis correspond to the following events:</a><br />
+
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg3.1"
+>3.1&nbsp;  Illustration of call stacks separated through POSIX threads and semaphores. Here, the simulator runs in the main process, while the specification runs inside a POSIX thread. Shading denotes that a call stack is currently <em>paused</em> due to a locked semaphore. The times marked along the horizontal axis correspond to the following events:</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg3.2"
+>3.2&nbsp;  VPI application, based on  [file <tt>rbpli.c</tt>]KH99, that enables specification-driven functional verification by running the specification within a POSIX thread.</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg3.3"
+>3.3&nbsp;  An expectation written for specification-driven functional verification.</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg3.4"
+>3.4&nbsp;  An expectation written for <em>emulated</em> specification-driven functional verification. Note that a single invocation of the function shown in figure <a href="#fig:sequential expectation">3.3</a> is logically equivalent to three continuous invocations of the function shown here.</a><br />
+
+
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg5.1"
+>5.1&nbsp;  Organization of a test in Ruby-VPI.</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg5.2"
+>5.2&nbsp;  Ruby expression that determines whether all registers associated with a module presently have an integer value greater than one.</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg5.3"
+>5.3&nbsp;  C expression that determines whether all registers associated with a module presently have an integer value greater than one.</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg5.4"
+>5.4&nbsp;  Using the automated test generator.</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg5.5"
+>5.5&nbsp;  C program that causes a "type mismatch" error in some compilers.</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg5.6"
+>5.6&nbsp;  Accessors and their implications.</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg5.7"
+>5.7&nbsp;  Method naming format for accessing a handle's properties.</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg5.8"
+>5.8&nbsp;  Primary means of control transfer from Ruby to Verilog. This diagram should be read from left to right, according to the following sequence of events:</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg5.9"
+>5.9&nbsp;  Declaration of a simple up-counter with synchronous reset.</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg5.10"
+>5.10&nbsp;  Generating a test with specification in RSpec format.</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg5.11"
+>5.11&nbsp;  Generating a test with specification in xUnit format.</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg5.12"
+>5.12&nbsp;  A specification that implements the expectations listed in section <a href="#sub:Specify-your-expectations">5.5.3</a> using the RSpec specification format.</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg5.13"
+>5.13&nbsp;  A specification that implements the expectations listed in section <a href="#sub:Specify-your-expectations">5.5.3</a> using the xUnit specification format.</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg5.14"
+>5.14&nbsp;  Ruby interface to the design under verification. The method shown here resets the design by asserting its <tt>reset</tt> signal, simulating it for one clock cycle, and then deasserting its <tt>reset</tt> signal.</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg5.15"
+>5.15&nbsp;  A Ruby prototype of the Verilog design under verification. When prototyping is enabled, <tt>Vpi::advance_time</tt> invokes the method shown here instead of transferring control to the Verilog simulator.</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg5.16"
+>5.16&nbsp;  Implementation of a simple up-counter with synchronous reset.</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg5.17"
+>5.17&nbsp;  Verifying the prototype of the design under verification with the specification implemented in RSpec format.</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIg5.18"
+>5.18&nbsp;  Verifying the prototype of the design under verification with the specification implemented in xUnit format.</a><br />
+
+
+
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_fIgA.1"
+>A.1&nbsp;  Invoking a method on an integer in Ruby.</a><br />
+
+
+
+<div class="p"><!----></div>
+
+<h1>Dedication</h1>
+
+<div class="p"><!----></div>
+To my parents, the source and substratum of my being.<font face="helvetica">
+vandanamulu</font>.
+
+<div class="p"><!----></div>
+
+<h2><br /><br /></h2>
+<h2>Acknowledgments</h2>
+
+<div class="p"><!----></div>
+
+<ul>
+<li> Kazuhiro Hiwada's initial work with Verilog VPI and Ruby formed the
+foundation of Ruby-VPI and thereby of this thesis as well.
+<div class="p"><!----></div>
+</li>
+
+<li> Professor Jose Renau advised this thesis and supported my involvement
+in the Ruby-VPI project with remarkable patience and open-mindedness.
+<div class="p"><!----></div>
+</li>
+
+<li> Matt Fischler rescued this thesis from becoming the trillionth treatise
+on microprocessor caches by suggesting that I write it about Ruby-VPI.
+<div class="p"><!----></div>
+</li>
+
+<li> Professors Renau, Guthaus, and De Alfaro reviewed this thesis and
+suggested how to improve its relevance for the general audience.
+<div class="p"><!----></div>
+</li>
+</ul>
+Thank you, one and all.
+
+<div class="p"><!----></div>
+ <h1><a name="tth_chAp1">
+Chapter 1 </a><br />Motivation</h1>
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc1.1">
+1.1</a>&nbsp;&nbsp;Agile practices in hardware development</h2>
+
+<div class="p"><!----></div>
+Moore's law states that "the number of transistors on a chip doubles
+about every two years" [<a href="#moore" name="CITEmoore">41</a>]. The complexity of hardware
+designs undertaken has grown accordingly, leading to increased development
+time, cost, and effort. This trend is especially evident in design
+verification, as it "consumes about 70% of the design effort"
+[<a href="#JB06" name="CITEJB06">4</a>,page 2] and "is increasingly becoming a bottleneck
+in the design of embedded systems and system-on-chips (SoCs)" [<a href="#AGAAB05" name="CITEAGAAB05">13</a>]. 
+
+<div class="p"><!----></div>
+As a result, it has long become common for design firms to house a
+dedicated team of verification engineers, who often outnumber implementation
+engineers by a factor of two [<a href="#JB06" name="CITEJB06">4</a>,page 2]. However, this division
+of labor is unfavorable when viewed in the light of agile software
+development practices (see section <a href="#sec:Agile-practices">A.4</a>), which
+improve quality and reduce development time [<a href="#TDD" name="CITETDD">19</a>] by having
+the same engineers perform verification alongside implementation.
+
+<div class="p"><!----></div>
+This thesis proposes an infrastructure that facilitates the application
+of agile software development practices to the hardware development
+process (see chapter <a href="#cha:Application-with-Ruby-VPI">5</a>). This infrastructure
+builds atop Ruby: a general purpose, purely object oriented language
+that is ideal for rapid prototyping, design automation, and systems
+integration (see section <a href="#sec:Ruby-programming-language">A.6</a>).
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc1.2">
+1.2</a>&nbsp;&nbsp;Simulation-based functional verification</h2>
+
+<div class="p"><!----></div>
+"Simulation has been, and continues to be, the primary method
+for functional verification of hardware and system level designs"
+[<a href="#AGAAB05" name="CITEAGAAB05">13</a>]. Simulation-based Hardware Verification Languages
+(HVLs) such as <em>e</em>, Vera, and Specman have become popular in
+recent years. However, like Verilog and SystemVerilog, they lack the
+power of general purpose programmability necessary to integrate the
+verification effort with other business processes. 
+
+<div class="p"><!----></div>
+For example, the results of an automated verification suite may need
+to be integrated with project planning and management tools to improve
+estimates of project completion or to locate particularly troublesome
+areas of the design to which more verification effort must be allocated.
+For this reason, C language interfaces like Verilog PLI are often
+the practical choice for simulation-based functional verification.
+
+<div class="p"><!----></div>
+Over the decades, Verilog PLI has evolved into simpler, more powerful
+interfaces such as Verilog VPI and SystemVerilog DPI. However, despite
+this evolution, these interfaces continue to facilitate the simulator-driven
+approach to functional verification (see chapter <a href="#cha:Problem">2</a>).
+This thesis explores possible ways to achieve the more logical approach
+of specification-driven functional verification for Verilog PLI &amp;
+VPI and SystemVerilog DPI (see chapter <a href="#cha:Solution">3</a>).
+
+<div class="p"><!----></div>
+ <h1><a name="tth_chAp2">
+Chapter 2 </a><br />Problem<a name="cha:Problem">
+</a></h1>
+
+<div class="p"><!----></div>
+Verilog-through its Programming Language Interface (PLI) and Verilog
+Procedural Interface (VPI)-and SystemVerilog-through its Direct
+Programming Interface (DPI)-enable simulators to invoke user-defined
+C functions. By inserting code that functionally verifies certain
+aspects of an instantiated Verilog module into these C functions,
+one can functionally verify Verilog modules whilst leveraging the
+general purpose programmability of the C language.
+
+<div class="p"><!----></div>
+Because (1) the simulator invokes the user-defined C functions and
+(2) the user-defined C functions perform functional verification,
+the simulator is in charge of the functional verification process.
+Having the simulator in charge of functional verification is called
+<b>simulator-driven functional verification</b>.
+
+<div class="p"><!----></div>
+This chapter explores the problems associated with the simulator-driven
+approach and the technical reasons for its existence.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc2.1">
+2.1</a>&nbsp;&nbsp;Problems with simulator-driven approach</h2>
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc2.1.1">
+2.1.1</a>&nbsp;&nbsp;Dislocation of power</h3>
+
+<div class="p"><!----></div>
+The main problem with simulator-driven functional verification is
+that the power to perform functional verification is placed at the
+wrong level. To better illustrate this claim, consider the following
+scenario:<a name="scenario">
+</a>
+
+<div class="p"><!----></div>
+
+<blockquote>A dog house must be built for your new dog. The necessary materials
+have been provided to you: a hammer, nails, wooden boards, and a blueprint
+for the dog house. 
+
+<div class="p"><!----></div>
+The hammer in placed in charge. It will summon you to perform tasks
+on its behalf, such as nailing wooden boards together, verifying that
+the dog house is being built according to the blueprint, and so on.
+</blockquote>
+Here, the task of building a dog house represents the task of performing
+functional verification, the blueprint represents the specification,
+and the hammer represents the simulator. 
+
+<div class="p"><!----></div>
+This scenario is both unpleasant and counter-intuitive because the
+power to build the dog house has been placed at the wrong level: the
+hammer is but a mere tool, whose sole purpose is to drive nails; it
+is unconcerned with the larger task of building a dog house. Thus,
+the more logical approach would be to grant <em>you</em> the power to
+build the dog house because you are (1) genuinely concerned with the
+task of building a dog house and (2) capable of utilizing all provided
+materials firsthand, whereas the hammer required you to perform tasks
+on its behalf.
+
+<div class="p"><!----></div>
+Likewise, the simulator is but a mere tool, whose sole purpose is
+to simulate an instantiated Verilog module, that is unconcerned with
+the larger task of performing functional verification. Thus, the more
+logical approach would be to grant you the power to perform functional
+verification. However, due to the overwhelming complexity of hardware
+designs undertaken today, it is both impractical and error-prone for
+a human to perform functional verification manually. For this reason,
+executable specifications-which are, in essence, a combination of
+the blueprint (the rules for building a dog house) and yourself (the
+entity capable of following the blueprint and interacting with all
+provided materials to build the dog house)-are commonly used to
+perform functional verification instead.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc2.1.2">
+2.1.2</a>&nbsp;&nbsp;Communications overhead</h3>
+
+<div class="p"><!----></div>
+The dislocation of power in simulator-driven functional verification
+causes additional communications overhead between the simulator and
+the executable specification because the simulator continually summons
+the executable specification to perform tasks on its behalf. 
+
+<div class="p"><!----></div>
+To illustrate, recall the scenario presented in the previous section:
+every time the hammer needs to perform a task, it summons you to perform
+the task on its behalf. Here, the act of the hammer summoning you
+represents the additional communications overhead between the simulator
+and the executable specification.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc2.1.3">
+2.1.3</a>&nbsp;&nbsp;Re-entrant C functions</h3>
+
+<div class="p"><!----></div>
+Recall that in simulator-driven functional verification, the simulator
+invokes user-defined C functions to perform functional verification
+on its behalf. This approach causes the code inside the user-defined
+C functions to be written in a re-entrant fashion. When written in
+this fashion, inherently sequential code becomes unnecessarily complex
+due to the explicit management of states and transitions thereof. 
+
+<div class="p"><!----></div>
+For instance, observe how the inherently sequential code shown in
+figure <a href="#fig:sequential expectation">3.3</a> becomes unnecessarily complex,
+as shown in figure <a href="#fig:interrupted expectation">3.4</a>, when written
+in a re-entrant fashion.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc2.2">
+2.2</a>&nbsp;&nbsp;Reason for simulator-driven approach</h2>
+
+<div class="p"><!----></div>
+
+<b><a name="sec:common call stack">
+</a>&nbsp;&nbsp;</b>
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg2.1">
+</a> <img src="masters_thesis_fig_call_stack.png" alt="masters_thesis_fig_call_stack.png" />
+
+<div class="p"><!----></div>
+<center>Figure 2.1: <a name="fig:Call-stack">
+</a>Call stack shared by a simulator and the user-defined
+C function it invokes. The times marked along the horizontal axis
+correspond to the following events:</center>
+
+<div class="p"><!----></div>
+
+<ol type="1">
+<li> Simulator has control.
+<div class="p"><!----></div>
+</li>
+
+<li> Simulator invokes a user-defined C function, <em>foo</em>. Now <em>foo</em>
+has control.
+<div class="p"><!----></div>
+</li>
+
+<li> <em>foo</em> possibly invokes another function, <em>bar</em>, which may
+in turn invoke yet another function, and so on.
+<div class="p"><!----></div>
+</li>
+
+<li> <em>bar</em> returns along with the other functions it possibly invoked.
+Now <em>foo</em> has control.
+<div class="p"><!----></div>
+</li>
+
+<li> <em>foo</em> returns. Now the simulator has control.
+<div class="p"><!----></div>
+</li>
+</ol>
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+Verilog PLI &amp; VPI and SystemVerilog DPI enable simulator-driven functional
+verification because (see figure <a href="#fig:Call-stack">2.1</a>) when the simulator
+invokes a user-defined C function, they share a common call stack
+[<a href="#PLI is dead" name="CITEPLI is dead">35</a>,page 4] in which the simulator's stack frame lies
+immediately below the function's stack frame.
+
+<div class="p"><!----></div>
+Due to this arrangement, the simulator cannot proceed until the function
+returns. Likewise, the function cannot make the simulator proceed
+without itself having returned. Thus, Verilog PLI &amp; VPI and SystemVerilog
+DPI place the <em>simulator</em> in charge of performing functional
+verification and thereby enable the simulator-driven approach. 
+
+<div class="p"><!----></div>
+ <h1><a name="tth_chAp3">
+Chapter 3 </a><br />Solution<a name="cha:Solution">
+</a></h1>
+
+<div class="p"><!----></div>
+Recall that in simulator-driven functional verification, the simulator
+invokes user-defined C functions to perform functional verification
+on its behalf. This dislocation of power causes the rest of the problems
+associated with simulator-driven functional verification. Thus, these
+problems can be eliminated by allocating the power to perform functional
+verification at an appropriate level, i.e. the executable specification.
+
+<div class="p"><!----></div>
+Having the executable specification in charge of performing functional
+verification is called <b>specification-driven</b> <b>functional
+verification</b>. In this approach, an executable <em></em>specification
+verifies a design <em>firsthand</em> by progressively (1) applying a
+stimulus to the design, (2) simulating the design by <em>temporarily</em>
+transferring control to the simulator, and (3) verifying the design's
+response to the applied stimulus. 
+
+<div class="p"><!----></div>
+Section <a href="#sec:Separated-call-stacks">3.1</a> proposes technical solutions
+for achieving specification-driven functional verification with Verilog
+PLI &amp; VPI and SystemVerilog DPI.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc3.1">
+3.1</a>&nbsp;&nbsp;Separate call stacks<a name="sec:Separated-call-stacks">
+</a></h2>
+
+<div class="p"><!----></div>
+As section <a href="#sec:common call stack">2.2</a> discussed, we are restricted
+to simulator-driven functional verification with Verilog PLI &amp; VPI
+and SystemVerilog DPI because the stack frames of a simulator and
+the C function it invokes, exist within the same call stack. Therefore,
+one solution is to provide <em>separate</em> call stacks for these stack
+frames. In practice, however, this is only possible if a simulator
+and C function exist either within (1) different threads or (2) different
+processes.
+
+<div class="p"><!----></div>
+Placing the simulator and executable specification in different threads,
+which exist within the same process, allows the specification to access
+its design naturally through the C library provided by Verilog PLI
+&amp; VPI and SystemVerilog DPI. In contrast, placing them in either
+(1) different processes or (2) different threads within different
+processes, necessitates IPC (see section <a href="#sec:Inter-process-communication">A.3</a>)
+as the specification cannot access to the aforementioned C library
+directly. 
+
+<div class="p"><!----></div>
+The threads approach is simpler and more practical than the processes
+approach because invoking C functions within a single process is <em>trivial</em>
+in comparison to the relatively monumental task of deploying and managing
+independent processes in a distributed simulation through IPC. For
+this reason, only the threads approach is considered henceforth.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc3.1.1">
+3.1.1</a>&nbsp;&nbsp;Separation through POSIX threads and semaphores<a name="sec:Proposed-approach">
+</a></h3>
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg3.1">
+</a> <img src="masters_thesis_fig_separate_stacks.png" alt="masters_thesis_fig_separate_stacks.png" />
+<div class="p"><!----></div>
+<center>Figure 3.1: <a name="fig:separate stacks">
+</a>Illustration of call stacks separated
+through POSIX threads and semaphores. Here, the simulator runs in
+the main process, while the specification runs inside a POSIX thread.
+Shading denotes that a call stack is currently <em>paused</em> due to
+a locked semaphore. The times marked along the horizontal axis correspond
+to the following events:</center>
+
+<div class="p"><!----></div>
+
+<ol type="1">
+<li> Simulator has control.
+<div class="p"><!----></div>
+</li>
+
+<li> Simulator transfers control to the specification by invoking the <tt>relay_spec</tt>
+function shown in figure <a href="#fig:spec_driven.c">3.2</a>. 
+
+<div class="p"><!----></div>
+
+<ol type="a">
+<li> Simulator is paused.
+<div class="p"><!----></div>
+</li>
+
+<li> Specification has control.
+<div class="p"><!----></div>
+</li>
+</ol>
+<div class="p"><!----></div>
+</li>
+
+<li> Specification possibly invokes other functions.
+<div class="p"><!----></div>
+</li>
+
+<li> Specification has control.
+<div class="p"><!----></div>
+</li>
+
+<li> Specification transfers control to the simulator by invoking the <tt>relay_sim</tt>
+function shown in figure <a href="#fig:spec_driven.c">3.2</a>. 
+
+<div class="p"><!----></div>
+
+<ol type="a">
+<li> Specification is paused.
+<div class="p"><!----></div>
+</li>
+
+<li> Simulator has control.
+<div class="p"><!----></div>
+</li>
+</ol>
+<div class="p"><!----></div>
+</li>
+
+<li> Simulator possibly invokes other functions.
+<div class="p"><!----></div>
+</li>
+
+<li> Simulator has control.
+<div class="p"><!----></div>
+</li>
+
+<li> Steps 2-7 repeat until the verification process is complete.
+<div class="p"><!----></div>
+</li>
+</ol>
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg3.2">
+</a> <tt><font size="-3">
+<pre>#include&nbsp;&lt;stddef.h&#62;
+#include&nbsp;&lt;pthread.h&#62;
+#include&nbsp;&lt;vpi_user.h&#62;
+
+void*&nbsp;spec_run(void*&nbsp;dummy)&nbsp;{
+&nbsp;&nbsp;/*&nbsp;1.&nbsp;schedule&nbsp;a&nbsp;callback&nbsp;to&nbsp;relay_spec();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.&nbsp;invoke&nbsp;relay_sim();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3.&nbsp;repeat&nbsp;*/
+&nbsp;&nbsp;return&nbsp;NULL;
+}
+
+pthread_t&nbsp;specThread;
+pthread_mutex_t&nbsp;specLock;
+pthread_mutex_t&nbsp;simLock;
+
+PLI_INT32&nbsp;relay_init(p_cb_data&nbsp;dummy)&nbsp;{
+&nbsp;&nbsp;pthread_mutex_init(&amp;specLock,&nbsp;NULL);
+&nbsp;&nbsp;pthread_mutex_lock(&amp;specLock);
+&nbsp;&nbsp;pthread_mutex_init(&amp;simLock,&nbsp;NULL);
+&nbsp;&nbsp;pthread_mutex_lock(&amp;simLock);
+
+&nbsp;&nbsp;/*&nbsp;start&nbsp;the&nbsp;specification&nbsp;thread&nbsp;*/
+&nbsp;&nbsp;pthread_create(&amp;specThread,&nbsp;NULL,&nbsp;spec_run,&nbsp;NULL);
+&nbsp;&nbsp;pthread_mutex_lock(&amp;simLock);
+
+&nbsp;&nbsp;return&nbsp;0;
+}
+
+/*&nbsp;Transfers&nbsp;control&nbsp;to&nbsp;the&nbsp;specification.&nbsp;*/
+void&nbsp;relay_spec()&nbsp;{
+&nbsp;&nbsp;pthread_mutex_unlock(&amp;specLock);
+&nbsp;&nbsp;pthread_mutex_lock(&amp;simLock);
+}
+
+/*&nbsp;Transfers&nbsp;control&nbsp;to&nbsp;the&nbsp;Verilog&nbsp;simulator.&nbsp;*/
+void&nbsp;relay_sim()&nbsp;{
+&nbsp;&nbsp;pthread_mutex_unlock(&amp;simLock);
+&nbsp;&nbsp;pthread_mutex_lock(&amp;specLock);
+}
+
+void&nbsp;startup()&nbsp;{
+&nbsp;&nbsp;s_cb_data&nbsp;call;
+&nbsp;&nbsp;call.reason&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;cbStartOfSimulation;
+&nbsp;&nbsp;call.cb_rtn&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;relay_init;
+&nbsp;&nbsp;call.obj&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;NULL;
+&nbsp;&nbsp;call.time&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;NULL;
+&nbsp;&nbsp;call.value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;NULL;
+&nbsp;&nbsp;call.user_data&nbsp;&nbsp;=&nbsp;NULL;
+
+&nbsp;&nbsp;vpi_free_object(vpi_register_cb(&amp;call));
+}
+
+void&nbsp;(*vlog_startup_routines[])()&nbsp;=&nbsp;{&nbsp;startup,&nbsp;NULL&nbsp;};
+
+</pre></font></tt><font size="-3">
+<div class="p"><!----></div>
+</font><center>Figure 3.2: <a name="fig:spec_driven.c">
+</a>VPI application, based on ,
+that enables specification-driven functional verification by running
+the specification within a POSIX thread.</center>
+
+<div class="p"><!----></div>
+The call stacks of simulator and specification can be separated through
+POSIX threads and semaphores  as
+follows:
+
+<div class="p"><!----></div>
+
+<ul>
+<li> The specification runs within a POSIX thread while the simulator runs
+within the main process.
+<div class="p"><!----></div>
+</li>
+
+<li> Semaphores ensure that only the specification or the simulator is
+running at any given time.
+<div class="p"><!----></div>
+</li>
+
+<li> The specification and simulator transfer control to each other by
+manipulating the semaphores appropriately.
+<div class="p"><!----></div>
+</li>
+</ul>
+The separation achieved by this approach is illustrated in figure
+<a href="#fig:separate stacks">3.1</a>. In addition, the source code in figure
+<a href="#fig:spec_driven.c">3.2</a> demonstrates how this approach can be implemented
+with Verilog VPI. 
+
+<div class="p"><!----></div>
+In this source code, the <tt>startup</tt> function is first invoked
+by a Verilog simulator because its function pointer is present within
+the <tt>vlog_startup_routines</tt> array [<a href="#ICS06" name="CITEICS06">18</a>,page 374].
+This function schedules a callback that invokes the <tt>relay_init</tt>
+function just before the simulation begins.
+
+<div class="p"><!----></div>
+When the <tt>relay_init</tt> function is invoked, it initiates a
+series of self-generative callbacks<a href="#tthFtNtAAB" name="tthFrefAAB"><sup>1</sup></a> by running the specification within a POSIX thread. This thread endlessly
+(1) executes for some time, (2) transfers control to the Verilog simulator,
+and (3) regains control from the Verilog simulator. In particular,
+it regains control by scheduling a callback to the <tt>relay_spec</tt>
+function <em>before</em> transferring control to the Verilog simulator.
+Later, this callback causes the Verilog simulator to transfer control
+to the specification.
+
+<div class="p"><!----></div>
+The process of transferring control to and regaining control from
+a simulator can be encapsulated by a function within the specification.
+For instance, the <tt>simulate_design</tt> function in figure <a href="#fig:sequential expectation">3.3</a>
+serves this exact purpose. 
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc3.1.2">
+3.1.2</a>&nbsp;&nbsp;Emulation through explicit finite state machines<a name="sec:Emulated-specification-driven-approach">
+</a></h3>
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg3.3">
+</a> 
+<pre>void&nbsp;verify_expectation()&nbsp;{
+&nbsp;&nbsp;apply_stimulus();
+&nbsp;&nbsp;simulate_design();
+&nbsp;&nbsp;verify_response();
+}
+
+</pre>
+
+<div class="p"><!----></div>
+<center>Figure 3.3: <a name="fig:sequential expectation">
+</a>An expectation written for specification-driven
+functional verification.</center>
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg3.4">
+</a> 
+<pre>void&nbsp;verify_expectation()&nbsp;{
+&nbsp;&nbsp;static&nbsp;enum&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;stimulate,&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;simulate,&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;verify
+&nbsp;&nbsp;}&nbsp;stage&nbsp;=&nbsp;stimulate;
+
+&nbsp;&nbsp;switch&nbsp;(stage)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;stimulate:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apply_stimulus();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stage&nbsp;=&nbsp;simulate;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
+
+&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;simulate:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;simulate_design();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stage&nbsp;=&nbsp;verify;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
+
+&nbsp;&nbsp;&nbsp;&nbsp;case&nbsp;verify:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;verify_response();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;stage&nbsp;=&nbsp;stimulate;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break;
+&nbsp;&nbsp;}
+}
+
+</pre>
+
+<div class="p"><!----></div>
+<center>Figure 3.4: <a name="fig:interrupted expectation">
+</a>An expectation written for <em>emulated</em>
+specification-driven functional verification. Note that a single invocation
+of the function shown in figure <a href="#fig:sequential expectation">3.3</a>
+is logically equivalent to three continuous invocations of the function
+shown here.</center>
+
+<div class="p"><!----></div>
+It is possible to emulate the separation of call stacks by having
+the specification remember from where within its source code it had
+last transferred control to the simulator. This allows specification
+to resume execution from its previous location when it regains control
+from the simulator.
+
+<div class="p"><!----></div>
+As figure <a href="#fig:interrupted expectation">3.4</a> shows, emulation is achieved
+by writing the specification and its expectations as finite state
+machines. However, this style of writing is unnatural and laborious
+because (1) it involves transforming an otherwise simple sequence
+of steps into an <em>explicit</em> finite state machine; and because
+(2) tight coupling is naturally present between each pair of adjacent
+states in these particular finite state machines.
+
+<div class="p"><!----></div>
+If Verilog PLI &amp; VPI and SystemVerilog DPI truly enabled specification-driven
+functional verification, a specification and its expectations could
+be written naturally, with less effort, as illustrated by figure <a href="#fig:sequential expectation">3.3</a>.
+
+<div class="p"><!----></div>
+ <h1><a name="tth_chAp4">
+Chapter 4 </a><br />Related works</h1>
+
+<div class="p"><!----></div>
+Several related works are presented in the following subsections.
+Although these works do not particularly tackle the problem of how
+to achieve specification-driven functional verification with Verilog
+PLI &amp; VPI and SystemVerilog DPI, their contributions have been characterized
+as such for the sake of discussion.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc4.1">
+4.1</a>&nbsp;&nbsp;Design-driven approaches</h2>
+
+<div class="p"><!----></div>
+[<a href="#related: testbuilder" name="CITErelated: testbuilder">8</a>] presents Cadence TestBuilder, a C++ library
+built atop Verilog PLI that enables executable specifications to be
+written in C++. Unfortunately, this library takes the design-driven
+approach to functional verification because it requires explicit (1)
+initialization of the executable specification via the <tt>$tbv_main</tt>
+system task and (2) transfer of control from the simulator to the
+executable specification via Verilog's behavioral <tt>wait</tt> statement
+[<a href="#related: testbuilder" name="CITErelated: testbuilder">8</a>,page 5].
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc4.1.1">
+4.1.1</a>&nbsp;&nbsp;Co-simulation with cycle-accurate emulator</h3>
+
+<div class="p"><!----></div>
+[<a href="#related: sim+emulator" name="CITErelated: sim+emulator">23</a>] speeds up the simulation of a complex
+Verilog design by having an emulator perform part of the simulation.
+It achieves this by implementing IPC over network sockets through
+Verilog PLI system tasks to transmit the stimulus to and receive the
+response from the emulator.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc4.2">
+4.2</a>&nbsp;&nbsp;Simulator-driven approaches</h2>
+
+<div class="p"><!----></div>
+[<a href="#related: try before buy" name="CITErelated: try before buy">43</a>] enables potential customers to functionally
+verify proprietary Verilog designs whilst protecting proprietary interests
+through Verilog PLI and IPC over network sockets. In this approach,
+the customer's executable specification is written in behavioral Verilog-which
+is considered unsuitable for verification (see section <a href="#sec:Reason-for-PLI,">A.1</a>).
+Nevertheless, this approach is novel because the details of the IPC
+are hidden from both the executable specification and the proprietary
+design alike by automatically generated shell modules-modules which
+simply wrap other modules, occasionally along with additional functionality.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc4.2.1">
+4.2.1</a>&nbsp;&nbsp;Co-simulation of Verilog and System C</h3>
+
+<div class="p"><!----></div>
+In United States Patent 20030093584, RPC is used through Verilog PLI
+to connect a Verilog module to a behavioral System C module. This
+allows the Verilog module to interact with the remote System C module
+as if they both existed in the same simulation. However, this approach
+is still an example of simulator-driven functional verification because
+the executable specification is either written in behavioral Verilog
+or in C through the PLI.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc4.3">
+4.3</a>&nbsp;&nbsp;Specification-driven approaches</h2>
+
+<div class="p"><!----></div>
+[<a href="#related: spec-driven C++ lib" name="CITErelated: spec-driven C++ lib">1</a>] presents a verification framework,
+named Raven, that enables specification-driven functional verification
+with generic logic simulators of RTL and gate-level HDL designs. In
+Raven, executable specifications are written in C++ using a library
+named Diagnostic Programming Interface (DPI), and the executable specification
+and the logic simulator communicate via IPC over network sockets.
+Raven was used to verify a "1.1 million gate ASIC that routes
+packetized messages on the interconnection network of a scalable multiprocessor"
+and was found to have a 10% performance penalty, due to the overhead
+of IPC, over a standard Verilog test-bench [<a href="#related: spec-driven C++ lib" name="CITErelated: spec-driven C++ lib">1</a>,page 168].
+
+<div class="p"><!----></div>
+Some criticisms of [<a href="#related: spec-driven C++ lib" name="CITErelated: spec-driven C++ lib">1</a>] are that it
+fails to specify (1) which particular logic simulators were successfully
+used with Raven and (2) what must be done to make a logic simulator
+service the IPC requests sent from Raven's executable specification.
+That is, there is no mention of any technologies-such as such as
+Verilog PLI or VPI-that allow programs capable of servicing IPC
+requests to be used with the RTL and gate-level HDL designs that Raven
+is supposed to accommodate. Instead, [<a href="#related: spec-driven C++ lib" name="CITErelated: spec-driven C++ lib">1</a>]
+simply presents (1) data-type primitives used to represent Verilog
+logic values in C++ and (2) the application-level protocol used for
+Raven's IPC, whilst omitting any details about their implementation.
+
+<div class="p"><!----></div>
+ <h1><a name="tth_chAp5">
+Chapter 5 </a><br />Application with Ruby-VPI<a name="cha:Application-with-Ruby-VPI">
+</a></h1>
+
+<div class="p"><!----></div>
+This chapter presents an application of the separation of call stacks
+through POSIX threads and semaphores solution (see section <a href="#sec:Proposed-approach">3.1.1</a>)
+using Verilog VPI and the Ruby programming language. In particular,
+this application is realized through an open source software package
+named Ruby-VPI (see [<a href="#ruby-vpi" name="CITEruby-vpi">21</a>]).
+
+<div class="p"><!----></div>
+<br /><br />
+<div class="p"><!----></div>
+<a name="tth_fIg5.1">
+</a> <img src="masters_thesis_fig_organization_detailed.png" alt="masters_thesis_fig_organization_detailed.png" />
+<div class="p"><!----></div>
+<center>Figure 5.1: <a name="fig:Organization">
+</a>Organization of a test in Ruby-VPI.</center>
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc5.1">
+5.1</a>&nbsp;&nbsp;Overview</h2>
+
+<div class="p"><!----></div>
+Ruby-VPI is a bridge between IEEE 1364-2005 Verilog VPI and the Ruby
+language. It enables Ruby programs to use VPI either (1) in the same,
+verbose way that C programs do, or (2) in a simpler, higher level
+way. In addition, it serves as a vehicle for the application of agile
+software development practices, such as TDD and BDD, to the realm
+of hardware development with Verilog.
+
+<div class="p"><!----></div>
+Ruby-VPI can be used with any Verilog simulator that supports VPI.
+In particular, it known to operate with (1) Synopsys VCS and Mentor
+Modelsim, the two most prominent Verilog simulators in the Electronic
+Design Automation (EDA) industry [<a href="#eda giants" name="CITEeda giants">12</a>]; as well as (2)
+GPL Cver and Icarus Verilog, the two most prevalent open source Verilog
+simulators of today.
+
+<div class="p"><!----></div>
+As figure <a href="#fig:Organization">5.1</a> shows, Ruby-VPI is composed of two
+complementary parts: one interacts with VPI through the C language,
+while the other interacts with an executable specification written
+in the Ruby language. The former is complied during installation to
+produce dynamically loadable C libraries-each tailored to accommodate
+the quirks of its respective Verilog simulator (see section <a href="#sub:Appeasing-the-simulator">5.2.5</a>).
+The latter is not compiled because Ruby programs are interpreted dynamically.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc5.2">
+5.2</a>&nbsp;&nbsp;Motivation</h2>
+
+<div class="p"><!----></div>
+
+<blockquote><em>C code. C code run. Run code run. Please!</em> -Cynthia
+Dunning
+</blockquote>
+The drudgery of using VPI through the C programming language and VPI's
+inherent dependence on simulator-driven functional verification were
+the primary factors that motivated the creation of Ruby-VPI. These
+factors, among others, are discussed in the following subsections.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc5.2.1">
+5.2.1</a>&nbsp;&nbsp;Leveling up</h3>
+
+<div class="p"><!----></div>
+Advancement to higher level languages is a proved strategy for managing
+the ever-increasing complexity of software. In fact, it has been said
+to yield "at least a factor of five in productivity, and with
+concomitant gains in reliability, simplicity, and comprehensibility"
+[<a href="#FPBJ87" name="CITEFPBJ87">6</a>,page 15]. But how can such advancement-a mere change
+of notation-possibly procure such remarkable benefits? The answer
+is that a higher level language "frees a program from much of
+its accidental complexity" [<a href="#FPBJ87" name="CITEFPBJ87">6</a>,page 15].
+
+<div class="p"><!----></div>
+For instance, consider the power notation in mathematics where a base
+is raised to the power of an exponent: 2<sup>2048</sup>. This is a higher
+level way of writing the expression "2&times;2" two thousand
+and forty eight consecutive times: \underset20482&times;2&times;&#8230;2.
+Were it not for such notation, the expression of thought would be
+far more laborious, repetitive, and erroneous. In this manner, higher
+level programming languages are notations that enable us to reason
+abstractly using sufficient notation to swiftly express, entertain,
+and dispose of the problem at hand. In other words [<a href="#FPBJ87" name="CITEFPBJ87">6</a>,page 15]:
+
+<div class="p"><!----></div>
+
+<blockquote>An abstract program consists of conceptual constructs: operations,
+data types, sequences, and communication. The concrete machine program
+is concerned with bits, registers, conditions, branches, channels,
+disks, and such. To the extent that the high-level language embodies
+the constructs one wants in the abstract program and avoids all lower
+ones, it eliminates a whole level of complexity that was never inherent
+in the program at all. 
+
+<div class="p"><!----></div>
+</blockquote>This argument strongly motivates and justifies the use of a higher
+level language, such as Ruby, in performing functional verification
+with Verilog VPI.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc5.2.2">
+5.2.2</a>&nbsp;&nbsp;Irony of the system task</h3>
+
+<div class="p"><!----></div>
+
+<blockquote><em>Quis custodiet ipsos custodes?</em> -Juvenal, <em>Satires</em>,
+<em></em>VI, 346-348
+</blockquote>
+A system task is composed of two C functions: <tt>calltf</tt> and
+<tt>compiletf</tt> [<a href="#SS02" name="CITESS02">36</a>,page 34 and 39]. The former is invoked
+whenever its associated system task is invoked, and the latter is
+invoked, only once, before the simulation begins [<a href="#SS02" name="CITESS02">36</a>,page 37].
+
+<div class="p"><!----></div>
+Whereas the <tt>calltf</tt> function defines verification logic for
+a system task, the sole purpose of the <tt>compiletf</tt> function
+is to verify that its system task, and thereby its associated <tt>calltf</tt>
+function, is invoked correctly [<a href="#SS02" name="CITESS02">36</a>,page 37]. For example,
+it checks whether (1) the number of arguments passed to its system
+task, and (2) the types of those arguments are correct [<a href="#SS02" name="CITESS02">36</a>,page 37].
+
+<div class="p"><!----></div>
+This situation resembles the ancient, recursive dilemma <em>quis
+custodiet ipsos custodes?</em> or <em>who guards the guardians?</em> by
+which, the <tt>compiletf</tt> function procures a mere illusion of
+increased correctness while inadvertently sacrificing ease of development,
+as <tt>compiletf</tt> functions must be written and maintained alongside
+every system task that performs verification.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc5.2.3">
+5.2.3</a>&nbsp;&nbsp;Reading and writing integers</h3>
+
+<div class="p"><!----></div>
+Integers in VPI are 32 bits wide, as defined by the portable <tt>PLI_INT32</tt>
+storage type [<a href="#ICS06" name="CITEICS06">18</a>,page 522][<a href="#SS02" name="CITESS02">36</a>,page 163]. Due to
+this constraint, reading and writing the integer value of a register,
+whose width is larger than 32 bits, requires additional processing. 
+
+<div class="p"><!----></div>
+For instance, one might process the string representation of the register's
+integer value in an incremental, piecewise fashion by transforming
+a subset of the string into an integer or vice versa. Another option
+is to write or use a library that encapsulates this process by providing
+integer operations that act upon strings. Nevertheless, the integer/string
+conversion involved in this process introduces the following accidental
+difficulties.
+
+<div class="p"><!----></div>
+
+<b>Memory management&nbsp;&nbsp;</b>
+
+<div class="p"><!----></div>
+To avoid tight coupling (see section <a href="#sub:code coupling">B.1</a>) between
+one's C program and Verilog design, one might dynamically allocate
+buffers for use during the integer/string conversion. However, one
+must now ensure that (1) the memory occupied by those buffers are
+freed after the transformation, and that (2) one stays within the
+bounds of the buffers during their use. Otherwise, memory leaks and
+buffer-overrun vulnerabilities may occur, respectively.
+
+<div class="p"><!----></div>
+
+<b>Tight coupling&nbsp;&nbsp;</b>
+
+<div class="p"><!----></div>
+To avoid the difficulties of memory management or performance penalties
+[<a href="#SS02" name="CITESS02">36</a>,page 161] of dynamic memory allocation, one might use
+fixed-length buffers, which are explicitly sized to accommodate the
+widths of registers in the Verilog design, during the integer/string
+conversion. However, this arrangement is tightly coupled (see section
+<a href="#sub:code coupling">B.1</a>) because a change in register width necessitates
+an analogous change in buffer size.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc5.2.4">
+5.2.4</a>&nbsp;&nbsp;Verbosity of expression</h3>
+
+<div class="p"><!----></div>
+
+<blockquote><em>He draweth out the thread of his verbosity finer than the staple
+of his argument.</em> -William Shakespeare, <em>Love's Labour's
+Lost</em>, 5:1
+
+<div class="p"><!----></div>
+</blockquote>Because the C programming language is a high level language, i.e.
+one level of abstraction higher than assembler, it seems verbose in
+comparison to <em>very</em> high level languages such as Ruby. This
+verbosity of expression necessitates increased effort to perform even
+the most basic of tasks. 
+
+<div class="p"><!----></div>
+For example, consider the expressions shown in figures <a href="#fig:verbosity ruby">5.2</a>
+and <a href="#fig:verbosity C">5.3</a>. Both determine whether all registers associated
+with a module, whose handle is stored in the <tt>some_module</tt>
+variable, presently have a logic value that is greater than one when
+accessed in integer form. The result of each expression is ultimately
+stored in the <tt>result</tt> variable. 
+
+<div class="p"><!----></div>
+Notice how the Ruby expression captures the intent of our task in
+a clear, concise manner. It seems to read out loud: "the result
+is whether some module has all registers <em>such that</em> each register
+has an integer value greater than one". In contrast, the C expression
+mechanically orchestrates our task, more so than reflecting our intent,
+in painstaking detail. It seems to drone: "assume result true;
+declare local variables; iterate over registers; read integer value;
+check integer value; adjust result; free iterator..." ad nauseam.
+
+<div class="p"><!----></div>
+
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+
+<div class="p"><!----></div>
+<a name="tth_fIg5.2">
+</a> 
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+result&nbsp;=&nbsp;some_module.all_reg?&nbsp;{&nbsp; - reg - &nbsp;reg.intVal&nbsp;&#62;&nbsp;1&nbsp;}
+</dd>
+</dl>
+
+<div class="p"><!----></div>
+<center>Figure 5.2: <a name="fig:verbosity ruby">
+</a>Ruby expression that determines whether
+all registers associated with a module presently have an integer value
+greater than one.</center>
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg5.3">
+</a> 
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+
+<pre>int&nbsp;result&nbsp;=&nbsp;1;&nbsp;/*&nbsp;true&nbsp;*/
+
+s_vpi_value&nbsp;wrapper;
+vpiHandle&nbsp;reg;
+vpiHandle&nbsp;iterator&nbsp;=&nbsp;vpi_iterate(&nbsp;vpiReg,&nbsp;some_module&nbsp;);
+
+while&nbsp;(reg&nbsp;=&nbsp;vpi_scan(&nbsp;iterator&nbsp;))&nbsp;{
+&nbsp;&nbsp;wrapper.format&nbsp;=&nbsp;vpiIntVal;
+&nbsp;&nbsp;vpi_get_value(&nbsp;reg,&nbsp;wrapper&nbsp;);
+
+&nbsp;&nbsp;if&nbsp;(wrapper.value.integer&nbsp;&lt;=&nbsp;1)&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;0;&nbsp;/*&nbsp;false&nbsp;*/
+&nbsp;&nbsp;&nbsp;&nbsp;vpi_free_object(&nbsp;iterator&nbsp;);
+&nbsp;&nbsp;&nbsp;&nbsp;break;
+&nbsp;&nbsp;}
+}
+
+</pre>
+</dd>
+</dl>
+
+<div class="p"><!----></div>
+<center>Figure 5.3: <a name="fig:verbosity C">
+</a>C expression that determines whether all
+registers associated with a module presently have an integer value
+greater than one.</center>
+
+<div class="p"><!----></div>
+</dd>
+</dl>     <h3><a name="tth_sEc5.2.5">
+5.2.5</a>&nbsp;&nbsp;Appeasing the simulator<a name="sub:Appeasing-the-simulator">
+</a></h3>
+
+<div class="p"><!----></div>
+Not all Verilog simulators adhere to the VPI specification. For instance,
+whereas [<a href="#ICS06" name="CITEICS06">18</a>,page 522] defines user-defined system tasks
+and functions as having the form: 
+
+<div class="p"><!----></div>
+
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+PLI_INT32&nbsp;foo&nbsp;(&nbsp;PLI_BYTE8*&nbsp;);
+</dd>
+</dl>
+Synopsys VCS, one of the two most prominent Verilog simulators in
+use today [<a href="#eda giants" name="CITEeda giants">12</a>], ignores them unless they are written
+in the form:
+
+<div class="p"><!----></div>
+
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+void&nbsp;foo&nbsp;(&nbsp;void&nbsp;);
+</dd>
+</dl>
+Therefore, in order to maintain portability across different Verilog
+simulators, one must appease them conditionally through the <tt>#ifdef</tt>
+directive of the C preprocessor.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc5.3">
+5.3</a>&nbsp;&nbsp;Organization</h2>
+
+<div class="p"><!----></div>
+Being an agile programming language, Ruby naturally facilitates agile
+software development practices such as TDD and BDD. Furthermore, since
+Ruby-VPI augments Ruby with the IEEE 1364-2005 Verilog VPI, it extends
+the reach of these agile <em>software</em> development practices to
+the otherwise unreachable realm of <em>hardware</em> development. 
+
+<div class="p"><!----></div>
+To better facilitate the application of agile practices to hardware
+development, Ruby-VPI follows the <b>convention over configuration</b>
+[<a href="#rails book" name="CITErails book">40</a>] philosophy with respect to the organization and
+performance of functional verification. This philosophy promotes the
+provision of "sensible defaults" [<a href="#rails book" name="CITErails book">40</a>,page 37],
+which allow specifications to be "written using little or no external
+configuration-things just knit themselves together in a natural
+way" [<a href="#rails book" name="CITErails book">40</a>,page 37].
+
+<div class="p"><!----></div>
+The following subsections discuss the conventions posed by Ruby-VPI.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc5.3.1">
+5.3.1</a>&nbsp;&nbsp;Tests<a name="sub:Tests">
+</a></h3>
+
+<div class="p"><!----></div>
+In Ruby-VPI, the process of functional verification is neatly packaged
+into self-contained, executable <b>tests</b>. As figure <a href="#fig:Organization">5.1</a>
+illustrates, a test is composed of a <b>bench</b>, a <b>design</b>,
+and a <b>specification</b>.
+
+<div class="p"><!----></div>
+The bench defines the environment in which functional verification
+takes place. It is analogous to a workbench in an electronics laboratory
+that is furnished with tools of measurement and manipulation such
+as oscilloscopes, voltmeters, soldering irons, and so on. These tools
+enable engineers to verify electronic components and locate the source
+of defects within those components. 
+
+<div class="p"><!----></div>
+The design is an instantiated Verilog module. To extend the analogy
+of the electronics laboratory, it corresponds to the electronic component
+that is verified by an engineer. 
+
+<div class="p"><!----></div>
+The specification is a Ruby program. In the electronics laboratory
+analogy, it corresponds to the engineer who inspects, manipulates,
+and verifies the electronic component. In terms of specification-driven
+functional verification, it corresponds to the executable specification.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc5.3.1.1">
+5.3.1.1</a>&nbsp;&nbsp;Automated test generation</h4>
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg5.4">
+</a> 
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+
+<pre>$&nbsp;generate_test.rb&nbsp;foo.v&nbsp;--name&nbsp;bar
+
+&nbsp;&nbsp;module&nbsp;&nbsp;foo
+&nbsp;&nbsp;create&nbsp;&nbsp;foo_bar_runner.rake
+&nbsp;&nbsp;create&nbsp;&nbsp;foo_bar_bench.v
+&nbsp;&nbsp;create&nbsp;&nbsp;foo_bar_bench.rb
+&nbsp;&nbsp;create&nbsp;&nbsp;foo_bar_design.rb
+&nbsp;&nbsp;create&nbsp;&nbsp;foo_bar_proto.rb
+&nbsp;&nbsp;create&nbsp;&nbsp;foo_bar_spec.rb
+
+</pre>
+</dd>
+</dl>
+
+<div class="p"><!----></div>
+<center>Figure 5.4: <a name="fig:Using-the-automated">
+</a>Using the automated test generator.</center>
+
+<div class="p"><!----></div>
+Ruby-VPI provides a tool, known as the <b>automated test generator</b>,
+which generates tests from Verilog module declarations (see figure
+<a href="#fig:Using-the-automated">5.4</a>) that adhere to the syntax defined
+by [<a href="#1364-2001" name="CITE1364-2001">17</a>,pages 762-763] or [<a href="#ICS06" name="CITEICS06">18</a>,page 487]. A
+generated test is composed of the following files:
+
+<div class="p"><!----></div>
+
+<dl compact="compact">
+ <dt><b>runner.rake</b></dt>
+	<dd> runs the test by executing a Verilog simulator with
+Ruby-VPI.</dd>
+ <dt><b>bench.v</b></dt>
+	<dd> instantiates the Verilog module being verified.</dd>
+ <dt><b>bench.rb</b></dt>
+	<dd> bootstraps the test by loading the design, prototype,
+and specification.</dd>
+ <dt><b>design.rb</b></dt>
+	<dd> provides a Ruby interface to the Verilog module being
+verified.</dd>
+ <dt><b>proto.rb</b></dt>
+	<dd> defines a Ruby prototype of the Verilog module being
+verified.</dd>
+ <dt><b>spec.rb</b></dt>
+	<dd> the executable specification for the Verilog module being
+verified.</dd>
+</dl>
+As figure <a href="#fig:Using-the-automated">5.4</a> shows, the name of each generated
+file is prefixed with (1) the name of the Verilog module for which
+the test was generated and (2) a user-defined identifier for the test.
+This convention helps organize tests within the file system, so that
+they are readily distinguishable from one another.
+
+<div class="p"><!----></div>
+By producing multiple files, the automated test generator physically
+decouples the various parts of a test. As a result, when the interface
+of a Verilog module changes, you can simply regenerate the test to
+incorporate those changes without diverting your focus from the task
+at hand. Furthermore, the incorporation of changes can be catalyzed
+by interactive text merging tools, which allow you to selectively
+accept or reject the merging of changes into your source code. Fully
+automated text merging tools may also be used for this purpose.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc5.3.2">
+5.3.2</a>&nbsp;&nbsp;Interface to VPI</h3>
+
+<div class="p"><!----></div>
+Ruby-VPI makes the entire IEEE Std 1364-2005 VPI interface available
+to Ruby, but with the following minor differences.
+
+<div class="p"><!----></div>
+
+<b>Names are capitalized&nbsp;&nbsp;</b>
+
+<div class="p"><!----></div>
+The names of all VPI types, structures, and constants become capitalized
+because Ruby requires that the names of constants begin with a capital
+letter. For example, the <tt>s_vpi_value</tt> structure becomes
+the <tt>S_vpi_value</tt> class in Ruby. Likewise, the <tt>vpiIntVal</tt>
+constant becomes the <tt>VpiIntVal</tt> constant in Ruby.
+
+<div class="p"><!----></div>
+However, Ruby's capitalization rule does not apply to VPI functions;
+their names appear in Ruby just as they do in C.
+
+<div class="p"><!----></div>
+
+<b>Use Ruby's <tt>printf</tt>&nbsp;&nbsp;</b>
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg5.5">
+</a> 
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+
+<pre>#include&nbsp;&lt;stdarg.h&#62;
+void&nbsp;foo(va_list&nbsp;ap)&nbsp;{
+&nbsp;&nbsp;va_list&nbsp;*p&nbsp;=&nbsp;&amp;ap;
+}
+
+</pre>
+</dd>
+</dl>
+
+<div class="p"><!----></div>
+<center>Figure 5.5: C program that causes a "type mismatch" error in some compilers.<a name="fig:type mismatch">
+</a></center>
+
+<div class="p"><!----></div>
+The VPI functions <tt>vpi_vprintf</tt> and <tt>vpi_mcd_vprintf</tt>
+are not made accessible to Ruby because some C compilers have trouble
+with pointers to the <tt>va_list</tt> storage type. For example,
+these compilers emit a <em>type mismatch</em> error upon encountering
+the third line of the source code shown in figure <a href="#fig:type mismatch">5.5</a>.
+For this reason, you are advised to use Ruby's <tt>printf</tt> method,
+which is functionally equivalent to its C counterpart, instead.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc5.3.2.1">
+5.3.2.1</a>&nbsp;&nbsp;Handles</h4>
+
+<div class="p"><!----></div>
+A <b>handle</b> is a reference to an object-such as a module,
+register, wire, and so on-inside the Verilog simulation. Handles
+allows you to inspect and manipulate the design under verification
+and its internal components. They are instances of the <tt>Vpi::Handle</tt>
+class in Ruby-VPI.
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg5.6">
+</a> 
+<table border="1">
+<tr><td align="center">Accessor</td><td align="center">Kind of value accessed</td><td align="center">VPI functions used to access the value</td></tr>
+<tr><td></td></tr>
+<tr><td align="center">d</td><td align="center">delay</td><td align="center"><tt>vpi_get_delays</tt> and <tt>vpi_put_delays</tt></td></tr>
+
+<tr><td align="center">l</td><td align="center">logic</td><td align="center"><tt>vpi_get_value</tt> and <tt>vpi_put_value</tt></td></tr>
+
+<tr><td align="center">i</td><td align="center">integer</td><td align="center"><tt>vpi_get</tt></td></tr>
+
+<tr><td align="center">b</td><td align="center">boolean</td><td align="center"><tt>vpi_get</tt></td></tr>
+
+<tr><td align="center">s</td><td align="center">string</td><td align="center"><tt>vpi_get_str  </tt></td></tr>
+
+<tr><td align="center">h</td><td align="center">handle</td><td align="center"><tt>vpi_handle</tt></td></tr>
+</table>
+
+<div class="p"><!----></div>
+<center>Figure 5.6: <a name="tab:Accessors-and-their">
+</a>Accessors and their implications.</center>
+
+<div class="p"><!----></div>
+Handles have various <b>properties</b>, listed in the second column
+of table <a href="#tab:Accessors-and-their">5.6</a>, which provide different kinds
+of information about the underlying Verilog objects they represent.
+These properties are accessed through the VPI functions listed in
+the last column of said table.
+
+<div class="p"><!----></div>
+Handles are typically obtained through the <tt>vpi_handle_by_name</tt>
+and <tt>vpi_handle</tt> functions. These functions are hierarchical
+in nature, as they allow you to obtain new handles that are related
+to existing ones. For example, to obtain a handle to a register contained
+within a module, one would typically write: 
+
+<div class="p"><!----></div>
+
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+some_reg&nbsp;=&nbsp;vpi_handle(&nbsp;VpiReg,&nbsp;some_handle&nbsp;)
+</dd>
+</dl>
+
+<div class="p"><!----></div>
+
+<b>Shortcuts for productivity&nbsp;&nbsp;</b>
+
+<div class="p"><!----></div>
+Given a handle, Ruby-VPI allows you to access (1) its relatives and
+(2) its properties simply by invoking methods on the handle. If a
+handle's relative happens to have the same name as one its properties,
+then the relative is given priority because a handle's properties
+can always be accessed explicitly through the <tt>handle.get_value</tt>
+and <tt>handle.put_value</tt> methods.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc5.3.2.2">
+5.3.2.2</a>&nbsp;&nbsp;Accessing a handle's relatives</h4>
+
+<div class="p"><!----></div>
+Imagine that the design under verification, say <em>foo</em>, instantiated
+a Verilog module named <em>bar</em>, which in turn contained a register
+named <em>baz</em>. To access <em>baz</em> from Ruby, one could employ
+VPI idioms by writing:
+
+<div class="p"><!----></div>
+
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+foo&nbsp;=&nbsp;vpi_handle_by_name(&nbsp;"foo",&nbsp;nil&nbsp;)
+
+<div class="p"><!----></div>
+bar&nbsp;=&nbsp;vpi_handle_by_name(&nbsp;"bar",&nbsp;foo&nbsp;)
+
+<div class="p"><!----></div>
+baz&nbsp;=&nbsp;vpi_handle_by_name(&nbsp;"baz",&nbsp;bar&nbsp;)
+</dd>
+</dl>
+or by writing:
+
+<div class="p"><!----></div>
+
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+baz&nbsp;=&nbsp;vpi_handle_by_name(&nbsp;"foo.bar.bar",&nbsp;nil&nbsp;)
+</dd>
+</dl>
+These idioms seem excessively verbose in a higher level language such
+as Ruby, so Ruby-VPI allows you to access a handle's relative by simply
+invoking the relative's name as a method on the handle:
+
+<div class="p"><!----></div>
+
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+foo.bar.baz
+</dd>
+</dl>
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc5.3.2.3">
+5.3.2.3</a>&nbsp;&nbsp;Accessing a handle's properties</h4>
+
+<div class="p"><!----></div>
+Imagine that the design under test, say <em>foo</em>, contained a register
+named <em>bar</em>. To access the integer value of <em>bar</em> in Ruby-VPI,
+one could employ VPI idioms by writing:
+
+<div class="p"><!----></div>
+
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+wrapper&nbsp;=&nbsp;S_vpi_value.new
+
+<div class="p"><!----></div>
+wrapper.format&nbsp;=&nbsp;VpiIntVal
+
+<div class="p"><!----></div>
+vpi_get_value(&nbsp;foo.bar,&nbsp;wrapper&nbsp;)
+
+<div class="p"><!----></div>
+result&nbsp;=&nbsp;wrapper.value.integer
+</dd>
+</dl>
+or, if <em>bar</em> is capable of storing more than 32 bits, one would
+convert a string representation of <em>bar</em>'s integer value into
+a limitless<a href="#tthFtNtAAC" name="tthFrefAAC"><sup>2</sup></a> Ruby integer by writing:
+
+<div class="p"><!----></div>
+
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+wrapper&nbsp;=&nbsp;S_vpi_value.new
+
+<div class="p"><!----></div>
+wrapper.format&nbsp;=&nbsp;VpiHexStrVal
+
+<div class="p"><!----></div>
+vpi_get_value(&nbsp;foo.bar,&nbsp;wrapper&nbsp;)
+
+<div class="p"><!----></div>
+result&nbsp;=&nbsp;wrapper.value.str.to_i(&nbsp;16&nbsp;)
+</dd>
+</dl>
+These idioms seem excessively verbose in a higher level language such
+as Ruby, so Ruby-VPI allows you to access a handle's properties by
+simply invoking property names, using the special naming format shown
+in figure <a href="#fig:Method-naming-format">5.7</a>, as methods on the handle:
+
+<div class="p"><!----></div>
+
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+result&nbsp;=&nbsp;foo.bar.intVal
+</dd>
+</dl>
+
+<div class="p"><!----></div>
+<a name="tth_fIg5.7">
+</a> 
+<table border="1">
+<tr><td align="center">Operation</td><td align="center">_</td><td align="center">Property</td><td align="center">_</td><td align="center">Accessor</td><td align="center">Addendum</td></tr>
+<tr><td></td></tr>
+<tr><td colspan="2" align="center">optional</td><td colspan="2" align="center">required</td><td colspan="2" align="center">optional</td></tr>
+</table>
+
+<div class="p"><!----></div>
+<center>Figure 5.7: <a name="fig:Method-naming-format">
+</a>Method naming format for accessing
+a handle's properties.</center>
+
+<div class="p"><!----></div>
+
+<dl compact="compact">
+ <dt><b>Operation</b></dt>
+	<dd> specifies a method that should be invoked within the
+context of the <em>Property</em> parameter. All methods in Ruby's <tt>Enumerable</tt>
+module are valid operations.</dd>
+ <dt><b>Property</b></dt>
+	<dd> suggests a VPI property that should be accessed. The
+<tt>vpi</tt> prefix, which is common to all VPI properties, can be
+omitted if you wish. For example, the VPI property <tt>vpiFullName</tt>
+is considered equivalent to <tt>fullName</tt> and <tt>FullName</tt>,
+but not equivalent to <tt>full_name</tt>.</dd>
+ <dt><b>Accessor</b></dt>
+	<dd> suggests a VPI function that should be used in order
+to access the VPI property. When this parameter is not specified,
+Ruby-VPI will attempt to guess its value. Table <a href="#tab:Accessors-and-their">5.6</a>
+shows a list of valid accessors and how they influence the means by
+which a property is accessed.</dd>
+ <dt><b>Addendum</b></dt>
+	<dd> suggests that the specified VPI property should be written
+to, when the value of this parameter is an equal sign (=). <br />
+<br />
+In addition, when the value of this parameter is a question mark (?),
+it suggests that the specified VPI property should be accessed as
+a <em>boolean value</em>. This suggestion is the same as specifying
+<tt>b</tt> for the <b>Accessor</b> parameter.</dd>
+</dl>
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+
+<b>Examples&nbsp;&nbsp;</b>
+
+<div class="p"><!----></div>
+To better understand the method naming format shown in figure <a href="#fig:Method-naming-format">5.7</a>,
+consider the following examples. Each example lists a set of equivalent
+Ruby expressions which access the value of a handle's property and,
+in some cases, perform an operation with that value.
+
+<div class="p"><!----></div>
+
+<ul>
+<li> Obtain the <em>logic value</em> of the handle's <tt>VpiIntVal</tt> property.
+<div class="p"><!----></div>
+</li>
+</ul>
+
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+handle.vpiIntVal
+
+<div class="p"><!----></div>
+handle.vpiIntVal_l
+
+<div class="p"><!----></div>
+handle.intVal
+
+<div class="p"><!----></div>
+handle.intVal_l
+</dd>
+</dl>
+
+<ul>
+<li> Set the <em>logic value</em> of the handle's <tt>VpiIntVal</tt> property
+to the integer 2<sup>2048</sup>.
+<div class="p"><!----></div>
+</li>
+</ul>
+
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+handle.vpiIntVal&nbsp;&nbsp;&nbsp;=&nbsp;2&nbsp;**&nbsp;2048
+
+<div class="p"><!----></div>
+handle.vpiIntVal_l&nbsp;=&nbsp;2&nbsp;**&nbsp;2048
+
+<div class="p"><!----></div>
+handle.intVal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;2&nbsp;**&nbsp;2048
+
+<div class="p"><!----></div>
+handle.intVal_l&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;2&nbsp;**&nbsp;2048
+</dd>
+</dl>
+
+<ul>
+<li> Obtain the <em>integer value</em> of the handle's <tt>VpiType</tt> property.
+<div class="p"><!----></div>
+</li>
+</ul>
+
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+handle.vpiType
+
+<div class="p"><!----></div>
+handle.vpiType_i
+
+<div class="p"><!----></div>
+handle.type
+
+<div class="p"><!----></div>
+handle.type_i
+</dd>
+</dl>
+
+<ul>
+<li> Obtain the <em>boolean value</em> of the handle's <tt>VpiProtected</tt>
+property.
+<div class="p"><!----></div>
+</li>
+</ul>
+
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+handle.vpiProtected
+
+<div class="p"><!----></div>
+handle.vpiProtected_b
+
+<div class="p"><!----></div>
+handle.vpiProtected?
+
+<div class="p"><!----></div>
+handle.protected
+
+<div class="p"><!----></div>
+handle.protected_b
+
+<div class="p"><!----></div>
+handle.protected?
+</dd>
+</dl>
+
+<ul>
+<li> Obtain the <em>string value</em> of the handle's <tt>VpiFullName</tt>
+property.
+<div class="p"><!----></div>
+</li>
+</ul>
+
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+handle.vpiFullName
+
+<div class="p"><!----></div>
+handle.vpiFullName_s
+
+<div class="p"><!----></div>
+handle.fullName
+
+<div class="p"><!----></div>
+handle.fullName_s
+</dd>
+</dl>
+
+<ul>
+<li> Obtain the <em>handle value</em> of the handle's <tt>VpiParent</tt>
+property.
+<div class="p"><!----></div>
+</li>
+</ul>
+
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+handle.vpiParent
+
+<div class="p"><!----></div>
+handle.vpiParent_h
+
+<div class="p"><!----></div>
+handle.parent
+
+<div class="p"><!----></div>
+handle.parent_h&nbsp;
+</dd>
+</dl>
+
+<ul>
+<li> Use the <tt>each</tt> operation to print the full name of each <em>net</em>
+object associated with the handle.
+<div class="p"><!----></div>
+</li>
+</ul>
+
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+handle.each_vpiNet&nbsp;&nbsp;{&nbsp; - net - &nbsp;puts&nbsp;net.fullName&nbsp;}
+
+<div class="p"><!----></div>
+handle.each_net&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp; - net - &nbsp;puts&nbsp;net.fullName&nbsp;}
+
+<div class="p"><!----></div>
+handle.each(VpiNet)&nbsp;{&nbsp; - net - &nbsp;puts&nbsp;net.fullName&nbsp;}
+
+<div class="p"><!----></div>
+handle[VpiNet].each&nbsp;{&nbsp; - net - &nbsp;puts&nbsp;net.fullName&nbsp;}
+</dd>
+</dl>
+
+<ul>
+<li> Use the <tt>all?</tt> operation to check whether all <em>register</em>
+objects associated with the handle are capable of storing exactly
+one bit of information.
+<div class="p"><!----></div>
+</li>
+</ul>
+
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+handle.all_vpiReg?&nbsp;&nbsp;{&nbsp; - reg - &nbsp;reg.size&nbsp;==&nbsp;1&nbsp;}
+
+<div class="p"><!----></div>
+handle.all_reg?&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp; - reg - &nbsp;reg.size&nbsp;==&nbsp;1&nbsp;}
+
+<div class="p"><!----></div>
+handle.all?(VpiReg)&nbsp;{&nbsp; - reg - &nbsp;reg.size&nbsp;==&nbsp;1&nbsp;}
+
+<div class="p"><!----></div>
+handle[VpiReg].all?&nbsp;{&nbsp; - reg - &nbsp;reg.size&nbsp;==&nbsp;1&nbsp;}
+</dd>
+</dl>
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc5.3.3">
+5.3.3</a>&nbsp;&nbsp;Interaction with Verilog</h3>
+
+<div class="p"><!----></div>
+A specification simulates the Verilog design by invoking the <tt>Vpi::simulate</tt>
+method. This method is vaguely named because its semantics depend
+on the particular design being verified. The task of defining those
+semantics is given to the <tt>bench.rb</tt> file since it is responsible
+for defining the environment for functional verification. It achieves
+this task by passing a block of code to the <tt>RubyVpi::init_bench</tt>
+method, which then executes that block whenever <tt>Vpi::simulate</tt>
+is invoked.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc5.4">
+5.4</a>&nbsp;&nbsp;Mechanics</h2>
+
+<div class="p"><!----></div>
+Ruby-VPI employs the technique discussed in section <a href="#sec:Proposed-approach">3.1.1</a>
+to enable specification-driven functional verification. However, the
+details differ slightly because in Ruby-VPI, executable specifications
+are written in Ruby rather than in C. These differences are discussed
+in the following subsections.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc5.4.1">
+5.4.1</a>&nbsp;&nbsp;Execution of a test</h3>
+
+<div class="p"><!----></div>
+When a test runner runs a test (see section <a href="#sub:Tests">5.3.1</a>), it
+invokes a Verilog simulator along with a precompiled shared-object
+file provided by Ruby-VPI. This file contains a particular definition
+of the <tt>vlog_startup_routines</tt> array that schedules a callback
+to be executed just before the start of the simulation.
+
+<div class="p"><!----></div>
+Upon execution, this callback starts a Ruby interpreter within a POSIX
+thread. The interpreter begins processing the test's <tt>bench.rb</tt>
+file, which loads the remaining Ruby source files that belong to the
+test and then initiates execution of the specification. Once the specification
+functionally verifies the Verilog design, the Ruby interpreter, its
+containing POSIX thread, and the Verilog simulator exit in succession.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc5.4.2">
+5.4.2</a>&nbsp;&nbsp;Transfer of control</h3>
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg5.8">
+</a> <img src="masters_thesis_fig_ruby_relay.png" alt="masters_thesis_fig_ruby_relay.png" />
+<div class="p"><!----></div>
+<center>Figure 5.8: <a name="fig:ruby relay">
+</a>Primary means of control transfer from Ruby
+to Verilog. This diagram should be read from left to right, according
+to the following sequence of events:</center>
+
+<div class="p"><!----></div>
+
+<ol type="1">
+<li> The specification has control.
+<div class="p"><!----></div>
+</li>
+
+<li> The current simulation time is x.
+<div class="p"><!----></div>
+</li>
+
+<li> The specification invokes the <tt>Vpi::advance_time</tt> method with
+parameter y, which specifies the number of simulation time steps
+to be simulated. This method temporarily transfers control from Ruby
+to the Verilog simulator.
+<div class="p"><!----></div>
+</li>
+
+<li> The Verilog simulator has control.
+<div class="p"><!----></div>
+</li>
+
+<li> The current simulation time is still x.
+<div class="p"><!----></div>
+</li>
+
+<li> The Verilog simulator simulates y simulation time steps.
+<div class="p"><!----></div>
+</li>
+
+<li> The current simulation time is now x+y.
+<div class="p"><!----></div>
+</li>
+
+<li> The Verilog simulator returns control back to the specification.
+<div class="p"><!----></div>
+</li>
+</ol>
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+The primary means of control transfer from the Ruby interpreter to
+the Verilog simulator is the <tt>Vpi::advance_time</tt> method shown
+in figure <a href="#fig:ruby relay">5.8</a>.
+
+<div class="p"><!----></div>
+The secondary means of control transfer is the callback. Callbacks
+are scheduled in Ruby in much the same way as they are in C. The only
+difference is that instead of storing the address of a C function
+in the <tt>cb_rtn</tt> field of the <tt>s_cb_data</tt> structure-as
+you would do in C-you pass a block of code to the <tt>vpi_register_cb</tt>
+method in Ruby. This block will then be executed whenever the callback
+occurs.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc5.4.3">
+5.4.3</a>&nbsp;&nbsp;Seamless prototyping</h3>
+
+<div class="p"><!----></div>
+Ruby-VPI enables rapid prototyping where one can model the behavior
+of Verilog designs purely in Ruby. This process is wholly transparent:
+there is absolutely no difference, in terms of the executable specification's
+implementation, between the functional verification of a real Verilog
+design or its Ruby prototype. Furthermore, prototypes exhibit their
+artificial behavior using nothing more than the VPI itself.
+
+<div class="p"><!----></div>
+For example, compare the Verilog design shown in figure <a href="#fig:counter.v full">5.16</a>
+with its Ruby prototype shown in figure <a href="#fig:proto.rb">5.15</a>. The prototype
+uses only VPI to (1) detect changes in its inputs and (2) manipulate
+its outputs accordingly. In addition, notice how well the prototype's
+syntax reflects the intended behavior of the Verilog design. This
+similarity facilitates rapid translation of a prototype from Ruby
+into Verilog later in the design process.
+
+<div class="p"><!----></div>
+
+<b>Activation&nbsp;&nbsp;</b>
+
+<div class="p"><!----></div>
+ Prototyping is enabled by setting the <tt>PROTOTYPE</tt> environment
+variable to a non-empty value, as demonstrated in figures <a href="#fig:verify proto rspec">5.17</a>
+and <a href="#fig:verify proto xunit">5.18</a>. Likewise, it is disabled by either
+(1) setting the <tt>PROTOTYPE</tt> environment variable to an <em>empty</em>
+value or (2) un-setting the variable altogether.
+
+<div class="p"><!----></div>
+
+<b>Mechanism&nbsp;&nbsp;</b>
+
+<div class="p"><!----></div>
+The <tt>Vpi::advance_time</tt> method normally transfers control
+to the Verilog simulator. However, when prototyping is enabled, it
+invokes the <tt>simulate!</tt> method, which is defined in a test's
+<tt>proto.rb</tt> file, instead. This method artificially simulates
+the behavior of the real Verilog design.
+
+<div class="p"><!----></div>
+In this manner, control is kept within the Ruby interpreter when prototyping
+is enabled. An advantage of this approach is that it reduces the total
+execution time<a href="#tthFtNtAAD" name="tthFrefAAD"><sup>3</sup></a> of a Ruby-VPI test by allowing Ruby's POSIX thread to commandeer
+the Verilog simulator's process. A disadvantage of this approach is
+that callbacks, which require the transfer of control to the Verilog
+simulator, must be ignored. 
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc5.5">
+5.5</a>&nbsp;&nbsp;Usage</h2>
+
+<div class="p"><!----></div>
+This section presents a guide that illustrates how Ruby-VPI is commonly
+used. This guide is composed of the following steps, which are discussed
+in more detail in subsequent sections.
+
+<div class="p"><!----></div>
+
+<ol type="1">
+<li> Start with a design you want to verify.
+<div class="p"><!----></div>
+</li>
+
+<li> Generate a test for your design using the automated test generator.
+<div class="p"><!----></div>
+</li>
+
+<li> Identify your expectations about the design.
+<div class="p"><!----></div>
+</li>
+
+<li> Add your expectations to the executable specification.
+<div class="p"><!----></div>
+</li>
+
+<li> Run the test to functionally verify your design.
+<div class="p"><!----></div>
+</li>
+
+<li> Change your design's source code so that it satisfies any failed expectations.
+<div class="p"><!----></div>
+</li>
+
+<li> Repeat steps 3-6 as necessary.
+<div class="p"><!----></div>
+</li>
+</ol>
+This sequence of steps lends itself to the iterative style of development,
+emphasized in the agile practices of TDD and BDD, because it can be
+performed iteratively as follows:
+
+<div class="p"><!----></div>
+
+<ol type="1">
+<li> Choose <em>one</em> expectation to verify.
+<div class="p"><!----></div>
+</li>
+
+<li> Add the expectation to the executable specification.
+<div class="p"><!----></div>
+</li>
+
+<li> Verify the design against the executable specification.
+<div class="p"><!----></div>
+</li>
+
+<li> Change the design's source code so that it satisfies any failed expectations.
+<div class="p"><!----></div>
+</li>
+
+<li> Repeat steps 1-4 until you are satisfied.
+<div class="p"><!----></div>
+</li>
+</ol>
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc5.5.1">
+5.5.1</a>&nbsp;&nbsp;Start with a design</h3>
+
+<div class="p"><!----></div>
+First, we need a design to functionally verify. In this guide, the
+Verilog module shown in figure <a href="#fig:counter.v">5.9</a> will serve as
+our design. 
+<div class="p"><!----></div>
+<a name="tth_fIg5.9">
+</a> 
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+
+<pre>module&nbsp;counter&nbsp;#(parameter&nbsp;Size&nbsp;=&nbsp;5)&nbsp;(
+&nbsp;&nbsp;input&nbsp;clock,
+&nbsp;&nbsp;input&nbsp;reset,
+&nbsp;&nbsp;output&nbsp;reg&nbsp;[Size&nbsp;-&nbsp;1&nbsp;:&nbsp;0]&nbsp;count
+);
+endmodule
+
+</pre>
+</dd>
+</dl>
+
+<div class="p"><!----></div>
+<center>Figure 5.9: Declaration of a simple up-counter with synchronous reset.<a name="fig:counter.v">
+</a></center>
+
+<div class="p"><!----></div>
+ Its interface is composed of the following parts:
+
+<div class="p"><!----></div>
+
+<ul>
+<li> <tt>Size</tt> defines the number of bits used to represent the counter's
+value.
+<div class="p"><!----></div>
+</li>
+
+<li> Positive edges of the <tt>clock</tt> signal cause the <tt>count</tt>
+register to increment.
+<div class="p"><!----></div>
+</li>
+
+<li> Assertion of <tt>reset</tt> causes the <tt>count</tt> register to
+become zero.
+<div class="p"><!----></div>
+</li>
+
+<li> <tt>count</tt> is a register that contains the counter's value.
+<div class="p"><!----></div>
+</li>
+</ul>
+Before we continue, save the source code shown in figure <a href="#fig:counter.v">5.9</a>
+into a file named <tt>counter.v</tt>.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc5.5.2">
+5.5.2</a>&nbsp;&nbsp;Generate a test</h3>
+
+<div class="p"><!----></div>
+Now that we have a design to verify, let us generate a test for it
+using the automated test generator. This tool allows us to implement
+our specification in either RSpec, xUnit, or our very own format:
+
+<div class="p"><!----></div>
+
+<ul>
+<li> RSpec [<a href="#rSpec" name="CITErSpec">29</a>,<a href="#DA06" name="CITEDA06">2</a>] is a framework that enables BDD (see section
+<a href="#sub:Behavior-driven-development">A.4.2</a>) in Ruby.
+<div class="p"><!----></div>
+</li>
+
+<li> xUnit refers to an entire family of frameworks that enable TDD (see
+section <a href="#sub:Test-driven-development">A.4.1</a>) in various programming
+languages [<a href="#xUnit" name="CITExUnit">14</a>]. Ruby ships with an implementation of xUnit,
+known as <tt>Test::Unit</tt>, in its standard library [<a href="#pickaxe2" name="CITEpickaxe2">39</a>,page 144].
+<div class="p"><!----></div>
+</li>
+
+<li> Our own format gives us the freedom to implement our specification
+in any way we please. As a result, there are too many possibilities
+to enumerate within the length of this discussion. So we shall consider
+only RSpec and xUnit henceforth, for brevity.
+<div class="p"><!----></div>
+</li>
+</ul>
+Once we have decided how we want to implement our specification, we
+can proceed to generate a test for our design. This process is illustrated
+by figures <a href="#fig:counter_rspec generate">5.10</a> and <a href="#fig:counter_xunit generate">5.11</a>.
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg5.10">
+</a> 
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+
+<pre>$&nbsp;generate_test.rb&nbsp;counter.v&nbsp;--rspec&nbsp;--name&nbsp;rspec
+
+&nbsp;&nbsp;module&nbsp;&nbsp;counter
+&nbsp;&nbsp;create&nbsp;&nbsp;counter_rspec_runner.rake
+&nbsp;&nbsp;create&nbsp;&nbsp;counter_rspec_bench.v
+&nbsp;&nbsp;create&nbsp;&nbsp;counter_rspec_bench.rb
+&nbsp;&nbsp;create&nbsp;&nbsp;counter_rspec_design.rb
+&nbsp;&nbsp;create&nbsp;&nbsp;counter_rspec_proto.rb
+&nbsp;&nbsp;create&nbsp;&nbsp;counter_rspec_spec.rb
+
+</pre>
+</dd>
+</dl>
+
+<div class="p"><!----></div>
+<center>Figure 5.10: Generating a test with specification in RSpec format.<a name="fig:counter_rspec generate">
+</a></center>
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg5.11">
+</a> 
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+
+<pre>$&nbsp;generate_test.rb&nbsp;counter.v&nbsp;--xunit&nbsp;--name&nbsp;xunit
+
+&nbsp;&nbsp;module&nbsp;&nbsp;counter
+&nbsp;&nbsp;create&nbsp;&nbsp;counter_xunit_runner.rake
+&nbsp;&nbsp;create&nbsp;&nbsp;counter_xunit_bench.v
+&nbsp;&nbsp;create&nbsp;&nbsp;counter_xunit_bench.rb
+&nbsp;&nbsp;create&nbsp;&nbsp;counter_xunit_design.rb
+&nbsp;&nbsp;create&nbsp;&nbsp;counter_xunit_proto.rb
+&nbsp;&nbsp;create&nbsp;&nbsp;counter_xunit_spec.rb
+
+</pre>
+</dd>
+</dl>
+
+<div class="p"><!----></div>
+<center>Figure 5.11: Generating a test with specification in xUnit format.<a name="fig:counter_xunit generate">
+</a></center>
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc5.5.3">
+5.5.3</a>&nbsp;&nbsp;Specify your expectations<a name="sub:Specify-your-expectations">
+</a></h3>
+
+<div class="p"><!----></div>
+So far, the test generation tool has created a basic foundation for
+our test. Now we must build upon this foundation by identifying our
+expectation of the design. That is, how do we expect the design to
+<em>behave</em> under certain conditions? 
+
+<div class="p"><!----></div>
+Here are some reasonable expectations for our simple counter:
+
+<div class="p"><!----></div>
+
+<ul>
+<li> A resetted counter's value should be zero.
+<div class="p"><!----></div>
+</li>
+
+<li> A resetted counter's value should increment upon rising clock edges.
+<div class="p"><!----></div>
+</li>
+
+<li> A counter with the maximum value should overflow upon increment.
+<div class="p"><!----></div>
+</li>
+</ul>
+Now that we have identified a set of expectations for our design,
+we are ready to implement them in our specification. Figures <a href="#fig:spec.rb rspec">5.12</a>
+and <a href="#fig:spec.rb xunit">5.13</a> show how our expectations would appear
+after being implemented in the RSpec and xUnit specification formats
+respectively. Notice the striking similarity between these specifications:
+they differ in syntax but appear identical otherwise.
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg5.12">
+</a> 
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+
+<pre>#&nbsp;tight&nbsp;upper&nbsp;bound&nbsp;for&nbsp;counter's&nbsp;value
+LIMIT&nbsp;=&nbsp;2&nbsp;**&nbsp;Counter.Size.intVal
+
+#&nbsp;maximum&nbsp;allowed&nbsp;value&nbsp;for&nbsp;a&nbsp;counter
+MAX&nbsp;=&nbsp;LIMIT&nbsp;-&nbsp;1
+
+context&nbsp;"A&nbsp;resetted&nbsp;counter's&nbsp;value"&nbsp;do
+&nbsp;&nbsp;setup&nbsp;do
+&nbsp;&nbsp;&nbsp;&nbsp;Counter.reset!
+&nbsp;&nbsp;end
+
+&nbsp;&nbsp;specify&nbsp;"should&nbsp;be&nbsp;zero"&nbsp;do
+&nbsp;&nbsp;&nbsp;&nbsp;Counter.count.intVal.should&nbsp;==&nbsp;0
+&nbsp;&nbsp;end
+
+&nbsp;&nbsp;specify&nbsp;"should&nbsp;increment&nbsp;upon&nbsp;rising&nbsp;clock&nbsp;edges"&nbsp;do
+&nbsp;&nbsp;&nbsp;&nbsp;LIMIT.times&nbsp;do&nbsp;|i|
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Counter.count.intVal.should&nbsp;==&nbsp;i
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;simulate&nbsp;#&nbsp;increment&nbsp;the&nbsp;counter
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;end
+end
+
+context&nbsp;"A&nbsp;counter&nbsp;with&nbsp;the&nbsp;maximum&nbsp;value"&nbsp;do
+&nbsp;&nbsp;setup&nbsp;do
+&nbsp;&nbsp;&nbsp;&nbsp;Counter.reset!
+
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;increment&nbsp;the&nbsp;counter&nbsp;to&nbsp;maximum&nbsp;value
+&nbsp;&nbsp;&nbsp;&nbsp;MAX.times&nbsp;{&nbsp;simulate&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;Counter.count.intVal.should&nbsp;==&nbsp;MAX
+&nbsp;&nbsp;end
+
+&nbsp;&nbsp;specify&nbsp;"should&nbsp;overflow&nbsp;upon&nbsp;increment"&nbsp;do
+&nbsp;&nbsp;&nbsp;&nbsp;simulate&nbsp;#&nbsp;increment&nbsp;the&nbsp;counter
+&nbsp;&nbsp;&nbsp;&nbsp;Counter.count.intVal.should&nbsp;==&nbsp;0
+&nbsp;&nbsp;end
+end
+
+</pre>
+</dd>
+</dl>
+
+<div class="p"><!----></div>
+<center>Figure 5.12: A specification that implements the expectations listed in section
+<a href="#sub:Specify-your-expectations">5.5.3</a> using the RSpec specification
+format.<a name="fig:spec.rb rspec">
+</a></center>
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg5.13">
+</a> 
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+
+<pre>#&nbsp;tight&nbsp;upper&nbsp;bound&nbsp;for&nbsp;counter's&nbsp;value
+LIMIT&nbsp;=&nbsp;2&nbsp;**&nbsp;Counter.Size.intVal
+
+#&nbsp;maximum&nbsp;allowed&nbsp;value&nbsp;for&nbsp;a&nbsp;counter
+MAX&nbsp;=&nbsp;LIMIT&nbsp;-&nbsp;1
+
+class&nbsp;ResettedCounterValue&nbsp;&lt;&nbsp;Test::Unit::TestCase
+&nbsp;&nbsp;def&nbsp;setup
+&nbsp;&nbsp;&nbsp;&nbsp;Counter.reset!
+&nbsp;&nbsp;end
+
+&nbsp;&nbsp;def&nbsp;test_zero
+&nbsp;&nbsp;&nbsp;&nbsp;assert_equal&nbsp;0,&nbsp;Counter.count.intVal
+&nbsp;&nbsp;end
+
+&nbsp;&nbsp;def&nbsp;test_increment
+&nbsp;&nbsp;&nbsp;&nbsp;LIMIT.times&nbsp;do&nbsp;|i|
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;assert_equal&nbsp;i,&nbsp;Counter.count.intVal
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;simulate&nbsp;#&nbsp;increment&nbsp;the&nbsp;counter
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;end
+end
+
+class&nbsp;MaximumCounterValue&nbsp;&lt;&nbsp;Test::Unit::TestCase
+&nbsp;&nbsp;def&nbsp;setup
+&nbsp;&nbsp;&nbsp;&nbsp;Counter.reset!
+
+&nbsp;&nbsp;&nbsp;&nbsp;#&nbsp;increment&nbsp;the&nbsp;counter&nbsp;to&nbsp;maximum&nbsp;value
+&nbsp;&nbsp;&nbsp;&nbsp;MAX.times&nbsp;{&nbsp;simulate&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;assert_equal&nbsp;MAX,&nbsp;Counter.count.intVal
+&nbsp;&nbsp;end
+
+&nbsp;&nbsp;def&nbsp;test_overflow
+&nbsp;&nbsp;&nbsp;&nbsp;simulate&nbsp;#&nbsp;increment&nbsp;the&nbsp;counter
+&nbsp;&nbsp;&nbsp;&nbsp;assert_equal&nbsp;0,&nbsp;Counter.count.intVal
+&nbsp;&nbsp;end
+end
+
+</pre>
+</dd>
+</dl>
+
+<div class="p"><!----></div>
+<center>Figure 5.13: A specification that implements the expectations listed in section
+<a href="#sub:Specify-your-expectations">5.5.3</a> using the xUnit specification
+format.<a name="fig:spec.rb xunit">
+</a></center>
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg5.14">
+</a> 
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+
+<pre>def&nbsp;Counter.reset!
+&nbsp;&nbsp;reset.intVal&nbsp;=&nbsp;1
+&nbsp;&nbsp;simulate
+&nbsp;&nbsp;reset.intVal&nbsp;=&nbsp;0
+end
+
+</pre>
+</dd>
+</dl>
+
+<div class="p"><!----></div>
+<center>Figure 5.14: Ruby interface to the design under verification. The method shown
+here resets the design by asserting its <tt>reset</tt> signal, simulating
+it for one clock cycle, and then deasserting its <tt>reset</tt> signal.<a name="fig:design.rb">
+</a></center>
+
+<div class="p"><!----></div>
+Before we continue, 
+
+<div class="p"><!----></div>
+
+<ol type="1">
+<li> Replace the contents of the file named <tt>counter_rspec_spec.rb</tt>
+with the source code shown in figure <a href="#fig:spec.rb rspec">5.12</a>.
+<div class="p"><!----></div>
+</li>
+
+<li> Replace the contents of the file named <tt>counter_xunit_spec.rb</tt>
+with the source code shown in figure <a href="#fig:spec.rb xunit">5.13</a>.
+<div class="p"><!----></div>
+</li>
+
+<li> Replace the contents of the files named <tt>counter_rspec_design.rb</tt>
+and <tt>counter_xunit_design.rb</tt> with the source code shown
+in figure <a href="#fig:design.rb">5.14</a>.
+<div class="p"><!----></div>
+</li>
+</ol>
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc5.5.4">
+5.5.4</a>&nbsp;&nbsp;Prototype the design</h3>
+
+<div class="p"><!----></div>
+Now that we have a specification against which to verify our design,
+let us build a prototype of our design. By doing so, we exercise our
+specification, experience potential problems that may arise when we
+later implement our design in Verilog, and gain confidence in our
+work. However, note that prototyping is wholly optional; the main
+aim of Ruby-VPI is to allow functional verification of real Verilog
+modules, not of mere behavioral prototypes.
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg5.15">
+</a> 
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+
+<pre>def&nbsp;Counter.simulate!
+&nbsp;&nbsp;if&nbsp;clock.posedge?
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;reset.intVal&nbsp;==&nbsp;1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;count.intVal&nbsp;=&nbsp;0
+&nbsp;&nbsp;&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;count.intVal&nbsp;+=&nbsp;1
+&nbsp;&nbsp;&nbsp;&nbsp;end
+&nbsp;&nbsp;end
+end
+
+</pre>
+</dd>
+</dl>
+
+<div class="p"><!----></div>
+<center>Figure 5.15: A Ruby prototype of the Verilog design under verification. When prototyping
+is enabled, <tt>Vpi::advance_time</tt> invokes the method shown here
+instead of transferring control to the Verilog simulator.<a name="fig:proto.rb">
+</a></center>
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg5.16">
+</a> 
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+
+<pre>module&nbsp;counter&nbsp;#(parameter&nbsp;Size&nbsp;=&nbsp;5)&nbsp;(
+&nbsp;&nbsp;input&nbsp;clock,
+&nbsp;&nbsp;input&nbsp;reset,
+&nbsp;&nbsp;output&nbsp;reg&nbsp;[Size&nbsp;-&nbsp;1&nbsp;:&nbsp;0]&nbsp;count
+);
+&nbsp;&nbsp;always&nbsp;@(posedge&nbsp;clock)&nbsp;begin
+&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(reset)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;count&nbsp;&lt;=&nbsp;0;
+&nbsp;&nbsp;&nbsp;&nbsp;else
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;count&nbsp;&lt;=&nbsp;count&nbsp;+&nbsp;1;
+&nbsp;&nbsp;end
+endmodule
+
+</pre>
+</dd>
+</dl>
+
+<div class="p"><!----></div>
+<center>Figure 5.16: Implementation of a simple up-counter with synchronous reset.<a name="fig:counter.v full">
+</a></center>
+
+<div class="p"><!----></div>
+Figure <a href="#fig:proto.rb">5.15</a> shows an example prototype for our design.
+Before we continue, replace the contents of the files named <tt>counter_rspec_proto.rb</tt>
+and <tt>counter_xunit_proto.rb</tt> with the source code shown this
+figure.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc5.5.5">
+5.5.5</a>&nbsp;&nbsp;Verify the prototype<a name="sub:Verify-the-prototype">
+</a></h3>
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg5.17">
+</a> 
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+
+<pre>$&nbsp;rake&nbsp;-f&nbsp;counter_rspec_runner.rake&nbsp;cver&nbsp;PROTOTYPE=1
+
+Ruby-VPI:&nbsp;prototype&nbsp;has&nbsp;been&nbsp;enabled&nbsp;for&nbsp;test&nbsp;"counter_rspec"&nbsp;
+
+A&nbsp;resetted&nbsp;counter's&nbsp;value
+-&nbsp;should&nbsp;be&nbsp;zero
+-&nbsp;should&nbsp;increment&nbsp;upon&nbsp;rising&nbsp;clock&nbsp;edges
+
+A&nbsp;counter&nbsp;with&nbsp;the&nbsp;maximum&nbsp;value
+-&nbsp;should&nbsp;overflow&nbsp;upon&nbsp;increment
+
+Finished&nbsp;in&nbsp;0.018199&nbsp;seconds
+
+3&nbsp;specifications,&nbsp;0&nbsp;failures
+
+</pre>
+</dd>
+</dl>
+
+<div class="p"><!----></div>
+<center>Figure 5.17: Verifying the prototype of the design under verification with the
+specification implemented in RSpec format.<a name="fig:verify proto rspec">
+</a></center>
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg5.18">
+</a> 
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+
+<pre>$&nbsp;rake&nbsp;-f&nbsp;counter_xunit_runner.rake&nbsp;cver&nbsp;PROTOTYPE=1
+
+Ruby-VPI:&nbsp;prototype&nbsp;has&nbsp;been&nbsp;enabled&nbsp;for&nbsp;test&nbsp;"counter_xunit"&nbsp;
+
+Loaded&nbsp;suite&nbsp;counter_xunit_bench
+Started
+...
+Finished&nbsp;in&nbsp;0.040668&nbsp;seconds.
+
+3&nbsp;tests,&nbsp;35&nbsp;assertions,&nbsp;0&nbsp;failures,&nbsp;0&nbsp;errors
+
+</pre>
+</dd>
+</dl>
+
+<div class="p"><!----></div>
+<center>Figure 5.18: Verifying the prototype of the design under verification with the
+specification implemented in xUnit format.<a name="fig:verify proto xunit">
+</a></center>
+
+<div class="p"><!----></div>
+Now that we have implemented our prototype, we are ready to verify
+it against our specification by running the test. This process is
+illustrated by the figures <a href="#fig:verify proto rspec">5.17</a> and <a href="#fig:verify proto xunit">5.18</a>. 
+
+<div class="p"><!----></div>
+In these figures, the <tt>PROTOTYPE</tt> environment variable is assigned
+a non-empty value while running the test so that, rather than our
+design, our prototype is verified against our specification. You may
+also assign a value to <tt>PROTOTYPE</tt> before running the test
+through your shell's <tt>export</tt> or <tt>setenv</tt> command. Finally,
+the GPL Cver simulator, denoted by <tt>cver</tt>, is used to run the
+simulation.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc5.5.6">
+5.5.6</a>&nbsp;&nbsp;Implement the design</h3>
+
+<div class="p"><!----></div>
+Now that we have implemented and verified our prototype, we are ready
+to implement our design. This is often quite simple as we can translate
+existing code from our Ruby prototype into our Verilog design. For
+instance, notice the similarity between the implementation of our
+design, shown in figure <a href="#fig:counter.v full">5.16</a>, and its prototype,
+shown in figure <a href="#fig:proto.rb">5.15</a>.
+
+<div class="p"><!----></div>
+Before we continue, replace the contents of the file named <tt>counter.v</tt>
+with the source code shown in figure <a href="#fig:counter.v full">5.16</a>.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc5.5.7">
+5.5.7</a>&nbsp;&nbsp;Verify the design</h3>
+
+<div class="p"><!----></div>
+Now that we have implemented our design, we are ready to verify it
+against our specification by running the test. This process is identical
+to the one used in verifying our prototype (see section <a href="#sub:Verify-the-prototype">5.5.5</a>)
+except that the <tt>PROTOTYPE</tt> environment variable is not specified
+while running the test. This ensures that our design, rather than
+our prototype, is verified against our specification.
+
+<div class="p"><!----></div>
+ <h1><a name="tth_chAp6">
+Chapter 6 </a><br />Evaluation </h1>
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc6.1">
+6.1</a>&nbsp;&nbsp;Proposed solution</h2>
+
+<div class="p"><!----></div>
+The proposed solution of separating call stacks through the use of
+POSIX threads and semaphores has been successfully implemented for
+Verilog VPI in both (1) figure <a href="#fig:spec_driven.c">3.2</a> and (2) the
+Ruby-VPI project. 
+
+<div class="p"><!----></div>
+Although implementations of this solution for Verilog PLI and SystemVerilog
+DPI have not been presented in this thesis, they would be very similar
+in nature to that of Verilog VPI. In particular, the only major difference
+between implementations would be the use of different programming
+interfaces: Verilog PLI would be used for the Verilog PLI solution,
+and SystemVerilog DPI would be used for the SystemVerilog DPI solution.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc6.1.1">
+6.1.1</a>&nbsp;&nbsp;Contribution</h3>
+
+<div class="p"><!----></div>
+The proposed solution is based on ,
+which uses VPI system tasks to transfer control between the simulator
+and the executable specification, and thereby employs the design-driven
+approach to functional verification. 
+
+<div class="p"><!----></div>
+My primary contribution to this solution is transforming the design-driven
+approach of  into a specification-driven
+approach by eliminating tight coupling between the design and the
+executable specification through the use of self-generative callbacks.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc6.2">
+6.2</a>&nbsp;&nbsp;Ruby-VPI project</h2>
+
+<div class="p"><!----></div>
+The primary goal of Ruby-VPI was to provide a way to functionally
+verify Verilog modules using a unit testing framework-in the same
+way that software modules are functionally verified. In short, this
+goal would provide the means to apply agile software development practices,
+such as TDD and BDD, to the realm of RTL-based hardware development
+with Verilog.
+
+<div class="p"><!----></div>
+The secondary goal of Ruby-VPI was to provide a way to rapidly prototype
+the functionality of Verilog modules in Ruby without having to first
+implement them in full using Verilog. This would allow for quicker
+prototyping because implementing a Verilog module in full typically
+requires more effort than emulating the module's behavior in Ruby
+(see section <a href="#sub:Verify-the-prototype">5.5.5</a>).
+
+<div class="p"><!----></div>
+Both goals have been accomplished successfully.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc6.2.1">
+6.2.1</a>&nbsp;&nbsp;Contribution<a name="sub:Contribution to Ruby-VPI">
+</a></h3>
+
+<div class="p"><!----></div>
+In October 1999, Japanese researcher Kazuhiro Hiwada pioneered the
+technique of separating the stack frames of the Verilog simulator
+and the specification through POSIX threads and semaphores. He released
+this work, as a proof of concept, under the name Ruby-VPI (see [<a href="#KH99" name="CITEKH99">15</a>]).
+It enabled one to execute a predefined Ruby program from within a
+Verilog module through the use of predefined VPI system tasks. However,
+that was the extent of its capability; it provided neither (1) the
+means to pass parameters from Verilog to the Ruby program nor (2)
+a means to access VPI from within Ruby.
+
+<div class="p"><!----></div>
+Seven years later, in February 2006, I happened upon Hiwada's work
+while searching for Ruby bindings to Verilog PLI or VPI in order to
+simplify the task of writing a fairly complex Verilog test bench.
+I augmented his work with the ability to (1) pass parameters from
+Verilog to Ruby and (2) access the Verilog module under test through
+a minuscule subset of VPI. Next, I attempted to contact him, in hopes
+of contributing my additions, but failed to locate a more recent means
+of communication than an obsolete e-mail address listed on his old
+(circa 1999) website. Alas, it seemed that Ruby-VPI was genuinely
+abandoned, so I decided to revive it in the form of an open source<a href="#tthFtNtAAE" name="tthFrefAAE"><sup>4</sup></a> software project.
+
+<div class="p"><!----></div>
+Over the course of a year, I developed Ruby-VPI into a stable, functional
+platform for specification-driven functional verification. My notable
+contributions include (1) the addition of the ability to access the
+entire IEEE 1364-2005 Verilog VPI from within Ruby, (2) the decoupling
+of the Verilog design from the specification through the self-generative
+callbacks technique, (3) the production and maintenance of a comprehensive
+user manual, and (4) integration with unit testing frameworks (xUnit
+and RSpec), interactive debuggers (ruby-debug), code coverage analyzers
+(RCov), and build automation tools (Rake).
+
+<div class="p"><!----></div>
+ <h1><a name="tth_chAp7">
+Chapter 7 </a><br />Conclusion</h1>
+
+<div class="p"><!----></div>
+Although specification-driven functional verification is not enabled
+by Verilog PLI &amp; VPI and SystemVerilog DPI, it can be achieved nevertheless
+by separating the call stacks of the simulator and the C function
+it invokes. At present, this separation is only possible by running
+the simulator and executable specification within (1) different threads
+or (2) different processes. In terms of ease of implementation and
+maintenance effort, the former approach is the simpler of the two.
+
+<div class="p"><!----></div>
+Ruby-VPI lifts the burden of using Verilog VPI in the C programming
+language by enabling engineers to functionally verify Verilog designs
+at a <em>very</em> high level. Raising the level of abstraction allows
+engineers to focus on the problem at hand rather than struggling with
+low level details [<a href="#FPBJ87" name="CITEFPBJ87">6</a>]. Furthermore, Ruby-VPI brings agile
+development practices, such as TDD and BDD, to the otherwise inapplicable
+realm of hardware development.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc7.1">
+7.1</a>&nbsp;&nbsp;Future work</h2>
+
+<div class="p"><!----></div>
+The method of separating the simulator and the executable specification
+through the use of POSIX threads and semaphores may be applied in
+enabling specification-driven functional verification with very high
+level languages other than Ruby, such as Python, Lisp, and Smalltalk.
+
+<div class="p"><!----></div>
+Ruby-VPI can be extended to simplify other verification tasks through
+DSLs. Transaction-based verification (see [<a href="#TLM verif" name="CITETLM verif">5</a>]) is one
+problem domain where such DSLs might prove useful. This form of verification
+is better known as Transaction Level Modeling (TLM) in the realm of
+Electronic System Level (ESL) design-an industry primarily concerned
+with the integration of hardware and embedded software. In this domain,
+a Ruby-based DSL would offer a higher level of abstraction than what
+System C-the most popular DSL in the ESL domain [<a href="#eda giants" name="CITEeda giants">12</a>]-is
+capable, due to the latter's heritage of low level expression from
+the C programming language.
+
+<div class="p"><!----></div>
+&nbsp;
+
+<div class="p"><!----></div>
+ <h1><a name="tth_chApA">
+Appendix A </a><br />Background</h1>
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEcA.1">
+A.1</a>&nbsp;&nbsp;Reason for PLI, VPI, and DPI interfaces<a name="sec:Reason-for-PLI,">
+</a></h2>
+
+<div class="p"><!----></div>
+Verilog is considered unsuitable for verification because it lacks
+features, such as high-level data structures [<a href="#JB06" name="CITEJB06">4</a>,page 55],
+that are "important in efficiently implementing a modern verification
+process" [<a href="#JB06" name="CITEJB06">4</a>,page 55]. The Programming Language Interface
+(PLI) and Verilog Procedural Interface (VPI) counterbalance this limitation
+by augmenting Verilog with the full power and capability of the C
+programming language.
+
+<div class="p"><!----></div>
+SystemVerilog, on the other hand, <em>is</em> considered suitable for
+verification because it "is able to raise the level of abstraction
+compared to plain Verilog" [<a href="#JB06" name="CITEJB06">4</a>,page 55] by offering, among
+other features, high-level data structures and object-oriented constructs
+[<a href="#JB06" name="CITEJB06">4</a>,page 56]. Nevertheless, the Direct Programming Interface
+(DPI) augments SystemVerilog with the full power and capability of
+the C programming language.
+
+<div class="p"><!----></div>
+These interfaces enable simulators to invoke user-defined C functions:
+
+<div class="p"><!----></div>
+
+<ul>
+<li> PLI and VPI enable behavioral Verilog code to invoke C functions through
+<b>system tasks</b> and <b>system functions</b> [<a href="#1364-2001" name="CITE1364-2001">17</a>,pages 362-363]
+and <b>callbacks</b> [<a href="#ICS06" name="CITEICS06">18</a>,pages 374-375].
+<div class="p"><!----></div>
+</li>
+
+<li> DPI enables behavioral SystemVerilog code to invoke C functions through
+<b>imported tasks</b> and <b>imported functions</b> [<a href="#1800-2005" name="CITE1800-2005">16</a>,page 402].
+Invoked C functions may then, in turn, invoke SystemVerilog tasks
+and functions through <b>exported tasks</b> and <b>exported</b>
+<b>functions</b> respectively [<a href="#1800-2005" name="CITE1800-2005">16</a>,page 410].
+<div class="p"><!----></div>
+</li>
+</ul>
+They also serve as a C library that enables invoked C functions to
+inspect and modify objects in instantiated designs [<a href="#ICS06" name="CITEICS06">18</a>,page 376]
+with varying degrees of capability: VPI offers the most and DPI offers
+the least, while PLI offers a balance between the two [<a href="#PLI is dead" name="CITEPLI is dead">35</a>,pages 14-15].
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEcA.2">
+A.2</a>&nbsp;&nbsp;Functional verification<a name="sub:Verification">
+</a></h2>
+
+<div class="p"><!----></div>
+Functional verification is the process of determining whether a design
+satisfies a <b>specification</b> [<a href="#AGAAB05" name="CITEAGAAB05">13</a>,page 1][<a href="#JB06" name="CITEJB06">4</a>,page 1]
+composed of one or more <b>expectations</b> [<a href="#DA06" name="CITEDA06">2</a>,00:13:09-00:13:24]. 
+
+<div class="p"><!----></div>
+An expectation is a statement that specifies (1) a scenario and (2)
+the expected behavior of a design placed in that scenario [<a href="#DA06" name="CITEDA06">2</a>,00:32:01-00:32:12].
+As a result, expectations are naturally expressed in terms of stimulus
+and response [<a href="#JB06" name="CITEJB06">4</a>,page 30]. For instance, one might say "when
+the design is subjected to condition X (the stimulus), it should behave
+in manner Y (the response)". 
+
+<div class="p"><!----></div>
+A design is systematically verified for functional correctness by
+iteratively checking whether it satisfies each expectation in its
+specification. This check is performed, in accordance to the stimulus
+and response defined by an expectation, by (1) applying the stimulus
+to the design and (2) confirming that the design exhibits the expected
+response.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEcA.2.1">
+A.2.1</a>&nbsp;&nbsp;Simulator-driven functional verification</h3>
+
+<div class="p"><!----></div>
+In simulator-driven functional verification, a simulator invokes C
+functions-through Verilog PLI &amp; VPI and SystemVerilog DPI-in
+an executable specification to verify certain aspects of an instantiated
+Verilog or SystemVerilog design. This simulator-centric approach causes
+expectations to be written unnaturally, in a discontinuous, piecewise
+manner because the specification is not in control of verifying its
+design.
+
+<div class="p"><!----></div>
+To illustrate, suppose that you (the specification) order a breakfast
+meal (the design) at a restaurant (the simulator). Instead of serving
+your meal all at once, this restaurant iteratively serves one subset
+of your meal at a time. Furthermore, the size of each serving and
+the delay between servings is unpredictable because you are not in
+control of your meal. As a result, you are made to eat unnaturally,
+in a discontinuous, piecewise manner.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEcA.2.2">
+A.2.2</a>&nbsp;&nbsp;Design-driven functional verification<a name="sub:Design-driven-functional-verification">
+</a></h3>
+
+<div class="p"><!----></div>
+Design-driven functional verification is a subset of simulator-driven
+functional verification where C functions, in an executable specification,
+are invoked through system/imported tasks and functions. Since these
+constructs are statements in a design's source code, the design drives
+the verification process firsthand and therefore verifies itself.
+
+<div class="p"><!----></div>
+This approach introduces tight coupling (see section <a href="#sub:code coupling">B.1</a>)
+between a design and its executable specification because changes
+in either (1) the number of C functions or (2) the names of C functions
+in the specification necessitate analogous changes to the system/imported
+tasks and functions in the design's source code.
+
+<div class="p"><!----></div>
+Self-generative callbacks can eliminate such coupling-if they are
+initially scheduled by a function whose pointer exists within the
+<tt>vlog_startup_routines</tt> array-because unlike system/imported
+tasks and functions, they do not require modification of a design's
+source code [<a href="#cver guy" name="CITEcver guy">26</a>,page 3].
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEcA.2.3">
+A.2.3</a>&nbsp;&nbsp;Specification-driven functional verification</h3>
+
+<div class="p"><!----></div>
+In specification-driven <em></em>functional verification, an executable
+specification verifies its Verilog design firsthand by progressively
+(1) applying a stimulus to the design, (2) simulating the design by
+<em>temporarily</em> transferring control to the simulator, and (3)
+verifying the design's response to the applied stimulus. 
+
+<div class="p"><!----></div>
+This approach makes a design independent from its specification because
+changes in the specification do not necessitate changes in the design's
+source code. It allows expectations to be written naturally, in a
+continuous, sequential manner as shown in figure <a href="#fig:sequential expectation">3.3</a>. 
+
+<div class="p"><!----></div>
+In the realm of software development, this approach is better known
+as <em>unit testing</em> (see [<a href="#xUnit" name="CITExUnit">14</a>]) because it encourages a
+mode of iterative development where each Verilog design (the <em>unit</em>)
+is functionally verified by its dedicated, personal specification
+(the <em>test</em>). Moreover, it reflects the traditional way in which
+Verilog designs were functionally verified [<a href="#ce126 book" name="CITEce126 book">32</a>,pages 81-83],
+where a design's inputs would be manipulated using a sequence of time-delayed
+behavioral Verilog statements and its outputs would be recorded onto
+a text file by (1) printing signal values using <tt>$display</tt>
+statements or (2) emitting a waveform in Verilog Change Dump (VCD)
+format. This recording would then be validated against a <em>golden</em>
+reference model, which defines how the recording should appear if
+it is indeed correct, either (1) by manual inspection or (2) through
+the aid of automated <em>diff</em> tools.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEcA.3">
+A.3</a>&nbsp;&nbsp;Inter-process communication<a name="sec:Inter-process-communication">
+</a></h2>
+
+<div class="p"><!----></div>
+Inter-process communication (IPC) is the mechanism by which (1) processes
+or (2) threads within different processes communicate with one another.
+Such communication is necessary in distributed applications where
+processes, running within different computer systems on a common network,
+solve problems cooperatively.
+
+<div class="p"><!----></div>
+Inter-process communication is characterized into two classes: synchronous
+and asynchronous. The following subsections discuss these classes
+as well as technologies that enable them.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEcA.3.1">
+A.3.1</a>&nbsp;&nbsp;Asynchronous communication</h3>
+
+<div class="p"><!----></div>
+Asynchronous methods of inter-process communication are well suited
+for distributed applications involving the computation of <em>independent</em>
+tasks. For example, consider a distributed business application which
+retrieves the number of new employees hired every year in the last
+50 years. Assuming that the process of retrieving the number of new
+employees hired in a given year does not depend on that of the previous
+year, we can distribute the overall calculation across 50 different
+processes-each of which calculates the number of new employees hired
+during a single year-and combine their individual results into one
+suitable for the overall calculation.
+
+<div class="p"><!----></div>
+Asynchronous methods are error-prone in multi-threaded programming
+environments&nbsp;[<a href="#survey" name="CITEsurvey">24</a>] due to lack of built-in synchronization
+facilities, such as semaphores, to prevent communication of obsolete
+or incorrect data.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEcA.3.1.1">
+A.3.1.1</a>&nbsp;&nbsp;Shared memory</h4>
+
+<div class="p"><!----></div>
+Before the introduction of message-passing models of asynchronous
+communication in the late 1970's&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>], a technique
+called "shared memory" was widely in use by supercomputers as
+a means of inter-process and -processor communication&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>].
+As the name suggests, this technique involves the reading and writing
+of data or messages to an area of shared memory. 
+
+<div class="p"><!----></div>
+The disadvantages of this approach are that (1) it does not scale
+well for distributed applications running on computing clusters&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>]
+and (2) it has synchronization issues such as race conditions-which
+further complicate a distributed application as semaphores are necessary
+to mitigate them. In addition, this approach is susceptible to failure
+as the corruption of the shared memory by a disgruntled process can
+bring it down, so to speak.
+
+<div class="p"><!----></div>
+
+<b>Component Object Model<a name="sub:Component-Object-Model">
+</a>&nbsp;&nbsp;</b>
+
+<div class="p"><!----></div>
+Component Object Model (COM) is a shared-memory model of inter-process
+communication for the Microsoft Windows operating system&nbsp;[<a href="#survey" name="CITEsurvey">24</a>].
+It was originally implemented through the "clipboard" facility
+and provided naming services through the "registry" facility
+of said operating system&nbsp;[<a href="#survey" name="CITEsurvey">24</a>]. 
+
+<div class="p"><!----></div>
+Although the use of COM is widespread in Microsoft Windows based applications,
+their programming interface can be quite inhibiting. In particular,
+(1) COM has "no implementation inheritance, thus a component defining
+a derived interface must implement all functions of the base interfaces
+again"&nbsp;[<a href="#survey" name="CITEsurvey">24</a>], (2) it is susceptible to failure because
+the event of a "registry" corruption&nbsp;[<a href="#survey" name="CITEsurvey">24</a>] can render
+inter-process communication nonfunctional, and (3) it can destabilize
+the remainder of the operating system&nbsp;[<a href="#survey" name="CITEsurvey">24</a>]. In addition,
+COM operates on a single processor and does not facilitate communication
+over a network&nbsp;[<a href="#survey" name="CITEsurvey">24</a>,<a href="#metacomputing" name="CITEmetacomputing">20</a>].
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEcA.3.1.2">
+A.3.1.2</a>&nbsp;&nbsp;Parallel Virtual Machine</h4>
+
+<div class="p"><!----></div>
+Parallel Virtual Machine (PVM) is a programming interface that allows
+distributed applications to function over a heterogeneous network
+composed of (1) machines of different architectures and (2) processes
+implemented in different programming languages&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>,<a href="#sunderam" name="CITEsunderam">34</a>].
+PVM achieves such portability by providing the necessary "message
+format transformation to hide differences in computer architectures"&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>]. 
+
+<div class="p"><!----></div>
+PVM is "based on the premise that a collection of independent
+computer systems, interconnected by networks, can be transformed into
+a coherent, powerful, and cost-effective concurrent computing resource"&nbsp;[<a href="#sunderam" name="CITEsunderam">34</a>].
+In other words, the aim of PVM is to craft the illusion that a computation
+is occurring on a single machine&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>]. This enables
+developers to focus on implementing the calculation performed by their
+distributed application rather than becoming enveloped within the
+myriad of complexities introduced by low level inter-process communication.
+
+<div class="p"><!----></div>
+PVM is very dynamic, in the sense that processes and machines can
+be added to and removed from the distributed computation without having
+to bring down the entire network [<a href="#metacomputing" name="CITEmetacomputing">20</a>]. It also provides
+a naming service, which allows processes to dynamically discover other
+processes and services without being hard-coded to do so&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>].
+Lastly, PVM is fault tolerant as it can dynamically detect and send
+a notice, indicating which computer became faulty, to functional computers&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>].
+Alternatively, PVM can command a faulty machine to reboot itself-thereby
+minimizing unavailability of computational resources on the network.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEcA.3.1.3">
+A.3.1.3</a>&nbsp;&nbsp;Message Passing Interface</h4>
+
+<div class="p"><!----></div>
+Message Passing Interface (MPI) is a programming interface for distributed
+applications that was originally developed by supercomputer vendors
+so that their applications could be compatible with each other&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>].
+It was designed to function over a homogeneous network of processes
+and processors, allowing it to take advantage of native network calls
+to make inter-process communication more efficient&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>].
+
+<div class="p"><!----></div>
+MPI provides a powerful library of communication procedures that allow
+(1) point-to-point communication between two processes and (2) point-to-group
+communication between a single process and a group of processes&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>].
+However, due to its reliance on network homogeneity, it cannot function
+over a network of machines with different architectures or processes
+implemented in different programming languages.
+
+<div class="p"><!----></div>
+MPI is static, in the sense that processes and machines cannot be
+added to and removed from a distributed computation without having
+to bring down the entire network [<a href="#metacomputing" name="CITEmetacomputing">20</a>]. Consequently,
+it does not provide a common naming service that would enable processes
+and groups of processes to discover each other. Instead, groups and
+communication paths must be manually allocated before a distributed
+computation is started. Finally, MPI does not have a failure resolution
+mechanism to revive faulty machines on the computational network&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>].
+
+<div class="p"><!----></div>
+Despite these shortcomings, MPI goes a step further, in terms of message-passing
+communication methods, in providing support for seamless communication
+of derived data-types&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>,<a href="#sunderam" name="CITEsunderam">34</a>]. In other words,
+one is not strictly limited to <b>primitives</b>-data types that
+are integral to a programming language, such as an integer, character,
+or floating-point number-while performing inter-process communication.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEcA.3.2">
+A.3.2</a>&nbsp;&nbsp;Synchronous communication</h3>
+
+<div class="p"><!----></div>
+Synchronous methods of inter-process communication are well suited
+for distributed applications involving the computation of <em>interdependent</em>
+tasks. For example, consider a distributed business application which
+calculates a statistical correlation between the number of new employees
+hired in a given year with that of the previous year, for each year
+in the last 50 years. In this situation, we cannot simply delegate
+the computation onto 50 different processes, which perform independently
+of each other, and combine their results at the end. Instead, each
+process must communicate with one that is computing the statistical
+correlation of the year before that of itself. 
+
+<div class="p"><!----></div>
+In this manner, synchronous communication can become complex as the
+number dependencies in the functional decomposition of a computation
+increase.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEcA.3.2.1">
+A.3.2.1</a>&nbsp;&nbsp;Remote Procedure Call</h4>
+
+<div class="p"><!----></div>
+Remote Procedure Call (RPC), introduced in 1984&nbsp;[<a href="#waldo" name="CITEwaldo">42</a>], is
+a programming interface allows a process to execute a procedure or
+routine on a remote processor as if it were executed on its own [<a href="#survey" name="CITEsurvey">24</a>].
+It seamlessly encapsulates the synchronous communication necessary
+to perform procedure calls by automatically transmitting procedure-call
+arguments and return values&nbsp;[<a href="#survey" name="CITEsurvey">24</a>]. However, only primitive
+data types may be used in performing remote procedure calls [<a href="#survey" name="CITEsurvey">24</a>,<a href="#metacomputing" name="CITEmetacomputing">20</a>].
+
+<div class="p"><!----></div>
+The following subsections describe methods of synchronous communication
+which are based upon RPC.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEcA.3.2.2">
+A.3.2.2</a>&nbsp;&nbsp;Distributed Common Object Model</h4>
+
+<div class="p"><!----></div>
+Distributed Common Object Model (DCOM) is a programming interface
+for the Microsoft Windows operating system&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>].
+Microsoft describes it as "COM with a long wire"&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>]
+because it adds networking functionality to COM through RPC&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>].
+It can function across a homogeneous network of processes and heterogeneous
+network of processors-which run the Microsoft Windows operating
+system&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>].
+
+<div class="p"><!----></div>
+However, like COM, DCOM utilizes the "registry" facility of
+said operating system for naming services and is therefore susceptible
+to failure (see section <a href="#sub:Component-Object-Model">A.3.1.1</a>).
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEcA.3.2.3">
+A.3.2.3</a>&nbsp;&nbsp;Remote Method Invocation</h4>
+
+<div class="p"><!----></div>
+Remote Method Invocation (RMI), introduced with the Java Developer's
+Kit 1.1&nbsp;[<a href="#waldo" name="CITEwaldo">42</a>], is a programming interface specific to the
+Java programming language. It can be thought of as an object-oriented
+version of RPC which allows an object in one Java Virtual Machine
+(JVM) to invoke a method on an object within another JVM-be it local
+or remote&nbsp;[<a href="#waldo" name="CITEwaldo">42</a>,<a href="#RMI spec" name="CITERMI spec">33</a>]. In particular, RMI facilitates
+transparent serialization of objects and entire trees of their references-which
+allows one to pass complex data-structures, both local and <em></em>remote&nbsp;[<a href="#survey" name="CITEsurvey">24</a>],
+as arguments in addition to primitive data-types-and provides a
+naming service which allows Java objects to discover each other. Also,
+because the JVM can function on a majority of processor architectures&nbsp;[<a href="#RMI spec" name="CITERMI spec">33</a>,<a href="#waldo" name="CITEwaldo">42</a>],
+RMI can function over a heterogeneous network of processors and homogeneous
+network of JVM processes.
+
+<div class="p"><!----></div>
+RMI changes the way developers think about and design distributed
+applications&nbsp;[<a href="#waldo" name="CITEwaldo">42</a>] by introducing the notion of "stubs"
+and "skeletons", which decouple inter-process communication
+interfaces-i.e. the <tt>interface</tt> construct of the Java programming
+language-from their implementation&nbsp;[<a href="#waldo" name="CITEwaldo">42</a>,<a href="#RMI spec" name="CITERMI spec">33</a>]. The
+term "stub" refers to the interface seen by a Java application
+that wishes to invoke a remote procedure, while the term "skeleton"
+refers to the implementation of the stub's Java programming interface&nbsp;[<a href="#waldo" name="CITEwaldo">42</a>,<a href="#RMI spec" name="CITERMI spec">33</a>].
+When a remote procedure is invoked through the stub's interface, the
+stub communicates with the skeleton in the remote JVM, thereby performing
+a remote procedure call&nbsp;[<a href="#waldo" name="CITEwaldo">42</a>,<a href="#RMI spec" name="CITERMI spec">33</a>]. In addition, stubs
+can be downloaded from a remote JVM on demand&nbsp;[<a href="#survey" name="CITEsurvey">24</a>], which
+makes RMI ideal for dynamic, ad hoc wireless or mobile networks.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEcA.3.2.4">
+A.3.2.4</a>&nbsp;&nbsp;Common Object Request Broker Architecture</h4>
+
+<div class="p"><!----></div>
+Common Object Request Broker Architecture (CORBA) is a programming
+interface which functions over a heterogeneous network of processes
+and processors&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>] and, more importantly, is "supported
+by a large industry consortium"&nbsp;[<a href="#survey" name="CITEsurvey">24</a>]. It centralizes
+inter-process communication through a primary proxy known as the Object
+Request Broker (ORB)&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>], which separates the implementation
+of computational procedures-known as "object services"&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>]-from
+their RPC interfaces&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>,<a href="#survey" name="CITEsurvey">24</a>]. 
+
+<div class="p"><!----></div>
+Like MPI, CORBA is particularly useful for static computational networks,
+but ill-suited for dynamic ones, such as ad hoc wireless or mobile
+networks&nbsp;[<a href="#survey" name="CITEsurvey">24</a>].
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEcA.3.3">
+A.3.3</a>&nbsp;&nbsp;Graphical programming</h3>
+
+<div class="p"><!----></div>
+In addition to asynchronous and synchronous programming interfaces
+for implementing distributed applications, there exist graphical methods
+which allow one to implement "program decomposition, communication
+primitives (like PVM and MPI calls) and task assignment to network
+topologies"&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>]. In particular,&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>]
+cites a relatively successful project named "GRAPNEL", which
+implements the aforementioned goals of graphical programming. This
+project also supports an integrated development environment, named
+"GRADE"&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>], which features a distributed
+debugger, performance monitor, and visualization tools&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>].
+However,&nbsp;[<a href="#sunderam" name="CITEsunderam">34</a>] notes that these graphical systems have
+not had much main-stream acceptance as methods of inter-process communication.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEcA.3.4">
+A.3.4</a>&nbsp;&nbsp;Conclusions</h3>
+
+<div class="p"><!----></div>
+With the massive transition from low to high level methods of inter-process
+communication in effect during the last twenty years, it would seem
+that there is a trend in favor of encapsulating complex system-dependent
+communication routines&nbsp;[<a href="#metacomputing" name="CITEmetacomputing">20</a>,<a href="#survey" name="CITEsurvey">24</a>] in standard high
+level programming interfaces. With the advent of high level methods
+previously discussed, the creation and management of communication
+paths between various processes may very well become the next problem-especially
+in static methods such as MPI and CORBA. 
+
+<div class="p"><!----></div>
+Upcoming graphical programming interfaces seek to facilitate the management
+of communication paths and resource allocation by allowing one to
+visually connect processes together. Despite not having received much
+attention as of yet&nbsp;[<a href="#sunderam" name="CITEsunderam">34</a>], these methods may prove useful
+in managing computational networks in the future, as the number of
+machines available to perform distributed computations increases dramatically
+over time.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEcA.4">
+A.4</a>&nbsp;&nbsp;Agile practices<a name="sec:Agile-practices">
+</a></h2>
+
+<div class="p"><!----></div>
+
+<blockquote><em>Big ships turn slowly.</em> -Unknown
+</blockquote>
+Traditional heavy-weight software development practices try to minimize
+unforeseen changes to a project plan by strictly adhering to precomputed
+requirements, schedules, and costs [<a href="#agile IEEE" name="CITEagile IEEE">44</a>]. In contrast,
+agile software development practices embrace and adapt to unforeseen
+changes as and when they occur [<a href="#agile IEEE" name="CITEagile IEEE">44</a>]. According to [<a href="#agile manifesto" name="CITEagile manifesto">3</a>],
+these practices have a set of common, underlying characteristics that
+unify them under the "agile" name [<a href="#agile book" name="CITEagile book">7</a>,page 213]:
+
+<div class="p"><!----></div>
+
+<blockquote>We are uncovering better ways of developing software by doing it and
+helping others do it. Through this work we have come to value:
+
+<div class="p"><!----></div>
+<b>Individuals and interactions</b> over processes and tools<br />
+<b>Working software</b> over comprehensive documentation<br />
+<b>Customer collaboration</b> over contract negotiation<br />
+<b>Responding to change</b> over following a plan
+
+<div class="p"><!----></div>
+That is, while there is value in the items on the right, we value
+the items on the left more.
+
+<div class="p"><!----></div>
+</blockquote>     <h3><a name="tth_sEcA.4.1">
+A.4.1</a>&nbsp;&nbsp;Test driven development<a name="sub:Test-driven-development">
+</a></h3>
+
+<div class="p"><!----></div>
+Test driven development (TDD) is an iterative software development
+practice that "requires writing automated tests prior to developing
+functional code in small, rapid iterations" [<a href="#TDD" name="CITETDD">19</a>,page 43].
+In particular, the TDD defines a development process where [<a href="#TDD" name="CITETDD">19</a>,page 44]:
+
+<div class="p"><!----></div>
+
+<blockquote>For every tiny bit of functionality in the production code, you first
+develop a test that specifies and validates what the code will do.
+You then produce exactly as much code as will enable that test to
+pass. Then you refactor (simplify and clarify) both the production
+code and the test code. 
+
+<div class="p"><!----></div>
+</blockquote>TDD plays a central role, along with pair programming and source code
+refactoring, in eXtreme Programming (XP)-one of the better known
+agile software development methodologies [<a href="#TDD" name="CITETDD">19</a>,page 43].
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEcA.4.2">
+A.4.2</a>&nbsp;&nbsp;Behavior driven development<a name="sub:Behavior-driven-development">
+</a></h3>
+
+<div class="p"><!----></div>
+Behavior driven development (BDD) is a subset of TDD which emphasizes
+thinking in terms of <em>behavior</em> rather than <em>testing</em> [<a href="#DA06" name="CITEDA06">2</a>].
+It achieves this primarily through the use of a very specific vocabulary
+that engages developers, managers, analysts, and entrepreneurs alike
+[<a href="#BDD" name="CITEBDD">27</a>] in characterizing the desired, or expected, behavior of
+systems they wish to design, develop, verify, analyze, and finally
+market. This vocabulary differs from that of TDD. For instance, the
+TDD terms "test" and "unit" are replaced by "specification"
+in BDD [<a href="#DA06" name="CITEDA06">2</a>]. Likewise, the TDD notion of "assertion"
+is replaced by "expectation" in BDD [<a href="#DA06" name="CITEDA06">2</a>].
+
+<div class="p"><!----></div>
+Due to its focus on characterization and analysis of behavior, BDD
+plays a more important role in the design process than it does in
+verification [<a href="#DA06" name="CITEDA06">2</a>].
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEcA.5">
+A.5</a>&nbsp;&nbsp;Domain specific languages<a name="sec:Domain-specific-languages">
+</a></h2>
+
+<div class="p"><!----></div>
+Unlike general purpose programming languages, Domain Specific Languages
+(DSLs) are suited for solving a specific family of problems [<a href="#dsl" name="CITEdsl">9</a>]
+because they allow you to express ideas and think in terms of the
+issues that pertain to the particular <b>domain</b> of the problem
+at hand. For example, the Structured Query Language (SQL) is a DSL
+that facilitates storage, retrieval, and manipulation of data housed
+within a relational database. In addition, the Starbucks coffee shop
+DSL: "Venti half-caf, non-fat, no foam, no whip latte" [<a href="#agile ruby DSL" name="CITEagile ruby DSL">10</a>,slide 6],
+and the music conductor's DSL: "Route 66, swinging, easy on the
+chorus, extra solo at the coda, and bump at the end" [<a href="#agile ruby DSL" name="CITEagile ruby DSL">10</a>,slide 6]
+are more examples.
+
+<div class="p"><!----></div>
+DSLs are not a new phenomenon; some of today's general purpose programming
+languages were originally DSLs [<a href="#dsl" name="CITEdsl">9</a>]:
+
+<div class="p"><!----></div>
+
+<blockquote>The older programming languages (Cobol, Fortran, Lisp) all came into
+existence as dedicated languages for solving problems in a certain
+area (respectively business processing, numeric computation and symbolic
+processing). Gradually they have evolved into general purpose languages
+
+<div class="p"><!----></div>
+</blockquote>Despite this evolution, thorough studies of DSLs have only begun in
+recent years because "over and over again the need for more specialized
+language support to solve problems in well-defined application <em>domains</em>
+has resurfaced" [<a href="#dsl" name="CITEdsl">9</a>].
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEcA.5.1">
+A.5.1</a>&nbsp;&nbsp;Alternatives</h3>
+
+<div class="p"><!----></div>
+DSLs are often substituted with (1) subroutine libraries and (2) object-oriented
+and component frameworks [<a href="#dsl" name="CITEdsl">9</a>]. The former provides an interface
+through which an <em>existing</em> general purpose programming language
+solves problems in a certain domain. Consequently, it is "<em>the</em>
+classical method for packaging reusable domain-knowledge" [<a href="#dsl" name="CITEdsl">9</a>].
+The latter goes a step further by encapsulating subroutine libraries
+within a high level framework that directly invokes application-specific
+code [<a href="#dsl" name="CITEdsl">9</a>].
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEcA.6">
+A.6</a>&nbsp;&nbsp;Ruby programming language<a name="sec:Ruby-programming-language">
+</a></h2>
+
+<div class="p"><!----></div>
+
+<blockquote><em>Sometimes people jot down pseudo-code on paper. If that pseudo-code
+runs directly on their computers, it's best, isn't it? Ruby tries
+to be like that, like pseudo-code that runs.</em> -Yukihiro
+Matsumoto
+
+<div class="p"><!----></div>
+</blockquote>Ruby is a very high level, general purpose, object oriented programming
+language invented by Japanese computer scientist Yukihiro Matsumoto
+in the early 1990's [<a href="#about ruby" name="CITEabout ruby">30</a>,<a href="#pickaxe2" name="CITEpickaxe2">39</a>]. It offers a harmonious
+balance between the functional and imperative styles of programming
+by blending the essence of Perl, Smalltalk, Eiffel, Ada, and Lisp
+[<a href="#about ruby" name="CITEabout ruby">30</a>] into one language. In addition, Ruby is considered
+to be an agile language because (1) it values programmer productivity
+over machine efficiency, (2) it aids interpersonal communication through
+its clear, expressive syntax and high readability, and (3) it is a
+dynamic language that not only embraces but facilitates change [<a href="#rubyconf06 keynote" name="CITErubyconf06 keynote">22</a>,pages 3-8].
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEcA.6.1">
+A.6.1</a>&nbsp;&nbsp;Object oriented</h3>
+
+<div class="p"><!----></div>
+Like Smalltalk, Ruby is <em>truly</em> object oriented because <em>everything</em>-including
+such things as integers, floating point numbers, classes, modules,
+and methods-is an object in Ruby [<a href="#about ruby" name="CITEabout ruby">30</a>]. For example,
+invoking the integer fifteen's <tt>next</tt> method yields the integer
+sixteen, as illustrated by figure <a href="#fig:15.next">A.1</a>. Here, the dollar
+sign ($) represents a command prompt and the expression "puts
+15.next" is evaluated at the command line.
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_fIg1.1">
+</a> 
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+$&nbsp;ruby&nbsp;-e&nbsp;"puts&nbsp;15.next"
+
+<div class="p"><!----></div>
+16
+</dd>
+</dl>
+
+<div class="p"><!----></div>
+<center>Figure A.1: Invoking a method on an integer in Ruby.<a name="fig:15.next">
+</a></center>
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEcA.6.2">
+A.6.2</a>&nbsp;&nbsp;Anytime processing</h3>
+
+<div class="p"><!----></div>
+Unlike C, C++, and Java, programs written in Ruby are not compiled
+into machine instructions before execution. Instead they are executed
+<em>on the fly</em>, so to speak, by the Ruby interpreter in a way that
+replaces the traditional dichotomy of <b>run time</b> and <b>compile
+time</b> processing with the notion of <b>anytime</b> processing [<a href="#pickaxe2" name="CITEpickaxe2">39</a>,page 400]:
+
+<div class="p"><!----></div>
+
+<blockquote>You can add code to a running process. You can redefine methods on
+the fly, change their scope from <tt>public</tt> to <tt>private</tt>,
+and so on. You can even alter basic types, such as <tt>Class</tt>
+and <tt>Object</tt>.
+
+<div class="p"><!----></div>
+</blockquote>Some might argue that, due to dynamically linked libraries, C and
+C++ also have the ability to add code to a running process. However,
+this is just one aspect of anytime processing because such processing
+also allows you to alter the <em>essential</em> data types of the language
+as well. For example, imagine that when you loaded a particular dynamically
+linked library with C or C++, it redefined the <tt>int</tt> type as
+a linked list of <tt>char</tt> types. Now, any code that utilizes
+<tt>int</tt> would unknowingly be using a linked list! Such is the
+power granted by anytime processing.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEcA.6.3">
+A.6.3</a>&nbsp;&nbsp;Scripting language</h3>
+
+<div class="p"><!----></div>
+Due to its dynamic nature, Ruby is considered to be a <b>scripting
+language</b> [<a href="#about ruby" name="CITEabout ruby">30</a>]. Languages in this family are "generally
+characterise[d]... as high-level programming languages, less
+efficient but more flexible than compiled language" [<a href="#activeRDF" name="CITEactiveRDF">28</a>].
+Listed below are common characteristics of scripting languages.
+
+<div class="p"><!----></div>
+They are <b>interpreted</b> dynamically rather than being compiled
+statically, thereby "allowing quick turnaround development and
+making applications more flexible through runtime programming" [<a href="#activeRDF" name="CITEactiveRDF">28</a>]. 
+
+<div class="p"><!----></div>
+They are <b>dynamically typed</b>, in the sense that variables are
+not declared before use and that subroutines specify neither the type
+of parameters they accept nor the type of value they return. For example,
+Ruby "has the `duck-typing' mechanism in which object types are
+determined by their runtime capabilities instead of by their class
+definition" [<a href="#activeRDF" name="CITEactiveRDF">28</a>].
+
+<div class="p"><!----></div>
+They enable <b>metaprogramming</b>, a mechanism by which a program
+dynamically programs itself, as they "do not strongly separate
+data and code, and allow code to be created, changed, and added during
+runtime" [<a href="#activeRDF" name="CITEactiveRDF">28</a>]. It is important to note that metaprogramming
+is not a new concept. Before the advent of third-generation programming
+languages, such as C, it was once common to write "self-modifying
+code", which allowed a program to dynamically altered its own behavior,
+in assembly languages.
+
+<div class="p"><!----></div>
+They allow <b>reflection</b> "(the possibility to easily investigate
+data and code during runtime) and runtime interrogation of objects
+instead of relying on their class definitions" [<a href="#activeRDF" name="CITEactiveRDF">28</a>]
+and are thereby "suited for flexible integration tasks" [<a href="#activeRDF" name="CITEactiveRDF">28</a>].
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEcA.6.4">
+A.6.4</a>&nbsp;&nbsp;A platform for DSLs<a name="sub:ruby dsl">
+</a></h3>
+
+<div class="p"><!----></div>
+
+<blockquote><em>The fascinating thing is that, in my experience, most well-written
+Ruby programs are already a DSL, just by nature of Ruby's syntax.</em>
+-Jamis Buck [<a href="#agile ruby DSL" name="CITEagile ruby DSL">10</a>,slide 22]
+
+<div class="p"><!----></div>
+</blockquote>Ruby is a viable platform for implementing DSLs because its syntax
+is unobtrusive enough to facilitate domain-specific expression without
+the need to write and maintain a custom compiler [<a href="#ruby DSL artima" name="CITEruby DSL artima">11</a>,<a href="#agile ruby DSL" name="CITEagile ruby DSL">10</a>].
+Furthermore, its strong meta-programming capability reduces the amount
+of code necessary to implement a DSL [<a href="#agile ruby DSL" name="CITEagile ruby DSL">10</a>].
+
+<div class="p"><!----></div>
+In addition to providing a means of structural expression for a DSL,
+Ruby enables general purpose programmability within the DSL itself
+[<a href="#ruby DSL artima" name="CITEruby DSL artima">11</a>]. To illustrate, imagine that SQL (see section
+<a href="#sec:Domain-specific-languages">A.5</a>) was implemented as a DSL in
+Ruby. Now, you can use loops, libraries, and higher-order programming
+techniques within your SQL programs to solve complex problems with
+less effort.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEcA.6.5">
+A.6.5</a>&nbsp;&nbsp;On the rise</h3>
+
+<div class="p"><!----></div>
+Ruby was relatively unknown in the English speaking countries of the
+West until recent years because reference documentation and learning
+materials were only available in Japanese .
+The famous "pick axe" book (see [<a href="#pickaxe" name="CITEpickaxe">38</a>]) changed this
+situation for the better when it was published in late 2000.
+
+<div class="p"><!----></div>
+Since then, many more books have been written and Ruby has gained
+tremendous acceptance [<a href="#about ruby" name="CITEabout ruby">30</a>]. In fact, it was declared
+as <em>the</em> programming language of 2006 by [<a href="#tiobe" name="CITEtiobe">37</a>], a monthly
+index which "gives an indication of the popularity of programming
+languages" [<a href="#tiobe" name="CITEtiobe">37</a>]. However, many attribute this astounding
+achievement to "the popularity of software written in Ruby, particularly
+the Ruby on Rails web framework" [<a href="#about ruby" name="CITEabout ruby">30</a>] rather than
+to the language itself.
+
+<div class="p"><!----></div>
+ <h1><a name="tth_chApB">
+Appendix B </a><br />Glossary</h1>
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEcB.1">
+B.1</a>&nbsp;&nbsp;Tight coupling<a name="sub:code coupling">
+</a></h2>
+
+<div class="p"><!----></div>
+Two or more components of a system are <em>tightly coupled</em> [<a href="#SCM04" name="CITESCM04">25</a>,pages 100-102]
+when a change in one of them necessitates, in order to maintain interoperability,
+an analogous change in the rest. Tight coupling increases the amount
+of effort necessary to change a system, thereby reducing its changeability
+[<a href="#FPBJ87" name="CITEFPBJ87">6</a>,page 14], because all coupled components must be updated
+when one of them changes. It also increases the complexity [<a href="#FPBJ87" name="CITEFPBJ87">6</a>]
+of a system because one must remember which components are coupled
+in order to propagate changes between them.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEcB.2">
+B.2</a>&nbsp;&nbsp;Executable specification</h2>
+
+<div class="p"><!----></div>
+An executable specification is simply the combination of (1) a set
+of rules and (2) the logic necessary to check that those rules are
+satisfied.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEcB.3">
+B.3</a>&nbsp;&nbsp;System tasks and functions</h2>
+
+<div class="p"><!----></div>
+System functions in Verilog and imported/exported functions in SystemVerilog
+are analogous to function calls in C [<a href="#PLI is dead" name="CITEPLI is dead">35</a>,page 4 and 8].
+System tasks are the same as system functions, except that they cannot
+return a value [<a href="#PLI is dead" name="CITEPLI is dead">35</a>,page 4]. Likewise, imported/exported
+tasks are the same as imported/exported functions, except that they
+cannot return a value [<a href="#PLI is dead" name="CITEPLI is dead">35</a>,page 8].
+
+<div class="p"><!----></div>
+Both Verilog and SystemVerilog provide (1) a set of standard system
+tasks, such as <tt>$display</tt> and <tt>$time</tt>, and (2) a set
+of standard system functions, such as such as <tt>$sin</tt> and <tt>$cos</tt>
+[<a href="#ICS06" name="CITEICS06">18</a>,page 277][<a href="#1800-2005" name="CITE1800-2005">16</a>,page 385]. In addition, a
+user can provide their own system/imported tasks and functions, which
+invoke user-defined C functions, using Verilog PLI &amp; VPI and SystemVerilog
+DPI.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEcB.4">
+B.4</a>&nbsp;&nbsp;Callbacks</h2>
+
+<div class="p"><!----></div>
+A callback is a mechanism that makes a Verilog simulator invoke a
+C function either (1) at a certain time or (2) upon a certain event
+during a simulation [<a href="#ICS06" name="CITEICS06">18</a>,page 375]. Neither Verilog nor a
+Verilog simulator provide a default set of callbacks. Instead, callbacks
+are registered by a user through VPI [<a href="#ICS06" name="CITEICS06">18</a>,pages 375-376].
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEcB.4.1">
+B.4.1</a>&nbsp;&nbsp;Self-generative callbacks</h3>
+
+<div class="p"><!----></div>
+A callback is <b>self-generative</b> if, upon execution, it schedules
+another instance of itself either (1) at a future time or (2) upon
+a future event [<a href="#SS02" name="CITESS02">36</a>,pages 232-233].
+
+<div class="p"><!----></div>
+
+<h2>Bibliography</h2>
+
+<dl compact="compact">
+ <dt><a href="#CITErelated: spec-driven C++ lib" name="related: spec-driven C++ lib">[1]</a></dt><dd>D. Abts and M. Roberts, "Verifying
+large-scale multiprocessors using an abstract verification environment",
+in Proc. <em>36th Design Automation Conference (DAC)</em>, 1999, pp.
+163-168.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEDA06" name="DA06">[2]</a></dt><dd> D. Astels, "Beyond Test Driven Development: Behaviour
+Driven Development", <em>Google TechTalks</em>, 17 March 2006, [Video
+recording]. Available: <a href="http://video.google.com/videoplay?docid=8135690990081075324"><tt>http://video.google.com/videoplay?docid=8135690990081075324</tt></a>.
+[Accessed: 10 May 2006]. Times (hh:mm:ss) 00:03:30-00:04:37.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEagile manifesto" name="agile manifesto">[3]</a></dt><dd> K. Beck, M. Beedle, A. van Bennekum, A.
+Cockburn, W. Cunningham, M. Fowler, J. Grenning, J. Highsmith, A.
+Hunt, R. Jeffries, J. Kern, B. Marick, R.C. Martin, S. Mellor, K.
+Schwaber, J. Sutherland, and D. Thomas, "Manifesto for Agile Software
+Development", 2001, [Online document]. Available: <a href="http://agilemanifesto.org"><tt>http://agilemanifesto.org</tt></a>.
+[Accessed: 28 January 2007].
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEJB06" name="JB06">[4]</a></dt><dd> J. Bergeron, <em>Writing Testbenches using SystemVerilog</em>,
+New York: Springer Science+Business Media, 2006.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITETLM verif" name="TLM verif">[5]</a></dt><dd>D.S. Brahme, S. Cox, J. Gallo, M. Glasser, W.
+Grundmann, C.N. Ip, W. Paulsen, J.L. Pierce, J. Rose, D. Shea, and
+K. Whiting, "The Transaction-Based Verification Methodology",
+<em>Cadence Berkeley Labs</em>, August 2000, [Technical report]. Available:
+<a href="http://www.testbuilder.net/reports/tbv00tr2.pdf"><tt>http://www.testbuilder.net/reports/tbv00tr2.pdf</tt></a>. [Accessed:
+30 December 2006].
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEFPBJ87" name="FPBJ87">[6]</a></dt><dd>F.P. Brooks Jr., "No Silver Bullet", in <em>IEEE
+Computer</em>, vol. 20, no. 4, pp. 10-19, April 1987.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEagile book" name="agile book">[7]</a></dt><dd>A. Cockburn, <em>Agile Software Development</em>,
+Indianapolis, IN: Pearson Education, 2002.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITErelated: testbuilder" name="related: testbuilder">[8]</a></dt><dd>S. Cox, M. Glasser, W. Grundmann, C.N.
+Ip, W. Paulsen, J.L. Pierce, J. Rose, D. Shea and K. Whiting. "Creating
+a C++ library for Transaction-Based Test Bench Authoring", in <em>Forum
+in Design Languages</em>, 2001.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEdsl" name="dsl">[9]</a></dt><dd>A. van Deursen, P. Klint, and J. Visser, "Domain-Specific
+Languages: An Annotated Bibliography", 9 February 2000, [Online
+document]. Available: <a href="http://homepages.cwi.nl/~arie/papers/dslbib/"><tt>http://homepages.cwi.nl/~arie/papers/dslbib/</tt></a>.
+[Accessed: 29 January 2007].
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEagile ruby DSL" name="agile ruby DSL">[10]</a></dt><dd> O. Fernandez, "Agile DSL Development
+in Ruby", presented at <em>Java and Object-Oriented software engineering
+(JAOO)</em>, October 2006, [Online document]. Available: <a href="http://obiefernandez.com/presentations/obie_fernandez-agile_dsl_development_in_ruby.pdf"><tt>http://obiefernandez.com/presentations/obie_fernandez-agile_dsl_development_in_ruby.pdf</tt></a>.
+[Accessed: 29 January 2007]. 
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEruby DSL artima" name="ruby DSL artima">[11]</a></dt><dd>J. Freeze, "Creating DSLs with Ruby",
+<em>Ruby Code &amp; Style</em>, 16 March 2006, [Online document]. Available:
+<a href="http://www.artima.com/rubycs/articles/ruby_as_dsl.html"><tt>http://www.artima.com/rubycs/articles/ruby_as_dsl.html</tt></a>. [Accessed:
+29 January 2007].
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEeda giants" name="eda giants">[12]</a></dt><dd> R. Goering, "ESL tools: Are EDA giants in
+the game?", <em>EETimes</em>, 13 September 2004, [Online document].
+Available: <a href="http://www.eetimes.com/news/design/showArticle.jhtml?articleID=47204415"><tt>http://www.eetimes.com/news/design/showArticle.jhtml?articleID=47204415</tt></a>.
+[Accessed: 19 January 2007].
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEAGAAB05" name="AGAAB05">[13]</a></dt><dd> A. Gupta, A.A. Bayazit, and Y. Mahajan, "Verification
+Languages", in <em>The Industrial Information Technology Handbook</em>,
+R. Zurawski, Ed., CRC Press, 2005, ch. 86, pp. 1-18.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITExUnit" name="xUnit">[14]</a></dt><dd>P. Hamill, <em>Unit Test Frameworks</em>, O'Reilly media,
+October 2004, ch. 3, pp. 18-31.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEKH99" name="KH99">[15]</a></dt><dd> K. Hiwada, "Ruby/Verilog-PLI", 31 October 1999,
+[Software]. Available: <a href="http://easter.kuee.kyoto-u.ac.jp/~hiwada/ruby/memo/src/ruby-vpi-test.tgz"><tt>http://easter.kuee.kyoto-u.ac.jp/~hiwada/ruby/memo/src/ruby-vpi-test.tgz</tt></a>.
+Mirror: <a href="http://rubyforge.org/frs/?group_id=1339&release_id=8852"><tt>http://rubyforge.org/frs/?group_id=1339&amp;release_id=8852</tt></a>.
+[Accessed: 9 February 2006].
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITE1800-2005" name="1800-2005">[16]</a></dt><dd> IEEE Computer Society, <em>IEEE Standard for
+SystemVerilog-Unified Hardware Design, Specification, and Verification
+Language</em>, Std. 1800-2005, IEEE, 22 November 2005.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITE1364-2001" name="1364-2001">[17]</a></dt><dd> IEEE Computer Society, <em>IEEE Standard for
+Verilog Hardware Description Language</em>, Std. 1364-2001, IEEE, 28 September
+2001.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEICS06" name="ICS06">[18]</a></dt><dd> IEEE Computer Society, <em>IEEE Standard for Verilog
+Hardware Description Language</em>, Std. 1364-2005, IEEE, 7 April 2006.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITETDD" name="TDD">[19]</a></dt><dd>D. Janzen and H. Saiedian, "Test-driven development
+concepts, taxonomy, and future direction", in <em>IEEE Computer</em>,
+vol. 38, no. 9, pp. 43-50, September 2005.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEmetacomputing" name="metacomputing">[20]</a></dt><dd>P. Kacsuk and F. Vajda, "Network-based
+Distributed Computing (Metacomputing)", presented at <em>European
+Research Consortium for Informatics and Mathematics (ERCIM)</em>, Computer
+and Automation Research Institute of the Hungarian Academy of Sciences
+(MTA SZTAKI), Hungary, 1999.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEruby-vpi" name="ruby-vpi">[21]</a></dt><dd> S.N. Kurapati and K. Hiwada, "Ruby-VPI: Ruby
+interface to IEEE 1364-2005 Verilog VPI", 26 February 2006, [Software].
+Available: <a href="http://ruby-vpi.rubyforge.org"><tt>http://ruby-vpi.rubyforge.org</tt></a>. [Accessed: 31 December
+2006].
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITErubyconf06 keynote" name="rubyconf06 keynote">[22]</a></dt><dd>Y. Matsumoto, "The Return of the
+Bikeshed or Nuclear Plant in the Backyard", presented at <em>The
+Sixth International Ruby Conference (RubyConf)</em>, Denver, Colorado,
+20-22 October 2006. [Presentation]. Available: <a href="http://www.rubyist.net/~matz/slides/rc2006/"><tt>http://www.rubyist.net/~matz/slides/rc2006/</tt></a>.
+[Accessed: 30 January 2007].
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITErelated: sim+emulator" name="related: sim+emulator">[23]</a></dt><dd>S.B. Sarmadi, S.G. Miremadi, G. Asadi,
+and A.R. Ejlali, "Fast Prototyping with Co-operation of Simulation
+and Emulation", in Proc. <em>12th International Conference of
+Field-Programmable Logic and Applications (FPL)</em>, 2-4 September 2002,
+Montpellier, France, vol. 2438/2002, pp. 15-25.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEsurvey" name="survey">[24]</a></dt><dd>F. Mattern and P. Sturm, "From Distributed Systems
+to Ubiquitous Computing - The State of the Art, Trends, and Prospects
+of Future Networked Systems", presented at <em>Kommunikation in
+Verteilten Systemen (KiVS)</em>, Leipzig, Germany, 2003.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITESCM04" name="SCM04">[25]</a></dt><dd> S.C. McConnell, <em>Code Complete</em>, D. Musgrave,
+Ed., 2nd ed., Redmond, Washington: Microsoft Press, 2004.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEcver guy" name="cver guy">[26]</a></dt><dd> S. Meyer, "Verilog Plus C Language Modeling
+with PLI 2.0: The Next Generation Simulation Language", in Proc.
+<em>International Verilog HDL Conference and VHDL International
+Users Forum</em>, 16-19 March 1998, pp. 98-105.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEBDD" name="BDD">[27]</a></dt><dd>D. North and others, "Behaviour-Driven Development",
+[Online document]. Available: <a href="http://behaviour-driven.org"><tt>http://behaviour-driven.org</tt></a>.
+[Accessed: 30 January 2007].
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEactiveRDF" name="activeRDF">[28]</a></dt><dd>E. Oren and R. Delbru, "ActiveRDF: Object-oriented
+RDF in Ruby", in <em>Scripting for Semantic Web (ESWC)</em>, 2006.
+pp. 3.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITErSpec" name="rSpec">[29]</a></dt><dd>RSpec developers, "Behaviour Driven Development
+for Ruby", 18 January 2007, [Software]. Available: <a href="http://rspec.rubyforge.org"><tt>http://rspec.rubyforge.org</tt></a>.
+[Accessed: 30 January 2007].
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEabout ruby" name="about ruby">[30]</a></dt><dd>Ruby community, "About Ruby", [Online
+document]. Available: <a href="http://www.ruby-lang.org/en/about/"><tt>http://www.ruby-lang.org/en/about/</tt></a>. [Accessed:
+28 January 2007].
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEusenix" name="usenix">[31]</a></dt><dd>A. Wollrath, R. Riggs, and J. Waldo, "A Distributed
+Object Model for the Java System", presented at <em>Second USENIX
+Conference on Object-Oriented Technologies (COOTS)</em>, Toronto, Ontario,
+Canada, June 17-21, 1996.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEce126 book" name="ce126 book">[32]</a></dt><dd>D.R. Smith and P.D. Franzon, <em>Verilog styles
+for synthesis of digital systems</em>, Upper Saddle River, New Jersey:
+Prentice Hall, 2001.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITERMI spec" name="RMI spec">[33]</a></dt><dd>Sun Microsystems, Inc. "Java Remote Method
+Invocation", 2003 Dec 11, [Online document]. Available: <a href="http://java.sun.com/j2se/1.5.0/docs/guide/rmi/spec/rmiTOC.html"><tt>http://java.sun.com/j2se/1.5.0/docs/guide/rmi/spec/rmiTOC.html</tt></a>.
+[Accessed: 6 Feb 2005].
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEsunderam" name="sunderam">[34]</a></dt><dd>V. Sunderam, "Heterogeneous network computing:
+the next generation", in <em>Parallel Computing</em>, vol. 23, no.
+1-2, pp. 121-135, April 1997.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEPLI is dead" name="PLI is dead">[35]</a></dt><dd> S. Sutherland, "The Verilog PLI Is Dead
+(maybe) Long Live The SystemVerilog DPI!", in Proc. <em>Synopsys
+Users Group (SNUG)</em>, San Jose, 2004.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITESS02" name="SS02">[36]</a></dt><dd> S. Sutherland, <em>The Verilog PLI handbook: a users
+guide and comprehensive reference on the Verilog programming</em>, 2nd
+ed., Masssachusetts: Kulwer Academic Publishers, 2002.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEtiobe" name="tiobe">[37]</a></dt><dd>The Coding Standards Company, "TIOBE Programming
+Community Index", January 2007, [Online document]. Available:
+<a href="http://www.tiobe.com/tpci.htm"><tt>http://www.tiobe.com/tpci.htm</tt></a>. [Accessed: 28 January 2007].
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEpickaxe" name="pickaxe">[38]</a></dt><dd> D. Thomas and A. Hunt, "Programming Ruby: The
+Pragmatic Programmer's Guide", <em>Pragmatic Bookshelf</em>, October
+2000, [Online book]. Available: <a href="http://www.ruby-doc.org/docs/ProgrammingRuby/"><tt>http://www.ruby-doc.org/docs/ProgrammingRuby/</tt></a>.
+[Accessed: 29 January 2007].
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEpickaxe2" name="pickaxe2">[39]</a></dt><dd>D. Thomas, C. Fowler, and A. Hunt, <em>Programming
+Ruby: The Pragmatic Programmer's Guide</em>, 2nd ed., Raleigh, Noth Carolina:
+Pragmatic Bookshelf, 2005.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITErails book" name="rails book">[40]</a></dt><dd> D. Thomas, D.H. Hansson, L. Breedt, M. Clark,
+T. Fuchs, and A. Schwarz, <em>Agile Web Development with Rails</em>,
+Raleigh, Noth Carolina: Pragmatic Bookshelf, 2005.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEmoore" name="moore">[41]</a></dt><dd>Intel Corporation, "Moore's Law, The Future",
+22 September 2006, [Online document]. Available: <a href="http://www.intel.com/technology/mooreslaw/"><tt>http://www.intel.com/technology/mooreslaw/</tt></a>.
+[Accessed: 9 March 2007].
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEwaldo" name="waldo">[42]</a></dt><dd>J. Waldo, "Remote procedure calls and Java Remote
+Method Invocation", in <em>IEEE Concurrency</em>, vol. 6, no. 3, pp.
+5-7, July 1998.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITErelated: try before buy" name="related: try before buy">[43]</a></dt><dd>H.P. Wen, C.Y. Lin, and Y.L. Lin,
+"Concurrent-Simulation-Based Remote IP Evaluation over the Internet
+for System-on-a-Chip Design", in Proc. <em>14th International
+Symposium on Systems Synthesis (ISSS)</em>, 1-3 October 2001, Montréal,
+P.Q., Canada, pp. 233-238.
+
+<div class="p"><!----></div>
+</dd>
+ <dt><a href="#CITEagile IEEE" name="agile IEEE">[44]</a></dt><dd>L. Williams and A. Cockburn, "Agile software
+development: it's about feedback and change", in <em>IEEE Computer</em>,
+vol. 36, no. 6, pp. 39-43, June 2003.</dd>
+</dl>
+
+<div class="p"><!----></div>
+<hr /><h3>Footnotes:</h3>
+
+<div class="p"><!----></div>
+<a name="tthFtNtAAB"></a><a href="#tthFrefAAB"><sup>1</sup></a>Self-generative callbacks are used instead of system tasks and functions
+to avoid tight coupling (see section <a href="#sub:Design-driven-functional-verification">A.2.2</a>).
+<div class="p"><!----></div>
+<a name="tthFtNtAAC"></a><a href="#tthFrefAAC"><sup>2</sup></a>Integers in Ruby "can be any length (up to a maximum determined
+by the amount of free memory on your system)" [<a href="#pickaxe2" name="CITEpickaxe2">39</a>,page 55].
+<div class="p"><!----></div>
+<a name="tthFtNtAAD"></a><a href="#tthFrefAAD"><sup>3</sup></a>Observed empirically.
+<div class="p"><!----></div>
+<a name="tthFtNtAAE"></a><a href="#tthFrefAAE"><sup>4</sup></a>I finally heard from Hiwada in August 2006 and received his written
+permission to continue developing Ruby-VPI as an open source software
+project.
+<br /><br /><hr /><small>File translated from
+T<sub><font size="-1">E</font></sub>X
+by <a href="http://hutchinson.belmont.ma.us/tth/">
+T<sub><font size="-1">T</font></sub>H</a>,
+version 3.67.<br />On 23 Apr 2007, 00:25.</small>
+</body></html>

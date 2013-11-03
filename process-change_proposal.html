@@ -1,0 +1,1552 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+           "DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta name="GENERATOR" content="TtH 3.67" />
+ <style type="text/css"> div.p { margin-top: 7pt;}</style>
+ <style type="text/css"><!--
+ td div.comp { margin-top: -0.6ex; margin-bottom: -1ex;}
+ td div.comb { margin-top: -0.6ex; margin-bottom: -.6ex;}
+ td div.hrcomp { line-height: 0.9; margin-top: -0.8ex; margin-bottom: -1ex;}
+ td div.norm {line-height:normal;}
+ span.roman {font-family: serif; font-style: normal; font-weight: normal;} 
+ span.overacc2 {position: relative;  left: .8em; top: -1.2ex;}
+ span.overacc1 {position: relative;  left: .6em; top: -1.2ex;} --></style>
+ 
+
+                        
+   
+    
+<title> Non-Existent Foo \&amp; Bar Co. {}\
+{Process-Change Proposal #28770} </title>
+</head>
+<body>
+ 
+<h1 align="center">Non-Existent Foo &amp; Bar Co. <em></em><br />
+<em>Process-Change Proposal #28770</em> </h1>
+
+<div class="p"><!----></div>
+
+<dl compact="compact">
+ <dt><b>To:</b></dt>
+	<dd>Imagine A. Manager<br />
+Director, Distributed-Applications</dd>
+ <dt><b>From:</b></dt>
+	<dd>Suraj N. Kurapati<br />
+Analyst, Research &amp; Development</dd>
+ <dt><b>Proposal:</b></dt>
+	<dd>Use Java RMI to encapsulate low-level inter-process communication
+in our distributed-applications.</dd>
+ <dt><b>Start&nbsp;Date:</b></dt>
+	<dd>1<sup>st</sup> April 2005.</dd>
+ <dt><b>Duration:</b></dt>
+	<dd>6 weeks for evaluation.</dd>
+ <dt><b>Requested&nbsp;Funds:</b></dt>
+	<dd>$300.00</dd>
+</dl>
+
+<h2> Abstract</h2>
+Presently, our distributed-applications employ a low-level approach
+to inter-process communication<a href="#tthFtNtAAB" name="tthFrefAAB"><sup>1</sup></a> (IPC), which burdens our programmers with protocol-design and -synchronization
+issues that are unimportant to the business logic they implement.
+To circumvent these issues in the future, the use of a high-level
+approach to IPC, such as Java RMI, is suggested; for such an approach
+can shorten development time, reduce development costs, and improve
+the reliability of our distributed-applications.
+
+<div class="p"><!----></div>
+
+
+<h1>Contents </h1>
+<a href="#tth_sEc1"
+>1&nbsp; Introduction</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc1.1"
+>1.1&nbsp; Problem</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc1.1.1"
+>1.1.1&nbsp; Laborious</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc1.1.2"
+>1.1.2&nbsp; Interoperability</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc1.1.3"
+>1.1.3&nbsp; Complexity</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc1.2"
+>1.2&nbsp; Objectives</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc1.3"
+>1.3&nbsp; Significance</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc1.4"
+>1.4&nbsp; Risks</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc1.4.1"
+>1.4.1&nbsp; Human</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc1.4.2"
+>1.4.2&nbsp; Operational</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc1.4.3"
+>1.4.3&nbsp; Reputation</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc1.4.4"
+>1.4.4&nbsp; Procedural</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc1.4.5"
+>1.4.5&nbsp; Project</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc1.4.6"
+>1.4.6&nbsp; Financial</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc1.4.7"
+>1.4.7&nbsp; Technical</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc1.4.8"
+>1.4.8&nbsp; Political</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc1.5"
+>1.5&nbsp; Benefits</a><br />
+<a href="#tth_sEc2"
+>2&nbsp; Background</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc2.1"
+>2.1&nbsp; Problem</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc2.1.1"
+>2.1.1&nbsp; Usage</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc2.1.2"
+>2.1.2&nbsp; Design</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc2.1.3"
+>2.1.3&nbsp; Remarks</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc2.2"
+>2.2&nbsp; Approach</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc2.2.1"
+>2.2.1&nbsp; Utilization</a><br />
+
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc2.2.2"
+>2.2.2&nbsp; Remarks</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc2.2.3"
+>2.2.3&nbsp; Alternatives</a><br />
+<a href="#tth_sEc3"
+>3&nbsp; Description</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc3.1"
+>3.1&nbsp; Problem</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc3.1.1"
+>3.1.1&nbsp; Assumptions</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc3.2"
+>3.2&nbsp; Approach</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc3.2.1"
+>3.2.1&nbsp; Appropriateness</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc3.2.2"
+>3.2.2&nbsp; Implementation</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc3.2.3"
+>3.2.3&nbsp; Evaluation</a><br />
+<a href="#tth_sEc4"
+>4&nbsp; Plan</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc4.1"
+>4.1&nbsp; Achieving Objectives</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc4.2"
+>4.2&nbsp; Evaluation</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc4.3"
+>4.3&nbsp; Schedule</a><br />
+<a href="#tth_sEc5"
+>5&nbsp; Necessities</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.1"
+>5.1&nbsp; Equipment</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.2"
+>5.2&nbsp; Personnel</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc5.3"
+>5.3&nbsp; Budget</a><br />
+<a href="#tth_sEc6"
+>6&nbsp; Appendix</a><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<a href="#tth_sEc6.1"
+>6.1&nbsp; Remote Procedure Call (RPC)</a><br />
+
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc1">
+1</a>&nbsp;&nbsp;<a name="sec:Introduction">
+</a>Introduction</h2>
+
+<div class="p"><!----></div>
+This section, intended for non-specialist readers, introduces the
+purpose and significance of this proposal. Please refer to section
+ for a more technical discussion.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc1.1">
+1.1</a>&nbsp;&nbsp;Problem</h3>
+
+<div class="p"><!----></div>
+Our distributed-applications, software that operates concurrently
+on one or more computers that are connected together through a common
+computer network, presently employ a complicated low-level method
+of IPC. This method facilities the physical transport of individual
+pieces of communication, or messages. Thus, in order to utilize this
+method, our developers have to custom-design messages, their appearance,
+meaning, and how they are processed.
+
+<div class="p"><!----></div>
+Though not apparent at first, this method presents several drawbacks,
+discussed below, which distract our developers from implementing business
+logic and instead preoccupy them with low-level IPC programming.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc1.1.1">
+1.1.1</a>&nbsp;&nbsp;Laborious</h4>
+
+<div class="p"><!----></div>
+This method of IPC is inherently inflexible and soon becomes impractical
+as more functionality is added to a distributed-application. For example,
+when a new piece of functionality, such as retrieving the number of
+computers currently running a given distributed-application, is added
+to one of our distributed-applications, a torrent of new messages
+must be custom-designed. This process is immensely laborious in contrast
+to implementing the new functionality in a distributed-application's
+business logic-which simply involves writing new software subroutines.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc1.1.2">
+1.1.2</a>&nbsp;&nbsp;Interoperability</h4>
+
+<div class="p"><!----></div>
+IPC message designs vary between our distributed-applications, as
+each of them was designed to perform a wholly different set of business
+tasks. This variation makes it difficult, if not impractical, for
+our distributed-applications to inter-operate with each other. In
+addition, this inability to inter-operate at the IPC level is the
+primary obstacle keeping our company from marketing our distributed-applications
+in suites.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc1.1.3">
+1.1.3</a>&nbsp;&nbsp;Complexity</h4>
+
+<div class="p"><!----></div>
+Because this method only facilitates the transport of messages, our
+developers are forced to add extra logic to prevent miscommunication
+of obsolete or incorrect information, and to organize, delegate, and
+synchronize communication between groups of computers serving our
+distributed-applications.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc1.2">
+1.2</a>&nbsp;&nbsp;Objectives</h3>
+
+<div class="p"><!----></div>
+A better method of IPC, which reduces the aforementioned issues whilst
+enabling our developers to focus on implementing business logic, is
+essential. In particular, such a method must 
+
+<div class="p"><!----></div>
+
+<ul>
+<li> hide low-level details of IPC.
+<div class="p"><!----></div>
+</li>
+
+<li> provide an intuitive, consistent, high-level programming interface
+for IPC.
+<div class="p"><!----></div>
+</li>
+
+<li> facilitate IPC reliably-automatic or transparent message-synchronization,
+-serialization, -retransmission, and -processing.
+<div class="p"><!----></div>
+</li>
+
+<li> provide a clean, reusable, and extensible separation of interface
+and implementation to avoid an explosion of IPC messages upon adding
+new functionality.
+<div class="p"><!----></div>
+</li>
+</ul>
+At minimum, these conditions should be met in order to effectively
+circumvent the problems introduced by the present method of IPC.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc1.3">
+1.3</a>&nbsp;&nbsp;Significance</h3>
+
+<div class="p"><!----></div>
+The proposed approach encapsulates low-level IPC details and enables
+our developers to better focus on more important matters-implementing
+solid functionality that allows our customers to perform their business
+tasks quickly and reliably.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc1.4">
+1.4</a>&nbsp;&nbsp;Risks</h3>
+
+<div class="p"><!----></div>
+The amount of risk perceived depends upon the type of high-level approach
+chosen to implement IPC in our distributed-applications in the future.
+Nevertheless, the approval of this process-change proposal implies
+the following risks, which were inspired by, determined, and analyzed
+using techniques presented in [<a href="#risk" name="CITErisk">3</a>].
+
+<div class="p"><!----></div>
+Note that risks involving product failure exist presently and independently
+of the proposed change.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc1.4.1">
+1.4.1</a>&nbsp;&nbsp;Human</h4>
+
+<div class="p"><!----></div>
+Our distributed-applications' developers must
+
+<div class="p"><!----></div>
+
+<ul>
+<li> be trained in how RMI works and how it can be used (see Section <a href="#sec:Background">2</a>).
+<div class="p"><!----></div>
+</li>
+
+<li> rethink how their designs can function using the proposed high-level
+approach to IPC.
+<div class="p"><!----></div>
+</li>
+</ul>
+Otherwise, our developers may produce distributed-applications of
+poor quality because they lack expertise in the use of the proposed
+approach.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc1.4.2">
+1.4.2</a>&nbsp;&nbsp;Operational</h4>
+
+<div class="p"><!----></div>
+There will be a possibly lengthy pause in the development schedule
+of our distributed-applications whilst our developers are learning
+how to use the proposed approach to IPC. Consequently, losses may
+incur due to the delay in release of products currently in development.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc1.4.3">
+1.4.3</a>&nbsp;&nbsp;Reputation</h4>
+
+<div class="p"><!----></div>
+Our customers may be disappointed in the delay of our upcoming products.
+Thus, we may damage our company's reputation of being <em>the</em> company
+that sets industry standards in developing distributed-applications
+of the utmost low-level complexity. In addition, some of our top developers,
+who believe strongly in our commitment to developing unnecessarily
+complex distributed-applications, may lose confidence in our company's
+image, resign, and become employed by our company's competitors.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc1.4.4">
+1.4.4</a>&nbsp;&nbsp;Procedural</h4>
+
+<div class="p"><!----></div>
+Because the proposed approach encapsulates IPC in a manner transparent
+to our developers, failure in its internal mechanisms may cause our
+distributed-applications to fail. Thus, our company may be held, unjustly,
+accountable for losses if our products fail under said conditions.
+Furthermore, such an event could taint our reputation of engineering
+only the fastest, most reliable, egregious of distributed-applications.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc1.4.5">
+1.4.5</a>&nbsp;&nbsp;Project</h4>
+
+<div class="p"><!----></div>
+Our developers' possible lack of expertise in using the proposed approach
+to IPC may delay the development of current and future products; possibly
+leading to over-expenditure of budget, decreased reliability of our
+products, and increased invocation of customer-support-which may
+further drain our company's capital.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc1.4.6">
+1.4.6</a>&nbsp;&nbsp;Financial</h4>
+
+<div class="p"><!----></div>
+Possible delays in shipping our current products in development may
+negatively affect our presence in the stock market and incur heavy
+losses in our company's capital. At worst, our company could become
+bankrupt and render its brilliant employees unemployed.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc1.4.7">
+1.4.7</a>&nbsp;&nbsp;Technical</h4>
+
+<div class="p"><!----></div>
+A newer, faster, cleaner, more elegant approach to IPC may be more
+beneficial while introducing less risks than the proposed one. That
+is, the proposed approach to IPC may be a substandard, insufficient,
+impoverished, or obsolete approach that is condemned by industry leaders
+for its shortcomings.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc1.4.8">
+1.4.8</a>&nbsp;&nbsp;Political</h4>
+
+<div class="p"><!----></div>
+Some of our customers, being governmental agencies, may not approve
+of having our distributed-applications' IPC implemented using a a
+third-party technology. They may require distributed-applications
+to use a low-level approach to IPC because they find it to be more
+secure, reliable, and salvageable in case of failure; in which case,
+we may lose a significant portion of our present and potential customer
+base by implementing the proposed high-level approach to IPC.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc1.5">
+1.5</a>&nbsp;&nbsp;Benefits</h3>
+
+<div class="p"><!----></div>
+In spite of the possible risks, the reduced complexity brought about
+by the proposed approach to IPC, will enable our developers to focus
+on implementing business logic. Consequently, improved product quality,
+shortened development time, reduced development costs, and increased
+product sales may result. 
+
+<div class="p"><!----></div>
+In addition, our distributed-applications will be interoperable, due
+to their use of a common, high-level interface for IPC. Such functionality
+may enable our company to market our distributed-applications in suites
+to gain larger profits.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc2">
+2</a>&nbsp;&nbsp;<a name="sec:Background">
+</a>Background</h2>
+
+<div class="p"><!----></div>
+This section, intended for technical readers, introduces the purpose
+and significance of this proposal. Please refer to section 
+for a less technical discussion. Also, the phrase "Java RMI"
+will be used in referring to the Java RMI technology, whereas the
+word "RMI" will be used as an abbreviation for "Remote Method
+Invocation."
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc2.1">
+2.1</a>&nbsp;&nbsp;Problem</h3>
+
+<div class="p"><!----></div>
+Our distributed-applications presently employ a custom application-level<a href="#tthFtNtAAC" name="tthFrefAAC"><sup>2</sup></a> protocol, which operates over the Internet Protocol (IP) [<a href="#networks" name="CITEnetworks">1</a>],
+for IPC. This protocol operates by having two or more parties exchange
+sequences of bytes, known as messages. Thus, this protocol can be
+considered to be message-based [<a href="#networks" name="CITEnetworks">1</a>].
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc2.1.1">
+2.1.1</a>&nbsp;&nbsp;Usage</h4>
+
+<div class="p"><!----></div>
+Message-based protocols are primarily used in two ways: (1) to propagate
+changes in data and (2) to propagate knowledge of occurrences of events.
+The former way is embodied in data-based messages, which specify a
+subject and its change whilst implying the event that brought about
+the change in the subject. Whereas the latter way is embodied in event-based
+messages, which specify an event that has occurred whilst implying
+an associated subject and its change.
+
+<div class="p"><!----></div>
+For example, consider a situation where process<a href="#tthFtNtAAD" name="tthFrefAAD"><sup>3</sup></a> <em>A</em> is waiting for some change to be reported by process <em>B</em>.
+Suppose that process <em>B</em> has finished <em></em>performing a computation
+and has stored its result. Now, process <em>B</em> can notify process
+<em>A</em> via (1) a data-based message, which would specify the old
+and new result of process <em>B</em>'s computation whilst implying that
+process <em>B</em> has performed a computation; or (2) an event-based
+message, which would specify that process <em>B</em> has finished performing
+a computation whilst implying that process <em>A</em> can fetch the
+result of process <em>B</em>'s computation if it so desires.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc2.1.2">
+2.1.2</a>&nbsp;&nbsp;Design</h4>
+
+<div class="p"><!----></div>
+In addition to implementing pathways-the aforementioned ways in
+which message-based protocols are used-for message exchanges, our
+developers must design messages and write logic to serialize, deserialize,
+and semantically process them. In particular, they must design
+
+<div class="p"><!----></div>
+
+<ul>
+<li> how a message appears to the sender
+<div class="p"><!----></div>
+</li>
+
+<li> how a message appears to the recipient
+<div class="p"><!----></div>
+</li>
+
+<li> how a message appears while it is being transported
+<div class="p"><!----></div>
+</li>
+
+<li> how the recipient shall attempt to comprehend a message
+<div class="p"><!----></div>
+</li>
+</ul>
+and conjure strategies for
+
+<div class="p"><!----></div>
+
+<ul>
+<li> how a message is transported to the recipient
+<div class="p"><!----></div>
+</li>
+
+<li> what happens if a message is lost during transport
+<div class="p"><!----></div>
+</li>
+
+<li> what happens if a message becomes distorted during transport
+<div class="p"><!----></div>
+</li>
+
+<li> what happens if portions of a message become distorted during transport
+<div class="p"><!----></div>
+</li>
+
+<li> what happens if a sequence of messages is delivered in the wrong order
+<div class="p"><!----></div>
+</li>
+</ul>
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc2.1.3">
+2.1.3</a>&nbsp;&nbsp;Remarks</h4>
+
+<div class="p"><!----></div>
+Depending on the type of tasks performed by our distributed-applications,
+choosing solely an event-based or data-based message exchange protocol
+may minimize the number of messages needed to be designed and implemented.
+
+<div class="p"><!----></div>
+In practice, a combination of event-based and data-based messages
+is often used because event-based messages are more suitable for certain
+IPC and data-based messages are more suitable for others. However,
+using both message schemes significantly bloats the source-code dealing
+with IPC. In addition, both parties of a message exchange must be
+programmed to handle messages in common-which duplicates message-handling
+code in many cases. 
+
+<div class="p"><!----></div>
+Furthermore, if the semantics of a message change, all parties which
+are programmed to handle that message must be updated accordingly.
+Similarly, if new functionality added, new messages and their respective
+handling procedures must be designed and implemented in excess of
+the anticipated extension of business logic. Naturally, such events
+consume huge amounts of development time, are tedious, and may enable
+a programmer, who does not fully understand the semantics of the message
+amongst various parties, to introduce defects. 
+
+<div class="p"><!----></div>
+Finally, it is often futile to avoid re-design and -implementation
+of messages by sharing messages between different distributed-applications
+because it results in tightly-coupled, brittle software. For example,
+if the semantics of a certain message changes in one application,
+all other applications which interact with the same message must also
+be changed accordingly. Furthermore, because each of our distributed-applications
+is designed to perform different sets of business tasks, one application's
+messages may not be relevant to, and unnecessarily bloat, another.
+
+<div class="p"><!----></div>
+Thus, message-based protocols are inflexible, error-prone, and require
+an enormous amount of design and programming. Consequently, most of
+our distributed-applications' source-code is preoccupied with IPC,
+rather than business logic.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc2.2">
+2.2</a>&nbsp;&nbsp;Approach</h3>
+
+<div class="p"><!----></div>
+Java RMI can be thought of as an object-oriented version of traditional
+RPC (see Appendix ). However, it goes a step further
+from traditional RPC by facilitating transparent serialization of
+objects and entire trees of their references in addition to that of
+primitive<a href="#tthFtNtAAE" name="tthFrefAAE"><sup>4</sup></a> data-types [<a href="#my_survey" name="CITEmy_survey">5</a>]. This enables developers to pass complex
+data-structures as arguments to a RMI, regardless of whether they
+exist in the local Java Virtual Machine (JVM) or a remote one [<a href="#my_survey" name="CITEmy_survey">5</a>,<a href="#survey" name="CITEsurvey">2</a>]. 
+
+<div class="p"><!----></div>
+Furthermore, Java RMI is <em>the</em> choice for IPC in (1) Jini technologies,
+which power dynamic service discovery in unreliable ad-hoc, mobile
+wireless networks, and (2) J2EE technologies, which power complex,
+mission-critical, multi-tiered, enterprise applications [<a href="#survey" name="CITEsurvey">2</a>]. 
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc2.2.1">
+2.2.1</a>&nbsp;&nbsp;Utilization</h4>
+
+<div class="p"><!----></div>
+To visualize how Java RMI is utilized, consider the following scenario. 
+
+<div class="p"><!----></div>
+Suppose that our director of Human Resources wishes to issue a monetary
+bonus of $100.00 to a few brilliant employees, whose identification
+numbers are 160, 230, and 986 respectively. Naturally, our director
+creates a new instance of the <tt>HRDirector</tt> object, invokes
+its <tt>issueBonus</tt> method whilst specifying the employees' identification
+numbers as parameter, and examines the return value and standard output
+and error streams (see Algorithm <a href="#alg:main">9</a>). Surprisingly, that
+is all it takes to utilize a distributed-application which uses Java
+RMI for its IPC. 
+
+<div class="p"><!----></div>
+Behind the scenes, however, the process is a bit more complex, but
+nonetheless simpler than low-level IPC. Let us dissect and examine
+this process step by step.
+
+<div class="p"><!----></div>
+
+<h4>First, The <tt>rmiregistry</tt> Daemon<a href="#tthFtNtAAF" name="tthFrefAAF"><sup>5</sup></a></h4>
+
+<div class="p"><!----></div>
+Our company invests in a dedicated RMI server whose primary role is
+to run the <tt>rmiregistry</tt> daemon. This daemon provides naming
+services for objects that have registered with it [<a href="#RMI spec" name="CITERMI spec">6</a>],
+much like a Yellow Pages [<a href="#pacbell" name="CITEpacbell">4</a>] telephone directory provides
+telephone numbers of businesses that have registered to be listed
+within it. It enables any Java objects to discover and obtain <b>stubs</b>
+in order to invoke services provided by their associated <b>skeletons</b>
+[<a href="#RMI spec" name="CITERMI spec">6</a>].
+
+<div class="p"><!----></div>
+<br />&nbsp;&nbsp;&nbsp;<b>Stubs&nbsp;&nbsp;</b>
+
+<div class="p"><!----></div>
+are light-weight interfaces [<a href="#RMI spec" name="CITERMI spec">6</a>] which (1) act as representatives
+for and (2) provide a mechanism for interaction with a more heavy-weight
+associate-much like a telephone number (1) represents and (2) provides
+a mechanism for interaction with a business. These interfaces are
+always descendants of <tt>java.rmi.Remote</tt> [<a href="#RMI spec" name="CITERMI spec">6</a>] and
+all of their methods are marked as being able to throw a <tt>java.rmi.RemoteException</tt>
+[<a href="#RMI spec" name="CITERMI spec">6</a>]. This exception is thrown upon:
+
+<div class="p"><!----></div>
+
+<ul>
+<li> "Communication failure (the remote server is unreachable or is
+refusing connections; the connection is closed by the server, etc.)"
+[<a href="#RMI spec" name="CITERMI spec">6</a>].
+<div class="p"><!----></div>
+</li>
+
+<li> "Failure during parameter or return value marshalling or unmarshalling"
+[<a href="#RMI spec" name="CITERMI spec">6</a>].
+<div class="p"><!----></div>
+</li>
+
+<li> "Protocol errors" [<a href="#RMI spec" name="CITERMI spec">6</a>].
+<div class="p"><!----></div>
+</li>
+</ul>
+When a stubs' method is invoked, it communicates with its associate
+skeleton in its originating JVM via Java RMI-which in turn utilizes
+low-level IPC [<a href="#RMI spec" name="CITERMI spec">6</a>]. However, these details are irrelevant
+to the method's invoker; a method invocation on the stub simply <em>feels</em>
+just like a method invocation on any Java object-the only difference
+being that remote methods always are capable of throwing a <tt>java.rmi.RemoteException</tt>
+[<a href="#RMI spec" name="CITERMI spec">6</a>].
+
+<div class="p"><!----></div>
+<br />&nbsp;&nbsp;&nbsp;<b>Skeletons&nbsp;&nbsp;</b>
+
+<div class="p"><!----></div>
+are heavy-weight objects [<a href="#RMI spec" name="CITERMI spec">6</a>] which (1) generally provide
+services for arbitrary objects and (2) are represented by a more light-weight
+associate through which their services can be invoked-much like
+a business (1) generally provides goods and services for arbitrary
+customers and (2) is represented by a telephone number through which
+its services can be invoked. 
+
+<div class="p"><!----></div>
+When a skeleton is passed as an argument to a RMI, the semantics of
+the RMI is altered depending upon the skeleton's super-class. That
+is, if the skeleton is a descendant of <tt>java.rmi.server.UnicastRemoteObject</tt>,
+then it is casted as its associate stub and passed <em>by value</em>-also
+known as a <b>live reference</b> [<a href="#RMI spec" name="CITERMI spec">6</a>]. Otherwise, the
+skeleton is serialized and passed <em>by value</em>, just like a primitive
+data-type [<a href="#RMI spec" name="CITERMI spec">6</a>]. 
+
+<div class="p"><!----></div>
+Because skeletons often contain <em></em>their own non-remote methods
+in addition to their stubs' remote methods, a more complex situation
+arises when a remote method requires that a skeleton<a href="#tthFtNtAAG" name="tthFrefAAG"><sup>6</sup></a> be passed as its argument. In such a case, if the remote method invokes
+one of the passed skeleton's non-remote methods, a regular method
+invocation takes place where the passed skeleton's non-remote method
+executes within the JVM of the remote method to which the skeleton
+was passed [<a href="#RMI spec" name="CITERMI spec">6</a>]. Whereas if the remote method invokes
+one of the passed skeleton's remote methods, then a RMI will take
+place and the invoked method will execute in the passed skeleton's
+JVM [<a href="#RMI spec" name="CITERMI spec">6</a>].
+
+<div class="p"><!----></div>
+
+<h4>Second, The RMI Naming Service</h4>
+
+<div class="p"><!----></div>
+The <tt>FooBarCompany</tt> object (see Algorithm <a href="#alg:foobar">1</a>)
+initializes its <tt>_registry</tt> reference to our dedicated RMI
+server's naming services and facilitates other objects' access to
+these naming services via its <tt>getRegistry</tt> method. That is,
+objects can now register themselves with and discover already registered
+objects via the <tt>java.rmi.Registry</tt> object [<a href="#RMI spec" name="CITERMI spec">6</a>]
+returned by the <tt>FooBarCompany</tt>.<tt>getRegistry</tt> method
+(see constructors in Algorithms <a href="#alg:employee db skel">5</a> and <a href="#alg:payroll db skel">7</a>).
+
+<div class="p"><!----></div>
+
+<h4>Third, Distributed-Object Design</h4>
+
+<div class="p"><!----></div>
+Our Human Resources division and its Payroll department, respectively 
+
+<div class="p"><!----></div>
+
+<ol type="1">
+<li> write source-code for stubs for the services they wish to provide
+(see Algorithms <a href="#alg:employee db stub">4</a> and <a href="#alg:payroll db stub">6</a>)
+<div class="p"><!----></div>
+</li>
+
+<li> write source-code for skeletons that implement their services (see
+Algorithms <a href="#alg:employee db skel">5</a> and <a href="#alg:payroll db skel">7</a>)
+<div class="p"><!----></div>
+</li>
+
+<li> instantiate their skeletons
+<div class="p"><!----></div>
+</li>
+
+<li> register their skeletons as using our company's RMI naming service
+(see constructors in Algorithms <a href="#alg:employee db skel">5</a> and <a href="#alg:payroll db skel">7</a>)
+<div class="p"><!----></div>
+</li>
+</ol>
+The skeleton registration method <tt>java.rmi.registry.Registry.rebind</tt>
+requires that a unique name (see variable <tt>RMI_REGISTRY_NAME</tt>
+in Algorithms <a href="#alg:employee db stub">4</a> and <a href="#alg:payroll db stub">6</a>)
+associated with the skeleton be specified alongside the skeleton itself
+[<a href="#RMI spec" name="CITERMI spec">6</a>]. This unique name is used by other objects when attempting
+to obtain stubs of registered skeletons [<a href="#RMI spec" name="CITERMI spec">6</a>]-just as
+a person uses the name of a business when attempting to obtain its
+telephone number in a telephone directory.
+
+<div class="p"><!----></div>
+Also, note that when a skeleton is registered via the aforementioned
+registration method, the stub associated with the skeleton is registered
+in its place [<a href="#RMI spec" name="CITERMI spec">6</a>]. Thus, a skeleton is <em>only</em> accessible
+via its associated stub [<a href="#RMI spec" name="CITERMI spec">6</a>]. 
+
+<div class="p"><!----></div>
+
+<h4>Fourth, Obtaining Stubs</h4>
+
+<div class="p"><!----></div>
+The <tt>HRDirector</tt> object obtains stubs for services provided
+by the <tt>EmployeeDatabase</tt> and <tt>PayrollDatabase</tt> skeletons
+for use by its <tt>issueBonus</tt> method (see constructor in Algorithm
+<a href="#alg:HRDirector">8</a>). These stubs are obtained by specifying the
+unique name with which their associate skeletons registered themselves
+via the RMI naming service [<a href="#RMI spec" name="CITERMI spec">6</a>].
+
+<div class="p"><!----></div>
+
+<h4>Fifth, Utilizing Stubs</h4>
+
+<div class="p"><!----></div>
+Our director instantiates the <tt>HRDirector</tt> object, invokes
+its <tt>issueBonus</tt> method (see Algorithm <a href="#alg:HRDirector">8</a>),
+and the fun begins. 
+
+<div class="p"><!----></div>
+First, each employee identification number specified by our director
+is verified with the <tt>EmployeeDatabase</tt>, via its <tt>getEmployeeById</tt>
+method, whilst retrieving the <tt>EmployeeRemote</tt> stub associated
+with the employee whose identification number is presently under scrutiny.
+Assuming that the <tt>EmployeeDatabase</tt> skeleton is running in
+a JVM other than that of our directors', the retrieved stub represents
+a <em>live</em> reference of its associate skeleton in a remote JVM
+[<a href="#RMI spec" name="CITERMI spec">6</a>].
+
+<div class="p"><!----></div>
+Second, the <tt>PayrollDatabase</tt> is instructed to issue a bonus,
+via its <tt>issueBonus</tt> method, to the employee represented by
+the previously obtained <tt>EmployeeRemote</tt> stub. Notice that
+we pass <em>both</em> local (our director's <tt>HRDirector</tt> object
+and the bonus' amount) and remote (the previously obtained <tt>EmployeeRemote</tt>
+stub) objects as arguments to this RMI.
+
+<div class="p"><!----></div>
+Third, the payroll database checks if the monetary mount specified
+for the bonus is valid, feasible, and issuable. If so, it issues a
+bonus to the specified employee accordingly. Otherwise, it throws
+a <tt>InvalidBonusAmountException</tt> object which, through Java
+RMI, is automatically serialized and passed <em>by value</em> to our
+director's <tt>HRDirector</tt> object [<a href="#RMI spec" name="CITERMI spec">6</a>].
+
+<div class="p"><!----></div>
+Additionally, the payroll database may proceed to verify that the
+specified employee has not been already been given a bonus during
+the last work-week by invoking the <tt>EmployeeRemote</tt> stub's
+<tt>getIdNumber</tt> remote method. In this case, the RMI will effectively
+return a <em>copy</em> [<a href="#RMI spec" name="CITERMI spec">6</a>] of the skeleton's <tt>_id</tt>
+member variable (see method <tt>getIdNumber</tt> in Algorithm <a href="#alg:employee skel">3</a>).
+
+<div class="p"><!----></div>
+Finally, if any exceptions occurred during execution of our director's
+initial invocation of the <tt>HRDirector.issueBonus</tt> method, appropriate
+notifications will be printed to the standard error stream for further
+scrutiny by our director. Otherwise, our director will see that the
+invoked method has returned, with a <tt>void</tt> return value in
+this case, without having thrown any exceptions.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc2.2.2">
+2.2.2</a>&nbsp;&nbsp;Remarks</h4>
+
+<div class="p"><!----></div>
+Notice that in the previous example on Java RMI utilization, we were
+forced to separate the interface from the implementation of our services
+[<a href="#RMI spec" name="CITERMI spec">6</a>]. This important design feature enables skeletons
+to extend, improve, and evolve independently of their associate stubs
+whilst having their implementation completely hidden. For example,
+a business that is listed in a telephone directory may promote their
+most egregious employees, but such change is not reflected in its
+telephone number. Similarly, an arbitrary customer seeking the business'
+services in a telephone directory is usually unconcerned about promotion
+of employees within the business.
+
+<div class="p"><!----></div>
+Furthermore, the amount of maintenance required to modernize or enhance
+distributed-applications, whose IPC is encapsulated by Java RMI, is
+dramatically reduced when compared to those whose IPC is implemented
+using a low-level approach. That is, with Java RMI, there is no explosion
+of low-level IPC messages to be designed and implemented whenever
+new functionality is added to a distributed-application. Rather, a
+remote method corresponding to the new functionality is added to a
+stub, implemented in its associate skeleton, and ready for use. This
+process is astonishingly similar to the common practice of adding
+new functionality to regular, non-distributed-applications. Thus,
+with Java RMI, our developers need not waste their time thinking about
+low-level IPC and, consequently, they are better equipped to perform
+their primary duties-to design and implement pure business logic.
+
+<div class="p"><!----></div>
+[ht]
+<font size="-2">
+<pre>import&nbsp;java.rmi.RemoteException;
+import&nbsp;java.rmi.registry.LocateRegistry;
+import&nbsp;java.rmi.registry.Registry;
+
+final&nbsp;class&nbsp;FooBarCompany
+{
+&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;network&nbsp;address&nbsp;or&nbsp;hostname&nbsp;of&nbsp;our&nbsp;company's&nbsp;dedicated&nbsp;RMI&nbsp;server
+&nbsp;&nbsp;&nbsp;&nbsp;static&nbsp;final&nbsp;String&nbsp;RMI_SERVER_ADDRESS&nbsp;=&nbsp;"127.0.0.1";
+
+&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;static&nbsp;Registry&nbsp;_registry&nbsp;=&nbsp;null;
+
+&nbsp;&nbsp;&nbsp;&nbsp;/**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Initializes&nbsp;a&nbsp;reference&nbsp;to&nbsp;our&nbsp;company's&nbsp;dedicated&nbsp;RMI&nbsp;server.
+&nbsp;&nbsp;&nbsp;&nbsp;*/
+&nbsp;&nbsp;&nbsp;&nbsp;static
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_registry&nbsp;=&nbsp;LocateRegistry.getRegistry(RMI_SERVER_ADDRESS);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catch(RemoteException&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.err.println("Unable&nbsp;to&nbsp;initialize&nbsp;RMI&nbsp;naming
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;service.");
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;/**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns&nbsp;a&nbsp;reference&nbsp;to&nbsp;our&nbsp;company's&nbsp;RMI&nbsp;naming&nbsp;service.
+&nbsp;&nbsp;&nbsp;&nbsp;*/
+&nbsp;&nbsp;&nbsp;&nbsp;static&nbsp;Registry&nbsp;getRegistry()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;_registry;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;FooBarCompany()&nbsp;{}
+}
+
+</pre></font><font size="-2">
+<div class="p"><!----></div>
+</font>#1<a name="alg:foobar">
+</a>Java source-code for the <tt>FooBarCompany</tt>
+object, which serves as a gateway to our company's dedicated RMI server
+(the <tt>rmiregistry</tt> daemon). It creates and hosts a <tt>java.rmi.registry.Registry</tt>
+object, which represents the naming service provided by our company's
+dedicated RMI server.
+
+
+<div class="p"><!----></div>
+[ht]
+<font size="-2">
+<pre>import&nbsp;java.rmi.Remote;
+import&nbsp;java.rmi.RemoteException;
+
+interface&nbsp;EmployeeRemote&nbsp;extends&nbsp;Remote
+{
+&nbsp;&nbsp;&nbsp;&nbsp;/**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns&nbsp;the&nbsp;identification&nbsp;number&nbsp;of&nbsp;this&nbsp;employee.
+&nbsp;&nbsp;&nbsp;&nbsp;*/
+&nbsp;&nbsp;&nbsp;&nbsp;long&nbsp;getIdNumber()&nbsp;throws&nbsp;RemoteException;
+}
+
+</pre></font><font size="-2">
+<div class="p"><!----></div>
+</font>#1<a name="alg:employee stub">
+</a>Java source-code for the <tt>EmployeeRemote</tt>
+object, which is the stub associated with the <tt>Employee</tt> skeleton.
+
+
+<div class="p"><!----></div>
+[ht]
+<font size="-2">
+<pre>import&nbsp;java.rmi.RemoteException;
+import&nbsp;java.rmi.server.UnicastRemoteObject;
+
+class&nbsp;Employee&nbsp;extends&nbsp;UnicastRemoteObject&nbsp;implements&nbsp;EmployeeRemote
+{
+&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;long&nbsp;_idNumber;
+
+&nbsp;&nbsp;&nbsp;&nbsp;Employee()&nbsp;throws&nbsp;RemoteException
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;...
+&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;long&nbsp;getIdNumber()&nbsp;throws&nbsp;RemoteException
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;_idNumber;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+
+</pre></font><font size="-2">
+<div class="p"><!----></div>
+</font>#1<a name="alg:employee skel">
+</a>Java source-code for the <tt>Employee</tt>
+object, which is the skeleton associated with the <tt>EmployeeRemote</tt>
+stub.
+
+[ht]
+<font size="-2">
+<pre>import&nbsp;java.rmi.Remote;
+import&nbsp;java.rmi.RemoteException;
+
+interface&nbsp;EmployeeDatabaseRemote&nbsp;extends&nbsp;Remote
+{
+&nbsp;&nbsp;&nbsp;&nbsp;static&nbsp;final&nbsp;String&nbsp;RMI_REGISTRY_NAME&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;"/human_resources/EmployeeDatabase";
+
+&nbsp;&nbsp;&nbsp;&nbsp;/**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thrown&nbsp;when&nbsp;an&nbsp;employee&nbsp;is&nbsp;not&nbsp;found&nbsp;in&nbsp;the&nbsp;employee&nbsp;database.
+&nbsp;&nbsp;&nbsp;&nbsp;*/
+&nbsp;&nbsp;&nbsp;&nbsp;class&nbsp;EmployeeNotFoundException&nbsp;extends&nbsp;Exception&nbsp;{}
+
+&nbsp;&nbsp;&nbsp;&nbsp;/**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Returns&nbsp;a&nbsp;reference&nbsp;to&nbsp;an&nbsp;employee&nbsp;associated&nbsp;with&nbsp;the&nbsp;specified
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;identification&nbsp;number.
+&nbsp;&nbsp;&nbsp;&nbsp;*/
+&nbsp;&nbsp;&nbsp;&nbsp;EmployeeRemote&nbsp;getEmployeeById(long&nbsp;idNumber)&nbsp;throws&nbsp;RemoteException,
+&nbsp;&nbsp;&nbsp;&nbsp;EmployeeNotFoundException;
+}
+
+</pre></font><font size="-2">
+<div class="p"><!----></div>
+</font>#1<a name="alg:employee db stub">
+</a>Java source-code for the <tt>EmployeeDatabaseRemote</tt>
+object, which is the stub associated with the <tt>EmployeeDatabase</tt>
+skeleton.
+
+
+<div class="p"><!----></div>
+[ht]
+<font size="-2">
+<pre>import&nbsp;java.rmi.RemoteException;
+import&nbsp;java.rmi.server.UnicastRemoteObject;
+
+class&nbsp;EmployeeDatabase&nbsp;extends&nbsp;UnicastRemoteObject&nbsp;implements
+EmployeeDatabaseRemote
+{
+&nbsp;&nbsp;&nbsp;&nbsp;EmployeeDatabase()&nbsp;throws&nbsp;RemoteException
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;register&nbsp;this&nbsp;database&nbsp;with&nbsp;our&nbsp;company's&nbsp;RMI&nbsp;naming&nbsp;service
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FooBarCompany.getRegistry().rebind(RMI_REGISTRY_NAME,&nbsp;this);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;EmployeeRemote&nbsp;getEmployeeById(long&nbsp;idNumber)&nbsp;throws
+&nbsp;&nbsp;&nbsp;&nbsp;RemoteException,&nbsp;EmployeeNotFoundException
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;...
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+
+</pre></font><font size="-2">
+<div class="p"><!----></div>
+</font>#1<a name="alg:employee db skel">
+</a>Java source-code for the <tt>EmployeeDatabase</tt>
+object, which is the skeleton associated with the <tt>EmployeeDatabaseRemote</tt>
+stub.
+
+
+<div class="p"><!----></div>
+[ht]
+<font size="-2">
+<pre>import&nbsp;java.rmi.Remote;
+import&nbsp;java.rmi.RemoteException;
+
+interface&nbsp;PayrollDatabaseRemote&nbsp;extends&nbsp;Remote
+{
+&nbsp;&nbsp;&nbsp;&nbsp;static&nbsp;final&nbsp;String&nbsp;RMI_REGISTRY_NAME&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;"/human_resources/payroll/PayrollDatabase";
+
+&nbsp;&nbsp;&nbsp;&nbsp;/**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Thrown&nbsp;when&nbsp;a&nbsp;monetary&nbsp;bonus&nbsp;specifies&nbsp;an&nbsp;invalid&nbsp;amount&nbsp;of&nbsp;money.
+&nbsp;&nbsp;&nbsp;&nbsp;**/
+&nbsp;&nbsp;&nbsp;&nbsp;class&nbsp;InvalidBonusAmountException&nbsp;extends&nbsp;Exception
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InvalidBonusAmountException(String&nbsp;reason)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;super(reason);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;/**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Issues&nbsp;a&nbsp;monetary&nbsp;bonus&nbsp;of&nbsp;the&nbsp;specified&nbsp;amount&nbsp;to&nbsp;the&nbsp;specified
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;employee.&nbsp;Also,&nbsp;the&nbsp;bonus&nbsp;is&nbsp;marked&nbsp;as&nbsp;being&nbsp;issued&nbsp;by&nbsp;the
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;given&nbsp;director.
+&nbsp;&nbsp;&nbsp;&nbsp;*/
+&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;issueBonus(HRDirector&nbsp;issuer,&nbsp;EmployeeRemote&nbsp;receiver,&nbsp;double
+&nbsp;&nbsp;&nbsp;&nbsp;amount)&nbsp;throws&nbsp;RemoteException,&nbsp;InvalidBonusAmountException;
+}
+
+</pre></font><font size="-2">
+<div class="p"><!----></div>
+</font>#1<a name="alg:payroll db stub">
+</a>Java source-code for the <tt>PayrollDatabaseRemote</tt>
+object, which is the stub associated with the <tt>PayrollDatabase</tt>
+skeleton.
+
+
+<div class="p"><!----></div>
+[ht]
+<font size="-2">
+<pre>import&nbsp;java.rmi.RemoteException;
+import&nbsp;java.rmi.server.UnicastRemoteObject;
+
+class&nbsp;PayrollDatabase&nbsp;extends&nbsp;UnicastRemoteObject&nbsp;implements
+PayrollDatabaseRemote
+{
+&nbsp;&nbsp;&nbsp;&nbsp;PayrollDatabase()&nbsp;throws&nbsp;RemoteException
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;register&nbsp;this&nbsp;database&nbsp;with&nbsp;our&nbsp;company's&nbsp;RMI&nbsp;naming&nbsp;service
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FooBarCompany.getRegistry().rebind(RMI_REGISTRY_NAME,&nbsp;this);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;void&nbsp;issueBonus(HRDirector&nbsp;issuer,&nbsp;EmployeeRemote&nbsp;receiver,
+&nbsp;&nbsp;&nbsp;&nbsp;double&nbsp;amount)&nbsp;throws&nbsp;RemoteException,&nbsp;InvalidBonusAmountException
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(amount&nbsp;&lt;&nbsp;0)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw&nbsp;new&nbsp;InvalidBonusAmountException("Amount&nbsp;is&nbsp;negative.");
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;if(Double.isNaN(amount))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw&nbsp;new&nbsp;InvalidBonusAmountException("Amount&nbsp;is&nbsp;not&nbsp;a&nbsp;number
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(NaN).");
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else&nbsp;if(Double.isInfinite(amount))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw&nbsp;new&nbsp;InvalidBonusAmountException("Amount&nbsp;is&nbsp;infinite.");
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;...
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+
+</pre></font><font size="-2">
+<div class="p"><!----></div>
+</font>#1<a name="alg:payroll db skel">
+</a>Java source-code for the <tt>PayrollDatabase</tt>
+object, which is the skeleton associated with the <tt>PayrollDatabaseRemote</tt>
+stub.
+
+[ht]
+<tt><font size="-3">
+<pre>import&nbsp;java.rmi.NotBoundException;
+import&nbsp;java.rmi.RemoteException;
+
+class&nbsp;HRDirector
+{
+&nbsp;&nbsp;&nbsp;&nbsp;EmployeeDatabaseRemote&nbsp;_employeeDb&nbsp;=&nbsp;null;
+&nbsp;&nbsp;&nbsp;&nbsp;PayrollDatabaseRemote&nbsp;_payrollDb&nbsp;=&nbsp;null;
+
+&nbsp;&nbsp;&nbsp;&nbsp;HRDirector()&nbsp;throws&nbsp;RemoteException
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try&nbsp;//&nbsp;fetch&nbsp;references&nbsp;to&nbsp;Employee&nbsp;and&nbsp;Payroll&nbsp;databases
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_employeeDb&nbsp;=&nbsp;(EmployeeDatabaseRemote)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FooBarCompany.getRegistry().lookup(EmployeeDatabaseRemote.RMI_REGISTRY_NAME);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_payrollDb&nbsp;=&nbsp;(PayrollDatabaseRemote)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FooBarCompany.getRegistry().lookup(PayrollDatabaseRemote.RMI_REGISTRY_NAME);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catch(NotBoundException&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.err.println("Unable&nbsp;to&nbsp;fetch&nbsp;references&nbsp;to&nbsp;Employee
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;and&nbsp;Payroll&nbsp;databases&nbsp;because:&nbsp;"+&nbsp;e);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;/**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Issues&nbsp;a&nbsp;monetary&nbsp;bonus&nbsp;of&nbsp;the&nbsp;specified&nbsp;amount&nbsp;to&nbsp;employees
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;associated&nbsp;with&nbsp;the&nbsp;specified&nbsp;identification&nbsp;numbers.
+&nbsp;&nbsp;&nbsp;&nbsp;*/
+&nbsp;&nbsp;&nbsp;&nbsp;void&nbsp;issueBonus(double&nbsp;amount,&nbsp;long...&nbsp;employeeIdNumbers)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;for(long&nbsp;id&nbsp;:&nbsp;employeeIdNumbers)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EmployeeRemote&nbsp;employee&nbsp;=&nbsp;_employeeDb.getEmployeeById(id);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_payrollDb.issueBonus(this,&nbsp;employee,&nbsp;amount);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catch(RemoteException&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.err.println("Unable&nbsp;to&nbsp;issue&nbsp;bonus&nbsp;to&nbsp;"+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;employee&nbsp;+"&nbsp;because:&nbsp;"+&nbsp;e);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catch(RemoteException&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.err.println("Unable&nbsp;to&nbsp;query&nbsp;the&nbsp;employee&nbsp;database
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;because:&nbsp;"+&nbsp;e);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catch(EmployeeDatabaseRemote.EmployeeNotFoundException&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.err.println("The&nbsp;employee&nbsp;with&nbsp;identification
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;number&nbsp;"+&nbsp;id&nbsp;+"&nbsp;was&nbsp;not&nbsp;found&nbsp;in&nbsp;the&nbsp;employee&nbsp;database
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;because:&nbsp;"+&nbsp;e);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catch(PayrollDatabaseRemote.InvalidBonusAmountException&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.err.println("The&nbsp;amount&nbsp;specified&nbsp;for&nbsp;the&nbsp;bonus
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;is&nbsp;invalid&nbsp;because:&nbsp;"+&nbsp;e);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+
+</pre></font></tt><font size="-3">
+<div class="p"><!----></div>
+</font>#1<a name="alg:HRDirector">
+</a>Java source-code for the <tt>HRDirector</tt>
+object, which serves our Human Resources director. Notice that Java
+RMI passes this object by reference rather than by value to the remote
+method <tt>_payrollDb.issueBonus</tt> because this object is a sub-class
+of <tt>java.rmi.server.UnicastRemoteObject</tt>.
+
+
+<div class="p"><!----></div>
+[ht]
+
+<pre>import&nbsp;java.rmi.RemoteException;
+
+class&nbsp;Main
+{
+&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;static&nbsp;void&nbsp;main(String&nbsp;args[])
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;try
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HRDirector&nbsp;me&nbsp;=&nbsp;new&nbsp;HRDirector();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;me.issueBonus(100.00,&nbsp;160,&nbsp;230,&nbsp;986);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catch(RemoteException&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.err.println("Unable&nbsp;to&nbsp;instantiate&nbsp;my&nbsp;HRDirector
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;object&nbsp;because:&nbsp;"+&nbsp;e);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+
+</pre>
+
+<div class="p"><!----></div>
+#1<a name="alg:main">
+</a>Java source-code which represents our director's
+actions in issuing a monetary bonus to several brilliant employees.
+
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc2.2.3">
+2.2.3</a>&nbsp;&nbsp;Alternatives</h4>
+
+<div class="p"><!----></div>
+Because our present distributed-applications are written in the Java
+programming language, it would be counterproductive<a href="#tthFtNtAAH" name="tthFrefAAH"><sup>7</sup></a> to present alternative high-level approaches that do not operate
+over a network of heterogeneous processors. That is, with such approaches,
+our distributed-applications would no longer run on a broad array
+of computers architectures [<a href="#my_survey" name="CITEmy_survey">5</a>]. In which case, we would
+have to write a separate versions of our distributed-applications
+for each specific computer architecture-a tedious, costly, and obsolete
+approach. Thus, only those alternative high-level approaches which
+facilitate IPC between heterogeneous processors are considered here. 
+
+<div class="p"><!----></div>
+A more thorough treatment of the following alternatives to Java RMI,
+including unmentioned, orthogonal approaches such as MPI and DCOM,
+is given in [<a href="#my_survey" name="CITEmy_survey">5</a>].
+
+<div class="p"><!----></div>
+
+<dl compact="compact">
+ <dt><b>CORBA</b></dt>
+	<dd>has a concept of separating service interfaces from their
+implementation similar to Java RMI [<a href="#my_survey" name="CITEmy_survey">5</a>]. It is static,
+requiring manual configuration of IPC pathways, and not fault tolerant
+[<a href="#my_survey" name="CITEmy_survey">5</a>].</dd>
+ <dt><b>PVM</b></dt>
+	<dd>provides a traditional RPC approach to IPC. It is dynamic, self-healing,
+and fault tolerant [<a href="#my_survey" name="CITEmy_survey">5</a>].</dd>
+</dl>
+Both PVM and CORBA have an advantage of being able to operate over
+a heterogeneous network of processors <em>and</em> processes [<a href="#my_survey" name="CITEmy_survey">5</a>].
+That is, portions of a distributed-application may be implemented
+in different programming languages. However, because they facilitate
+IPC between heterogeneous processes, they must perform low-level message
+translation every time a RPC is invoked between such processes [<a href="#my_survey" name="CITEmy_survey">5</a>].
+This behavior makes IPC with CORBA or PVM much slower than IPC with
+Java RMI [<a href="#my_survey" name="CITEmy_survey">5</a>].
+
+<div class="p"><!----></div>
+Furthermore, because both PVM and CORBA present a traditional RPC
+approach to IPC, complex data-structures such as Java objects, especially
+<em>live</em> references to local and remote objects, cannot be passed
+to remote procedures [<a href="#my_survey" name="CITEmy_survey">5</a>]. Likewise, only primitive data-types
+can be returned from a RPC [<a href="#my_survey" name="CITEmy_survey">5</a>].
+
+<div class="p"><!----></div>
+In addition, if the use of CORBA is desired, Java RMI can be used
+in conjunction with CORBA via its Internet Inter-ORB Protocol (IIOP)
+bindings [<a href="#RMI-IIOP" name="CITERMI-IIOP">7</a>]. These bindings enable developers to use
+Java RMI for IPC-as if they were solely using Java RMI-whilst
+it transparently communicates with CORBA behind the scenes [<a href="#RMI-IIOP" name="CITERMI-IIOP">7</a>].
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc3">
+3</a>&nbsp;&nbsp;<a name="sec:Description">
+</a>Description</h2>
+
+<div class="p"><!----></div>
+This section, intended for decision makers, describes the purpose
+of and procedure by which the proposed approach will be implemented.
+Please refer to section , or section ,
+for a more thorough discussion of the problem and the proposed approach.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc3.1">
+3.1</a>&nbsp;&nbsp;Problem</h3>
+
+<div class="p"><!----></div>
+Our distributed-applications presently employ a low-level approach
+to IPC, which burdens our programmers with protocol-design and -synchronization
+issues that are unimportant to the business logic they implement.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc3.1.1">
+3.1.1</a>&nbsp;&nbsp;Assumptions</h4>
+
+<div class="p"><!----></div>
+
+<ul>
+<li> Our distributed-applications are implemented using version 1.4 of
+the Java programming language.
+<div class="p"><!----></div>
+</li>
+
+<li> Our developers have implemented custom low-level IPC for our distributed-applications.
+<div class="p"><!----></div>
+</li>
+
+<li> Our developers have substantial experience in decomposing high-level
+IPC into low-level IPC.
+<div class="p"><!----></div>
+</li>
+</ul>
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc3.2">
+3.2</a>&nbsp;&nbsp;Approach</h3>
+
+<div class="p"><!----></div>
+
+<blockquote>"If I have seen a little further it is by standing on the shoulders
+of Giants." -Sir Issac Newton [<a href="#newton" name="CITEnewton">8</a>]
+</blockquote>
+Employ an existing, proved, reliable technology-Java RMI in this
+case-to simplify IPC so that our developers are better able to focus
+on implementing business logic instead of re-inventing low-level IPC
+for every distributed-application we create.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc3.2.1">
+3.2.1</a>&nbsp;&nbsp;Appropriateness</h4>
+
+<div class="p"><!----></div>
+Since our existing distributed-applications are implemented using
+the Java programming language, it is only natural to employ a high-level
+approach to IPC provided by the Java programming language itself.
+Java RMI seamlessly encapsulates low-level IPC and presents it as
+a regular method invocation [<a href="#RMI spec" name="CITERMI spec">6</a>]. Furthermore, Java RMI
+facilitates IPC for the J2EE multi-tiered, enterprise application
+framework and the highly dynamic Jini technology used in ad-hoc wireless
+and mobile networks [<a href="#my_survey" name="CITEmy_survey">5</a>].
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc3.2.2">
+3.2.2</a>&nbsp;&nbsp;Implementation</h4>
+
+<div class="p"><!----></div>
+First, our developers must rethink how IPC functions in our distributed-applications
+in high-level terms. Once the syntax and semantics of interactions
+between distributed objects have been determined, our developers must
+write source-code for the stubs of these distributed objects. Next,
+the services defined by these stubs are implemented in the source-code
+of their associated skeletons. Finally, these skeletons are instantiated,
+registered with a central RMI naming service, and ready for use.
+
+<div class="p"><!----></div>
+      <h4><a name="tth_sEc3.2.3">
+3.2.3</a>&nbsp;&nbsp;Evaluation</h4>
+
+<div class="p"><!----></div>
+A distributed-application prototype utilizing Java RMI for its IPC
+will be constructed by our developers for evaluation purposes. Its
+reliability, development cost, and development time will be assessed,
+analyzed, and compared with those of our existing distributed-applications,
+which were implemented using custom, low-level IPC.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc4">
+4</a>&nbsp;&nbsp;<a name="sec:Plan">
+</a>Plan</h2>
+
+<div class="p"><!----></div>
+This section, intended for decision makers, describes plans for realizing<a href="#tthFtNtAAI" name="tthFrefAAI"><sup>8</sup></a> and evaluating the proposed approach. Please refer to section 
+for a brief description of the proposed approach, its objectives,
+evaluation, and implementation.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc4.1">
+4.1</a>&nbsp;&nbsp;Achieving Objectives</h3>
+
+<div class="p"><!----></div>
+In order to utilize Java RMI masterfully, our developers will need
+to be trained in its use. Because our developers are highly skilled
+in implementing low-level IPC, they can readily learn and incorporate
+techniques from well written text-books on Java RMI, without the assistance
+of an external consultant.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc4.2">
+4.2</a>&nbsp;&nbsp;Evaluation</h3>
+
+<div class="p"><!----></div>
+We can evaluate the effectiveness of Java RMI in reducing our distributed-applications'
+development time, and total monetary expenditure whilst improving
+its reliability by having our developers construct a distributed-application
+prototype which utilizes Java RMI for its IPC. The prototype's quality,
+reliability, and the time and cost required for its development will
+be assessed, analyzed, and compared with those of our past distributed-applications.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc4.3">
+4.3</a>&nbsp;&nbsp;Schedule</h3>
+
+<div class="p"><!----></div>
+Table  shows a possible schedule
+for implementation and evaluation of the aforementioned distributed-application
+prototype. The debugging phase of this schedule is allotted two weeks
+because our developers are not yet experienced in debugging a distributed-application
+which utilizes Java RMI for its IPC.
+
+<div class="p"><!----></div>
+
+<div class="p"><!----></div>
+<a name="tth_tAb1">
+</a> <center>Table 1: <a name="tab:Schedule-for-implementation">
+</a>Schedule for implementation
+and evaluation of a distributed-application prototype which utilizes
+Java RMI for its IPC.</center>
+
+<div class="p"><!----></div>
+
+<center>
+<table border="1">
+<tr><td align="center">Description</td><td align="center">Weeks Required</td><td align="center">Total Weeks</td></tr>
+<tr><td></td></tr>
+<tr><td align="center">Learn Java RMI</td><td align="center">1</td><td align="center">1</td></tr>
+
+<tr><td align="center">Design prototype</td><td align="center">1</td><td align="center">2</td></tr>
+
+<tr><td align="center">Implement prototype</td><td align="center">1</td><td align="center">3</td></tr>
+
+<tr><td align="center">Debug prototype</td><td align="center">2</td><td align="center">5</td></tr>
+
+<tr><td align="center">Evaluate prototype</td><td align="center">1</td><td align="center">6</td></tr>
+</table>
+</center>
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc5">
+5</a>&nbsp;&nbsp;Necessities</h2>
+
+<div class="p"><!----></div>
+This section, intended for decision makers, describes materials, monies,
+and persons necessary for realizing the plans outlined in section
+. 
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc5.1">
+5.1</a>&nbsp;&nbsp;Equipment</h3>
+
+<div class="p"><!----></div>
+Several copies of well written text-books on Java RMI are required.
+The requested funds on the first page of this process-change proposal
+gives a rough estimate of the cost of these text-books. Other than
+text-books, equipment in excess of that possessed by our developers,
+such as workstations, the Java 1.4 compiler, etc. are not required.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc5.2">
+5.2</a>&nbsp;&nbsp;Personnel</h3>
+
+<div class="p"><!----></div>
+Our developers will learn how to use Java RMI; understand its underlying
+theory, motivation, and design techniques; and gain first hand experience
+in its utilization by creating the aforementioned distributed-application
+prototype. During evaluation of this prototype, senior IPC design
+architects or consultants, in addition to our present distributed-applications'
+developers, can be invoked for their years of experience and keen
+insight may prove well in technically evaluating the prototype's particular
+utilization of Java RMI.
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc5.3">
+5.3</a>&nbsp;&nbsp;Budget</h3>
+
+<div class="p"><!----></div>
+To purchase two copies of several well written text-books on Java
+RMI, the amount requested on the first page of this proposal will
+be required. These text-books would prove to be a useful return on
+investment upon successful deployment of our future distributed-applications
+using Java RMI, for our company may see increased profits as it releases
+better products, faster than its competitors. Nevertheless, from an
+educational viewpoint, these books will serve to enrich the knowledge
+of developers and researchers throughout our company.
+
+<div class="p"><!----></div>
+ <h2><a name="tth_sEc6">
+6</a>&nbsp;&nbsp;Appendix</h2>
+
+<div class="p"><!----></div>
+     <h3><a name="tth_sEc6.1">
+6.1</a>&nbsp;&nbsp;<a name="apx:rpc">
+</a>Remote Procedure Call (RPC)</h3>
+
+<div class="p"><!----></div>
+RPC enables one process to engage in IPC with another by calling a
+procedure (or invoking a method) on the remote process. In addition,
+a RPC accepts primitive data-types as arguments and automatically
+retrieves the return value of the remote procedure. For example, if
+process <em>A</em> wishes to have process <em>B</em> return the sum of
+two numbers, it would simply call the appropriate procedure on process
+<em>B</em> as shown in Algorithm <a href="#alg:rpc example">10</a>.
+
+<div class="p"><!----></div>
+[ht]
+
+<dl compact="compact">
+ <dt><b></b></dt>
+	<dd>
+ProcessB&nbsp;b;
+
+<div class="p"><!----></div>
+//&nbsp;...
+
+<div class="p"><!----></div>
+int&nbsp;number1&nbsp;=&nbsp;3;
+
+<div class="p"><!----></div>
+int&nbsp;number2&nbsp;=&nbsp;5;
+
+<div class="p"><!----></div>
+int&nbsp;sum&nbsp;=&nbsp;b.addNumbers(number1,&nbsp;number2);
+</dd>
+</dl>
+
+<div class="p"><!----></div>
+#1<a name="alg:rpc example">
+</a>An example of traditional RPC, written in
+pseudo-code akin to the Java programming language. Here, process <em>A</em>
+instructs process <em>B</em> to compute and return the sum of two specified
+numbers by calling process <em>B</em>'s <tt>addNumbers</tt> procedure.
+
+
+<div class="p"><!----></div>
+
+<h2>References</h2>
+
+<dl compact="compact">
+ <dt><a href="#CITEnetworks" name="networks">[1]</a></dt><dd>A. S. Tanenbaum, <u>Computer Networks</u>, 4<sup>th</sup>
+ed., New Delhi, India: Prentice Hall of India, 2003.
+</dd>
+ <dt><a href="#CITEsurvey" name="survey">[2]</a></dt><dd>F. Mattern and P. Sturm, "From Distributed Systems to Ubiquitous
+Computing - The State of the Art, Trends, and Prospects of Future
+Networked Systems," presented at <u>Kommunikation in Verteilten
+Systemen (KiVS)</u>, Leipzig, Germany, 2003.
+</dd>
+ <dt><a href="#CITErisk" name="risk">[3]</a></dt><dd>Mind Tools, "Project Risk Analysis Techniques," [Online document],
+2005 Apr 5, [cited 9 Apr 2005], Available HTTP: <a href="http://www.mindtools.com/pages/article/newTMC_07.htm"><tt>http://www.mindtools.com/pages/article/newTMC_07.htm</tt></a>
+</dd>
+ <dt><a href="#CITEpacbell" name="pacbell">[4]</a></dt><dd>SBC Knowledge Ventures, L.P. "SBC California White and Yellow
+Pages," [Online document], 2005 Mar 14, [cited 2005 Mar 14],
+Available HTTP: <a href="http://www.sbc.com/gen/general?pid=3911"><tt>http://www.sbc.com/gen/general?pid=3911</tt></a>
+</dd>
+ <dt><a href="#CITEmy_survey" name="my_survey">[5]</a></dt><dd>S. N. Kurapati, "A Brief Survey of High-Level Approaches to Implementing
+Distributed Applications," [Online document], 2005 Feb 23, [cited
+11 Mar 2005], Available HTTP: <a href="http://people.ucsc.edu/~skurapat/ce185/survey_article.html"><tt>http://people.ucsc.edu/~skurapat/ce185/survey_article.html</tt></a>
+</dd>
+ <dt><a href="#CITERMI spec" name="RMI spec">[6]</a></dt><dd>Sun Microsystems, Inc. "Java<sup>TM</sup> Remote Method Invocation
+Specification," [Online document], 2003 Dec 11, [cited 6 Feb
+2005], Available HTTP: <a href="http://java.sun.com/j2se/1.5/pdf/rmi-spec-1.5.0.pdf"><tt>http://java.sun.com/j2se/1.5/pdf/rmi-spec-1.5.0.pdf</tt></a>
+</dd>
+ <dt><a href="#CITERMI-IIOP" name="RMI-IIOP">[7]</a></dt><dd>Sun Microsystems, Inc. "Java<sup>TM</sup> RMI over IIOP,"
+[Online document], 2004 Aug 12, [cited 13 Mar 2005], Available
+HTTP: <a href="http://java.sun.com/j2se/1.5.0/docs/guide/rmi-iiop/index.html"><tt>http://java.sun.com/j2se/1.5.0/docs/guide/rmi-iiop/index.html</tt></a>
+</dd>
+ <dt><a href="#CITEnewton" name="newton">[8]</a></dt><dd>Wikimedia Foundation, Inc. "Issac Newton," [Online document],
+2005 Mar 12, [cited 2005 Mar 13], Available HTTP: <a href="http://en.wikipedia.org/wiki/Isaac_Newton"><tt>http://en.wikipedia.org/wiki/Isaac_Newton</tt></a></dd>
+</dl>
+
+<div class="p"><!----></div>
+<hr /><h3>Footnotes:</h3>
+
+<div class="p"><!----></div>
+<a name="tthFtNtAAB"></a><a href="#tthFrefAAB"><sup>1</sup></a>A mechanism by which two or more running copies of a single program
+communicate with each other.
+<div class="p"><!----></div>
+<a name="tthFtNtAAC"></a><a href="#tthFrefAAC"><sup>2</sup></a>The top-most level of the OSI networking model [<a href="#networks" name="CITEnetworks">1</a>].
+<div class="p"><!----></div>
+<a name="tthFtNtAAD"></a><a href="#tthFrefAAD"><sup>3</sup></a>A single, running copy of a program.
+<div class="p"><!----></div>
+<a name="tthFtNtAAE"></a><a href="#tthFrefAAE"><sup>4</sup></a>Data-types such as <tt>int</tt>, <tt>char</tt>, and <tt>float</tt>
+in the Java programming language.
+<div class="p"><!----></div>
+<a name="tthFtNtAAF"></a><a href="#tthFrefAAF"><sup>5</sup></a>An ever-present process which provides services to other processes
+and persons.
+<div class="p"><!----></div>
+<a name="tthFtNtAAG"></a><a href="#tthFrefAAG"><sup>6</sup></a>Usually remote methods require that stubs be passed as their arguments
+instead of skeletons because they can in turn invoke remote methods
+belonging to the passed stubs.
+<div class="p"><!----></div>
+<a name="tthFtNtAAH"></a><a href="#tthFrefAAH"><sup>7</sup></a>Our present distributed-applications are able to operate over a network
+of heterogeneous processors because they are implemented in the Java
+programming language [<a href="#my_survey" name="CITEmy_survey">5</a>].
+<div class="p"><!----></div>
+<a name="tthFtNtAAI"></a><a href="#tthFrefAAI"><sup>8</sup></a>Bringing into existence.
+<br /><br /><hr /><small>File translated from
+T<sub><font size="-1">E</font></sub>X
+by <a href="http://hutchinson.belmont.ma.us/tth/">
+T<sub><font size="-1">T</font></sub>H</a>,
+version 3.67.<br />On  9 Jun 2006, 00:17.</small>
+</body></html>
