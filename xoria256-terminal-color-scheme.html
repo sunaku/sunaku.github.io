@@ -1,0 +1,140 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>xoria256 terminal color scheme - The Terminal Programmer</title><meta content="2011-05-28T01:50:00-07:00" name="DCTERMS.created" /><meta content="2011-10-10T14:38:57-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="terminal, color, vim, linux" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="xoria256-terminal-color-scheme" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#xoria256-terminal-color-scheme" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">xoria256 terminal color scheme</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2011-05-28T01:50:00-07:00">28 May 2011</time><br /><time class="date" datetime="2011-10-10T14:38:57-07:00"><a href="#updates" title="2 updates">10 October 2011</a></time></header><hr /><div class="description"></div><div class="content"><p>I have grown fond of Vim&rsquo;s <a href="http://www.vim.org/scripts/script.php?script_id=2140">xoria256 color
+scheme</a> recently.
+It features &ldquo;finely tuned soft gamma&rdquo; using 256 colors on a dark
+background, and claims to appear the same in both graphical and terminal
+Vim; although I found the latter to be slightly muted (particularly 8
+units less in byte value in at most two color channels) according to
+<code>xmag</code> and <code>gcolor2</code>.</p>
+<p>I ported it to the terminal last night (see screenshots below) and was
+pleased with the result: it felt balanced, colorful, and easy on my eyes.</p>
+<p><picture><source type="image/webp" srcset="xoria256-terminal-color-scheme.webp"><img src="xoria256-terminal-color-scheme.png" width="644" height="364" alt="the color scheme" title="the color scheme"></picture>
+</p>
+<p><picture><source type="image/webp" srcset="xoria256-terminal-color-scheme-man.webp"><img src="xoria256-terminal-color-scheme-man.png" width="644" height="364" alt="UNIX manual page" title="UNIX manual page"></picture>
+</p>
+<p>To use this color scheme in <a href="https://chromium.googlesource.com/apps/libapps/+/HEAD/hterm">hterm</a>, open the <a href="https://chromium.googlesource.com/apps/libapps/+/HEAD/nassh">nassh</a> extension&rsquo;s settings page,
+open Chrome Developer Tools, and then run the following snippet in the console:</p>
+<div class="highlight"><pre class="highlight javascript"><code><span class="nx">term_</span><span class="p">.</span><span class="nx">prefs_</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="dl">"</span><span class="s2">background-color</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#1c1c1c</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">term_</span><span class="p">.</span><span class="nx">prefs_</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="dl">"</span><span class="s2">foreground-color</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#d0d0d0</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">term_</span><span class="p">.</span><span class="nx">prefs_</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="dl">"</span><span class="s2">cursor-color</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">rgba(255,175,0, 0.5)</span><span class="dl">"</span><span class="p">);</span> <span class="cm">/* #ffaf00 */</span>
+<span class="nx">term_</span><span class="p">.</span><span class="nx">prefs_</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="dl">"</span><span class="s2">color-palette-overrides</span><span class="dl">"</span><span class="p">,</span> <span class="p">[</span><span class="dl">"</span><span class="s2">#121212</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#d78787</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#afd787</span><span class="dl">"</span><span class="p">,</span>
+<span class="dl">"</span><span class="s2">#f7f7af</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#87afd7</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#d7afd7</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#afd7d7</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#e6e6e6</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#0a0a0a</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#df8787</span><span class="dl">"</span><span class="p">,</span>
+<span class="dl">"</span><span class="s2">#afdf87</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#ffffaf</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#87afdf</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#dfafdf</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#afdfdf</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#eeeeee</span><span class="dl">"</span><span class="p">]);</span>
+</code></pre></div><p>To use this color scheme in Rxvt or XTerm, save the following snippet to a file
+such as <code>~/.Xdefaults</code> and then run <code>xrdb -merge</code> on that file to apply it.  Any
+terminals launched thereafter will use this color scheme, but not existing ones.</p>
+<div class="highlight"><pre class="highlight plaintext"><code>!black.normal        : xoria256.LineNr.guibg
+!black.bright        : black.normal.rgb - 8
+#define _color0        #121212
+#define _color8        #0a0a0a
+
+!red.normal          : red.bright.r - 8
+!red.bright          : xoria256.Special.guifg
+#define _color1        #d78787
+#define _color9        #df8787
+
+!green.normal        : green.bright.g - 8
+!green.bright        : xoria256.PreProc.guifg
+#define _color2        #afd787
+#define _color10       #afdf87
+
+!yellow.normal       : yellow.bright.rg - 8
+!yellow.bright       : xoria256.Special.guifg
+#define _color3        #f7f7af
+#define _color11       #ffffaf
+
+!blue.normal         : blue.bright.b - 8
+!blue.bright         : xoria256.Statement.guifg
+#define _color4        #87afd7
+#define _color12       #87afdf
+
+!magenta.normal      : magenta.bright.rb - 8
+!magenta.bright      : xoria256.Identifier.guifg
+#define _color5        #d7afd7
+#define _color13       #dfafdf
+
+!cyan.normal         : cyan.bright.gb - 8
+!cyan.bright         : green.bright + blue.bright
+#define _color6        #afd7d7
+#define _color14       #afdfdf
+
+!white.normal        : white.bright.rgb - 8
+!white.bright        : xoria256.Folded.guifg
+#define _color7        #e6e6e6
+#define _color15       #eeeeee
+
+!bold                : xoria256.Type.guifg
+!underline           : xoria256.htmlValue.guifg
+#define _colorBD       #afafdf
+#define _colorUL       #dfdfaf
+
+!foreground          : xoria256.Normal.guifg
+!background          : xoria256.Normal.guibg
+!cursorColor         : xoria256.Cursor.guibg
+#define _foreground    #d0d0d0
+#define _background    #1c1c1c
+#define _cursorColor   #ffaf00
+
+URxvt*color0         : _color0
+URxvt*color1         : _color1
+URxvt*color2         : _color2
+URxvt*color3         : _color3
+URxvt*color4         : _color4
+URxvt*color5         : _color5
+URxvt*color6         : _color6
+URxvt*color7         : _color7
+URxvt*color8         : _color8
+URxvt*color9         : _color9
+URxvt*color10        : _color10
+URxvt*color11        : _color11
+URxvt*color12        : _color12
+URxvt*color13        : _color13
+URxvt*color14        : _color14
+URxvt*color15        : _color15
+URxvt*colorBD        : _colorBD
+URxvt*colorIT        : _colorIT
+URxvt*colorUL        : _colorUL
+URxvt*foreground     : _foreground
+URxvt*background     : _background
+URxvt*cursorColor    : _cursorColor
+
+XTerm*color0         : _color0
+XTerm*color1         : _color1
+XTerm*color2         : _color2
+XTerm*color3         : _color3
+XTerm*color4         : _color4
+XTerm*color5         : _color5
+XTerm*color6         : _color6
+XTerm*color7         : _color7
+XTerm*color8         : _color8
+XTerm*color9         : _color9
+XTerm*color10        : _color10
+XTerm*color11        : _color11
+XTerm*color12        : _color12
+XTerm*color13        : _color13
+XTerm*color14        : _color14
+XTerm*color15        : _color15
+XTerm*colorBD        : _colorBD
+XTerm*colorIT        : _colorIT
+XTerm*colorUL        : _colorUL
+XTerm*foreground     : _foreground
+XTerm*background     : _background
+XTerm*cursorColor    : _cursorColor
+
+! enable coloring for bold and underlined text
+XTerm*vt100.boldColors     : False
+XTerm*vt100.colorBDMode    : True
+XTerm*vt100.colorULMode    : True
+XTerm*vt100.colorRVMode    : False
+XTerm*vt100.veryBoldColors : 6
+</code></pre></div></div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2011-10-10T14:38:57-07:00">10 October 2011: </time></dt><dd class="content"><p>I chose a <span style="background: #afafdf; color: black">different
+shade of violet</span> from xoria256 for bold styling because <span
+style="background: #dfafdf; color: black"> the previous choice</span>
+was the same as the one for magenta.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2011-08-23T00:12:55-07:00">23 August 2011: </time></dt><dd class="content"><p>I tweaked the non-bright colors to reflect the subtle <em>muted</em> appearance
+of xoria256 colors in terminal Vim (as mentioned in this article).</p>
+<p>In addition, because xoria256 lacks <span style="background: #afdfdf;
+color: black"> a proper cyan</span>, I computed one by combining
+its green and blue colors appropriately.</p>
+</dd></dl></aside><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2011 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>
