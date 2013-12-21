@@ -1,0 +1,141 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>How to use Telugu in Ubuntu Linux - The Terminal Programmer</title><meta content="2006-12-11T22:17:29-08:00" name="DCTERMS.created" /><meta content="2006-12-11T22:17:29-08:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="article, guide, telugu, ubuntu" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="using-telugu-in-ubuntu-linux" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#using-telugu-in-ubuntu-linux" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">How to use Telugu in Ubuntu Linux</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2006-12-11T22:17:29-08:00">11 December 2006</time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__correcting-telugu-text-rendering__" href="#correcting-telugu-text-rendering" class="downlink">Correcting Telugu text rendering</a><ol><li><a id="__ubuntu-gutsy-gibbon-7-10__" href="#ubuntu-gutsy-gibbon-7-10" class="downlink">Ubuntu Gutsy Gibbon 7.10</a><ol></ol></li><li><a id="__ubuntu-feisty-fawn-7-4__" href="#ubuntu-feisty-fawn-7-4" class="downlink">Ubuntu Feisty Fawn 7.4</a><ol></ol></li><li><a id="__ubuntu-dapper-drake-6-4-and-edgy-eft-6-10__" href="#ubuntu-dapper-drake-6-4-and-edgy-eft-6-10" class="downlink">Ubuntu Dapper Drake 6.4 and Edgy Eft 6.10</a><ol></ol></li><li><a id="__ubuntu-breezy-badger-5-10__" href="#ubuntu-breezy-badger-5-10" class="downlink">Ubuntu Breezy Badger 5.10</a><ol></ol></li></ol></li><li><a id="__enlarging-telugu-text__" href="#enlarging-telugu-text" class="downlink">Enlarging Telugu text</a><ol></ol></li><li><a id="__typing-in-telugu-with-scim__" href="#typing-in-telugu-with-scim" class="downlink">Typing in Telugu with SCIM</a><ol></ol></li></ol><p>This is a guide to setting up Telugu on Ubuntu Linux. I have also written some
+of this information at the <a href="https://wiki.ubuntu.com/HowtoFixIndicFontRendering">Ubuntu
+wiki</a> the <a href="http://www.swecha.org/wiki/Input">Swecha
+wiki</a>, and <a href="http://te.wikipedia.org/wiki/%E0%B0%B5%E0%B0%BF%E0%B0%95%E0%B1%80%E0%B0%AA%E0%B1%80%E0%B0%A1%E0%B0%BF%E0%B0%AF%E0%B0%BE:Configuring_on_Linux#Rice_Transliteration_Standard_.28RTS.29_Keymap">Wikipedia</a>.</p>
+
+<div id="correcting-telugu-text-rendering" class="section"></div><h2 class="heading">Correcting Telugu text rendering<a href="#correcting-telugu-text-rendering" class="permalink" title="Permalink"></a><a href="#__correcting-telugu-text-rendering__" class="uplink" title="Contents"></a></h2>
+<p>The rendering of Telugu text is broken by default if you specify a non-Telugu
+locale, such as &ldquo;en_us&rdquo; (English, United States), when you install Ubuntu.
+Fortunately, this problem is solvable &ndash; as the following sections illustrate.</p>
+
+<div id="ubuntu-gutsy-gibbon-7-10" class="section"></div><h3 class="heading">Ubuntu Gutsy Gibbon 7.10<a href="#ubuntu-gutsy-gibbon-7-10" class="permalink" title="Permalink"></a><a href="#__ubuntu-gutsy-gibbon-7-10__" class="uplink" title="Contents"></a></h3>
+<p>This version of Ubuntu finally fixes the rendering of Telugu text in non-
+Telugu locales! Hurray! :-)</p>
+<p>However, it uses Vemana2000 (which is rather cartoonish and unreadable in my
+opinion) as the default font for rendering Telugu text. To fix this, we can
+install the (much more legible) Pothana2000 font by running the following
+command:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nb">sudo </span>apt-get <span class="nb">install </span>ttf-telugu-fonts
+</code></pre></div><p>Afterwards, any newly started programs will use Pothana2000 instead of
+Vemana2000 to render Telugu text.</p>
+
+<div id="ubuntu-feisty-fawn-7-4" class="section"></div><h3 class="heading">Ubuntu Feisty Fawn 7.4<a href="#ubuntu-feisty-fawn-7-4" class="permalink" title="Permalink"></a><a href="#__ubuntu-feisty-fawn-7-4__" class="uplink" title="Contents"></a></h3>
+
+<ol>
+<li><p>Install Telugu fonts:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nb">sudo </span>apt-get <span class="nb">install </span>language-pack-te language-support-te
+</code></pre></div></li>
+<li><p>As <a href="https://launchpad.net/ubuntu/+source/ttf-indic-fonts/+bug/48280/comments/17">Sunil Mohan suggests</a>, create a file named <code>.fonts.conf</code> inside your home directory and populate it with the following content:</p>
+<div class="highlight"><pre class="highlight xml"><code><span class="cp">&lt;?xml version="1.0"?&gt;</span>
+<span class="cp">&lt;!DOCTYPE fontconfig SYSTEM "fonts.dtd"&gt;</span>
+<span class="nt">&lt;fontconfig&gt;</span>
+ <span class="nt">&lt;alias&gt;</span>
+  <span class="nt">&lt;family&gt;</span>sans-serif<span class="nt">&lt;/family&gt;</span>
+  <span class="nt">&lt;prefer&gt;</span>
+   <span class="nt">&lt;family&gt;</span>Pothana2000<span class="nt">&lt;/family&gt;</span>
+  <span class="nt">&lt;/prefer&gt;</span>
+ <span class="nt">&lt;/alias&gt;</span>
+ <span class="nt">&lt;alias&gt;</span>
+  <span class="nt">&lt;family&gt;</span>serif<span class="nt">&lt;/family&gt;</span>
+  <span class="nt">&lt;prefer&gt;</span>
+   <span class="nt">&lt;family&gt;</span>Pothana2000<span class="nt">&lt;/family&gt;</span>
+  <span class="nt">&lt;/prefer&gt;</span>
+ <span class="nt">&lt;/alias&gt;</span>
+ <span class="nt">&lt;alias&gt;</span>
+  <span class="nt">&lt;family&gt;</span>monospace<span class="nt">&lt;/family&gt;</span>
+  <span class="nt">&lt;prefer&gt;</span>
+   <span class="nt">&lt;family&gt;</span>Pothana2000<span class="nt">&lt;/family&gt;</span>
+  <span class="nt">&lt;/prefer&gt;</span>
+ <span class="nt">&lt;/alias&gt;</span>
+<span class="nt">&lt;/fontconfig&gt;</span>
+</code></pre></div></li>
+<li><p>Reload your system&rsquo;s font configuration:</p>
+<div class="highlight"><pre class="highlight shell"><code>fc-cache
+</code></pre></div></li>
+</ol>
+
+<div id="ubuntu-dapper-drake-6-4-and-edgy-eft-6-10" class="section"></div><h3 class="heading">Ubuntu Dapper Drake 6.4 and Edgy Eft 6.10<a href="#ubuntu-dapper-drake-6-4-and-edgy-eft-6-10" class="permalink" title="Permalink"></a><a href="#__ubuntu-dapper-drake-6-4-and-edgy-eft-6-10__" class="uplink" title="Contents"></a></h3>
+
+<ol>
+<li><p>Install Telugu fonts:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nb">sudo </span>apt-get <span class="nb">install </span>language-pack-te language-support-te
+</code></pre></div></li>
+<li><p>Apply the temporary solution for the <a href="https://launchpad.net/distros/ubuntu/+source/ttf-indic-fonts/+bug/48280">fonts.cache-1 bug</a>:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nb">sudo sed</span> <span class="nt">-i</span>.orig <span class="s1">'s/lang=:/lang=te:/g'</span> <span class="se">\</span>
+/usr/share/fonts/truetype/ttf-telugu-fonts/fonts.cache-1
+</code></pre></div></li>
+<li><p>Reload your system&rsquo;s font configuration:</p>
+<div class="highlight"><pre class="highlight shell"><code>fc-cache
+</code></pre></div><p>This is a <em>temporary</em> solution because when you install new fonts or update
+existing fonts, all the <code>fonts.cache-1</code> files will be regenerated. So if you
+ever see incorrectly rendered Telugu text again, simply reapply the above
+solution.</p></li>
+</ol>
+
+<div id="ubuntu-breezy-badger-5-10" class="section"></div><h3 class="heading">Ubuntu Breezy Badger 5.10<a href="#ubuntu-breezy-badger-5-10" class="permalink" title="Permalink"></a><a href="#__ubuntu-breezy-badger-5-10__" class="uplink" title="Contents"></a></h3>
+
+<ol>
+<li><p>Install Telugu fonts:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nb">sudo </span>apt-get <span class="nb">install </span>ttf-indic-fonts
+</code></pre></div></li>
+<li><p>As Soumyadip Modak suggests, remove the <code>ttf-freefont</code> package:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nb">sudo </span>apt-get remove ttf-freefont
+</code></pre></div></li>
+</ol>
+
+<div id="enlarging-telugu-text" class="section"></div><h2 class="heading">Enlarging Telugu text<a href="#enlarging-telugu-text" class="permalink" title="Permalink"></a><a href="#__enlarging-telugu-text__" class="uplink" title="Contents"></a></h2>
+<p>Pothana2000 is difficult to read because it appears much smaller than English
+text at the same font-size. For example, compare the relative size of the
+number &ldquo;1925&rdquo; and its surrounding Telugu text in these screenshots:</p>
+<p><picture><source type="image/webp" srcset="pothana-vs-english_100x.webp"><img src="pothana-vs-english_100x.png" width="103" height="20" alt="Default Pothana2000 beside English text." title="Default Pothana2000 beside English text."></picture>
+</p>
+<p><picture><source type="image/webp" srcset="pothana-vs-english_137x.webp"><img src="pothana-vs-english_137x.png" width="129" height="22" alt="137% Pothana2000 beside English text." title="137% Pothana2000 beside English text."></picture>
+</p>
+<p>I often attempted to enlarge Pothana2000 by editing
+<a href="http://en.wikipedia.org/wiki/Fontconfig">fontconfig</a> configuration files, but
+never succeeded. In this manner, I struggled with tiny, nearly illegible
+Telugu text for two years. In fact, I would avoid using Telugu altogether, for
+months at a time, after becoming frustrated with this problem.</p>
+<p>However, with <a href="http://sourceforge.net/mailarchive/message.php?msg_id=14298406">the help of Rahul
+Bhalerao</a>, I
+was finally able to enlarge Pothana2000 to a readable size. In fact, I ended
+up making Pothana2000 slightly larger than English text at the same font-size
+because Telugu text has a greater variation of <a href="http://en.wikipedia.org/wiki/Font#Font_metrics">ascent and
+descent</a> than English text.</p>
+<p>Without further adieu, here are the instructions for enlarging Pothana2000, or
+any font in general:</p>
+
+<ol>
+<li><p>Install the <a href="http://fontforge.sourceforge.net/">FontForge</a> program:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nb">sudo </span>apt-get <span class="nb">install </span>fontforge
+</code></pre></div></li>
+<li><p>Open Pothana2000 with FontForge for editing:</p>
+<div class="highlight"><pre class="highlight shell"><code>fontforge /usr/share/fonts/truetype/ttf-telugu-fonts/Pothana2000.ttf
+</code></pre></div></li>
+<li><p>When a dialog window appears, asking if you have permission to edit the font, choose <em>yes</em> &ndash; we have legal permission to edit the font because Pothana2000 is released under the GPL.</p></li>
+<li><p>Choose <em>Edit -&gt; Select -&gt; Select All</em> from the main menu. All glyphs should be selected now.</p></li>
+<li><p>Choose <em>Element -&gt; Transformations -&gt; Transform</em> from the main menu. A dialog window will now appear.</p>
+<p><picture><source type="image/webp" srcset="fontforge-transform-dialog.webp"><img src="fontforge-transform-dialog.png" width="359" height="352" alt="FontForge dialog window" title="FontForge dialog window"></picture>
+</p>
+
+<ol>
+<li> Choose <em>Glyph Origin</em> from the first menu.</li>
+<li> Choose <em>Scale Uniformly&hellip;</em> from the second menu and enter your desired scaling factor (I prefer 137%).</li>
+<li> Tick all boxes, as shown in the screenshot above.</li>
+<li> Press the <em>OK</em> button.</li>
+<li> Choose <em>File -&gt; Generate Fonts&hellip;</em> from the main menu and save the file as a <em>TrueType</em> (<code>.ttf</code>) font.</li>
+</ol></li>
+<li><p>Replace the system&rsquo;s Pothana2000 font with the newly generated one:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nb">sudo cp</span> <span class="nt">-vb</span> newly-generated-font.ttf /usr/share/fonts/truetype/ttf-telugu-fonts/Pothana2000.ttf
+</code></pre></div></li>
+</ol>
+<p>From now on, any new programs that you run <em>should</em> render Telugu text with
+the new, enlarged font. However, you may want to restart your X session just
+in case some programs do not recognize that we just updated Pothana2000.</p>
+
+<div id="typing-in-telugu-with-scim" class="section"></div><h2 class="heading">Typing in Telugu with SCIM<a href="#typing-in-telugu-with-scim" class="permalink" title="Permalink"></a><a href="#__typing-in-telugu-with-scim__" class="uplink" title="Contents"></a></h2>
+<img src="telugu-rts-with-scim-demo.gif" width="400" height="208" alt="Telugu RTS with SCIM in Ubuntu Breezy" title="Telugu RTS with SCIM in Ubuntu Breezy"><p>See <a href="telugu-rts-with-scim.html">this related article</a> for instructions on
+setting up Telugu RTS with SCIM, as demonstrated in the video above.</p>
+</div><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2006 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

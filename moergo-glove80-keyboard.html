@@ -1,0 +1,1561 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Glove80 programmable ergonomic keyboard with &quot;Glorious Engrammer&quot; keymap - The Terminal Programmer</title><meta content="2023-07-04T05:00:41-07:00" name="DCTERMS.created" /><meta content="2026-01-24T23:50:17-05:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="typing, keyboard, layout, ergonomics, programming" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="moergo-glove80-keyboard" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#moergo-glove80-keyboard" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Glove80 programmable ergonomic keyboard with &quot;Glorious Engrammer&quot; keymap</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2023-07-04T05:00:41-07:00"> 4 July 2023</time><br /><time class="date" datetime="2026-01-24T23:50:17-05:00"><a href="#updates" title="16 updates">24 January 2026</a></time></header><hr /><div class="description"></div><div class="content"><style>.layers-map-container{position:relative;cursor:wait}.layers-map-container .KEY_LH_T1{transform:rotate(25deg)}.layers-map-container .KEY_LH_T2{transform:rotate(35deg)}.layers-map-container .KEY_LH_T3{transform:rotate(45deg)}.layers-map-container .KEY_LH_T4{transform:rotate(25deg)}.layers-map-container .KEY_LH_T5{transform:rotate(35deg)}.layers-map-container .KEY_LH_T6{transform:rotate(45deg)}.layers-map-container .KEY_RH_T1{transform:rotate(-25deg)}.layers-map-container .KEY_RH_T2{transform:rotate(-35deg)}.layers-map-container .KEY_RH_T3{transform:rotate(-45deg)}.layers-map-container .KEY_RH_T4{transform:rotate(-25deg)}.layers-map-container .KEY_RH_T5{transform:rotate(-35deg)}.layers-map-container .KEY_RH_T6{transform:rotate(-45deg)}.layers-map-container .layers-map-sign{position:absolute;box-shadow:inset 0 0 1em indigo;border-radius:1ex;animation:glowing 2s ease-in-out infinite alternate}.layers-map-container .layers-map-sign:hover{box-shadow:inset 0 0 1em lime;background:rgba(0,255,0,0.125) !important;opacity:100% !important}.layers-map-container .layers-map-sign-locking{box-shadow:inset 0 0 1em blue}.layers-map-container .layers-map-sign-sequence{animation:sequence 6s ease infinite}.layers-map-container .layers-map-sign-sequence:before{color:#000;background-color:#ff0;text-shadow:none !important;border-radius:75%;border:1px solid red;padding:3px;font-size:xx-small;font-weight:bold;position:relative;top:-15px;left:-5px;z-index:1}.layers-map-container .layers-map-sign-sequence-step-1{animation-delay:1s}.layers-map-container .layers-map-sign-sequence-step-1:before{content:"1"}.layers-map-container .layers-map-sign-sequence-step-2{animation-delay:2s}.layers-map-container .layers-map-sign-sequence-step-2:before{content:"2"}.layers-map-container .layers-map-sign-sequence-step-3{animation-delay:3s}.layers-map-container .layers-map-sign-sequence-step-3:before{content:"3"}.layers-map-container .layers-map-sign-sequence-step-4{animation-delay:4s}.layers-map-container .layers-map-sign-sequence-step-4:before{content:"4"}.layers-map-container .layers-map-sign-sequence-step-5{animation-delay:5s}.layers-map-container .layers-map-sign-sequence-step-5:before{content:"5"}.layers-map-container .layers-map-sign-sequence-step-6{animation-delay:6s}.layers-map-container .layers-map-sign-sequence-step-6:before{content:"6"}.layers-map-container .layers-map-sign-sequence-step-7{animation-delay:7s}.layers-map-container .layers-map-sign-sequence-step-7:before{content:"7"}.layers-map-container .layers-map-sign-sequence-step-8{animation-delay:8s}.layers-map-container .layers-map-sign-sequence-step-8:before{content:"8"}.layers-map-container .layers-map-sign-sequence-step-9{animation-delay:9s}.layers-map-container .layers-map-sign-sequence-step-9:before{content:"9"}.layers-map-container #layers-map-link[href] .layers-map-sign:not(:hover){box-shadow:none}.layers-map-container .layers-map-sign-locking:hover ~ .layers-map-sign-locking-hold{box-shadow:inset 0 0 5px red !important;background:rgba(255,0,0,0.125) !important;opacity:100% !important}@keyframes glowing{50%{opacity:33%}}@keyframes sequence{0%{background-color:rgba(0,0,0,0.25)}}</style><script>var symbol_layer_keymap = {"`":[0,1],"[":[1,1],"(":[2,1],")":[3,1],"]":[4,1],".":[6,5],"!":[0,2],",":[1,2],"{":[2,2],"}":[3,2],";":[4,2],"?":[5,2],"#":[0,3],"^":[1,3],"=":[2,3],"_":[3,3],"$":[4,3],"*":[7,5],"~":[0,4],"<":[1,4],"|":[2,4],"-":[3,4],">":[4,4],"/":[5,4],"&":[1,5],"'":[2,5],"\"":[3,5],"+":[4,5],"\\":[5,5],"%":[5,6],":":[6,6],"@":[7,6],"Layer":[11,6]};
+</script><script>var MAP_DIMENSIONS = { w: 2256, h: 1265 }; // dimensions of layer map diagram
+var KEY_DIMENSIONS = { w:  147, h:  147 }; // dimensions of a thumb layer key
+var MAP_KEY_ORIGIN = { x:   29, y:   29 }; // top-left corner of top-left key
+
+const MIN_ROW = 1;
+const MAX_ROW = 6;
+const MIN_COLUMN = 1;
+const MAX_COLUMN = 6;
+const KEY_WIDTH = 104.5;
+const KEY_HEIGHT = 104;
+const LEFT_ORIGIN_Y = 178;
+const LEFT_ORIGIN_X = 122;
+const RIGHT_ORIGIN_X = 2030;
+const RIGHT_ORIGIN_Y = LEFT_ORIGIN_Y;
+const LEFT_STAGGER_Y = LEFT_ORIGIN_Y - (KEY_HEIGHT / 2);
+const RIGHT_STAGGER_Y = LEFT_STAGGER_Y;
+const DELTA_STAGGER_Y = LEFT_ORIGIN_Y - LEFT_STAGGER_Y;
+
+function calculate_key_dimensions(hand, column, row) {
+  if (hand !== "L" && hand !== "R")
+    throw "invalid hand; must be 'L' or 'R'";
+
+  if (column < MIN_COLUMN || column > MAX_COLUMN)
+    throw "invalid column; must be "+ MIN_COLUMN +".."+ MAX_COLUMN;
+
+  if (row < MIN_ROW || row > MAX_ROW)
+    throw "invalid row; must be "+ MIN_ROW +".." + MAX_ROW;
+
+  var key = "KEY_" + hand + "H_C" + column + "R" + row;
+  var relative_column = MAX_COLUMN - column;
+  var relative_row = row - 1;
+  var x, y;
+
+  if (hand == "L") {
+    x = LEFT_ORIGIN_X + KEY_WIDTH * relative_column;
+    y = LEFT_ORIGIN_Y + KEY_HEIGHT * relative_row;
+  }
+  else {
+    x = RIGHT_ORIGIN_X - KEY_WIDTH * relative_column;
+    y = RIGHT_ORIGIN_Y + KEY_HEIGHT * relative_row;
+  }
+
+  if (relative_column >= 2) {
+    y -= DELTA_STAGGER_Y;
+  }
+
+  return [key, x, y, KEY_WIDTH, KEY_HEIGHT];
+}
+
+// yTn = y coordinate of thumb N key
+// xLTn = x coordinate of left thumb N key
+// dRTn = distance from xLTn for right thumb N key
+var xLT1 = 751, dRT1 = 653, yT1 = 651;
+var xLT2 = 852, dRT2 = 450, yT2 = 712;
+var xLT3 = 941, dRT3 = 271, yT3 = 792;
+var xLT4 = 644, dRT4 = 865, yT4 = 729;
+var xLT5 = 748, dRT5 = 657, yT5 = 786;
+var xLT6 = 841, dRT6 = 470, yT6 = 862;
+
+var DIMENSIONS_BY_KEY = {
+  "KEY_LH_T1": { x: xLT1,     y: yT1, w: KEY_WIDTH, h: KEY_HEIGHT },
+  "KEY_LH_T2": { x: xLT2,     y: yT2, w: KEY_WIDTH, h: KEY_HEIGHT },
+  "KEY_LH_T3": { x: xLT3,     y: yT3, w: KEY_WIDTH, h: KEY_HEIGHT },
+  "KEY_LH_T4": { x: xLT4,     y: yT4, w: KEY_WIDTH, h: KEY_HEIGHT },
+  "KEY_LH_T5": { x: xLT5,     y: yT5, w: KEY_WIDTH, h: KEY_HEIGHT },
+  "KEY_LH_T6": { x: xLT6,     y: yT6, w: KEY_WIDTH, h: KEY_HEIGHT },
+
+  "KEY_RH_T1": { x: xLT1+dRT1, y: yT1, w: KEY_WIDTH, h: KEY_HEIGHT },
+  "KEY_RH_T2": { x: xLT2+dRT2, y: yT2, w: KEY_WIDTH, h: KEY_HEIGHT },
+  "KEY_RH_T3": { x: xLT3+dRT3, y: yT3, w: KEY_WIDTH, h: KEY_HEIGHT },
+  "KEY_RH_T4": { x: xLT4+dRT4, y: yT4, w: KEY_WIDTH, h: KEY_HEIGHT },
+  "KEY_RH_T5": { x: xLT5+dRT5, y: yT5, w: KEY_WIDTH, h: KEY_HEIGHT },
+  "KEY_RH_T6": { x: xLT6+dRT6, y: yT6, w: KEY_WIDTH, h: KEY_HEIGHT },
+};
+for (const hand of ["L", "R"]) {
+  for (var row=1; row <= MAX_ROW; row++) {
+    for (var column=1; column <= MAX_COLUMN; column++) {
+      const [key, x, y, w, h] = calculate_key_dimensions(hand, column, row);
+      DIMENSIONS_BY_KEY[key] = { x: x, y: y, w: w, h: h };
+    }
+  }
+}
+
+ function layer_sign_coordinates(x, y) {
+   return {
+     x: MAP_KEY_ORIGIN.x + (KEY_DIMENSIONS.w * x),
+     y: MAP_KEY_ORIGIN.y + (KEY_DIMENSIONS.h * y),
+   };
+ }
+
+ function scaled_map_dimensions($layers_map) {
+   var actual = MAP_DIMENSIONS;
+   var screen = { w: $layers_map.width(), h: $layers_map.height() };
+   var scaled = { x: screen.w / actual.w, y: screen.h / actual.h };
+
+   // adjust for image max-width:100vw and transform:translateX(-50%)
+   var offset = $layers_map.offset();
+   var anchor = $layers_map.closest('.layers-map-container').position();
+   scaled.left = -anchor.left + offset.left;
+   scaled.top = 0;
+
+   return scaled;
+ }
+
+ function build_layer_signs($layers_map, layers, callback) {
+   var map_dimensions = scaled_map_dimensions($layers_map);
+   var $layer_map_signs = $.map(layers, function(layer_definition) {
+     var layer_id = layer_definition[0];
+     var sign_definition = layer_definition[1];
+     if (typeof(sign_definition) == "string") {
+       var sign_dimensions = DIMENSIONS_BY_KEY[sign_definition];
+     }
+     else {
+       var sign_coordinates = layer_sign_coordinates(sign_definition[0], sign_definition[1]);
+       var sign_dimensions = Object.assign(Object.assign({}, KEY_DIMENSIONS), sign_coordinates);
+     }
+
+     var sign_classes = ['layers-map-sign'];
+     if (layer_id.match(/_/)) {
+       sign_classes.push('layers-map-sign-locking');
+     }
+     if (layer_id.match(/lower_/)) {
+       sign_classes.push(
+         'layers-map-sign-locking-hold',
+         'layers-map-sign-sequence'
+       );
+     }
+     if (typeof(sign_definition) == "string") {
+       sign_classes.push(sign_definition);
+     }
+
+     var $layer_sign_div = $('<div/>', {
+       class: sign_classes.join(' '),
+       css: {
+         top:    Math.floor(map_dimensions.top + sign_dimensions.y * map_dimensions.y) + 'px',
+         left:   Math.floor(map_dimensions.left + sign_dimensions.x * map_dimensions.x) + 'px',
+         width:  Math.ceil(sign_dimensions.w * map_dimensions.x) + 'px',
+         height: Math.ceil(sign_dimensions.h * map_dimensions.y) + 'px'
+       }
+     });
+     return callback ? callback(layer_definition, $layer_sign_div) : $layer_sign_div;
+   });
+
+   if (!callback) { // only do this for the example sequences
+     var sequence = $layer_map_signs.filter(function(element) {
+       return element.hasClass('layers-map-sign-sequence');
+     });
+     var step_count = sequence.length;
+     $.each(sequence, function(_index, sign) {
+       $(sign).toggleClass('layers-map-sign-sequence-step-' + step_count);
+       step_count--;
+     });
+   }
+
+   return $layer_map_signs;
+ }
+
+ function annotate_layer_map($layers_map, $layer_map_signs) {
+   // add layer signs to map
+   $layers_map.after($layer_map_signs);
+
+   // indicate that we're ready by removing the busy cursor set by CSS above
+   $layers_map.closest('.layers-map-container').css('cursor', 'auto');
+ }
+
+ function main_layers_map() {
+   var $layers_map = $('#layers-map');
+   var $layers_map_webp = $layers_map.prev('source');
+   var default_layers_map_urls = {
+     'img_src': $layers_map.attr('src'),
+     'webp_srcset': $layers_map_webp.attr('srcset'),
+   };
+   var default_layers_map_urls_mouseover = Object.assign({}, default_layers_map_urls);
+   var $layers_map_link = $('#layers-map-link');
+
+   // layer sign definitions: ["layer_id", [x_column, y_row]]
+   // NOTE: this is an array instead of an object to guarantee this particular ordering
+   var layers = [
+
+     // left hand
+     ["cursor",       "KEY_LH_T4"],
+     ["number",       "KEY_LH_T5"],
+     ["function",     "KEY_LH_T1"],
+     // ["debug_LT2", "KEY_LH_T2"],
+     // ["debug_LT3", "KEY_LH_T3"],
+     ["gaming",       "KEY_LH_C1R5"],
+     ["emoji",        "KEY_LH_C2R6"],
+
+     // right hand
+     ["symbol",       "KEY_RH_T4"],
+     ["mouse",        "KEY_RH_T5"],
+     ["system",       "KEY_RH_T1"],
+     // ["debug_RT2", "KEY_RH_T2"],
+     // ["debug_RT3", "KEY_RH_T3"],
+     ["typing",       "KEY_RH_C1R5"],
+     ["world",        "KEY_RH_C2R6"],
+
+     // NOTE: this must come AFTER the gaming and typing layers for their dependent highlighting
+     ["lower_left",   "KEY_LH_T6"],
+     ["lower_right",  "KEY_RH_T6"],
+     ["magic_left",   "KEY_LH_C6R6"],
+     ["magic_right",  "KEY_RH_C6R6"],
+
+   ];
+
+   // construct layer signs
+   var $layer_map_signs = build_layer_signs($layers_map, layers, function(layer_definition, $layer_sign_div) {
+     var layer_id = layer_definition[0];
+     var layer_name = layer_id.replace(/_.*/, '');
+     var layer_locking_class = (layer_id.match(/_/) ? ' layers-map-sign-locking' : '');
+     var layer_locking_hold_class = (layer_id.match(/lower_/) ? ' layers-map-sign-locking-hold' : '');
+     return $layer_sign_div
+       .on('mouseover', function() {
+         $layers_map_webp.attr('srcset', update_url_for_layer(default_layers_map_urls_mouseover.webp_srcset, layer_name));
+         $layers_map.attr('src', update_url_for_layer(default_layers_map_urls_mouseover.img_src, layer_name));
+         $layers_map_link.attr('href', '#' + layer_name + '-layer');
+       })
+       .on('mouseout', function() {
+         $layers_map_webp.attr('srcset', default_layers_map_urls.webp_srcset);
+         $layers_map.attr('src', default_layers_map_urls.img_src);
+         $layers_map_link.attr('href', null);
+       });
+   });
+
+   base_layer_chooser(["Enthium", "Colemak", "Dvorak", "QWERTY"], $layers_map, $layers_map_webp, default_layers_map_urls);
+   annotate_layer_map($layers_map, $layer_map_signs);
+   return $layer_map_signs;
+ }
+
+ function base_layer_chooser(layouts, $layers_map, $layers_map_webp, default_layers_map_urls) {
+   var local_storage_id = $layers_map.attr('id') + '-base-layer';
+   var $layer_map_alpha = null; // user's previous choice currently being illustrated
+
+   var $prompt = $('<blockquote>').html(
+     '<b>Interactive:</b> <select></select> <button class="next">Next layout</button>'
+   );
+   var $select = $('select', $prompt);
+
+   var $menu = $select.append(
+     $('<option/>').text("Pick an alpha layout for the base layer...")
+   ).append(
+     $.map(layouts, function(title, index) {
+       var label = "Layout #"+ (1 + index) + ". " + title;
+       var selected = localStorage.getItem(local_storage_id) == title;
+       return $('<option/>', { value: title, selected: selected }).text(label);
+     })
+   ).on('change', function() {
+     var title = $(this).val();
+     if (!title || title.match(/^\w+$/)) {
+       default_layers_map_urls.webp_srcset = update_url_for_layout(default_layers_map_urls.webp_srcset, title);
+       default_layers_map_urls.img_src = update_url_for_layout(default_layers_map_urls.img_src, title);
+       $layers_map_webp.attr('srcset', default_layers_map_urls.webp_srcset);
+       $layers_map.attr('src', default_layers_map_urls.img_src);
+       localStorage.setItem(local_storage_id, title);
+     }
+   });
+
+   var $next_button = $('button.next', $prompt).on('click', function(e) {
+     $select[0].selectedIndex++;
+     $menu.trigger('change');
+   });
+
+   $layers_map.closest('.layers-map-container').before($prompt);
+   $menu.trigger('change'); // restore user's last selection from localStorage
+ }
+
+ function update_url_for_layer(url, layer_name) {
+   return url.replace('-base-', '-' + layer_name + '-');
+ }
+
+ function update_url_for_layout(url, layout_name) {
+   return url.replace(/(-base-layer)[^\.]*/, '$1' + (layout_name ? '-' + layout_name : ""));
+ }
+
+ function demo_layers_map($layers_map, layers) {
+   var $layer_map_signs = build_layer_signs($layers_map, layers);
+   annotate_layer_map($layers_map, $layer_map_signs);
+   return $layer_map_signs;
+ }
+
+ function layer_map_examples($layers_map, examples) {
+   var local_storage_id = $layers_map.attr('id');
+   var $layer_map_signs = null; // user's previous choice currently being illustrated
+
+   var $prompt = $('<blockquote>').html(
+     '<b>Interactive:</b> <select></select> <button class="next">Next example</button>'
+   );
+   var $select = $('select', $prompt);
+
+   var $menu = $select.append(
+     $('<option/>').text("Pick a usage example to illustrate ...")
+   ).append(
+     $.map(Object.keys(examples), function(title, index) {
+       var label = "Example #"+ (1 + index) + ". " + title;
+       var selected = localStorage.getItem(local_storage_id) == title;
+       return $('<option/>', { value: title, selected: selected }).text(label);
+     })
+   ).on('change', function() {
+     // clear previous example
+     if ($layer_map_signs) {
+       $.each($layer_map_signs, function(_index, element) {
+         element.remove()
+       });
+       $layer_map_signs = null;
+     }
+
+     // illustrate new example
+     var title = $(this).val();
+     var signs = examples[title];
+     if (signs) {
+       $layer_map_signs = demo_layers_map($layers_map, signs);
+       localStorage.setItem(local_storage_id, title);
+     }
+   });
+
+   var $next_button = $('button.next', $prompt).on('click', function(e) {
+     $select[0].selectedIndex++;
+     $menu.trigger('change');
+   });
+
+   $layers_map.closest('.layers-map-container').before($prompt);
+   $menu.trigger('change'); // restore user's last selection from localStorage
+ }
+
+ function layer_map_examples_literally($layers_map, keymap, examples) {
+   var translated_examples = {};
+   $.each(examples, function(title, keystrokes) {
+     translated_examples[title] = $.map(keystrokes, function(key) {
+       return [["lower_" + key, keymap[key]]];
+     }).reverse();
+   });
+   return layer_map_examples($layers_map, translated_examples);
+ }
+
+ function main() {
+   main_layers_map();
+
+   layer_map_examples($('#cursor-layer-diagram'), {
+
+     "Moving the cursor": [
+       ["arrow_left",   "KEY_RH_C2R4" ],
+       ["arrow_up",     "KEY_RH_C3R4" ],
+       ["arrow_down",   "KEY_RH_C4R4" ],
+       ["arrow_right",  "KEY_RH_C5R4" ],
+       ["lower_cursor", "KEY_LH_T4"   ], // this must come last
+     ],
+
+     "Moving the cursor one word at a time": [
+       ["arrow_left",   "KEY_RH_C2R4" ],
+       ["arrow_up",     "KEY_RH_C3R4" ],
+       ["arrow_down",   "KEY_RH_C4R4" ],
+       ["arrow_right",  "KEY_RH_C5R4" ],
+       ["lower_ctrl",   "KEY_LH_C3R4" ], // this must come last
+       ["lower_cursor", "KEY_LH_T4" ], // this must come last
+     ],
+
+     "Moving the cursor to start of line": [
+       ["home_",        "KEY_RH_C2R5" ],
+       ["lower_cursor", "KEY_LH_T4" ], // this must come last
+     ],
+
+     "Moving the cursor to end of line": [
+       ["end_",         "KEY_RH_C5R5" ],
+       ["lower_cursor", "KEY_LH_T4" ], // this must come last
+     ],
+
+     "Moving the cursor one page at a time": [
+       ["page_up",      "KEY_RH_C3R5" ],
+       ["page_down",    "KEY_RH_C4R5" ],
+       ["lower_cursor", "KEY_LH_T4" ], // this must come last
+     ],
+
+     "Moving the cursor to start of document": [
+       ["home_",        "KEY_RH_C2R5" ],
+       ["lower_ctrl",   "KEY_LH_C3R4" ], // this must come last
+       ["lower_cursor", "KEY_LH_T4" ], // this must come last
+     ],
+
+     "Moving the cursor to end of document": [
+       ["end_",         "KEY_RH_C5R5" ],
+       ["lower_ctrl",   "KEY_LH_C3R4" ], // this must come last
+       ["lower_cursor", "KEY_LH_T4" ], // this must come last
+     ],
+
+     "Selecting with cursor": [
+       ["arrow_left",   "KEY_RH_C2R4" ],
+       ["arrow_up",     "KEY_RH_C3R4" ],
+       ["arrow_down",   "KEY_RH_C4R4" ],
+       ["arrow_right",  "KEY_RH_C5R4" ],
+       ["lower_shift",  "KEY_LH_C2R4" ], // this must come last
+       ["lower_cursor", "KEY_LH_T4" ], // this must come last
+     ],
+
+     "Selecting with cursor one word at a time": [
+       ["arrow_left",   "KEY_RH_C2R4" ],
+       ["arrow_up",     "KEY_RH_C3R4" ],
+       ["arrow_down",   "KEY_RH_C4R4" ],
+       ["arrow_right",  "KEY_RH_C5R4" ],
+       ["lower_shift",  "KEY_LH_C2R4" ], // this must come last
+       ["lower_ctrl",   "KEY_LH_C3R4" ], // this must come last
+       ["lower_cursor", "KEY_LH_T4" ], // this must come last
+     ],
+
+     "Selecting with cursor to start of line": [
+       ["home_",        "KEY_RH_C2R5" ],
+       ["lower_shift",  "KEY_LH_C2R4" ], // this must come last
+       ["lower_cursor", "KEY_LH_T4" ], // this must come last
+     ],
+
+     "Selecting with cursor to end of line": [
+       ["end_",         "KEY_RH_C5R5" ],
+       ["lower_shift",  "KEY_LH_C2R4" ], // this must come last
+       ["lower_cursor", "KEY_LH_T4" ], // this must come last
+     ],
+
+     "Selecting with cursor one page at a time": [
+       ["page_up",      "KEY_RH_C3R5" ],
+       ["page_down",    "KEY_RH_C4R5" ],
+       ["lower_shift",  "KEY_LH_C2R4" ], // this must come last
+       ["lower_cursor", "KEY_LH_T4" ], // this must come last
+     ],
+
+     "Selecting with cursor to start of document": [
+       ["home_",        "KEY_RH_C2R5" ],
+       ["lower_shift",  "KEY_LH_C2R4" ], // this must come last
+       ["lower_ctrl",   "KEY_LH_C3R4" ], // this must come last
+       ["lower_cursor", "KEY_LH_T4" ], // this must come last
+     ],
+
+     "Selecting with cursor to end of document": [
+       ["end_",         "KEY_RH_C5R5" ],
+       ["lower_shift",  "KEY_LH_C2R4" ], // this must come last
+       ["lower_ctrl",   "KEY_LH_C3R4" ], // this must come last
+       ["lower_cursor", "KEY_LH_T4" ], // this must come last
+     ],
+
+     "(Macro) Select nearest or next word": [
+       ["select_word_left",  "KEY_LH_C3R5" ],
+       ["select_word_right", "KEY_RH_T4" ],
+       ["lower_cursor", "KEY_LH_T4" ], // this must come last
+     ],
+
+     "(Macro) Select nearest or previous word": [
+       ["select_word_left",  "KEY_LH_C3R5" ],
+       ["select_word_right", "KEY_RH_T4" ],
+       ["lower_shift",  "KEY_LH_C2R4" ], // this must come last
+       ["lower_cursor", "KEY_LH_T4" ], // this must come last
+     ],
+
+     "(Macro) Extend selection to next word": [
+       ["extend_word_right", "KEY_RH_T1" ],
+       ["lower_cursor", "KEY_LH_T4" ], // this must come last
+     ],
+
+     "(Macro) Extend selection to previous word": [
+       ["extend_word_right", "KEY_RH_T1" ],
+       ["lower_shift",  "KEY_LH_C2R4" ], // this must come last
+       ["lower_cursor", "KEY_LH_T4" ], // this must come last
+     ],
+
+     "(Macro) Select current line to end of line": [
+       ["select_line_left",  "KEY_LH_C4R5" ],
+       ["select_line_right", "KEY_RH_T5" ],
+       ["lower_cursor", "KEY_LH_T4" ], // this must come last
+     ],
+
+     "(Macro) Select current line to start of line": [
+       ["select_line_left",  "KEY_LH_C4R5" ],
+       ["select_line_right", "KEY_RH_T5" ],
+       ["lower_shift",  "KEY_LH_C2R4" ], // this must come last
+       ["lower_cursor", "KEY_LH_T4" ], // this must come last
+     ],
+
+     "(Macro) Extend selection to next line": [
+       ["extend_line_right", "KEY_RH_T2" ],
+       ["lower_cursor", "KEY_LH_T4" ], // this must come last
+     ],
+
+     "(Macro) Extend selection to previous line": [
+       ["extend_line_right", "KEY_RH_T2" ],
+       ["lower_shift",  "KEY_LH_C2R4" ], // this must come last
+       ["lower_cursor", "KEY_LH_T4" ], // this must come last
+     ],
+
+   });
+
+   layer_map_examples($('#function-layer-diagram'), {
+
+     "Closing a window with Alt+F4": [
+       ["lower_f4",       "KEY_RH_C2R4" ],
+       ["lower_alt",      "KEY_LH_C4R4" ],
+       ["lower_function", "KEY_LH_T1" ], // this must come last
+     ],
+
+   });
+
+   var lower_emoji_key = ["lower_emoji", "KEY_LH_C2R6" ];
+   layer_map_examples($('#emoji-layer-diagram'), {
+
+     "Using skin tone: 💁+🏿=💁🏿": [
+       ["lower_skin_tone", "KEY_LH_C1R2" ],
+       ["lower_person",    "KEY_RH_C1R5" ],
+       lower_emoji_key, // this must come last
+     ],
+
+     "Using gender sign: 💁+ZWJ+♀️=💁‍♀️": [
+       ["lower_female_sign", "KEY_LH_C1R4" ],
+       ["lower_zwj",         "KEY_LH_T4" ],
+       ["lower_person",    "KEY_RH_C1R5" ],
+       lower_emoji_key, // this must come last
+     ],
+
+     "Using skin tone with gender sign: 💁+🏿+ZWJ+♀️=💁🏿‍♀️": [
+       ["lower_female_sign", "KEY_LH_C1R4" ],
+       ["lower_zwj",         "KEY_LH_T4" ],
+       ["lower_skin_tone", "KEY_LH_C1R2" ],
+       ["lower_person",    "KEY_RH_C1R5" ],
+       lower_emoji_key, // this must come last
+     ],
+
+     "Creating a family of 2: 👨+ZWJ+👧=👨‍👧": [
+       ["lower_girl",        "KEY_LH_C3R5" ],
+       ["lower_zwj",         "KEY_LH_T4" ],
+       ["lower_man",         "KEY_LH_C5R5" ],
+       lower_emoji_key, // this must come last
+     ],
+
+     "Creating a family of 3: 👨+ZWJ+👩+ZWJ+👧=👨‍👩‍👧": [
+       ["lower_girl",        "KEY_LH_C3R5" ],
+       ["lower_zwj",         "KEY_LH_T4" ],
+       ["lower_woman",       "KEY_LH_C2R5" ],
+       ["lower_zwj2",         "KEY_LH_T4" ],
+       ["lower_man",         "KEY_LH_C5R5" ],
+       lower_emoji_key, // this must come last
+     ],
+
+     "Creating a family of 4: 👨+ZWJ+👩+ZWJ+👧+ZWJ+👦=👨‍👩‍👧‍👦": [
+       ["lower_boy",         "KEY_LH_C4R5" ],
+       ["lower_zwj",         "KEY_LH_T4" ],
+       ["lower_girl",        "KEY_LH_C3R5" ],
+       ["lower_zwj2",         "KEY_LH_T4" ],
+       ["lower_woman",       "KEY_LH_C2R5" ],
+       ["lower_zwj3",         "KEY_LH_T4" ],
+       ["lower_man",         "KEY_LH_C5R5" ],
+       lower_emoji_key, // this must come last
+     ],
+
+     "Feeding a baby bottle: 👨+ZWJ+🍼=👨‍🍼": [
+       ["lower_baby_bottle", "KEY_LH_C3R6" ],
+       ["lower_zwj",         "KEY_LH_T4" ],
+       ["lower_man",         "KEY_LH_C5R5" ],
+       lower_emoji_key, // this must come last
+     ],
+
+   });
+
+   layer_map_examples($('#world-layer-diagram'), {
+
+     "á - lowercase acute": [
+       ["lower_a",      "KEY_LH_C3R4" ],
+       ["lower_layer", "KEY_RH_C2R6"]
+     ],
+
+     "Á - uppercase acute": [
+       ["lower_a",      "KEY_LH_C3R4" ],
+       ["lower_LSFT", "KEY_RH_C2R4" ],
+       ["lower_layer", "KEY_RH_C2R6"]
+     ],
+
+     "ä - lowercase diaeresis": [
+       ["lower_a",      "KEY_LH_C3R4" ],
+       ["lower_LCTL", "KEY_RH_C3R4" ],
+       ["lower_layer", "KEY_RH_C2R6"]
+     ],
+
+     "Ä - uppercase diaeresis": [
+       ["lower_a",      "KEY_LH_C3R4" ],
+       ["lower_LSFT", "KEY_RH_C2R4" ],
+       ["lower_LCTL", "KEY_RH_C3R4" ],
+       ["lower_layer", "KEY_RH_C2R6"]
+     ],
+
+     "â - lowercase circumflex": [
+       ["lower_a",      "KEY_LH_C3R4" ],
+       ["lower_RCTL", "KEY_RH_C4R4" ],
+       ["lower_layer", "KEY_RH_C2R6"]
+     ],
+
+     "Â - uppercase circumflex": [
+       ["lower_a",      "KEY_LH_C3R4" ],
+       ["lower_LSFT", "KEY_RH_C2R4" ],
+       ["lower_RCTL", "KEY_RH_C4R4" ],
+       ["lower_layer", "KEY_RH_C2R6"]
+     ],
+
+     "ã - lowercase tilde": [
+       ["lower_a",      "KEY_LH_C3R4" ],
+       ["lower_LALT", "KEY_RH_C3R3" ],
+       ["lower_layer", "KEY_RH_C2R6"]
+     ],
+
+     "Ã - uppercase tilde": [
+       ["lower_a",      "KEY_LH_C3R4" ],
+       ["lower_LALT", "KEY_RH_C3R3" ],
+       ["lower_LSFT", "KEY_RH_C2R4" ],
+       ["lower_layer", "KEY_RH_C2R6"]
+     ],
+
+     "å - lowercase ring": [
+       ["lower_a",      "KEY_LH_C3R4" ],
+       ["lower_RALT", "KEY_RH_C4R3" ],
+       ["lower_layer", "KEY_RH_C2R6"]
+     ],
+
+     "Å - uppercase ring": [
+       ["lower_a",      "KEY_LH_C3R4" ],
+       ["lower_RALT", "KEY_RH_C4R3" ],
+       ["lower_LSFT", "KEY_RH_C2R4" ],
+       ["lower_layer", "KEY_RH_C2R6"]
+     ],
+
+     "à - lowercase grave": [
+       ["lower_a",      "KEY_LH_C3R4" ],
+       ["lower_RSFT", "KEY_RH_C5R4" ],
+       ["lower_layer", "KEY_RH_C2R6"]
+     ],
+
+     "À - uppercase grave": [
+       ["lower_a",      "KEY_LH_C3R4" ],
+       ["lower_LSFT", "KEY_RH_C2R4" ],
+       ["lower_RSFT", "KEY_RH_C5R4" ],
+       ["lower_layer", "KEY_RH_C2R6"]
+     ],
+
+   });
+
+   // layer_map_examples_literally($('#symbol-layer-diagram'), symbol_layer_keymap, {
+   //   "(); zero-arity function calls":      ["Layer", "(", ")", ";"],
+   //   "(), zero-arity funcall in arglist":  ["Layer", "(", ")", ","],
+   //   "=\" HTML attributes":                ["Layer", "=", "\""],
+   //   "-> thin arrows":                     ["Layer", "-", ">"],
+   //   "=> fat arrows":                      ["Layer", "=", ">"],
+   //   ":= variable assignment in Go":       ["Layer", ":", "="],
+   //   "<- variable assignment in R":        ["Layer", "<", "-"],
+   //   "|> pipe operator in Elixir":         ["Layer", "|", ">"],
+   //   "?. optional chaining in JavaScript": ["Layer", "?", "."],
+   //   "~/ UNIX home directory":             ["Layer", "~", "/"],
+   //   "!= not equal to":                    ["Layer", "!", "="],
+   //   "!$ last argument in BASH":           ["Layer", "!", "$"],
+   //   "${ string interpolation in BASH":    ["Layer", "$", "{"],
+   //   "#{ string interpolation in Ruby":    ["Layer", "#", "{"],
+   // });
+
+   layer_map_examples($('#symbol-layer-diagram'), {
+
+     "(); zero-arity function calls": [
+       ["lower_;", "KEY_LH_C2R2"],
+       ["lower_)", "KEY_LH_C3R2"],
+       ["lower_(", "KEY_LH_C4R2"],
+       ["lower_layer", "KEY_RH_T4"]
+     ],
+
+     "(), zero-arity funcall in arglist": [
+       ["lower_,", "KEY_LH_C1R2"],
+       ["lower_)", "KEY_LH_C3R2"],
+       ["lower_(", "KEY_LH_C4R2"],
+       ["lower_layer", "KEY_RH_T4"]
+     ],
+
+     "-> thin arrows": [
+       ["lower_>", "KEY_LH_C2R5"],
+       ["lower_-", "KEY_LH_C3R5"],
+       ["lower_layer", "KEY_RH_T4"]
+     ],
+
+     "=> fat arrows": [
+       ["lower_>", "KEY_LH_C2R5"],
+       ["lower_=", "KEY_LH_C4R4"],
+       ["lower_layer", "KEY_RH_T4"]
+     ],
+
+     ":= variable assignment in Go": [
+       ["lower_=", "KEY_LH_C4R4"],
+       ["lower_:", "KEY_LH_T5"],
+       ["lower_layer", "KEY_RH_T4"]
+     ],
+
+     "<- variable assignment in R": [
+       ["lower_-", "KEY_LH_C3R5"],
+       ["lower_<", "KEY_LH_C5R5"],
+       ["lower_layer", "KEY_RH_T4"]
+     ],
+
+     "|> pipe operator in Elixir": [
+       ["lower_>", "KEY_LH_C2R5"],
+       ["lower_|", "KEY_LH_C4R5"],
+       ["lower_layer", "KEY_RH_T4"]
+     ],
+
+     "?. optional chaining in JavaScript": [
+       ["lower_.", "KEY_LH_T2"],
+       ["lower_?", "KEY_LH_C1R3"],
+       ["lower_layer", "KEY_RH_T4"]
+     ],
+
+     "~/ UNIX home directory": [
+       ["lower_/", "KEY_LH_C1R5"],
+       ["lower_~", "KEY_LH_C6R5"],
+       ["lower_layer", "KEY_RH_T4"]
+     ],
+
+     "!= not equal to": [
+       ["lower_=", "KEY_LH_C4R4"],
+       ["lower_!", "KEY_LH_C6R3"],
+       ["lower_layer", "KEY_RH_T4"]
+     ],
+
+     "!$ last argument in BASH": [
+       ["lower_$", "KEY_LH_C2R4"],
+       ["lower_!", "KEY_LH_C6R3"],
+       ["lower_layer", "KEY_RH_T4"]
+     ],
+
+     "${ string interpolation in BASH": [
+       ["lower_{",  "KEY_LH_C4R3"],
+       ["lower_$", "KEY_LH_C2R4"],
+       ["lower_layer", "KEY_RH_T4"]
+     ],
+
+     "#{ string interpolation in Ruby": [
+       ["lower_{",  "KEY_LH_C4R3"],
+       ["lower_#", "KEY_LH_C6R4"],
+       ["lower_layer", "KEY_RH_T4"]
+     ],
+
+   });
+
+   layer_map_examples($('#magic-layer-diagram'), {
+
+     "Toggling the factory layer": [
+       ["lower_switch_to_layer", "KEY_LH_T3" ],
+       ["lower_magic_left",      "KEY_LH_C6R6" ], // this must come last
+     ],
+
+     "Toggling the macOS mode": [
+       ["lower_toggle_macOS_left", "KEY_LH_C5R6" ],
+       ["lower_magic_left",      "KEY_LH_C6R6" ], // this must come last
+     ],
+
+     "Switching to the base layer": [
+       ["lower_switch_to_layer", "KEY_LH_C6R2" ],
+       ["lower_magic_left",      "KEY_LH_C6R6"  ], // this must come last
+     ],
+
+     "Putting left half into bootloader mode for flashing": [
+       ["lower_bootloader_left", "KEY_LH_C6R4" ],
+       ["lower_magic_left",      "KEY_LH_C6R6"  ], // this must come last
+     ],
+
+     "Putting right half into bootloader mode for flashing": [
+       ["lower_bootloader_right", "KEY_RH_C6R4" ],
+       ["lower_magic_right",      "KEY_RH_C6R6" ], // this must come last
+     ],
+
+   });
+ }
+
+ // wait until images are loaded before measuring the layers map dimensions,
+ // and apply a busy cursor to the layers map (CSS above) until that happens
+ $(window).on('load', main);
+
+ // FIXME: this is only needed for thinner than native image size
+ // where scale < 0 and offset > 0
+ // $(window).on('resize', function() {
+   // $('select').trigger('change')
+ // });</script><blockquote>
+<hr>
+<p><strong>DOWNLOAD:</strong> Get this keymap for your Glove80 from <a href="https://github.com/sunaku/glove80-keymaps">my Git repository</a>.<br>
+<strong>NOTE:</strong> Check out the <a href="#layers">interactive layer map</a> for this keyboard&rsquo;s keymap.<br>
+<strong>DEMO:</strong> You can watch videos of <a href="https://youtu.be/ekLiraO8Tmk">me typing</a> and <a href="https://youtu.be/fPcO5NGoDao">me coding</a> on this keyboard.<br></p>
+
+<hr>
+</blockquote>
+<p><picture><source type="image/webp" srcset="moergo-glove80-keyboard-photograph.webp"><img src="moergo-glove80-keyboard-photograph.jpg" width="4000" height="1848" alt="Photograph of my MoErgo Glove80 keyboard with Enthium layout and per-key RGB illumination." title="Photograph of my MoErgo Glove80 keyboard with Enthium layout and per-key RGB illumination."></picture>
+</p>
+
+<blockquote>
+<p>Is that&hellip; Batman&rsquo;s keyboard?! 🦇  No, but it sure makes me feel like him:
+  sitting in the turquoise glow of the Batcomputer, deep within the quiet
+  solitude of the Batcave, saving the world with this ergonomic marvel!</p>
+</blockquote>
+<p>This is my <a href="https://www.moergo.com/">MoErgo Glove80</a> keyboard: a split, columnar, contoured, and wireless
+ergonomic marvel that has become my &ldquo;endgame&rdquo; choice for the foreseeable future.
+Previously, I used an <a href="ergohaven-remnant-keyboard.html">Ergohaven Remnant</a>
+keyboard for 6 months, a <a href="dactyl-manuform-5x6-keyboard.html">Dactyl Manuform 5x6</a>
+keyboard for a year, an <a href="https://ergodox-ez.com/">ErgoDox EZ</a> keyboard for 6 years, and a <a href="https://kinesis-ergo.com/shop/advantage2/">Kinesis
+Advantage</a> keyboard for 11 years prior &mdash; all on the quest for better ergonomics.</p>
+<p><ol class="table-of-contents"><li><a id="__review__" href="#review" class="downlink">Review</a><ol><li><a id="__impression__" href="#impression" class="downlink">Impression</a><ol></ol></li><li><a id="__adaptation__" href="#adaptation" class="downlink">Adaptation</a><ol></ol></li><li><a id="__comparison__" href="#comparison" class="downlink">Comparison</a><ol></ol></li></ol></li><li><a id="__layers__" href="#layers" class="downlink">Layers</a><ol><li><a id="__lower-layer__" href="#lower-layer" class="downlink">Lower layer</a><ol><li><a id="__typing-layer__" href="#typing-layer" class="downlink">Typing layer</a><ol></ol></li><li><a id="__gaming-layer__" href="#gaming-layer" class="downlink">Gaming layer</a><ol></ol></li><li><a id="__magic-layer__" href="#magic-layer" class="downlink">Magic layer</a><ol></ol></li><li><a id="__factory-layer__" href="#factory-layer" class="downlink">Factory layer</a><ol></ol></li></ol></li><li><a id="__cursor-layer__" href="#cursor-layer" class="downlink">Cursor layer</a><ol><li><a id="__mouse-usage__" href="#mouse-usage" class="downlink">Mouse usage</a><ol></ol></li><li><a id="__arrow-keys__" href="#arrow-keys" class="downlink">Arrow keys</a><ol></ol></li><li><a id="__select-edit__" href="#select-edit" class="downlink">Select &amp; edit</a><ol></ol></li></ol></li><li><a id="__number-layer__" href="#number-layer" class="downlink">Number layer</a><ol><li><a id="__date-time__" href="#date-time" class="downlink">Date &amp; time</a><ol></ol></li><li><a id="__arithmetic__" href="#arithmetic" class="downlink">Arithmetic</a><ol></ol></li><li><a id="__prefix-signs__" href="#prefix-signs" class="downlink">Prefix signs</a><ol></ol></li><li><a id="__inequalities__" href="#inequalities" class="downlink">Inequalities</a><ol></ol></li><li><a id="__vim-navigation__" href="#vim-navigation" class="downlink">Vim navigation</a><ol></ol></li></ol></li><li><a id="__function-layer__" href="#function-layer" class="downlink">Function layer</a><ol></ol></li><li><a id="__symbol-layer__" href="#symbol-layer" class="downlink">Symbol layer</a><ol><li><a id="__spacegrams__" href="#spacegrams" class="downlink">Spacegrams</a><ol></ol></li><li><a id="__base-layer-affinity__" href="#base-layer-affinity" class="downlink">Base layer affinity</a><ol></ol></li><li><a id="__vim-editor-shortcuts__" href="#vim-editor-shortcuts" class="downlink">Vim editor shortcuts</a><ol></ol></li><li><a id="__pinching-bigrams__" href="#pinching-bigrams" class="downlink">Pinching bigrams</a><ol></ol></li><li><a id="__vertical-bigrams__" href="#vertical-bigrams" class="downlink">Vertical bigrams</a><ol></ol></li><li><a id="__adjacent-bigrams__" href="#adjacent-bigrams" class="downlink">Adjacent bigrams</a><ol></ol></li><li><a id="__inward-rolling-bigrams__" href="#inward-rolling-bigrams" class="downlink">Inward rolling bigrams</a><ol></ol></li><li><a id="__outward-rolling-bigrams__" href="#outward-rolling-bigrams" class="downlink">Outward rolling bigrams</a><ol></ol></li></ol></li><li><a id="__mouse-layer__" href="#mouse-layer" class="downlink">Mouse layer</a><ol></ol></li><li><a id="__system-layer__" href="#system-layer" class="downlink">System layer</a><ol></ol></li><li><a id="__emoji-layer__" href="#emoji-layer" class="downlink">Emoji layer</a><ol><li><a id="__emoji-yaml__" href="#emoji-yaml" class="downlink">emoji.yaml</a><ol></ol></li></ol></li><li><a id="__world-layer__" href="#world-layer" class="downlink">World layer</a><ol><li><a id="__world-yaml__" href="#world-yaml" class="downlink">world.yaml</a><ol></ol></li></ol></li></ol></li><li><a id="__firmware__" href="#firmware" class="downlink">Firmware</a><ol><li><a id="__fine-tuning-the-timing__" href="#fine-tuning-the-timing" class="downlink">Fine-tuning the timing</a><ol></ol></li></ol></li></ol></p>
+
+<div id="review" class="section"></div><h2 class="heading">Review<a href="#review" class="permalink" title="Permalink"></a><a href="#__review__" class="uplink" title="Contents"></a></h2>
+<p>Embodying a thoughtful, humanistic design that is <em>forgiving</em> (accommodating a broad range of hand sizes and shapes), <em>inviting</em> (like a lounge chair whose intuitive shape beckons weary hands to perch down for some well deserved rest), and <em>futuristic</em> (like some advanced Space Age technology that Batman would use), the Glove80 provides a comfortable, efficient, and delightful typing experience.</p>
+<p>For me, the Glove80 is like a dream come true because it brings together the best features of all the keyboards I&rsquo;ve used so far on my quest for ergonomics:</p>
+
+<table><thead>
+<tr>
+<th>Ergonomic keyboard</th>
+<th>Duration of use</th>
+<th>Split design?</th>
+<th>Contoured keywells?</th>
+<th>Columnar layout?</th>
+<th>Programmable firmware?</th>
+<th>Low height?</th>
+<th>Wireless capable?</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>MoErgo Glove80 🏆</td>
+<td>2 years and 6 months</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><a href="ergohaven-remnant-keyboard.html">Ergohaven Remnant</a></td>
+<td>6 months</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><a href="dactyl-manuform-5x6-keyboard.html">Dactyl Manuform 5x6</a></td>
+<td>1 year</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>ZSA ErgoDox EZ</td>
+<td>6 years</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Kinesis Advantage</td>
+<td>11 years</td>
+<td>🌗</td>
+<td>✅</td>
+<td>✅</td>
+<td>🌘</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Goldtouch Adjustable</td>
+<td>1 year</td>
+<td>🌖</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Microsoft Natural Elite</td>
+<td>2 years</td>
+<td>🌘</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+</tbody></table>
+<p>I especially revered the Kinesis Advantage for its unconventional yet ingenious design, but I often wished it were split so that I could separate the keywells at shoulder width apart for a more relaxed, natural stance.  Thus I embarked on a split keyboard journey, sacrificing keywells in favor of a split design. 💔 Fortunately, my original wish has now been granted: the Glove80 <em>delivers it all!</em></p>
+
+<div id="impression" class="section"></div><h3 class="heading">Impression<a href="#impression" class="permalink" title="Permalink"></a><a href="#__impression__" class="uplink" title="Contents"></a></h3>
+<p>My first impressions of this keyboard, after connecting it to my computer, were:</p>
+
+<ul>
+<li><p>Everything feels very reachable, like fitting into a pair of gloves!  In particular, the top-row pinky key (Q on QWERTY) is the best I&rsquo;ve ever felt.</p></li>
+<li><p>Excellent thumb cluster: the lower arc follows my thumb&rsquo;s natural motion perfectly, and the nearest upper arc key is also reachable without effort.</p></li>
+<li><p>The keycaps&rsquo; POM material is delightfully smooth and slippery, making it easy (and fun) to slide fingers across.  It&rsquo;s kind of like having wheels on ergonomic office chairs: you can move around your desk while you multitask.</p></li>
+<li><p>Key travel is shorter than the Cherry MX switches I&rsquo;m accustomed to, which is great because I can feel less effort is needed to fully press each key.</p></li>
+<li><p>The positioning of the function keys (which are offset by one key above the number row) makes sense now: the missing F6 cut-out on the left half is out of reach unless I shift my palm off its comfortable perch on the palm rest.</p></li>
+<li><p>The keyboard is very light, making it easy to lift and reposition to suit the task and posture (whether I&rsquo;m sitting or standing at my desk) at hand.</p></li>
+</ul>
+
+<div id="adaptation" class="section"></div><h3 class="heading">Adaptation<a href="#adaptation" class="permalink" title="Permalink"></a><a href="#__adaptation__" class="uplink" title="Contents"></a></h3>
+<p>On my first day using the Glove80, coming from an <a href="ergohaven-remnant-keyboard.html">Ergohaven Remnant</a> keyboard, I felt right at home: achieving 100 WPM on MonkeyType, as shown below. And this speed <em>is with</em> <a href="home-row-mods.html">home row mods</a>, disambiguated by ZMK&rsquo;s <code>global-quick-tap</code> feature! 🚀</p>
+<p><picture><source type="image/webp" srcset="moergo-glove80-keyboard-monkeytype.webp"><img src="moergo-glove80-keyboard-monkeytype.png" width="1644" height="736" alt="First day on Glove80: achieved 100 WPM on MonkeyType!" title="First day on Glove80: achieved 100 WPM on MonkeyType!"></picture>
+</p>
+<p>Key travel is definitely less pronounced on the Glove80&rsquo;s special-order Choc v1 Red key switches, which allows for a more rapid inter-key typing speed, and the tighter key spacing afforded by Choc switches (compared to MX switches) along with the Glove80&rsquo;s ergonomic curvature are helping to minimize finger travel around the keyboard.  With more practice (just normal usage over time), I feel confident that I can increase my touch-typing speed even further on the Glove80.</p>
+<p>Porting my QMK keymap from the Remnant over to ZMK on the Glove80 was challenging, mainly because <a href="home-row-mods.html#solution">my home row mods disambiguation logic is so complex</a>.  Notably, I worried whether I would be able to translate all the nuances of my QMK patch (which took over 6 months of occasional development to master) to ZMK, but thankfully it was significantly simpler than what I had imagined: without modifying ZMK source code or writing C extensions, <a href="#firmware">I was able to port</a> nearly all of that monstrous sophistication using <em>declarative snippets</em> of custom behaviors!</p>
+
+<div id="comparison" class="section"></div><h3 class="heading">Comparison<a href="#comparison" class="permalink" title="Permalink"></a><a href="#__comparison__" class="uplink" title="Contents"></a></h3>
+<p><picture><source type="image/webp" srcset="moergo-glove80-keyboard-comparison.webp"><img src="moergo-glove80-keyboard-comparison.jpg" width="1973" height="777" alt="Bird&#39;s eye view of my Glove80 and Remnant keyboards." title="Bird&#39;s eye view of my Glove80 and Remnant keyboards."></picture>
+</p>
+<p>In terms of quality, the Glove80 is <em>strong yet light</em>: hallmarks of high-end polycarbonate material, which is also used to make optical lenses in eyeglasses.  This stands opposite to the Remnant&rsquo;s light yet fragile 3D-printed construction, which requires careful handling since it can be damaged easily, say, if dropped.</p>
+<p>In terms of height, the Glove80 achieves a <em>lower height profile</em> due to its center of gravity (its keywell nearly touches the desk!) in combination with low-profile Choc switches and keycaps.  Even at its tallest point, the Glove80 still stands below the height of the Remnant&rsquo;s top-inner corner key (number 5).</p>
+
+<blockquote>
+<p><picture><source type="image/webp" srcset="moergo-glove80-keyboard-comparison-outer.webp"><img src="moergo-glove80-keyboard-comparison-outer.jpg" width="3072" height="1383" alt="Outer profile: looking from the left side toward the center." title="Outer profile: looking from the left side toward the center."></picture>
+</p>
+
+<blockquote>
+<p>👆 Outer profile: looking from the left side toward the center.</p>
+</blockquote>
+<p><picture><source type="image/webp" srcset="moergo-glove80-keyboard-comparison-inner.webp"><img src="moergo-glove80-keyboard-comparison-inner.jpg" width="3072" height="1383" alt="Inner profile: looking from the center toward the left side." title="Inner profile: looking from the center toward the left side."></picture>
+</p>
+
+<blockquote>
+<p>👆 Inner profile: looking from the center toward the left side.</p>
+</blockquote>
+<p><picture><source type="image/webp" srcset="moergo-glove80-keyboard-comparison-front.webp"><img src="moergo-glove80-keyboard-comparison-front.jpg" width="3072" height="1383" alt="Front profile: looking from the palm rest toward the back." title="Front profile: looking from the palm rest toward the back."></picture>
+</p>
+
+<blockquote>
+<p>👆 Front profile: looking from the palm rest toward the back.</p>
+</blockquote>
+<p><picture><source type="image/webp" srcset="moergo-glove80-keyboard-comparison-back.webp"><img src="moergo-glove80-keyboard-comparison-back.jpg" width="3072" height="1383" alt="Back profile: looking from the back toward the palm rest." title="Back profile: looking from the back toward the palm rest."></picture>
+</p>
+
+<blockquote>
+<p>👆 Back profile: looking from the back toward the palm rest.</p>
+</blockquote>
+</blockquote>
+<p>In terms of weight, the Glove80 <em>feels much lighter</em> than the Remnant even though it weighs negligibly more: using a kitchen scale, I observed that the right half of the Glove80 (with palm rest) weighed 9.7oz / 275g whereas the Remnant&rsquo;s (without palm rest) weighed 9.6oz / 272g.  However, the Glove80&rsquo;s weight is more evenly distributed over its surface so it doesn&rsquo;t feel as heavy when you lift it up; whereas the Remnant&rsquo;s shape is more condensed, bulkier, and harder to grasp.</p>
+<p>In terms of mobility, the Glove80&rsquo;s two halves always communicate wirelessly whereas the left half can be wired, wireless, or both (since it supports <em>connecting to 5 devices simultaneously</em>: 4 Bluetooth devices and 1 USB device).  This allows both halves, especially the right half, to <em>be repositioned at will</em>.  For instance, I sometimes need more writing space on my desk to take notes or doodle, so I simply lift the right half up &amp; away to make room for my notebook.  And when I&rsquo;m finished, I simply move the right half back into position: setting it down wherever I find is comfortable for me, approximately at shoulder width.  This is in stark contrast to the Remnant, which is always and only wired to USB.  As a result, I&rsquo;m hesitant to reposition the Remnant&rsquo;s two halves freely because that may disturb their perfect symmetry, which is tedious to restore accurately.</p>
+<p>In terms of compatibility, the Glove80 <em>works flawlessly with wireless</em> Bluetooth devices, like smartphones, as well as wired USB devices, like laptops.  The former is especially remarkable: I connected my Glove80 to my smartphone as an experiment to type in a passphrase (why struggle with a virtual on-screen keyboard when you&rsquo;ve got the real thing Bluetooth-enabled?) and I was amazed! 🤩  This has unlocked a massive productivity boost for the otherwise inefficient smartphone user interface. It&rsquo;s quite the game changer: Glove80 for the win! ❤️‍🔥</p>
+<p>In terms of firmware, the Glove80&rsquo;s online layout editor makes it easy to customize the keymap and share it with others: there is a free-form text box for notes alongside a &ldquo;Custom Defined Behaviors&rdquo; box for ZMK configuration snippets, which <em>lets you implement advanced features</em> such as <a href="home-row-mods.html">home row mods disambiguation</a>.  And once you&rsquo;ve built and downloaded your keymap from the online layout editor, flashing the resulting <code>*.uf2</code> file is a simple drag &amp; drop operation after entering bootloader mode, which has a robust hardware fail-safe of holding particular keys while powering on the keyboard, as documented in the user guide.</p>
+<p>In terms of documentation, the Glove80 comes with a <a href="https://www.moergo.com/files/glove80-user-guide.pdf">comprehensive user guide</a> that covers everything from ergonomics to soldering; gentle introductory emails when your order is being prepared for shipment; and a <a href="https://discord.gg/cdywSRX9qF">helpful Discord community</a> so thoughtful and engaging that I look forward to participating in it every day.</p>
+<p>In terms of support, the Glove80&rsquo;s inventors are active participants in the Discord community, and they&rsquo;re reachable directly by email and other means too; their <em>professional demeanor and responsiveness</em> is often applauded by customers.  This is significantly better than the Remnant&rsquo;s support, where language and cultural differences sometimes complicate communication and problem resolution.</p>
+<p>Overall, the Glove80 is a phenomenal upgrade over the Remnant and all other ergonomic keyboards I&rsquo;ve used before.  It&rsquo;s like <em>a dream come true</em>: I love it! 👌</p>
+
+<div id="layers" class="section"></div><h2 class="heading">Layers<a href="#layers" class="permalink" title="Permalink"></a><a href="#__layers__" class="uplink" title="Contents"></a></h2>
+<p>The keyboard boots up into the following default &ldquo;base&rdquo; layer when powered on.
+When held, <span style="color: #D1C4E9">the purple keys</span> in the thumb
+clusters activate the subsequent layers according to the legendary <a href="https://github.com/manna-harbour/miryoku#readme">Miryoku</a>&rsquo;s
+6-layer design with 3-key thumb activation.</p>
+
+<blockquote>
+<hr>
+<p><strong>DOWNLOAD:</strong> This layer map is also available as a <a href="moergo-glove80-keyboard-layers.pdf">printable PDF document</a>.<br>
+<strong>INTERACTIVE:</strong> Hover your mouse over <span style="color: #D1C4E9">the purple keys</span> to see each layer! <noscript>⚠️ Interactivity is unavailable because JavaScript is not enabled. ⚠️</noscript></p>
+
+<hr>
+</blockquote>
+
+<div class="layers-map-container">
+  <a id="layers-map-link">
+    
+<picture><source type="image/webp" srcset="moergo-glove80-keyboard-base-layer.webp"><img id="layers-map" src="moergo-glove80-keyboard-base-layer.png" width="2256" height="1265"></picture>
+
+  </a>
+</div>
+<p>The keys are arranged <a href="enthium-keyboard-layout.html">in my variation</a> of the <a href="https://reddit.com/r/KeyboardLayouts/comments/1g66ivi">Hands Down
+Promethium layout</a> and they&rsquo;re imbued with the legendary <a href="https://github.com/manna-harbour/miryoku#readme">Miryoku</a> home
+row mods <a href="home-row-mods.html">tamed with enhancements</a>.</p>
+<p>Going beyond Miryoku, I have added a custom <em>layer locking</em> feature whereby a
+Miryoku layer can be set to remain active even after you release its thumb key:
+while holding the <strong>Lower key</strong>, simply tap your desired Miryoku layer&rsquo;s thumb
+key. To unlock the layer, simply tap the Miryoku layer&rsquo;s thumb activation key again.</p>
+
+<div id="lower-layer" class="section"></div><h3 class="heading">Lower layer<a href="#lower-layer" class="permalink" title="Permalink"></a><a href="#__lower-layer__" class="uplink" title="Contents"></a></h3>
+<p><div class="layers-map-container">
+<picture><source type="image/webp" srcset="moergo-glove80-keyboard-lower-layer.webp"><img id="lower-layer-diagram" src="moergo-glove80-keyboard-lower-layer.png" width="2256" height="1265"></picture>
+</div></p>
+<p>This layer provides <em>layer locking</em> for all the other layers in the keymap:</p>
+
+<ul>
+<li><p>To lock a layer: Hold the <strong>Lower key</strong> (one of the black star keys in the
+diagram) and tap the thumb cluster key for the layer you want to lock into.</p></li>
+<li><p>To unlock a layer: Tap any &ldquo;Unlock layer&rdquo; key on the layer you&rsquo;ve locked.</p></li>
+</ul>
+
+<div id="typing-layer" class="section"></div><h4 class="heading">Typing layer<a href="#typing-layer" class="permalink" title="Permalink"></a><a href="#__typing-layer__" class="uplink" title="Contents"></a></h4>
+<p><div class="layers-map-container">
+<picture><source type="image/webp" srcset="moergo-glove80-keyboard-typing-layer.webp"><img id="typing-layer-diagram" src="moergo-glove80-keyboard-typing-layer.png" width="2256" height="1265"></picture>
+</div></p>
+<p>This layer temporarily disables home row modifiers and thumb layers so that you
+can focus on typing, without the risk of activating them unintentionally.  It&rsquo;s
+meant for practicing your touch-typing skills and is helpful for newcomers.</p>
+
+<div id="gaming-layer" class="section"></div><h4 class="heading">Gaming layer<a href="#gaming-layer" class="permalink" title="Permalink"></a><a href="#__gaming-layer__" class="uplink" title="Contents"></a></h4>
+<p><div class="layers-map-container">
+<picture><source type="image/webp" srcset="moergo-glove80-keyboard-gaming-layer.webp"><img id="gaming-layer-diagram" src="moergo-glove80-keyboard-gaming-layer.png" width="2256" height="1265"></picture>
+</div></p>
+<p>This layer repositions the WASD cluster to better fit the Glove80&rsquo;s ergonomic
+curvature while retaining the conventional placement of the pinky finger&rsquo;s keys.
+Consequently, the index finger&rsquo;s home position is shifted down by one row (on <code>D</code>
+key) instead of the home row (on <code>E</code> key), as marked in the diagram.</p>
+<p>It also replicates the first column of the right half of the keyboard on the left
+half because it&rsquo;s common practice in games to place hotkeys on both central
+columns as they assume close proximity on conventional row-staggered keyboards.
+For example, notice how the home row ends with <code>F</code> and so the <code>G</code> wraps back around.
+Similarly, it also adds important hotkeys such as <code>M</code> for map and <code>I</code> for inventory.</p>
+<p>The left half of the keyboard has all number row keys above the home block for
+quick access to groups, inventory, spells, and abilities in RPG &amp; RTS games.</p>
+<p>The right half of the keyboard clusters all function keys at the top, and puts
+arrow keys on the thumb cluster with Escape and Enter for menu navigation.</p>
+
+<div id="magic-layer" class="section"></div><h4 class="heading">Magic layer<a href="#magic-layer" class="permalink" title="Permalink"></a><a href="#__magic-layer__" class="uplink" title="Contents"></a></h4>
+<p><div class="layers-map-container">
+<picture><source type="image/webp" srcset="moergo-glove80-keyboard-magic-layer.webp"><img id="magic-layer-diagram" src="moergo-glove80-keyboard-magic-layer.png" width="2256" height="1265"></picture>
+</div></p>
+<p>This layer features a &ldquo;macOS mode&rdquo; that you can toggle on/off dynamically.  When toggled on, the Ctrl and Cmd keys are swapped (changing GACS into CAGS) on the base layer&rsquo;s home row mods as well as the left/right hand Miryoku layers.</p>
+
+<div id="factory-layer" class="section"></div><h4 class="heading">Factory layer<a href="#factory-layer" class="permalink" title="Permalink"></a><a href="#__factory-layer__" class="uplink" title="Contents"></a></h4>
+<p><div class="layers-map-container">
+<picture><source type="image/webp" srcset="moergo-glove80-keyboard-factory-layer.webp"><img id="factory-layer-diagram" src="moergo-glove80-keyboard-factory-layer.png" width="2256" height="1265"></picture>
+</div></p>
+<p>If you&rsquo;re a new user (perhaps you&rsquo;ve just unboxed your Glove80 or you haven&rsquo;t
+customized its default keymap), you might find the Factory layer to be useful:</p>
+
+<ol>
+<li>Press &amp; hold the Magic key (bottom left corner key on left half of Glove80)</li>
+<li>Tap the left hand&rsquo;s T3 key (furthest key on the upper arc of thumb cluster)</li>
+</ol>
+<p>This shortcut will toggle the Factory layer on/off and allow you to experiment
+with this keymap while maintaining an easy escape route to the factory default.</p>
+
+<div id="cursor-layer" class="section"></div><h3 class="heading">Cursor layer<a href="#cursor-layer" class="permalink" title="Permalink"></a><a href="#__cursor-layer__" class="uplink" title="Contents"></a></h3>
+<p><div class="layers-map-container">
+<picture><source type="image/webp" srcset="moergo-glove80-keyboard-cursor-layer.webp"><img id="cursor-layer-diagram" src="moergo-glove80-keyboard-cursor-layer.png" width="2256" height="1265"></picture>
+</div></p>
+
+<blockquote>
+
+<div id="mouse-usage" class="section"></div><h4 class="heading">Mouse usage<a href="#mouse-usage" class="permalink" title="Permalink"></a><a href="#__mouse-usage__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>Many keys from the right half are mirrored on the left half for more convenient
+right-handed mouse usage.  For example, you can select and drag with your right
+hand on the mouse while cutting, copying, and pasting with your left hand on
+the keyboard.  Similarly, you can undo &amp; redo and run the text selection macros too.</p>
+
+<blockquote>
+
+<div id="arrow-keys" class="section"></div><h4 class="heading">Arrow keys<a href="#arrow-keys" class="permalink" title="Permalink"></a><a href="#__arrow-keys__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>The up/down arrow keys on the right-hand home row diverge from Vim&rsquo;s HJKL order
+to avoid double-duty on the index finger for HJ (left &amp; down directions) so that
+each home row finger is only responsible for a single direction; and also because
+it feels more natural to follow the inward-rising curve of the keyboard&rsquo;s
+contoured keywell, which elevates the thumb above the pinky finger and,
+similarly, the middle finger (up arrow) above the ring finger (down arrow).</p>
+<p>This is a longstanding preference that I formed 17 years ago, in my early days of
+using the Kinesis Advantage with the <a href="https://www.dvzine.org/zine/">Dvorak layout</a>, whose lack of HJKL provided
+the freedom to reimagine the arrangement of arrow keys on the home row.</p>
+
+<blockquote>
+
+<div id="select-edit" class="section"></div><h4 class="heading">Select &amp; edit<a href="#select-edit" class="permalink" title="Permalink"></a><a href="#__select-edit__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>Editing (index finger) and selection (thumb cluster) keys line the inner wall.
+This opposition allows for pinching, where selections can be followed by edits.
+For example, to copy everything, I would first tap the &ldquo;Select all&rdquo; key with my
+thumb and then pinch slightly inward to tap the &ldquo;Copy&rdquo; key with my index finger.</p>
+<p>The copy and paste keys are stacked vertically, in that order, to allow the index
+finger to rake down upon them in a natural curling motion toward the palm. This
+order is also logical, since pasting requires something to be copied first.</p>
+<p>The <em>select &amp; extend word/line</em> keys on the thumb cluster are ZMK macros that approximate
+<a href="https://getreuer.info/posts/keyboards/select-word/index.html">Pascal Getreuer&rsquo;s word selection QMK macro</a>, which automates common
+selection tasks that require holding down Control and Shift with the arrow keys:</p>
+
+<blockquote>
+<img src="www/getreuer.info/posts/keyboards/select-word/select-word.gif" width="784" height="129" alt="Video demonstration of Pascal Getreuer&#39;s word selection QMK macro" title="Video demonstration of Pascal Getreuer&#39;s word selection QMK macro"></blockquote>
+<p>These keys can be combined with the Shift modifier to reverse their direction.
+In some apps, the <em>select word</em> key cycles to the next successive word each time!</p>
+
+<div id="number-layer" class="section"></div><h3 class="heading">Number layer<a href="#number-layer" class="permalink" title="Permalink"></a><a href="#__number-layer__" class="uplink" title="Contents"></a></h3>
+<p><div class="layers-map-container">
+<picture><source type="image/webp" srcset="moergo-glove80-keyboard-number-layer.webp"><img id="number-layer-diagram" src="moergo-glove80-keyboard-number-layer.png" width="2256" height="1265"></picture>
+</div></p>
+<p>A 3x3 numeric keypad (using the standard 10-key layout) occupies the home block.
+The period and comma keys are positioned near the zero key on the thumb cluster.</p>
+
+<blockquote>
+
+<div id="date-time" class="section"></div><h4 class="heading">Date &amp; time<a href="#date-time" class="permalink" title="Permalink"></a><a href="#__date-time__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>The slash and minus keys are positioned for MM/DD and YYYY-MM-DD date entry.
+Similarly, the colon key is positioned above them for HH:MM:SS time stamp entry.</p>
+
+<ul>
+<li><code>:</code> time stamp separator</li>
+<li><code>-</code> ISO-8601 date separator</li>
+<li><code>/</code> American date separator</li>
+</ul>
+
+<blockquote>
+
+<div id="arithmetic" class="section"></div><h4 class="heading">Arithmetic<a href="#arithmetic" class="permalink" title="Permalink"></a><a href="#__arithmetic__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>Common arithmetic operators pair along the sides of the 3x3 numeric keypad.</p>
+
+<ul>
+<li><code>%</code> and <code>:</code> for percentages and proportions</li>
+<li><code>+</code> and <code>-</code> for addition and subtraction</li>
+<li><code>*</code> and <code>/</code> for multiplication and division</li>
+</ul>
+
+<blockquote>
+
+<div id="prefix-signs" class="section"></div><h4 class="heading">Prefix signs<a href="#prefix-signs" class="permalink" title="Permalink"></a><a href="#__prefix-signs__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>Signs that commonly prefix numbers line the top of the 3x3 numeric keypad.</p>
+
+<ul>
+<li><code>~</code> approximately</li>
+<li><code>#</code> literal number</li>
+<li><code>$</code> dollar amount</li>
+<li><code>@</code> at the rate of</li>
+</ul>
+
+<blockquote>
+
+<div id="inequalities" class="section"></div><h4 class="heading">Inequalities<a href="#inequalities" class="permalink" title="Permalink"></a><a href="#__inequalities__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>Comparison operators are positioned along the perimeter of the home block.</p>
+
+<ul>
+<li><code>&lt;</code> less than</li>
+<li><code>&gt;</code> greater than</li>
+<li><code>=</code> equal to</li>
+<li><code>~</code> approximately</li>
+</ul>
+
+<blockquote>
+
+<div id="vim-navigation" class="section"></div><h4 class="heading">Vim navigation<a href="#vim-navigation" class="permalink" title="Permalink"></a><a href="#__vim-navigation__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>Vim navigation operators (prefixed by a number <em>N</em>) fill the leftmost column:</p>
+
+<ul>
+<li><code>k</code> goes up <em>N</em> lines</li>
+<li><code>j</code> goes down <em>N</em> lines</li>
+<li><code>G</code> goes to line number <em>N</em></li>
+<li><code>|</code> goes to column number <em>N</em></li>
+</ul>
+
+<div id="function-layer" class="section"></div><h3 class="heading">Function layer<a href="#function-layer" class="permalink" title="Permalink"></a><a href="#__function-layer__" class="uplink" title="Contents"></a></h3>
+<p><div class="layers-map-container">
+<picture><source type="image/webp" srcset="moergo-glove80-keyboard-function-layer.webp"><img id="function-layer-diagram" src="moergo-glove80-keyboard-function-layer.png" width="2256" height="1265"></picture>
+</div></p>
+<p>The function keys are arranged in the same 10-key layout as the <a href="#number-layer">Number
+layer</a>&rsquo;s 3x3 numeric keypad so that you can develop common muscle
+memory for both layers.  The remaining F10-F12 keys wrap around the home block
+because they&rsquo;re found in shortcuts such as BIOS save/quit, fullscreen toggle,
+and devtools, respectively.</p>
+
+<div id="symbol-layer" class="section"></div><h3 class="heading">Symbol layer<a href="#symbol-layer" class="permalink" title="Permalink"></a><a href="#__symbol-layer__" class="uplink" title="Contents"></a></h3>
+
+<blockquote>
+<p><strong>Video:</strong> Tour of my Symbol layer, with examples in Vim.</p>
+<p><a class="embed_youtube_video" href="https://www.youtube.com/embed/uuSR81wc6WQ?autoplay=1&cc_load_policy=1&modestbranding=1"><img src="https://i.ytimg.com/vi/uuSR81wc6WQ/hqdefault.jpg" alt="Click to watch video" width="480" height="360"></a></p>
+</blockquote>
+<p>This is the crown jewel of my keyboard&rsquo;s configuration: an entire layer dedicated
+to the entry of symbols that are essential for computer programming.  It&rsquo;s the
+result of several hundreds of layout iterations over the last 10 years.</p>
+<p><div class="layers-map-container">
+<picture><source type="image/webp" srcset="moergo-glove80-keyboard-symbol-layer.webp"><img id="symbol-layer-diagram" src="moergo-glove80-keyboard-symbol-layer.png" width="2256" height="1265"></picture>
+</div></p>
+
+<blockquote>
+<p>👉
+<span style="color: #FFCDD2">Red</span> quotes.
+<span style="color: #DCEDC8">Green</span> arrows.
+<span style="color: #BBDEFB">Blue</span> groups.
+<span style="color: #D1C4E9">Purple</span> flips.
+<span style="color: #FFECB3">Yellow</span> Vim.</p>
+</blockquote>
+
+<ul>
+<li><code>\</code> is on the thumb for escaping all other symbols without moving your hand.</li>
+<li>For snake_case, <code>_</code> is at the same spot as English&rsquo;s most frequent letter <code>e</code>.</li>
+<li>For assignment, <code>=</code> is on the home row because it&rsquo;s frequent in programming.</li>
+<li>For strings, quotation marks are on both hands for task-based convenience.</li>
+<li>For function calls, <code>();,</code> is above the home block, inward-rolling rightward.</li>
+<li>Bitwise <code>|&amp;</code> and arithmetic <code>-+</code> operators &ldquo;flap down&rdquo; and &ldquo;fold up&rdquo; together.</li>
+<li>Angling arrows <code>-&gt;</code>, <code>=&gt;</code>, <code>&lt;=</code>, <code>&lt;-</code>; functional programming pipes <code>|&gt;</code>, <code>&lt;|</code> abound!</li>
+</ul>
+<p>Overall, the guiding principle for this layer&rsquo;s design is to favor inward rolls.</p>
+<p>Next, I also consider the ergonomics (i.e. what feels comfortable) of the
+keyboard. For example, inward rolls starting with the pinky finger are easier to
+perform from the home and upper rows when compared to the lower and bottom rows.
+This is why I&rsquo;ve placed <code>!</code> on the upper row instead of the lower row, where <code>~</code>
+is.</p>
+<p>Finally, I also consider clustering, balance, and base layer affinity.  For
+example, <code>!</code> on the upper pinky rolls into <code>()</code> for grouped negation <code>!()</code> and
+also into <code>?</code> for interrobang <code>!?</code>.  Similarly, <code>()</code> rolls into <code>?</code> for optional
+group capture <code>()?</code> in regular expressions.  In this way, I feel that <code>!</code>, <code>()</code>,
+and <code>?</code> are balanced.</p>
+
+<blockquote>
+
+<div id="spacegrams" class="section"></div><h4 class="heading">Spacegrams<a href="#spacegrams" class="permalink" title="Permalink"></a><a href="#__spacegrams__" class="uplink" title="Contents"></a></h4>
+<p><strong>Video:</strong> Tour of my Spacegram operators, at timestamp 10:14.</p>
+<p><a class="embed_youtube_video" href="https://www.youtube.com/embed/uuSR81wc6WQ?autoplay=1&cc_load_policy=1&modestbranding=1&start=614"><img src="https://i.ytimg.com/vi/uuSR81wc6WQ/hqdefault.jpg" alt="Click to watch video" width="480" height="360"></a></p>
+</blockquote>
+<p>When typing two symbols separated by a space, I have to first let go of the symbol layer access key (also on spacebar) after the first symbol and then tap space and finally reactivate the symbol layer for the second symbol. 😩   I learned a few months ago that this anti-pattern is called a &ldquo;spacegram&rdquo; and I&rsquo;ve already made some progress to minimize its disruption by configuring the spacebar separately from the rest of the Miryoku thumb layer activation keys, but that wasn&rsquo;t enough! 😤</p>
+<p>So I came up with the following revised design for the Symbol layer that puts spacebar (as well as backspace and enter) on the right hand. 🥼✨  This way, we don&rsquo;t need to exit the Symbol layer to type spaces, newlines, or even to correct mistakes! 🤯  It has eliminated the delicately timed dance around the spacebar for me when programming now. 😎👌</p>
+
+<blockquote>
+<p><a class="embed_youtube_video" href="https://www.youtube.com/embed/fPcO5NGoDao?autoplay=1&cc_load_policy=1&modestbranding=1"><img src="https://i.ytimg.com/vi/fPcO5NGoDao/hqdefault.jpg" alt="Click to watch video" width="480" height="360"></a>
+Demonstration of typing Rust code using Spacegram operators.</p>
+
+<div id="base-layer-affinity" class="section"></div><h4 class="heading">Base layer affinity<a href="#base-layer-affinity" class="permalink" title="Permalink"></a><a href="#__base-layer-affinity__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+
+<ul>
+<li><code>\</code> is on the same key as <code>Esc</code>ape on the base layer: they both escape things.</li>
+<li><code>~</code> is on the same key as <code>Shift</code> on the base layer: they both invert things.</li>
+<li><code>();</code> sits just above the inward-rolling &ldquo;you&rdquo; sequence in the <a href="engram-keyboard-layout.html">Engram layout</a>.</li>
+</ul>
+
+<blockquote>
+
+<div id="vim-editor-shortcuts" class="section"></div><h4 class="heading">Vim editor shortcuts<a href="#vim-editor-shortcuts" class="permalink" title="Permalink"></a><a href="#__vim-editor-shortcuts__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+
+<ul>
+<li><code>^</code> and <code>$</code> are on the home row, for jumping to the start/end of current line.</li>
+<li><code>#</code> and <code>*</code> are on the home row, to search behind/ahead for word under cursor.</li>
+<li><code>=</code> is on the home row, to automatically indent current line or selection.</li>
+<li><code>,</code> and <code>;</code> are above the home block, for navigating between f/F/t/T jumps.</li>
+<li><code>(</code> and <code>)</code> are above the home block, for jumping to previous/next sentence.</li>
+<li><code>{</code> and <code>}</code> are on the home block, for jumping to previous/next paragraph.</li>
+<li><code>&lt;</code> and <code>&gt;</code> are on the home block, for decreasing/increasing indentation.</li>
+<li><code>[</code> and <code>]</code> are below the home block, for addressing previous/next things.</li>
+<li><code>?</code> and <code>/</code> are stacked vertically, to search behind/ahead for regex pattern.</li>
+<li><code>%</code> is on the thumb&rsquo;s home key, for jumping to cursor&rsquo;s matching delimiter.</li>
+<li><code>:</code> is on the middle thumb key, for entering Vim&rsquo;s command mode comfortably.</li>
+<li><code>:%</code> is an inward swipe by the thumb, for a command across the whole buffer.</li>
+<li><code>@:</code> is an inward swipe by the thumb, to repeat the most recent command line.</li>
+</ul>
+
+<blockquote>
+
+<div id="pinching-bigrams" class="section"></div><h4 class="heading">Pinching bigrams<a href="#pinching-bigrams" class="permalink" title="Permalink"></a><a href="#__pinching-bigrams__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+
+<ul>
+<li><code>?.</code> for the optional chaining operator in JavaScript.</li>
+<li><code>*.</code> for regular expressions.</li>
+<li><code>/.</code> for directory matching in filesystem globs.</li>
+</ul>
+
+<blockquote>
+
+<div id="vertical-bigrams" class="section"></div><h4 class="heading">Vertical bigrams<a href="#vertical-bigrams" class="permalink" title="Permalink"></a><a href="#__vertical-bigrams__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+
+<ul>
+<li><code>#!</code> for shebang lines in UNIX scripts.</li>
+<li><code>!~</code> for regular expression &ldquo;not matching&rdquo; in Perl, Ruby, and Elixir.</li>
+<li><code>/*</code> and <code>*/</code> for multi-line comments in C, CSS, and JavaScript.</li>
+</ul>
+
+<blockquote>
+
+<div id="adjacent-bigrams" class="section"></div><h4 class="heading">Adjacent bigrams<a href="#adjacent-bigrams" class="permalink" title="Permalink"></a><a href="#__adjacent-bigrams__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+
+<ul>
+<li><code>#!</code> for shebang lines in UNIX scripts.</li>
+<li><code>-&gt;</code> for thin arrows in C, C++, and Elixir.</li>
+<li><code>()</code> for parentheses.</li>
+<li><code>.*</code> for filesystem globs.</li>
+<li><code>*.</code> for regular expressions.</li>
+<li><code>/*</code> and <code>*/</code> for multi-line comments in C, CSS, and JavaScript.</li>
+<li><code>\.</code> for literal period in regular expressions.</li>
+<li><code>:%</code> is an inward swipe by the thumb for a Vim buffer-wide command.</li>
+</ul>
+
+<blockquote>
+
+<div id="inward-rolling-bigrams" class="section"></div><h4 class="heading">Inward rolling bigrams<a href="#inward-rolling-bigrams" class="permalink" title="Permalink"></a><a href="#__inward-rolling-bigrams__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+
+<ul>
+<li><code>()</code> for parentheses.</li>
+<li><code>&lt;&gt;</code> for angle brackets.</li>
+<li><code>[]</code> for square brackets.</li>
+<li><code>{}</code> for curly braces.</li>
+<li><code>();</code> for zero-arity function calls in C and related languages.</li>
+<li><code>);</code> for function call statements in C and related languages.</li>
+<li><code>(&quot;</code> for starting a string value argument for a function call.</li>
+<li><code>[&quot;</code> for starting a string value for a list or hashtable lookup.</li>
+<li><code>=&quot;</code> for HTML attributes and Bourne shell variable assignments.</li>
+<li><code>.*</code> for regular expressions.</li>
+<li><code>~/</code> for home directory paths in UNIX.</li>
+<li><code>&lt;-</code> for assignment in R and in Elixir&rsquo;s <code>with</code> statements.</li>
+<li><code>-&gt;</code> for thin arrows in C, C++, and Elixir.</li>
+<li><code>=&gt;</code> for fat arrows in Perl, Ruby, and Elixir.</li>
+<li><code>!=</code> for &ldquo;not equal to&rdquo; value comparison in many languages.</li>
+<li><code>&lt;=</code> for &ldquo;less than or equal to&rdquo; comparison in many languages.</li>
+<li><code>^=</code> for bitwise XOR assignment in C and related languages.</li>
+<li><code>|&gt;</code> for the pipe operator in Elixir.</li>
+<li><code>!(</code> for negating a group in Boolean expressions.</li>
+<li><code>&quot;$</code> for quoted variable substitution in Bourne shell.</li>
+<li><code>!$</code> for last argument of previous command in Bourne shell.</li>
+<li><code>$?</code> for exit status of previous command in Bourne shell.</li>
+<li><code>&lt;%</code> for directive tags in Ruby&rsquo;s ERB and Elixir&rsquo;s EEx templates.</li>
+<li><code>&lt;?</code> for directive tags in PHP templates.</li>
+<li><code>#{</code> for string interpolation in Ruby and Elixir.</li>
+<li><code>&#x0060;&#39;</code> for legacy curly quotes.</li>
+<li><code>&lt;/</code> for element closing tags in XML and HTML.</li>
+<li><code>~&gt;</code> for pessimistic version constraint in SemVer.</li>
+<li><code>\.</code> for literal period in regular expressions.</li>
+<li><code>~/</code> for home directory paths in UNIX.</li>
+<li><code>!?</code> for interrobang in English prose.</li>
+</ul>
+
+<blockquote>
+
+<div id="outward-rolling-bigrams" class="section"></div><h4 class="heading">Outward rolling bigrams<a href="#outward-rolling-bigrams" class="permalink" title="Permalink"></a><a href="#__outward-rolling-bigrams__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+
+<ul>
+<li><code>=~</code> for regular expression matching in Perl, Ruby, and Elixir.</li>
+<li><code>-=</code> for negative accumulation in C and related languages.</li>
+<li><code>+=</code> for accumulation in C and many languages.</li>
+<li><code>%=</code> for modulo assignment in C and related languages.</li>
+<li><code>&gt;=</code> for &ldquo;greater than or equal to&rdquo; value comparison.</li>
+<li><code>&gt;&amp;</code> and <code>&amp;&lt;</code> for file descriptor redirection in Bourne shell.</li>
+<li><code>$_</code> for value of last argument of previous command in Bourne shell.</li>
+<li><code>$&lt;</code> for the first source of a rule in Makefile.</li>
+<li><code>$^</code> for all sources of a rule in Makefile.</li>
+<li><code>$@</code> for the target of a rule in Makefile.</li>
+<li><code>%&gt;</code> for directive tags in Ruby&rsquo;s ERB and Elixir&rsquo;s EEx templates.</li>
+<li><code>?&gt;</code> for directive tags in PHP templates.</li>
+<li><code>${</code> for variable interpolation in Bourne shell.</li>
+<li><code>%{</code> for maps (hash tables) in Elixir.</li>
+<li><code>?!</code> for interrobang in English prose.</li>
+</ul>
+
+<div id="mouse-layer" class="section"></div><h3 class="heading">Mouse layer<a href="#mouse-layer" class="permalink" title="Permalink"></a><a href="#__mouse-layer__" class="uplink" title="Contents"></a></h3>
+<p><div class="layers-map-container">
+<picture><source type="image/webp" srcset="moergo-glove80-keyboard-mouse-layer.webp"><img id="mouse-layer-diagram" src="moergo-glove80-keyboard-mouse-layer.png" width="2256" height="1265"></picture>
+</div></p>
+<p>Movement keys are located centrally in the home block, surrounded by scroll wheel
+operations, so that you can scroll while simultaneously moving the mouse.</p>
+
+<div id="system-layer" class="section"></div><h3 class="heading">System layer<a href="#system-layer" class="permalink" title="Permalink"></a><a href="#__system-layer__" class="uplink" title="Contents"></a></h3>
+<p><div class="layers-map-container">
+<picture><source type="image/webp" srcset="moergo-glove80-keyboard-system-layer.webp"><img id="system-layer-diagram" src="moergo-glove80-keyboard-system-layer.png" width="2256" height="1265"></picture>
+</div></p>
+<p>Keys for controlling RGB illumination line the central rows of home block.
+Keys for system power control and traditional locking make up the thumb cluster.</p>
+
+<div id="emoji-layer" class="section"></div><h3 class="heading">Emoji layer<a href="#emoji-layer" class="permalink" title="Permalink"></a><a href="#__emoji-layer__" class="uplink" title="Contents"></a></h3>
+<p><div class="layers-map-container">
+<picture><source type="image/webp" srcset="moergo-glove80-keyboard-emoji-layer.webp"><img id="emoji-layer-diagram" src="moergo-glove80-keyboard-emoji-layer.png" width="2256" height="1265"></picture>
+</div></p>
+<p>Consistent with the cardinal directions of the arrow keys on the cursor layer,
+these Emojis are organized into logical groups of 4 (or more) within each row.</p>
+<p>Customizable preset selections for skin tone, hair style, and gender sign are
+arranged on the home row so you can inward-roll them together in one swoop.  See
+the <code>#define EMOJI_*_PRESET</code> settings in the ZMK snippet for more information.</p>
+<p>Here are some examples (as illustrated interactively in the diagram above):</p>
+
+<ul>
+<li>Using skin tone: 💁+🏿=💁🏿</li>
+<li>Using gender sign: 💁+ZWJ+♀️=💁‍♀️</li>
+<li>Using both of the above: 💁+🏿+ZWJ+♀️=💁🏿‍♀️</li>
+<li>Creating a family of 2: 👨+ZWJ+👧=👨‍👧</li>
+<li>Creating a family of 3: 👨+ZWJ+👩+ZWJ+👧=👨‍👩‍👧</li>
+<li>Creating a family of 4: 👨+ZWJ+👩+ZWJ+👧+ZWJ+👦=👨‍👩‍👧‍👦</li>
+<li>Feeding a baby bottle: 👨+ZWJ+🍼=👨‍🍼</li>
+</ul>
+
+<blockquote>
+
+<div id="emoji-yaml" class="section"></div><h4 class="heading">emoji.yaml<a href="#emoji-yaml" class="permalink" title="Permalink"></a><a href="#__emoji-yaml__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>This <a href="https://github.com/sunaku/glove80-keymaps/blob/main/emoji.yaml">file in the source repository</a> for this
+keymap&rsquo;s firmware defines the above.  You can customize this file to suit your
+needs, as it&rsquo;s already Unicode enabled.  See the <a href="https://github.com/sunaku/glove80-keymaps#world-and-emoji-characters">&ldquo;World and Emoji characters&rdquo;</a> section for more information and examples.</p>
+
+<div id="world-layer" class="section"></div><h3 class="heading">World layer<a href="#world-layer" class="permalink" title="Permalink"></a><a href="#__world-layer__" class="uplink" title="Contents"></a></h3>
+<p><div class="layers-map-container">
+<picture><source type="image/webp" srcset="moergo-glove80-keyboard-world-layer.webp"><img id="world-layer-diagram" src="moergo-glove80-keyboard-world-layer.png" width="2256" height="1265"></picture>
+</div></p>
+<p>This layer overlays Latin characters atop related letters in the vowel cluster.
+Modifiers along the right hand&rsquo;s home row act as sub-layers, working together to
+target the desired accented character from each of the overloaded vowel letters.</p>
+
+<table><thead>
+<tr>
+<th>&mdash;</th>
+<th>legend</th>
+<th>&mdash;</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>LALT</td>
+<td>RSFT</td>
+<td>RALT</td>
+</tr>
+<tr>
+<td>LCTL</td>
+<td>base</td>
+<td>RCTL</td>
+</tr>
+</tbody></table>
+<p>For example, tapping Y produces different characters depending on the modifiers:</p>
+
+<table><thead>
+<tr>
+<th>Letter</th>
+<th>Modifier</th>
+<th>Shift?</th>
+<th>Output</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Y</td>
+<td>❌</td>
+<td>❌</td>
+<td>ý</td>
+</tr>
+<tr>
+<td>Y</td>
+<td>❌</td>
+<td>✅</td>
+<td>Ý</td>
+</tr>
+<tr>
+<td>Y</td>
+<td>LCTL</td>
+<td>❌</td>
+<td>ÿ</td>
+</tr>
+<tr>
+<td>Y</td>
+<td>LCTL</td>
+<td>✅</td>
+<td>Ÿ</td>
+</tr>
+</tbody></table>
+
+<blockquote>
+
+<div id="world-yaml" class="section"></div><h4 class="heading">world.yaml<a href="#world-yaml" class="permalink" title="Permalink"></a><a href="#__world-yaml__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>This <a href="https://github.com/sunaku/glove80-keymaps/blob/main/world.yaml">file in the source repository</a> for this
+keymap&rsquo;s firmware defines the above.  You can customize this file to suit your
+needs, as it&rsquo;s already Unicode enabled.  See the <a href="https://github.com/sunaku/glove80-keymaps#world-and-emoji-characters">&ldquo;World and Emoji characters&rdquo;</a> section for more information and examples.</p>
+
+<div id="firmware" class="section"></div><h2 class="heading">Firmware<a href="#firmware" class="permalink" title="Permalink"></a><a href="#__firmware__" class="uplink" title="Contents"></a></h2>
+<p>My keyboard&rsquo;s entire firmware is <a href="https://github.com/sunaku/glove80-keymaps">available on GitHub</a> and <a href="https://discord.com/channels/877392805654306816/1111469812850380831">discussed
+on Discord</a>.</p>
+
+<div id="fine-tuning-the-timing" class="section"></div><h3 class="heading">Fine-tuning the timing<a href="#fine-tuning-the-timing" class="permalink" title="Permalink"></a><a href="#__fine-tuning-the-timing__" class="uplink" title="Contents"></a></h3>
+<p>Activate the <a href="#typing-layer">typing layer</a>, launch the <a href="https://config.qmk.fm/#/test">QMK Configurator&rsquo;s
+testing tool</a>, and then pretend to use home
+row mods.  Note the timing &amp; duration of keystrokes reported by the tool
+and use them to adjust the <code>#define</code> timing thresholds in <a href="home-row-mods.html#snippet">my ZMK
+port</a>.</p>
+</div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2026-01-24T23:50:17-05:00">24 January 2026: </time></dt><dd class="content"><p>Updated article, <a href="#layers">interactive layers map</a> to reflect <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v42-rc9">v42-rc9 preview release</a>.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2025-01-13T11:37:01-05:00">13 January 2025: </time></dt><dd class="content"><p>I&rsquo;ve published a new <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v41">version 41</a> of this keymap that adds dynamic speed controls and natural scrolling for mouse emulation, improves the per-key RGB illumination scheme for better visual feedback on layer activation, restores much of the v39 thumb cluster design for more comfortable typing of the &ldquo;R&rdquo; thumb letter in the <a href="enthium-keyboard-layout.html">Enthium alpha layout</a>, improves consistency for better memorability, adds a new French letter in the World layer, and much more!</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2024-12-31T17:05:02-05:00">31 December 2024: </time></dt><dd class="content"><p>I&rsquo;ve published a new <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v40">version 40</a> of this keymap that adds support for AZERTY and similar locales, simplifies key repetition and one-shot sticky shift, revamps the Gaming layer, adds options for thumb layer access key forgiveness, modernizes the alpha layout selection, standardizes a common thumb cluster and function row design across all alpha layouts, and much more! This also features the most beautiful keyboard photo I&rsquo;ve ever taken:</p>
+<p><picture><source type="image/webp" srcset="moergo-glove80-keyboard-photograph.webp"><img src="moergo-glove80-keyboard-photograph.jpg" width="4000" height="1848" alt="Photograph of my MoErgo Glove80 keyboard with Enthium layout and per-key RGB illumination." title="Photograph of my MoErgo Glove80 keyboard with Enthium layout and per-key RGB illumination."></picture>
+</p>
+<p>In addition, you can now choose an alpha layout for the base layer (Enthium, Engrammer, Engram, QWERTY, template) in the <a href="#layers">interactive layer map</a> to match your personal alpha layout choice, as commonly requested by users.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2024-11-12T22:52:00-05:00">12 November 2024: </time></dt><dd class="content"><p>I&rsquo;ve published a new <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v39">version 39</a> of this keymap that introduces the <a href="enthium-keyboard-layout.html">Enthium alpha layout</a> and adjusts the Number, Function, and System layers accordingly; improves thumb key timing, adds per-key RGB indicators (requires PR30 beta firmware) for home row mods and Miryoku layer activation, inward-rolling sticky modifiers for character selection in the World layer, and much more!</p>
+<p><picture><source type="image/webp" srcset="moergo-glove80-keyboard-base-layer.webp"><img src="moergo-glove80-keyboard-base-layer.png" width="2256" height="1265" alt="Enthium alpha layout" title="Enthium alpha layout"></picture>
+</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2024-10-05T01:07:48-04:00"> 5 October 2024: </time></dt><dd class="content"><p>I&rsquo;ve published a new <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v38">version 38</a> of this keymap that introduces an optional &ldquo;Shift forgiveness&rdquo; setting to handle a home row shift nuance, restores the Symbol layer&rsquo;s layout as shown in my video tour and adjusts the Number layer to harmonize, adds a combo for sticky &ldquo;Meh&rdquo; modifiers on the base layer, improves the default timing, and more!</p>
+<img src="https://github.com/user-attachments/assets/5f39f233-3938-4077-a7d0-7fe77b0bf8ce" alt="Symbol layer" title="Symbol layer"></dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2024-09-15T23:51:39-04:00">15 September 2024: </time></dt><dd class="content"><p>I&rsquo;ve published a new <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v37">version 37</a> of this keymap that adds new combo shortcuts on the base layer, tunes home row mod timing according to finger strength differences, makes it easier to tune all home row mod timing parameters together as a group, reworks the difficulty levels for consistency, and much more!</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2024-02-18T12:40:02Z">18 February 2024: </time></dt><dd class="content"><p>I&rsquo;ve swapped <code>~</code> TILDE and <code>@</code> AT on the Symbol layer in <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v35">version 35</a>, making the latter easier to reach and the former a bit more comfortable for typing <code>~/</code> UNIX home paths.</p>
+<img src="https://github.com/sunaku/glove80-keymaps/assets/9863/ebd23300-d0a7-4e29-bf73-26547795ad47" alt="Symbol layer changes" title="Symbol layer changes"></dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2023-12-01T18:12:00-08:00"> 1 December 2023: </time></dt><dd class="content"><p>I&rsquo;ve published a video tour of my symbol layer, with examples in Vim:</p>
+
+<blockquote>
+<p><a class="embed_youtube_video" href="https://www.youtube.com/embed/uuSR81wc6WQ?autoplay=1&cc_load_policy=1&modestbranding=1"><img src="https://i.ytimg.com/vi/uuSR81wc6WQ/hqdefault.jpg" alt="Click to watch video" width="480" height="360"></a></p>
+</blockquote>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2023-11-24T09:05:12-08:00">24 November 2023: </time></dt><dd class="content"><p>I&rsquo;ve released <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v31">version 31</a> featuring mouse keys (keyboard control of mouse pointer &amp; wheel), Unicode curly quotes, and improved Number layer affinity.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2023-11-13T23:46:35-08:00">13 November 2023: </time></dt><dd class="content"><p>I&rsquo;ve released <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v30">version 30</a> featuring an improved symbol layer with balanced triangles and <a href="#spacegrams">support for spacegrams</a>; and support for QWERTY and a few other popular keyboard layouts (which you can activate dynamically via Magic+N or set as the base layer when compiling your keymap) in order to welcome other layout users on the path to a glorious typing experience. 🖖</p>
+<img src="https://github.com/sunaku/glove80-keymaps/assets/9863/9258583e-6035-4e0b-921a-da90e02be6cf" alt="symbol layer" title="symbol layer"></dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2023-11-08T00:27:32-08:00"> 8 November 2023: </time></dt><dd class="content"><p>I&rsquo;ve released <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v29">version 29</a> featuring
+an improved symbol layer (as follows), and I&rsquo;ve <a href="#symbol-layer">added an
+explanation</a> of the design methodology I appear to follow.
+Also, I&rsquo;ve added interactive usage examples to most of the layer diagrams.</p>
+<img src="https://github.com/sunaku/glove80-keymaps/assets/9863/608a145c-511d-41e1-805c-44ad8f7123da" alt="cursor layer changes" title="cursor layer changes"></dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2023-10-17T03:33:33-04:00">17 October 2023: </time></dt><dd class="content"><p>I released <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v25">version 25</a> featuring Emoji, international characters, and more!</p>
+
+<ul>
+<li>Added <a href="#emoji-layer">Emoji layer</a> and <a href="#world-layer">World layer</a>, activated by thumbs&rsquo; satellite keys.</li>
+<li>Symbol layer: swap backtick and double quotes so that I can inward roll from equals to double quote in one swoop.
+
+<ul>
+<li><code>(&quot;</code> for starting a string value argument for a function call.</li>
+<li><code>=&quot;</code> for HTML attributes and Bourne shell variable assignments.</li>
+</ul></li>
+<li>Cursor layer: easier one-handed SelectAll -&gt; Cut/Copy/Paste; put undo/redo on same upper row as right hand; adjust find keys accordingly.</li>
+</ul>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2023-10-01T18:18:55-07:00"> 1 October 2023: </time></dt><dd class="content"><p>I&rsquo;ve observed that I don&rsquo;t really use <code>,</code> and <code>;</code> from the bottom row in
+practice for navigating Vim&rsquo;s f/F/t/T jumps, so I&rsquo;ve been thinking about
+a better use for them.  Having comma and dot paired together on a single
+hand (like their relative positioning in QWERTY) might be useful for
+shortcuts that assume their adjacency &mdash; for instance, I have Alt+<code>,</code>
+and Alt+<code>.</code> navigate to the prev/next window in tmux.  And apostrophe
+has been missing from the symbol layer because it&rsquo;s readily accessible
+from the base layer, but it may be nice to add it anyway for
+completeness.  Hence this design iteration:</p>
+
+<ul>
+<li><a href="#symbol-layer">Symbol layer</a>: put apostrophe, comma, dot (like the Dvorak layout) on
+bottom row.  The comma and dot align with the angle brackets above them.
+The apostrophe is just there for completeness; and <code>&#39;&lt;,&#39;&gt;</code> ranges in Vim.</li>
+</ul>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2023-09-09T00:29:39-07:00"> 9 September 2023: </time></dt><dd class="content"><p>A minor semantic tweak to the symbol layer (backslash on <code>ESC</code> key) and some documentation about index finger home row mods (as inward-rolling chords):</p>
+
+<ul>
+<li>Symbol layer: swap backslash and percentage to place backslash on the same key as ESC.  Percentage acts as the &ldquo;matchit&rdquo; operator in Vim.</li>
+<li>Custom Defined Behaviors: add a CAUTION note about the inward-rolling requirement for index fingers, which disable <code>hold-trigger-on-release</code>:</li>
+</ul>
+
+<blockquote>
+<p>CAUTION: You&rsquo;ll need to perform inward rolls from pinky-&gt;ring-&gt;middle
+fingers toward the index fingers when activating multiple modifiers
+because <code>hold-trigger-on-release</code> is disabled for the index fingers.
+Otherwise, you may be surprised that the index fingers&rsquo; modifier is
+sent immediately without the rest of your multi-mod chord when you
+perform outward rolls from your index fingers toward your pinkies.</p>
+</blockquote>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2023-08-25T07:15:28-07:00">25 August 2023: </time></dt><dd class="content"><p>Improved the gaming layer and right-handed mousing on the cursor layer. Also
+added <a href="#lower-layer">lower</a>, <a href="#gaming-layer">gaming</a>, and
+<a href="#typing-layer">typing</a> layers to the interactive layer map.</p>
+
+<ul>
+<li>Gaming layer: Move <code>ZXCV</code> to bottom-most row; add <code>BNM</code> on the top row of home block; put ESC/Enter/Win on thumb cluster; restore tilde above tab; move Pause to furthest key in lower arc of thumb cluster.</li>
+<li>Cursor layer: Move left half&rsquo;s undo/redo keys to J/K position. Add word/line selection macros and find/next/prev/replace keys on left half for right-handed mouse usage. Also remove the ScrollLock shortcut from the Cursor layer (it&rsquo;s still available on the left thumb cluster of the System layer).  Thanks to <a href="https://discord.com/channels/877392805654306816/1111469812850380831/1141801333230411866">@luminous_echidna for the suggestions</a>.</li>
+</ul>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2023-08-15T23:38:24-07:00">15 August 2023: </time></dt><dd class="content"><p>Better right-handed mouse usage, easier Vim line/column jumping, and more:</p>
+
+<ul>
+<li>Miryoku: Move ring finger AltGr modifiers to upper row to avoid accidental triggers since I tend to hold X/F down longer than necessary when curling my ring fingers compared to when I extend them out to reach Y/W on the upper row.</li>
+<li>Base layer: Swap <code>=</code> and <code>\</code> so that <code>=</code> alternates with space bar on right thumb when typing <code>=</code> assignments.</li>
+<li>Cursor layer: Move insert to rightmost bottom key and replace with backspace above left arrow on home row.</li>
+<li>Cursor layer: Mirror cut/copy/paste and undo/redo keys on left hand for right-handed mouse usage. Thanks to @n0rvegan for <a href="https://discord.com/channels/877392805654306816/1111469812850380831/1135463552484900906">this great idea!</a></li>
+<li>Cursor layer: Surround find prev/next keys with find and find/replace.</li>
+<li>Symbol layer: Wrap parentheses <code>()</code> with square brackets <code>[]</code> and replace innermost <code>,</code> position with <code>;</code>.  This splits the <code>();</code> sequence apart but still maintains it as an inward roll.  This also establishes Vim&rsquo;s <code>,;</code> order for f/F/t/T jump repetition.</li>
+<li>Number layer: Replace <code>&lt;&gt;=</code> in rightmost column with <code>kjG</code> for jumping to line numbers in Vim.</li>
+<li>Number layer: Add <code>|</code> on the rightmost bottom corner key for jumping to column numbers in Vim.</li>
+</ul>
+</dd></dl></aside><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2023&ndash;2026 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Remembering window pane focus in tmux - The Terminal Programmer</title><meta content="2013-12-09T11:16:24-08:00" name="DCTERMS.created" /><meta content="2014-01-28T22:19:17-05:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="solution, patch, tmux, wmii" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="tmux-refocus-patch" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#tmux-refocus-patch" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Remembering window pane focus in tmux</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2013-12-09T11:16:24-08:00"> 9 December 2013</time><br /><time class="date" datetime="2014-01-28T22:19:17-05:00"><a href="#updates" title="2 updates">28 January 2014</a></time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__problem__" href="#problem" class="downlink">Problem</a><ol></ol></li><li><a id="__approach__" href="#approach" class="downlink">Approach</a><ol></ol></li><li><a id="__solution__" href="#solution" class="downlink">Solution</a><ol></ol></li></ol>
+<div id="problem" class="section"></div><h1 class="heading">Problem<a href="#problem" class="permalink" title="Permalink"></a><a href="#__problem__" class="uplink" title="Contents"></a></h1>
+<p>Having switched from the <a href="https://code.google.com/p/wmii/">wmii window manager</a> to the <a href="https://tmux.github.io/">tmux terminal
+multiplexer</a> as my primary &ldquo;desktop environment&rdquo; nearly a year ago,
+I have found tmux&rsquo;s inability to (1) remember which pane was last
+focused within a split-window and to (2) restore focus to that pane when
+revisiting that split-window to be its main functional disadvantage.</p>
+<p>To cope, I would <em>manually</em> restore pane focus in tmux after moving focus
+between different split-windows.  This hurt my productivity since I use
+split-windows heavily and switch focus between them quite frequently.</p>
+
+<div id="approach" class="section"></div><h1 class="heading">Approach<a href="#approach" class="permalink" title="Permalink"></a><a href="#__approach__" class="uplink" title="Contents"></a></h1>
+<p>Recently, I spent several weeknights poring over tmux&rsquo;s source code in hopes
+of correcting this problem once and for all.  <a href="#solution">The following patch</a>, which applies cleanly against tmux version 1.8, resulted from all
+that hard work. I have since <a href="https://www.mail-archive.com/tmux-users%40lists.sourceforge.net/msg05365.html">contributed it upstream</a>, to the
+&ldquo;tmux-users&rdquo; mailing list.</p>
+<p>This patch makes non-window-pane layout cells remember which of their
+descendant window panes previously had focus (or was &ldquo;active&rdquo; in tmux
+parlance) so that the focus may be restored later on, when applicable.</p>
+<p>For example, consider the following scenario created by steps 1-5:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>    1            2            3            4            5
+
+@@@@@@@@@    +---@@@@@    +---+---+    @@@@@---+    +---+---+
+@       @    |   @   @    |   | Y |    @   @ Y |    |   | Y |
+@   X   @    | X @ Y @    | X @@@@@    @ X @---+    | X @@@@@
+@       @    |   @   @    |   @ Z @    @   @ Z |    |   @ Z @
+@@@@@@@@@    +---@@@@@    +---@@@@@    @@@@@---+    +---@@@@@
+</code></pre></div>
+<ol>
+<li>We run <code>tmux new-window</code> to create pane X.</li>
+<li>We run <code>tmux split-window -h</code> to create and focus pane Y.</li>
+<li>We run <code>tmux split-window</code> to create and focus pane Z.</li>
+<li>We run <code>tmux select-pane -L</code> to focus pane X.</li>
+<li>We run <code>tmux select-pane -R</code> to focus pane Z, thanks to this patch.
+Without this patch, this step would focus pane Y instead of pane Z.</li>
+</ol>
+<p>Although this example illustrates a rather simple scenario, note that
+this patch can handle more complex (nested cell) layouts just as well.</p>
+
+<div id="solution" class="section"></div><h1 class="heading">Solution<a href="#solution" class="permalink" title="Permalink"></a><a href="#__solution__" class="uplink" title="Contents"></a></h1>
+<p>This is also available as a <a href="./tmux-refocus-patch.txt">downloadable Git patch file</a>.</p>
+<div class="highlight"><pre class="highlight diff"><code><span class="gh">diff --git a/window.c b/window.c
+index 7678adc..adb67e0 100644
+</span><span class="gd">--- a/window.c
+</span><span class="gi">+++ b/window.c
+</span><span class="p">@@ -383,6 +383,34 @@</span> window_resize(struct window *w, u_int sx, u_int sy)
+        w-&gt;sy = sy;
+ }
+<span class="err">
+</span><span class="gi">+/*
++ * Commandeers the transfer of focus from `wp` to `wp2` in order to mark `wp`
++ * so that window_pane_refocus is able to restore focus to it when necessary.
++ */
++static void
++window_pane_defocus(struct window_pane *wp, struct window_pane *wp2)
++{
++   struct layout_cell *lc, *lc2;
++
++   /* remember the target pane's focus in its parent */
++   wp2-&gt;layout_cell-&gt;parent-&gt;wp = wp2;
++
++   if (wp == NULL)
++       return;
++
++   /* remember the source pane's focus in all of its parents up to, but
++    * not including, the common ancestor of itself and the target pane */
++   for(lc = wp-&gt;layout_cell-&gt;parent; lc != NULL; lc = lc-&gt;parent) {
++       /* search for a common ancestor in the target's lineage */
++       for(lc2 = wp2-&gt;layout_cell-&gt;parent; lc2 != NULL; lc2 = lc2-&gt;parent)
++           if (lc == lc2)
++               /* found a common ancestor so stop here */
++               return;
++       /* remember the source pane's focus in its uncommon parent */
++       lc-&gt;wp = wp;
++   }
++}
++
+</span> void
+ window_set_active_pane(struct window *w, struct window_pane *wp)
+ {
+<span class="p">@@ -390,6 +418,7 @@</span> window_set_active_pane(struct window *w, struct window_pane *wp)
+                return;
+        w-&gt;last = w-&gt;active;
+        w-&gt;active = wp;
+<span class="gi">+   window_pane_defocus(w-&gt;last, wp);
+</span>        while (!window_pane_visible(w-&gt;active)) {
+                w-&gt;active = TAILQ_PREV(w-&gt;active, window_panes, entry);
+                if (w-&gt;active == NULL)
+<span class="p">@@ -704,6 +733,14 @@</span> window_pane_create(struct window *w, u_int sx, u_int sy, u_int hlimit)
+ void
+ window_pane_destroy(struct window_pane *wp)
+ {
+<span class="gi">+   /* forget removed pane's focus in all layout cells that remember it */
++   struct window_pane *wp2;
++   RB_FOREACH(wp2, window_pane_tree, &amp;all_window_panes)
++       if (wp2-&gt;layout_cell != NULL &amp;&amp;
++           wp2-&gt;layout_cell-&gt;parent != NULL &amp;&amp;
++           wp2-&gt;layout_cell-&gt;parent-&gt;wp == wp)
++           wp2-&gt;layout_cell-&gt;parent-&gt;wp = NULL; /* forget pane */
++
+</span>        window_pane_reset_mode(wp);
+<span class="err">
+</span>        if (event_initialized(&amp;wp-&gt;changes_timer))
+<span class="p">@@ -1110,6 +1147,31 @@</span> window_pane_search(struct window_pane *wp, const char *searchstr, u_int *lineno)
+        return (msg);
+ }
+<span class="err">
+</span><span class="gi">+/*
++ * Commandeers the transfer of focus from `wp` to `wp2` in order to restore
++ * focus to a previously focused window pane marked by window_pane_defocus.
++ * If this is not possible, the transfer proceeds as originally intended.
++ */
++static struct window_pane *
++window_pane_refocus(struct window_pane *wp, struct window_pane *wp2)
++{
++   struct layout_cell *lc;
++   struct window_pane *fp; /* pane marked by window_pane_defocus */
++
++   /* target pane's parent must not be an ancestor of source pane */
++   for (lc = wp-&gt;layout_cell-&gt;parent; lc != NULL; lc = lc-&gt;parent)
++       if (lc == wp2-&gt;layout_cell-&gt;parent)
++           return (wp2);
++
++   /* focused pane, if any, must not be the same as source pane */
++   lc = wp2-&gt;layout_cell-&gt;parent;
++   fp = lc != NULL ? lc-&gt;wp : NULL;
++   if (fp != NULL &amp;&amp; fp != wp &amp;&amp; window_pane_visible(fp))
++       return (fp);
++   else
++       return (wp2);
++}
++
+</span> /* Find the pane directly above another. */
+ struct window_pane *
+ window_pane_find_up(struct window_pane *wp)
+<span class="p">@@ -1131,7 +1193,7 @@</span> window_pane_find_up(struct window_pane *wp)
+                if (wp2-&gt;yoff + wp2-&gt;sy + 1 != top)
+                        continue;
+                if (left &gt;= wp2-&gt;xoff &amp;&amp; left &lt;= wp2-&gt;xoff + wp2-&gt;sx)
+<span class="gd">-           return (wp2);
+</span><span class="gi">+           return window_pane_refocus(wp, wp2);
+</span>        }
+        return (NULL);
+ }
+<span class="p">@@ -1157,7 +1219,7 @@</span> window_pane_find_down(struct window_pane *wp)
+                if (wp2-&gt;yoff != bottom)
+                        continue;
+                if (left &gt;= wp2-&gt;xoff &amp;&amp; left &lt;= wp2-&gt;xoff + wp2-&gt;sx)
+<span class="gd">-           return (wp2);
+</span><span class="gi">+           return window_pane_refocus(wp, wp2);
+</span>        }
+        return (NULL);
+ }
+<span class="p">@@ -1186,7 +1248,7 @@</span> window_pane_find_left(struct window_pane *wp)
+                if (wp2-&gt;xoff + wp2-&gt;sx + 1 != left)
+                        continue;
+                if (top &gt;= wp2-&gt;yoff &amp;&amp; top &lt;= wp2-&gt;yoff + wp2-&gt;sy)
+<span class="gd">-           return (wp2);
+</span><span class="gi">+           return window_pane_refocus(wp, wp2);
+</span>        }
+        return (NULL);
+ }
+<span class="p">@@ -1215,7 +1277,7 @@</span> window_pane_find_right(struct window_pane *wp)
+                if (wp2-&gt;xoff != right)
+                        continue;
+                if (top &gt;= wp2-&gt;yoff &amp;&amp; top &lt;= wp2-&gt;yoff + wp2-&gt;sy)
+<span class="gd">-           return (wp2);
+</span><span class="gi">+           return window_pane_refocus(wp, wp2);
+</span>        }
+        return (NULL);
+ }
+</code></pre></div></div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2014-01-28T22:19:17-05:00">28 January 2014: </time></dt><dd class="content"><p>My patch was <a href="https://github.com/tmux/tmux/commit/c930fd5ff696f5a60e93ed503f0ff57e0bbf6e4d">adapted into the tmux codebase</a>. It will become a part of tmux version 1.9!</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2013-12-30T12:15:16-05:00">30 December 2013: </time></dt><dd class="content"><p>I have updated this patch to fix a bug that it introduced: where <code>tmux
+select-pane</code> would segfault if the current window had only <em>one</em> pane.</p>
+</dd></dl></aside><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2013&ndash;2014 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>
