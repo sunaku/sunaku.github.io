@@ -1,0 +1,110 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Speeding up I/O on very large files in Elixir - The Terminal Programmer</title><meta content="2017-03-07T16:35:00-05:00" name="DCTERMS.created" /><meta content="2018-12-18T20:40:41-08:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="solution, elixir, cache, unicode, performance" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="elixir-fileio-speedup" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#elixir-fileio-speedup" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Speeding up I/O on very large files in Elixir</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2017-03-07T16:35:00-05:00"> 7 March 2017</time><br /><time class="date" datetime="2018-12-18T20:40:41-08:00"><a href="#updates" title="1 update">18 December 2018</a></time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__problem__" href="#problem" class="downlink">Problem</a><ol></ol></li><li><a id="__approach__" href="#approach" class="downlink">Approach</a><ol></ol></li><li><a id="__solution__" href="#solution" class="downlink">Solution</a><ol></ol></li><li><a id="__conclusion__" href="#conclusion" class="downlink">Conclusion</a><ol></ol></li></ol>
+<div id="problem" class="section"></div><h1 class="heading">Problem<a href="#problem" class="permalink" title="Permalink"></a><a href="#__problem__" class="uplink" title="Contents"></a></h1>
+<p>At work today, a colleague needed to process a very large (1.5 GiB) log file,
+line by line, using Elixir 1.4.2 and Erlang 19.2 on Linux 3.16.  A simple <code>iex</code>
+experiment yielded abysmal performance, taking <em>8 hours and 7 minutes</em> to finish!</p>
+<div class="highlight"><pre class="highlight elixir"><code><span class="n">file</span> <span class="o">=</span> <span class="s2">"path/to/very/large/file"</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="n">file</span> <span class="o">|&gt;</span> <span class="no">File</span><span class="o">.</span><span class="n">stream!</span>
+<span class="n">grep</span> <span class="o">=</span> <span class="n">lines</span> <span class="o">|&gt;</span> <span class="no">Enum</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="o">&amp;</span><span class="no">String</span><span class="o">.</span><span class="n">match?</span><span class="p">(</span><span class="nv">&amp;1</span><span class="p">,</span> <span class="sr">~r/regex_to_grep/</span><span class="p">))</span>
+</code></pre></div><p>In contrast, a similar experiment in Python 2.7.8 finished in merely 4 seconds:</p>
+<div class="highlight"><pre class="highlight python"><code><span class="kn">import</span> <span class="n">re</span>
+<span class="n">regex_to_grep</span> <span class="o">=</span> <span class="n">re</span><span class="p">.</span><span class="nf">compile</span><span class="p">(</span><span class="sh">'</span><span class="s">regex_to_grep</span><span class="sh">'</span><span class="p">)</span>
+<span class="nb">file</span> <span class="o">=</span> <span class="nf">open</span><span class="p">(</span><span class="sh">'</span><span class="s">path/to/very/large/file</span><span class="sh">'</span><span class="p">,</span> <span class="sh">'</span><span class="s">r</span><span class="sh">'</span><span class="p">)</span>
+<span class="n">grep</span> <span class="o">=</span> <span class="p">[</span><span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">file</span> <span class="k">if</span> <span class="n">regex_to_grep</span><span class="p">.</span><span class="nf">search</span><span class="p">(</span><span class="n">line</span><span class="p">)]</span>
+</code></pre></div>
+<div id="approach" class="section"></div><h1 class="heading">Approach<a href="#approach" class="permalink" title="Permalink"></a><a href="#__approach__" class="uplink" title="Contents"></a></h1>
+<p>My first instinct was to parallelize the grep operation, but that didn&rsquo;t help:</p>
+<div class="highlight"><pre class="highlight elixir"><code><span class="n">file</span> <span class="o">=</span> <span class="s2">"path/to/very/large/file"</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="n">file</span> <span class="o">|&gt;</span> <span class="no">File</span><span class="o">.</span><span class="n">stream!</span>
+<span class="n">grep</span> <span class="o">=</span> <span class="n">lines</span> <span class="o">|&gt;</span>
+  <span class="no">Task</span><span class="o">.</span><span class="n">async_stream</span><span class="p">(</span><span class="o">&amp;</span><span class="p">(</span><span class="no">String</span><span class="o">.</span><span class="n">match?</span><span class="p">(</span><span class="nv">&amp;1</span><span class="p">,</span> <span class="sr">~r/regex_to_grep/</span><span class="p">)</span> <span class="ow">and</span> <span class="nv">&amp;1</span><span class="p">))</span> <span class="o">|&gt;</span>
+  <span class="no">Stream</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">fn</span> <span class="p">{</span><span class="ss">:ok</span><span class="p">,</span> <span class="n">async_stream_result</span><span class="p">}</span> <span class="o">-&gt;</span> <span class="n">async_stream_result</span> <span class="k">end</span><span class="p">)</span> <span class="o">|&gt;</span>
+  <span class="no">Enum</span><span class="o">.</span><span class="n">filter</span><span class="p">(</span><span class="o">&amp;</span><span class="n">is_binary</span><span class="o">/</span><span class="mi">1</span><span class="p">)</span>
+</code></pre></div><p>Surprised, I retreated back to a simple loop over the entire length of the file:</p>
+<div class="highlight"><pre class="highlight elixir"><code><span class="n">file</span> <span class="o">=</span> <span class="s2">"path/to/very/large/file"</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="n">file</span> <span class="o">|&gt;</span> <span class="no">File</span><span class="o">.</span><span class="n">stream!</span>
+<span class="n">num_lines</span> <span class="o">=</span> <span class="n">lines</span> <span class="o">|&gt;</span> <span class="no">Enum</span><span class="o">.</span><span class="n">count</span>
+</code></pre></div><p>Inconceivably, it hung again!  So I now suspected that something might be wrong
+with that log file itself.  Paging through it, I discovered an enormous <em>sequence
+of NUL bytes</em> embalmed several thousand lines deep.  That was unexpected, but why
+should NUL bytes only affect Elixir and not Python?  Were C programs immune too?</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span><span class="nb">grep</span> <span class="nt">-c</span> <span class="s1">'regex_to_grep'</span> path/to/very/large/file
+<span class="nb">grep</span>: line too long
+</code></pre></div><p>Aha! GNU Grep actually had a safeguard built-in to prevent memory exploitation
+by aborting on very long lines, likely elongated by that enormous NUL sequence.</p>
+<p>Perhaps excessive line lengths also paralyzed Elixir?  To verify, I wrote my
+own file reader that would lazily read a single 128 KiB (32 filesystem blocks,
+commonly sized to be 4 KiB) sized chunk at a time and then split it into lines:</p>
+<div class="highlight"><pre class="highlight elixir"><code><span class="n">file</span> <span class="o">=</span> <span class="s2">"path/to/very/large/file"</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="n">file</span> <span class="o">|&gt;</span> <span class="no">File</span><span class="o">.</span><span class="n">stream!</span><span class="p">([],</span> <span class="mi">32</span> <span class="o">*</span> <span class="mi">4096</span><span class="p">)</span> <span class="o">|&gt;</span>
+  <span class="no">Stream</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="o">&amp;</span><span class="no">String</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="nv">&amp;1</span><span class="p">,</span> <span class="sr">~r/(?&lt;=\n)/</span><span class="p">))</span> <span class="o">|&gt;</span>
+  <span class="no">Stream</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="s2">""</span><span class="p">,</span> <span class="k">fn</span> <span class="n">lines</span><span class="p">,</span> <span class="n">acc</span> <span class="o">-&gt;</span>
+    <span class="k">if</span> <span class="no">Enum</span><span class="o">.</span><span class="n">empty?</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="k">do</span>
+      <span class="k">if</span> <span class="n">acc</span> <span class="o">==</span> <span class="s2">""</span> <span class="k">do</span>
+        <span class="p">{</span><span class="ss">:halt</span><span class="p">,</span> <span class="n">acc</span><span class="p">}</span>
+      <span class="k">else</span>
+        <span class="p">{[</span><span class="n">acc</span><span class="p">],</span> <span class="s2">""</span><span class="p">}</span>
+      <span class="k">end</span>
+    <span class="k">else</span>
+      <span class="c1"># prepend previous partial line to this chunk</span>
+      <span class="p">[</span><span class="n">first_line</span> <span class="o">|</span> <span class="n">rest_lines</span><span class="p">]</span> <span class="o">=</span> <span class="n">lines</span>
+      <span class="n">lines</span> <span class="o">=</span> <span class="p">[</span><span class="n">acc</span> <span class="o">&lt;&gt;</span> <span class="n">first_line</span> <span class="o">|</span> <span class="n">rest_lines</span><span class="p">]</span>
+      <span class="n">acc</span> <span class="o">=</span> <span class="s2">""</span>
+
+      <span class="c1"># carry any partial line at end of this chunk</span>
+      <span class="k">unless</span> <span class="no">List</span><span class="o">.</span><span class="n">last</span><span class="p">(</span><span class="n">lines</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="no">String</span><span class="o">.</span><span class="n">ends_with?</span><span class="p">(</span><span class="s2">"</span><span class="se">\n</span><span class="s2">"</span><span class="p">)</span> <span class="k">do</span>
+        <span class="p">{</span><span class="n">lines</span><span class="p">,</span> <span class="p">[</span><span class="n">acc</span><span class="p">]}</span> <span class="o">=</span> <span class="no">Enum</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">lines</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span>
+      <span class="k">end</span>
+
+      <span class="p">{</span><span class="n">lines</span><span class="p">,</span> <span class="n">acc</span><span class="p">}</span>
+    <span class="k">end</span>
+  <span class="k">end</span><span class="p">)</span>
+<span class="n">num_lines</span> <span class="o">=</span> <span class="n">lines</span> <span class="o">|&gt;</span> <span class="no">Enum</span><span class="o">.</span><span class="n">count</span>
+</code></pre></div><p>This workaround successfully prevented the enormous NUL byte sequence from
+hanging Elixir (hurray!) but the overall operation took <em>24 minutes</em> to complete.</p>
+<p>How do I optimize this further?  Well, I would imagine that Elixir already uses
+a similar (in spirit) line splitting algorithm that is already heavily optimized,
+so eliminating my own would be ideal (deleted code is debugged code).  In
+addition, I also have control over the sizing of chunks I read from the file.</p>
+
+<div id="solution" class="section"></div><h1 class="heading">Solution<a href="#solution" class="permalink" title="Permalink"></a><a href="#__solution__" class="uplink" title="Contents"></a></h1>
+<p>Following this intuition, I searched the web and unearthed two disparate hints:</p>
+
+<ol>
+<li><p>Use <code>IO.binstream/2</code> to read the file as a raw byte sequence (not as UTF-8,
+which is the case with <code>IO.stream/2</code> and thus with <code>File.stream!/2</code> as well).
+<a href="http://stackoverflow.com/a/31397000">http://stackoverflow.com/a/31397000</a></p></li>
+<li><p>Ask for large chunks while reading the file to counteract the overhead of
+<code>:file.read/2</code> and use additional buffering on top of it for performance.
+<a href="http://stackoverflow.com/a/9771547">http://stackoverflow.com/a/9771547</a></p></li>
+</ol>
+<p>Applying these hints yielded <em>16x speedup</em>, cutting execution time to <em>90
+seconds</em>:</p>
+<div class="highlight"><pre class="highlight elixir"><code><span class="n">file</span> <span class="o">=</span> <span class="s2">"path/to/very/large/file"</span>
+<span class="n">io</span> <span class="o">=</span> <span class="n">file</span> <span class="o">|&gt;</span> <span class="no">File</span><span class="o">.</span><span class="n">open!</span><span class="p">(</span><span class="ss">read_ahead:</span> <span class="mi">128</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span> <span class="c1"># 128 KiB generous caching</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="n">io</span> <span class="o">|&gt;</span> <span class="no">IO</span><span class="o">.</span><span class="n">binstream</span><span class="p">(</span><span class="ss">:line</span><span class="p">)</span>
+<span class="n">num_lines</span> <span class="o">=</span> <span class="n">lines</span> <span class="o">|&gt;</span> <span class="no">Enum</span><span class="o">.</span><span class="n">count</span>
+</code></pre></div><p>That&rsquo;s actually good performance, since <code>wc</code> took 74 seconds to count characters:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span><span class="nb">time wc </span>path/to/very/large/file
+ 92474     498826 1603770580 path/to/very/large/file
+<span class="nb">wc </span>path/to/very/large/file  73.57s user 0.84s system 100% cpu 1:14.41 total
+</code></pre></div><p>Although this performance still pales in comparison to Python&rsquo;s 4 seconds, <em>it&rsquo;s
+a reasonable trade-off</em> considering the concurrency and fault-tolerance merits of
+Elixir over Python. Furthermore, this subpar performance might be a remnant of
+the underlying algorithms being used to fill buffers and split lines inside Elixir,
+given the similarity in execution time with <code>wc</code> when counting characters.</p>
+
+<div id="conclusion" class="section"></div><h1 class="heading">Conclusion<a href="#conclusion" class="permalink" title="Permalink"></a><a href="#__conclusion__" class="uplink" title="Contents"></a></h1>
+<p>Read large files as <em>raw binary streams</em> (not as UTF-8) along with enough caching:</p>
+<div class="highlight"><pre class="highlight elixir"><code><span class="n">file</span> <span class="o">=</span> <span class="s2">"path/to/very/large/file"</span>
+<span class="n">io</span> <span class="o">=</span> <span class="n">file</span> <span class="o">|&gt;</span> <span class="no">File</span><span class="o">.</span><span class="n">open!</span><span class="p">(</span><span class="ss">read_ahead:</span> <span class="mi">128</span> <span class="o">*</span> <span class="mi">1024</span><span class="p">)</span> <span class="c1"># 128 KiB generous caching</span>
+<span class="n">lines</span> <span class="o">=</span> <span class="n">io</span> <span class="o">|&gt;</span> <span class="no">IO</span><span class="o">.</span><span class="n">binstream</span><span class="p">(</span><span class="ss">:line</span><span class="p">)</span>
+</code></pre></div></div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2018-12-18T20:40:41-08:00">18 December 2018: </time></dt><dd class="content"><p>This article <a href="https://hexdocs.pm/flow/Flow.html#module-performance-discussions">has been superseded</a> by Elixir&rsquo;s
+<a href="https://elixir-lang.org/blog/2016/07/14/announcing-genstage/">Flow and GenStage</a> libraries:</p>
+
+<blockquote>
+<p><a class="embed_youtube_video" href="https://www.youtube.com/embed/srtMWzyqdp8?autoplay=1&cc_load_policy=1&modestbranding=1&start=244"><img src="https://i.ytimg.com/vi/srtMWzyqdp8/hqdefault.jpg" alt="Click to watch video" width="480" height="360"></a></p>
+</blockquote>
+</dd></dl></aside><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2017&ndash;2018 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

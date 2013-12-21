@@ -1,0 +1,173 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Telugu RTS with IIIMF - The Terminal Programmer</title><meta content="2004-08-01T00:00:00-07:00" name="DCTERMS.created" /><meta content="2004-08-01T00:00:00-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="telugu, transliteration, tool, linux" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="telugu-rts-with-iiimf" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#telugu-rts-with-iiimf" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Telugu RTS with IIIMF</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2004-08-01T00:00:00-07:00"> 1 August 2004</time></header><hr /><div class="description"></div><div class="content"><p><a href="ext/iiimf/telugu_rts.png">
+<picture><source type="image/webp" srcset="telugu-rts-with-iiimf.webp"><img src="telugu-rts-with-iiimf.png" width="136" height="334" alt="The RTS code-table in action." title="The RTS code-table in action."></picture>
+</a></p>
+<p>Please note that future development of this work (including Telugu RTS for
+SCIM) can be found at the <a href="http://www.swecha.org/wiki/Input">Swecha localization project&rsquo;s wiki</a> and also at <a href="http://te.wikipedia.org/wiki/%E0%B0%B5%E0%B0%BF%E0%B0%95%E0%B1%80%E0%B0%AA%E0%B1%80%E0%B0%A1%E0%B0%BF%E0%B0%AF%E0%B0%BE:Configuring_on_Linux#RTS_with_IIIM">Wikipedia</a>. Also, this article was originally written during the fall of 2004.</p>
+<p><ol class="table-of-contents"><li><a id="__motivation__" href="#motivation" class="downlink">Motivation</a><ol><li><a id="__screenshots__" href="#screenshots" class="downlink">Screenshots</a><ol></ol></li><li><a id="__files__" href="#files" class="downlink">Files</a><ol></ol></li><li><a id="__resources__" href="#resources" class="downlink">Resources</a><ol></ol></li></ol></li><li><a id="__installation__" href="#installation" class="downlink">Installation</a><ol><li><a id="__path-to-the-unit-le__" href="#path-to-the-unit-le" class="downlink">Path to the UNIT LE</a><ol></ol></li><li><a id="__path-to-fonts__" href="#path-to-fonts" class="downlink">Path to fonts</a><ol></ol></li><li><a id="__installation-procedure__" href="#installation-procedure" class="downlink">Installation procedure</a><ol></ol></li></ol></li><li><a id="__common-problems-and-solutions__" href="#common-problems-and-solutions" class="downlink">Common problems and solutions</a><ol><li><a id="__enable-languages-in-the-unit-le__" href="#enable-languages-in-the-unit-le" class="downlink">Enable languages in the UNIT LE</a><ol></ol></li><li><a id="__enable-proper-indic-font-rendering-in-mozilla__" href="#enable-proper-indic-font-rendering-in-mozilla" class="downlink">Enable proper Indic font-rendering in Mozilla</a><ol></ol></li><li><a id="__kickstart-the-unit-le__" href="#kickstart-the-unit-le" class="downlink">Kickstart the UNIT LE</a><ol></ol></li></ol></li></ol></p>
+
+<div id="motivation" class="section"></div><h2 class="heading">Motivation<a href="#motivation" class="permalink" title="Permalink"></a><a href="#__motivation__" class="uplink" title="Contents"></a></h2>
+<p>For several months, I had been using the <a href="http://www.yudit.org">Yudit</a>
+program&rsquo;s Roman-to-Indic transliteration engine, which is based upon the
+<a href="https://groups.google.com/groups?selm=Bv0A9M.27B%40rice.edu&output=gplain">Rice Transliteration Standard (RTS)</a> for writing text in Telugu. I often wondered, &ldquo;Wouldn&rsquo;t it be great if
+such functionality existed in all programs?&rdquo;</p>
+<p>Luckily, I soon found out about the existence of exactly such capability,
+via the <a href="http://www.openi18n.org/subgroups/im/IIIMF/">Internet Intranet Input Method Framework (IIIMF)</a> Unicode Table (UNIT)
+Language Engine (LE), from the <a href="http://fedora.redhat.com/docs/release-notes/">Fedora Core release notes</a>. Whilst investigating the
+IIIMF website, I found some <a href="http://www.openi18n.org/gallery/">screenshots</a> and was immediately impressed!</p>
+<p>However, when I went to try out the IIIMF UNIT LE in person, I was
+disappointed to find that the existing Telugu IIIMF code-table merely re-
+mapped the keyboard according to the <a href="http://java.sun.com/products/jfc/tsc/articles/InputMethod/indiclayout.html">INSCRIPT</a> specification. Frustrated and empowered to add transliteration support
+for Telugu, I adapted the RTS key-map from Yudit into a <a href="ext/iiimf/telugu_rts.utf">code-table usable
+by the IIIMF</a>. I have submitted the
+code-table to the IIIMF UNIT LE group where it is currently under review.</p>
+
+<div id="screenshots" class="section"></div><h3 class="heading">Screenshots<a href="#screenshots" class="permalink" title="Permalink"></a><a href="#__screenshots__" class="uplink" title="Contents"></a></h3>
+
+<ul>
+<li><p>See the screenshots I had <a href="ext/iiimf/">captured on my system</a></p></li>
+<li><p>See the official <a href="http://www.openi18n.org/gallery/">IIIMF screenshot gallery</a></p></li>
+</ul>
+
+<div id="files" class="section"></div><h3 class="heading">Files<a href="#files" class="permalink" title="Permalink"></a><a href="#__files__" class="uplink" title="Contents"></a></h3>
+
+<ul>
+<li><p>Download the <a href="ext/iiimf/telugu_rts.utf">Telugu RTS code-table</a> for
+the IIIMF UNIT LE.</p></li>
+<li><p>Download <a href="http://www.indlinux.org/downloads/files/indic-otf-0.2.tar.gz">OpenType Indic fonts</a> provided
+by <a href="http://www.indlinux.org/">IndLinux</a>.</p></li>
+</ul>
+
+<div id="resources" class="section"></div><h3 class="heading">Resources<a href="#resources" class="permalink" title="Permalink"></a><a href="#__resources__" class="uplink" title="Contents"></a></h3>
+
+<ul>
+<li><p>See the <a href="http://www.openi18n.org/subgroups/im/IIIMF/UNIT/">IIIMF UNIT LE documentation</a> for writing your own
+code-table.</p></li>
+<li><p>See the official <a href="http://fedora.redhat.com/projects/i18n/iiimf-faq.html">Fedora IIIMF FAQ</a> for configuring
+your IIIMF client (GIMLET).</p></li>
+<li><p>See the unofficial <a href="http://www.fedorafaq.org/#installsoftware">Fedora FAQ</a> for configuring the yum
+utility.</p></li>
+<li><p>See బాగుంది.కాం&rsquo;s <a href="http://www.baagundi.com/bhasha.jsp">tutorial on RTS transliteration</a>. Note that some combinations
+presented there do not follow the RTS.</p></li>
+<li><p>See the <a href="ext/iiimf/Telugu%20RTS%20Specification%20(1992).txt">original RTS specification</a>, which was written back in 1992, for a tutorial on Telugu RTS.</p></li>
+<li><p>See the official <a href="http://www.iiit.net/ltrc/Dictionaries/Dict_Frame.html">International Institute of Information Technology
+(IIIT) Hyderabad, Language Technology Resource Centre (LTRC) online
+services</a> for
+Indian dictionaries.</p></li>
+</ul>
+
+<div id="installation" class="section"></div><h2 class="heading">Installation<a href="#installation" class="permalink" title="Permalink"></a><a href="#__installation__" class="uplink" title="Contents"></a></h2>
+<p>The following instructions pertain mostly to the Fedora Core GNU/Linux
+distribution. However, the process should be quite similar on all GNU/Linux
+distributions.</p>
+<p>Before we get started, install the necessary IIIMF packages as the super user
+(root):</p>
+<div class="highlight"><pre class="highlight shell"><code>yum <span class="nb">install</span> <span class="s1">'iiimf**'</span>
+</code></pre></div>
+<div id="path-to-the-unit-le" class="section"></div><h3 class="heading">Path to the UNIT LE<a href="#path-to-the-unit-le" class="permalink" title="Permalink"></a><a href="#__path-to-the-unit-le__" class="uplink" title="Contents"></a></h3>
+<p>The <code>$UNIT</code> variable will be used to keep track of the path to your UNIT LE
+installation.</p>
+
+<ul>
+<li><p>If you are using Fedora Core 3, then execute:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">UNIT</span><span class="o">=</span>/usr/lib/im/locale/UNIT
+</code></pre></div></li>
+<li><p>If you are using Fedora Core 4, then execute:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">UNIT</span><span class="o">=</span>/usr/lib/iiim/le/unitle
+</code></pre></div></li>
+<li><p>If you are using a different GNU/Linux distribution and know where your
+UNIT LE installation resides, simply point the $UNIT variable to the
+path of your UNIT LE installation. Otherwise, try execute the following
+and see if it uncovers the path to your UNIT LE installation:</p>
+<div class="highlight"><pre class="highlight shell"><code>find /usr <span class="nt">-name</span> txt2bin <span class="nt">-type</span> f <span class="nt">-print</span> 2&gt;/dev/null | <span class="nb">sed</span> <span class="s1">'s/common.**$//'</span>
+</code></pre></div></li>
+</ul>
+
+<div id="path-to-fonts" class="section"></div><h3 class="heading">Path to fonts<a href="#path-to-fonts" class="permalink" title="Permalink"></a><a href="#__path-to-fonts__" class="uplink" title="Contents"></a></h3>
+<p>The <code>$FONT</code> variable will be used to keep track of the path to your X
+server&rsquo;s fonts directory.</p>
+
+<ul>
+<li><p>If you want to install fonts globally and are using Fedora Core 3 or 4,
+then execute:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">FONT</span><span class="o">=</span>/usr/lib/X11/fonts/indic
+</code></pre></div></li>
+<li><p>If you want to install fonts to your home directory, then execute:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">FONT</span><span class="o">=</span>~/.fonts
+</code></pre></div></li>
+</ul>
+
+<div id="installation-procedure" class="section"></div><h3 class="heading">Installation procedure<a href="#installation-procedure" class="permalink" title="Permalink"></a><a href="#__installation-procedure__" class="uplink" title="Contents"></a></h3>
+
+<ol>
+<li><p>Download the <a href="http://www.indlinux.org/downloads/files/indic-otf-0.2.tar.gz">Indic fonts</a> and
+extract them into $FONT. Note that you do not need to be logged-in as
+root for this part if you are installing fonts into your home
+directory.</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nb">mkdir</span> <span class="nv">$FONT</span>
+<span class="nb">tar</span> <span class="nt">-vzxf</span> indic-otf-0.2.tar.gz
+<span class="nb">cp</span> <span class="nt">-iv</span> indic/OpenType/<span class="k">**</span>ttf <span class="nv">$FONT</span>
+mkfontscale <span class="nv">$FONT</span>
+mkfontdir <span class="nv">$FONT</span>
+</code></pre></div></li>
+<li><p>Download the <a href="ext/iiimf/telugu_rts.utf">Telugu RTS code-table</a>
+and convert it into a binary format using the txt2bin utility:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$UNIT</span>/common/txt2bin telugu_rts.utf telugu_rts.data
+</code></pre></div></li>
+<li><p>As the super user (root), copy the binary code-table file into the
+IIIMF UNIT locale directory:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nb">cp </span>telugu_rts.data <span class="nv">$UNIT</span>/TELUGU/data/
+</code></pre></div></li>
+<li><p>As the super user (root), edit the <code>$UNIT/sysime.cfg</code> file so that
+its &ldquo;[ te_IN ]&rdquo; section appears like the following.</p>
+<div class="highlight"><pre class="highlight plaintext"><code>[ te_IN ]
+telugu_rts common/ctim.so TELUGU
+inscript common/ctim.so TELUGU
+</code></pre></div></li>
+<li><p>As the super user (root), restart the IIIMF server:</p>
+<div class="highlight"><pre class="highlight shell"><code>/sbin/service iiim restart
+</code></pre></div></li>
+<li><p>Exit out of your graphical desktop environment if any are currently
+running.</p></li>
+<li><p>Restart the X server by pressing the <strong>Control</strong>, <strong>Alt</strong>, and
+<strong>Backspace</strong> keys simultaneously, or by executing the following
+command as the super user (root):</p>
+<div class="highlight"><pre class="highlight shell"><code>/sbin/telinit 3 <span class="o">&amp;&amp;</span> /sbin/telinit 5
+</code></pre></div></li>
+</ol>
+
+<div id="common-problems-and-solutions" class="section"></div><h2 class="heading">Common problems and solutions<a href="#common-problems-and-solutions" class="permalink" title="Permalink"></a><a href="#__common-problems-and-solutions__" class="uplink" title="Contents"></a></h2>
+
+<div id="enable-languages-in-the-unit-le" class="section"></div><h3 class="heading">Enable languages in the UNIT LE<a href="#enable-languages-in-the-unit-le" class="permalink" title="Permalink"></a><a href="#__enable-languages-in-the-unit-le__" class="uplink" title="Contents"></a></h3>
+<p>If you see no languages or only some languages listed in the &ldquo;Add or
+Remove languages&rdquo; window of the GIMLET client program, then the following
+will be of interest to you.</p>
+<p>As noted in <a href="http://fedora.redhat.com/projects/i18n/iiimf-faq.html">Fedora&rsquo;s IIIMF FAQ</a>, if you use a
+locale that is not associated with a certain language, and want to use
+IIIMF to write in that language, then run the following commands and
+restart the X server (see instructions above).</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nb">mkdir</span> ~/.xinput.d
+<span class="nb">ln</span> <span class="nt">-s</span> /etc/X11/xinit/xinput.d/iiimf ~/.xinput.d/default
+</code></pre></div><p>Now you should be able to write in any language, regardless of which locale
+you are currently using.</p>
+
+<div id="enable-proper-indic-font-rendering-in-mozilla" class="section"></div><h3 class="heading">Enable proper Indic font-rendering in Mozilla<a href="#enable-proper-indic-font-rendering-in-mozilla" class="permalink" title="Permalink"></a><a href="#__enable-proper-indic-font-rendering-in-mozilla__" class="uplink" title="Contents"></a></h3>
+<p>As stated in the <a href="http://fedora.redhat.com/docs/release-notes/">Fedora Core 3 release notes</a>, you can enable the
+beautiful rendering of indic fonts in Mozilla by setting the following
+environment variable before running it, or by placing the following in
+your shell&rsquo;s resource file (in my case, this file is ~/.bashrc because I
+use the GNU BASH shell):</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nb">export </span><span class="nv">MOZ_ENABLE_PANGO</span><span class="o">=</span>1
+</code></pre></div>
+<div id="kickstart-the-unit-le" class="section"></div><h3 class="heading">Kickstart the UNIT LE<a href="#kickstart-the-unit-le" class="permalink" title="Permalink"></a><a href="#__kickstart-the-unit-le__" class="uplink" title="Contents"></a></h3>
+<p>In Fedora Core 3, the GIMLET client sometimes fails to enable the language
+in which I want to write in. The following crude procedure (alike whacking
+an old television set on its side when its picture is distorted) seems to
+make it work again, most of the time.</p>
+<p>As root, I repeatedly jump-start the IIIMF server until it reports that it
+has succeeded in disabling and re-enabling itself:</p>
+<div class="highlight"><pre class="highlight plaintext"><code># service iiim restart
+Stopping IIIMF input server:  [  OK  ]
+Starting IIIMF input server:  [  OK  ]
+</code></pre></div></div><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2004 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

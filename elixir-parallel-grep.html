@@ -1,0 +1,96 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>A parallel grep(1) prototype in Elixir - The Terminal Programmer</title><meta content="2016-07-31T23:35:29-04:00" name="DCTERMS.created" /><meta content="2016-07-31T23:35:29-04:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="prototype, benchmark, speedup" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="elixir-parallel-grep" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#elixir-parallel-grep" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">A parallel grep(1) prototype in Elixir</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2016-07-31T23:35:29-04:00">31 July 2016</time></header><hr /><div class="description"></div><div class="content"><blockquote>
+<p>Note: This all happened a year ago. I&rsquo;m just late in writing about it.</p>
+</blockquote>
+<p>A colleague needed a way to quickly grep(1) through several terabytes of
+plain text reports at work today, so I wrote a basic prototype of parallel
+grep(1) in <a href="http://elixir-lang.org/">Elixir</a> during my lunch break. Its performance, to my surprise,
+was astonishing!</p>
+<div class="highlight"><pre class="highlight elixir"><code><span class="err">$</span> <span class="n">cat</span> <span class="n">search</span><span class="o">.</span><span class="n">exs</span>
+<span class="k">defmodule</span> <span class="no">Search</span> <span class="k">do</span>
+  <span class="k">def</span> <span class="n">launch</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">files</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">files</span> <span class="o">|&gt;</span> <span class="no">Stream</span><span class="o">.</span><span class="n">reject</span><span class="p">(</span><span class="o">&amp;</span><span class="no">File</span><span class="o">.</span><span class="n">dir?</span><span class="o">/</span><span class="mi">1</span><span class="p">)</span> <span class="o">|&gt;</span> <span class="no">Enum</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">fn</span> <span class="n">file</span> <span class="o">-&gt;</span>
+      <span class="n">spawn</span><span class="p">(</span><span class="bp">__MODULE__</span><span class="p">,</span> <span class="ss">:search</span><span class="p">,</span> <span class="p">[</span><span class="n">regex</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">self</span><span class="p">])</span>
+    <span class="k">end</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="n">search</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">file</span><span class="p">,</span> <span class="n">receiver</span><span class="p">)</span> <span class="k">do</span>
+    <span class="n">file</span> <span class="o">|&gt;</span> <span class="no">File</span><span class="o">.</span><span class="n">stream!</span> <span class="o">|&gt;</span> <span class="no">Enum</span><span class="o">.</span><span class="n">each</span><span class="p">(</span><span class="k">fn</span> <span class="n">line</span> <span class="o">-&gt;</span>
+      <span class="k">case</span> <span class="no">Regex</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">line</span><span class="p">)</span> <span class="k">do</span>
+        <span class="no">nil</span> <span class="o">-&gt;</span> <span class="p">;</span> <span class="c1"># line didn't match so ignore it</span>
+        <span class="n">matches</span> <span class="o">-&gt;</span> <span class="n">send</span> <span class="n">receiver</span><span class="p">,</span> <span class="p">{</span><span class="n">file</span><span class="p">,</span> <span class="n">matches</span><span class="p">}</span>
+      <span class="k">end</span>
+    <span class="k">end</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="n">results</span><span class="p">(</span><span class="n">count</span><span class="p">\\</span><span class="mi">0</span><span class="p">)</span> <span class="k">do</span>
+    <span class="k">receive</span> <span class="k">do</span>
+      <span class="n">_result</span> <span class="o">-&gt;</span> <span class="n">results</span><span class="p">(</span><span class="n">count</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="c1"># consume the message and loop again</span>
+      <span class="k">after</span> <span class="mi">1000</span> <span class="o">-&gt;</span> <span class="no">IO</span><span class="o">.</span><span class="n">puts</span> <span class="s2">"got </span><span class="si">#{</span><span class="n">count</span><span class="si">}</span><span class="s2"> results; no more in last 1s"</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="p">[</span><span class="n">pattern</span><span class="o">|</span><span class="n">files</span><span class="p">]</span> <span class="o">=</span> <span class="no">System</span><span class="o">.</span><span class="n">argv</span>
+<span class="n">regex</span> <span class="o">=</span> <span class="no">Regex</span><span class="o">.</span><span class="n">compile!</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span>
+<span class="no">Search</span><span class="o">.</span><span class="n">launch</span><span class="p">(</span><span class="n">regex</span><span class="p">,</span> <span class="n">files</span><span class="p">)</span>
+<span class="no">Search</span><span class="o">.</span><span class="n">results</span>
+</code></pre></div><p>Extracting lines, along with capture groups, that matched a Perl-compatible
+regular expression from a small sample of 17GB of plain text reports took
+<em>19 seconds</em> for the prototype (note that it waits for <em>an extra second</em>
+after finding the last search result), compared to <em>1 minute and 50
+seconds</em> for GNU grep 2.5.1:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ regex</span><span class="o">=</span><span class="s1">'^\s*(\S+)(?:\s+([\d\.e+-]+)){4,}'</span>
+
+<span class="nv">$ </span><span class="nb">du</span> <span class="nt">-csh</span> /some/<span class="k">*</span>/location/ | <span class="nb">tail</span> <span class="nt">-1</span>
+17G     total
+
+<span class="nv">$ </span><span class="nb">time </span>elixir <span class="nt">-r</span> search.exs <span class="nt">--</span> <span class="s2">"</span><span class="nv">$regex</span><span class="s2">"</span> /some/<span class="k">*</span>/location/<span class="k">*</span>
+165984 results<span class="p">;</span> nothing more <span class="k">in </span>last 1s
+elixir <span class="nt">-r</span> search.exs <span class="nt">--</span>    220.98s user 6.38s system 1147% cpu 19.816 total
+
+<span class="nv">$ </span><span class="nb">time grep</span> <span class="nt">-Pq</span> <span class="s2">"</span><span class="nv">$regex</span><span class="s2">"</span> /some/<span class="k">*</span>/location/<span class="k">*</span>
+<span class="nb">grep</span> <span class="nt">-Pq</span>    31.92s user 6.51s system 34% cpu 1:50.30 total
+</code></pre></div><p>This meant that the Elixir prototype was <em>5.7 times faster</em> than grep(1), but why?</p>
+<p>The answer is <em>parallelism</em>: grep(1) is a single OS process that handles a
+single file at a time.  Whereas in the Elixir prototype, each file is
+handled by its own dedicated <a href="http://www.erlang.org/">Erlang</a> &ldquo;<a href="http://erlang.org/doc/reference_manual/processes.html">process</a>&rdquo;, which is an <a href="http://www.brianstorti.com/the-actor-model/">actor</a>
+(see also <a href="http://www.oodesign.com/command-pattern.html">Command Pattern</a>) that is significantly lighter than any OS
+process or thread.  This difference is readily seen in the CPU utilization
+statistics reported by the time(1) command:</p>
+
+<table><thead>
+<tr>
+<th></th>
+<th>User time</th>
+<th>System time</th>
+<th>CPU utilization</th>
+<th>Elapsed time</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Elixir</td>
+<td>220.98s user</td>
+<td>6.38s system</td>
+<td><strong>1147% cpu</strong></td>
+<td>19.816 total</td>
+</tr>
+<tr>
+<td>grep(1)</td>
+<td>31.92s user</td>
+<td>6.51s system</td>
+<td><strong>34% cpu</strong></td>
+<td>1:50.30 total</td>
+</tr>
+</tbody></table>
+<p>Here we see that the Elixir prototype utilized <em>11.47 CPU cores</em> worth of
+computational resources, whereas grep(1) utilized only <em>34% of only one</em>
+CPU core.  Since the machine that ran this search had 24 CPU cores,
+several of which were already under heavy use by ~800 other users on it,
+this was a remarkable result.</p>
+<p>In short, parallelism won.  And so did Elixir and the Erlang VM, for this
+was my first time, in 18 years of programming, seeing my code <em>exhaust</em>
+a machine&rsquo;s entire CPU capacity with <em>no extra effort</em> on my part! The
+revolution has arrived.</p>
+</div><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2016 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

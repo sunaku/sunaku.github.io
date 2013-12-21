@@ -1,0 +1,34 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Automatically starting X after logging into a Linux virtual terminal - The Terminal Programmer</title><meta content="2015-11-05T14:49:48-05:00" name="DCTERMS.created" /><meta content="2015-11-05T14:49:48-05:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="solution, linux, x11" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="startx-login-tty1" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#startx-login-tty1" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Automatically starting X after logging into a Linux virtual terminal</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2015-11-05T14:49:48-05:00"> 5 November 2015</time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__problem__" href="#problem" class="downlink">Problem</a><ol></ol></li><li><a id="__solution__" href="#solution" class="downlink">Solution</a><ol></ol></li><li><a id="__references__" href="#references" class="downlink">References</a><ol></ol></li></ol>
+<div id="problem" class="section"></div><h1 class="heading">Problem<a href="#problem" class="permalink" title="Permalink"></a><a href="#__problem__" class="uplink" title="Contents"></a></h1>
+<p>After logging into a Linux virtual terminal, running <code>startx</code> to launch your
+graphical desktop session leaves the virtual terminal open to keyboard input.
+<em>Anyone</em> can switch back to the virtual terminal where you logged in (using
+the Control+Alt+Fn keys) and then suspend (with Control+Z), interrupt (with
+Control+C), or even terminate (with Control+4) your <code>startx</code> process along
+with the graphical desktop session it powers.  Doing so, they gain access to
+the underlying shell that ran <code>startx</code> and thus assume <em>your</em> identity on
+<em>your</em> system and then it&rsquo;s game over, you lose! :-(</p>
+
+<div id="solution" class="section"></div><h1 class="heading">Solution<a href="#solution" class="permalink" title="Permalink"></a><a href="#__solution__" class="uplink" title="Contents"></a></h1>
+<p>Have <code>startx</code> take over the Linux virtual terminal from which it was launched,
+thereby protecting the underlying shell from keyboard input, by setting the
+<code>XDG_VTNR</code> environment variable to the number of that Linux virtual terminal:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nb">env </span><span class="nv">XDG_VTNR</span><span class="o">=</span><span class="si">$(</span> <span class="nb">tty</span> | <span class="nb">tr</span> <span class="nt">-dc</span> 0-9 <span class="si">)</span> startx
+</code></pre></div><p>Next, instead of manually running the above command every time you log in, you
+can automate it just on the first Linux virtual terminal (because sometimes
+you just need direct access to the shell and not the full-blown graphical
+desktop environment) by adding the following snippet to your <code>~/.profile</code>
+shell startup file:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="c"># start X when logging into first virtual terminal</span>
+<span class="c"># see /etc/X11/xinit/xserverrc for $XDG_VTNR trick</span>
+<span class="nb">test</span> <span class="nt">-z</span> <span class="s2">"</span><span class="nv">$DISPLAY</span><span class="s2">"</span> <span class="nt">-a</span> <span class="s2">"</span><span class="si">$(</span><span class="nb">tty</span><span class="si">)</span><span class="s2">"</span> <span class="o">=</span> /dev/tty1 <span class="o">&amp;&amp;</span>
+<span class="nb">exec env </span><span class="nv">XDG_VTNR</span><span class="o">=</span>1 startx <span class="o">&gt;</span> ~/.xsession-errors 2&gt;&amp;1
+</code></pre></div>
+<div id="references" class="section"></div><h1 class="heading">References<a href="#references" class="permalink" title="Permalink"></a><a href="#__references__" class="uplink" title="Contents"></a></h1>
+
+<ul>
+<li><code>/etc/X11/xinit/xserverrc</code> taught me about the <code>$XDG_VTNR</code> trick.</li>
+</ul>
+</div><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2015 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

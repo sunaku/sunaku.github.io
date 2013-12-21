@@ -1,0 +1,273 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Lubuntu 14.10 on the Acer C720 Chromebook - The Terminal Programmer</title><meta content="2014-11-13T09:10:18-08:00" name="DCTERMS.created" /><meta content="2014-11-13T09:10:18-08:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="solution, chromebook, ubuntu, linux" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="acer-c720-linux" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#acer-c720-linux" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Lubuntu 14.10 on the Acer C720 Chromebook</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2014-11-13T09:10:18-08:00">13 November 2014</time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__setup__" href="#setup" class="downlink">Setup</a><ol></ol></li><li><a id="__fixes__" href="#fixes" class="downlink">Fixes</a><ol><li><a id="__touchpad__" href="#touchpad" class="downlink">Touchpad</a><ol></ol></li><li><a id="__kernel__" href="#kernel" class="downlink">Kernel</a><ol></ol></li><li><a id="__power__" href="#power" class="downlink">Power</a><ol></ol></li><li><a id="__wi-fi__" href="#wi-fi" class="downlink">Wi-Fi</a><ol></ol></li><li><a id="__sound__" href="#sound" class="downlink">Sound</a><ol></ol></li><li><a id="__keyboard__" href="#keyboard" class="downlink">Keyboard</a><ol></ol></li><li><a id="__sleep__" href="#sleep" class="downlink">Sleep</a><ol><li><a id="__etc-rc-local__" href="#etc-rc-local" class="downlink">/etc/rc.local</a><ol></ol></li><li><a id="__etc-pm-sleep-d-20_acer_c720_chromebook__" href="#etc-pm-sleep-d-20_acer_c720_chromebook" class="downlink">/etc/pm/sleep.d/20_acer_c720_chromebook</a><ol></ol></li></ol></li></ol></li><li><a id="__extras__" href="#extras" class="downlink">Extras</a><ol><li><a id="__automatic-hdmi__" href="#automatic-hdmi" class="downlink">Automatic HDMI</a><ol><li><a id="__bin-acer-c720-display__" href="#bin-acer-c720-display" class="downlink">~/bin/acer-c720-display</a><ol></ol></li><li><a id="__bin-acer-c720-reactor__" href="#bin-acer-c720-reactor" class="downlink">~/bin/acer-c720-reactor</a><ol></ol></li></ol></li></ol></li><li><a id="__references__" href="#references" class="downlink">References</a><ol></ol></li></ol><p>For six long months, I used a <a href="https://github.com/dnschneid/crouton#readme">Crouton</a> chroot (running <a href="https://www.debian.org/">Debian</a> Sid)
+alongside my <a href="http://us.acer.com/ac/en/US/content/series/c720">Acer C720 Chromebook</a>&rsquo;s native <a href="http://www.youtube.com/watch?v=0QRO3gKj3qw">Chrome OS</a> as my primary
+working environment: the <a href="https://chrome.google.com/webstore/detail/secure-shell/pnhechapfaindjhompbnflcldabbghjo?hl=en">Secure Shell</a> extension provided direct, non-SSH
+terminal access to the chroot, where I did all of my real work, while
+Chrome browser provided a means to access my e-mail and the Internet.</p>
+<p>However, I wasn&rsquo;t able to reliably <a href="https://github.com/dnschneid/crouton/issues/931">run graphical X11 applications in
+Chrome OS</a> when the
+need arose occasionally (e.g. to display a plot in R or Octave) and, by
+the time <a href="https://github.com/dnschneid/crouton/issues/931#issuecomment-57165031">a workaround for this problem was identified</a>,
+my growing dissatisfaction with Chrome OS&rsquo; limitations and my concerns
+over personal data and activities being collected, stored, and processed
+in Google&rsquo;s cloud prompted me to completely replace Chrome OS with a
+standard Linux installation.</p>
+<p>I tried <a href="http://elementaryos.org/">Elementary OS Freya</a>, <a href="http://xubuntu.org/">Xubuntu 14.10</a>, and <a href="http://lubuntu.net/">Lubuntu 14.10</a> and
+finally settled on the latter because it had the smallest operational
+overhead (in terms of power, CPU, and memory consumption) when my laptop
+was idle, according to <a href="https://01.org/powertop">Intel&rsquo;s PowerTOP</a> tool.</p>
+<p>Now that this configuration has stabilized, having lasted an entire week
+of continuous use (no shutdown, only suspend and resume) without any
+problems, I decided to write this article and share it with the world:
+documented below is how I replaced <a href="http://www.youtube.com/watch?v=0QRO3gKj3qw">Chrome OS</a> with <a href="http://lubuntu.net/">Lubuntu 14.10</a> on my
+<a href="http://us.acer.com/ac/en/US/content/series/c720">Acer C720 Chromebook</a>.  May this knowledge liberate you from Google&rsquo;s
+<del>clutches</del>cloud as well. :-)</p>
+
+<div id="setup" class="section"></div><h2 class="heading">Setup<a href="#setup" class="permalink" title="Permalink"></a><a href="#__setup__" class="uplink" title="Contents"></a></h2>
+
+<ol>
+<li><p>Install <a href="https://johnlewis.ie/custom-chromebook-firmware/rom-download/">John Lewis&rsquo; custom Chromebook firmware</a> as
+described in <a href="https://web.archive.org/web/20150327002506/http://blogs.fsfe.org/the_unconventional/2014/09/19/c720-coreboot/">the_unconventional&rsquo;s guide</a>.
+Doing this eliminates the annoying time-delayed &ldquo;scary boot screen&rdquo;,
+boots directly into SeaBIOS, fixes issues with Linux kernel modules.</p></li>
+<li><p>Write the 64-bit <a href="http://lubuntu.net/">Lubuntu 14.10</a> installation image to a USB stick:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>sudo dd if=lubuntu-14.10-desktop-amd64.iso of=/dev/sdXYZ
+</code></pre></div><p>Plug in your USB stick and run <code>dmesg | tail</code> to find the <em>XYZ</em> value.</p></li>
+<li><p>Boot your <a href="http://us.acer.com/ac/en/US/content/series/c720">Acer C720 Chromebook</a> from the USB stick prepared above.</p></li>
+<li><p>Choose &ldquo;Try Lubuntu without installing&rdquo; at the USB stick&rsquo;s boot menu.</p></li>
+<li><p>Press Control+Alt+T to open a terminal and then type in the following:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>xbacklight = 15 # temporarily reduce laptop's display brightness
+sudo swapoff -a # disable swap to avoid security error later on
+</code></pre></div></li>
+<li><p>Double-click the &ldquo;Install Lubuntu 14.10&rdquo; icon on the desktop to start
+the installation process, in which:</p>
+
+<ol>
+<li> Choose &ldquo;Erase disk and install Lubuntu&rdquo;.</li>
+<li> Choose &ldquo;Encrypt the new Lubuntu installation for security&rdquo;.  Make
+sure to turn off swap by running <code>sudo swapoff -a</code> before entering
+your encryption passphrase to avoid a security error that aborts
+the installation.</li>
+<li> Choose &ldquo;Use LVM with the new Lubuntu installation&rdquo;.</li>
+<li> Choose &ldquo;Continue Testing&rdquo; instead of rebooting.</li>
+</ol></li>
+<li><p>Press Control+Alt+T to open a terminal and then type in the following:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>sudo -s
+swapoff -a
+lvremove /dev/lubuntu-vg/swap_1
+lvextend --extents +100%FREE /dev/lubuntu-vg/root
+e2fsck -f /dev/lubuntu-vg/root
+resize2fs /dev/lubuntu-vg/root
+</code></pre></div><p>This will absorb the encrypted swap volume into your root volume,
+thereby giving you an extra 4 GiB (or 2 GiB depending on your
+Chromebook model) of disk space to work with.</p></li>
+<li><p>Reboot the computer when you are ready to start using <a href="http://lubuntu.net/">Lubuntu 14.10</a>.</p></li>
+<li><p>Disable encrypted swap, which the root volume absorbed earlier:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>sudo sed -i 's,^/dev/mapper/lubuntu--vg-swap_1,#&amp;,' /etc/fstab
+</code></pre></div></li>
+<li><p>Enable TRIM support on the root volume since it&rsquo;s on a solid state disk:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>sudo sed -i '/vg-root/s/errors=remount-ro/&amp;,noatime,discard/' /etc/fstab
+</code></pre></div></li>
+</ol>
+
+<div id="fixes" class="section"></div><h2 class="heading">Fixes<a href="#fixes" class="permalink" title="Permalink"></a><a href="#__fixes__" class="uplink" title="Contents"></a></h2>
+<p>After successful <a href="#setup">installation</a>, apply the following fixes.</p>
+
+<div id="touchpad" class="section"></div><h3 class="heading">Touchpad<a href="#touchpad" class="permalink" title="Permalink"></a><a href="#__touchpad__" class="uplink" title="Contents"></a></h3>
+<p>Enable touchpad by upgrading your Linux kernel to version 3.17 or newer,
+which has the touchpad driver built-in.  To do this, <a href="http://kernel.ubuntu.com/%7Ekernel-ppa/mainline/?C=N;O=D">download the upgrade
+packages</a>
+(namely the <code>linux-headers*amd64.deb</code> and <code>linux-generic*amd64.deb</code> files)
+and install them using the <code>sudo dpkg -i</code> command.</p>
+
+<div id="kernel" class="section"></div><h3 class="heading">Kernel<a href="#kernel" class="permalink" title="Permalink"></a><a href="#__kernel__" class="uplink" title="Contents"></a></h3>
+<p>Prevent system freezes that randomly occur under Linux kernel 3.17+:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>echo 'options i915 semaphores=0' | sudo tee -a /etc/modprobe.d/i915.conf
+</code></pre></div><p>I arrived at the above solution by starting with <a href="https://johnlewis.ie/tentative-fixwork-around-for-i915-gpu-hangs/">John Lewis&rsquo; suggested
+workaround</a> and
+experimentally removing redundant overrides (according to <code>modinfo i915 |
+grep parm</code> output) that re-specified default values.</p>
+
+<div id="power" class="section"></div><h3 class="heading">Power<a href="#power" class="permalink" title="Permalink"></a><a href="#__power__" class="uplink" title="Contents"></a></h3>
+<p>Prevent instant shutdown when power key is (accidentally) pressed:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>echo 'HandlePowerKey=ignore' | sudo tee -a /etc/systemd/logind.conf
+</code></pre></div>
+<div id="wi-fi" class="section"></div><h3 class="heading">Wi-Fi<a href="#wi-fi" class="permalink" title="Permalink"></a><a href="#__wi-fi__" class="uplink" title="Contents"></a></h3>
+<p>Enable Wi-Fi power savings and improve connection stability:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>echo 'options ath9k ps_enable=1 use_chanctx=1 btcoex_enable=1 bt_ant_diversity=1' | sudo tee -a /etc/modprobe.d/ath9k.conf
+</code></pre></div>
+<div id="sound" class="section"></div><h3 class="heading">Sound<a href="#sound" class="permalink" title="Permalink"></a><a href="#__sound__" class="uplink" title="Contents"></a></h3>
+<p>Specify the sound card that alsamixer(1) should use by default:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>echo 'options snd_hda_intel index=1' | sudo tee -a /etc/modprobe.d/alsa.conf
+</code></pre></div>
+<div id="keyboard" class="section"></div><h3 class="heading">Keyboard<a href="#keyboard" class="permalink" title="Permalink"></a><a href="#__keyboard__" class="uplink" title="Contents"></a></h3>
+<p>Install the <a href="https://github.com/dnschneid/crouton/wiki/Keyboard">Chromebook keyboard layout</a> provided by
+<a href="https://github.com/dnschneid/crouton#readme">Crouton</a>:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>wget https://raw.githubusercontent.com/dnschneid/crouton/master/targets/keyboard
+sudo env DISTRO=debian bash ./keyboard
+</code></pre></div><p>Apply the Chromebook keyboard layout from within an X11 session:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>setxkbmap -model chromebook
+</code></pre></div>
+<div id="sleep" class="section"></div><h3 class="heading">Sleep<a href="#sleep" class="permalink" title="Permalink"></a><a href="#__sleep__" class="uplink" title="Contents"></a></h3>
+<p>Make suspend and resume work correcly when lid is closed and opened:</p>
+
+<div id="etc-rc-local" class="section"></div><h4 class="heading"><code>/etc/rc.local</code><a href="#etc-rc-local" class="permalink" title="Permalink"></a><a href="#__etc-rc-local__" class="uplink" title="Contents"></a></h4>
+<div class="highlight"><pre class="highlight shell"><code><span class="c">#!/bin/sh -e</span>
+<span class="c">#</span>
+<span class="c"># rc.local</span>
+<span class="c">#</span>
+<span class="c"># This script is executed at the end of each multiuser runlevel.</span>
+<span class="c"># Make sure that the script will "exit 0" on success or any other</span>
+<span class="c"># value on error.</span>
+<span class="c">#</span>
+<span class="c"># In order to enable or disable this script just change the execution</span>
+<span class="c"># bits.</span>
+<span class="c">#</span>
+<span class="c"># By default this script does nothing.</span>
+
+<span class="c"># prevent ehci-pci errors that occur after resume from suspend:</span>
+<span class="c"># [  386.093443] ehci-pci 0000:00:1d.0: port 2 resume error -19</span>
+<span class="c"># [  386.093699] ehci-pci 0000:00:1d.0: port 1 resume error -19</span>
+<span class="nb">echo</span> <span class="nt">-n</span> 0000:00:1d.0 <span class="o">&gt;</span> /sys/bus/pci/drivers/ehci-pci/unbind
+
+/etc/pm/sleep.d/20_acer_c720_chromebook
+
+<span class="nb">exit </span>0
+</code></pre></div>
+<div id="etc-pm-sleep-d-20_acer_c720_chromebook" class="section"></div><h4 class="heading"><code>/etc/pm/sleep.d/20_acer_c720_chromebook</code><a href="#etc-pm-sleep-d-20_acer_c720_chromebook" class="permalink" title="Permalink"></a><a href="#__etc-pm-sleep-d-20_acer_c720_chromebook__" class="uplink" title="Contents"></a></h4>
+<div class="highlight"><pre class="highlight shell"><code><span class="c">#!/bin/sh</span>
+<span class="c"># the following tweaks were suggested by powertop https://01.org/powertop</span>
+
+<span class="c"># turn off bluetooth, which causes OS hangs</span>
+rfkill block bluetooth
+
+<span class="c"># Wireless Power Saving for interface wlan0</span>
+iwconfig wlan0 power on
+
+<span class="c"># NMI watchdog should be turned off</span>
+<span class="nb">echo </span>0 <span class="o">&gt;</span> /proc/sys/kernel/nmi_watchdog
+
+<span class="c"># VM writeback timeout</span>
+<span class="nb">echo </span>1500 <span class="o">&gt;</span> /proc/sys/vm/dirty_writeback_centisecs
+
+<span class="c"># Enable audio codec power management</span>
+<span class="nb">echo </span>1 <span class="o">&gt;</span> /sys/module/snd_hda_intel/parameters/power_save
+
+<span class="c"># Enable SATA link power Management for *</span>
+<span class="k">for </span>policy <span class="k">in</span> /sys/class/scsi_host/<span class="k">*</span>/link_power_management_policy
+<span class="k">do </span><span class="nb">echo </span>min_power <span class="o">&gt;</span> <span class="nv">$policy</span>
+<span class="k">done</span>
+
+<span class="c"># Runtime PM for PCI Device *</span>
+<span class="k">for </span>control <span class="k">in</span> /sys/bus/pci/devices/<span class="k">*</span>/power/control
+<span class="k">do </span><span class="nb">echo </span>auto <span class="o">&gt;</span> <span class="nv">$control</span>
+<span class="k">done</span>
+
+<span class="c"># Runtime PM for PCI Device Intel Corporation 8 Series USB xHCI HC</span>
+<span class="nb">echo </span>auto <span class="o">&gt;</span> /sys/bus/pci/devices/0000:00:14.0/power/control
+
+<span class="c"># Runtime PM for PCI Device Intel Corporation 8 Series USB EHCI #1</span>
+<span class="nb">echo </span>auto <span class="o">&gt;</span> /sys/bus/pci/devices/0000:00:1d.0/power/control
+</code></pre></div>
+<div id="extras" class="section"></div><h2 class="heading">Extras<a href="#extras" class="permalink" title="Permalink"></a><a href="#__extras__" class="uplink" title="Contents"></a></h2>
+<p>After successful <a href="#setup">installation</a>, you can set up these extras.</p>
+
+<ol>
+<li><p>Install <a href="https://code.google.com/p/skippy-xd/">skippy-xd</a> to emulate Chrome OS&rsquo; window list (F5) key:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>sudo add-apt-repository ppa:landronimirc/skippy-xd-daily
+sudo apt-get update &amp;&amp; sudo apt-get install skippy-xd
+</code></pre></div></li>
+<li><p>Fix <a href="https://github.com/zsh-users/zsh-history-substring-search">zsh-history-substring-search</a> reverse video highlighting in tmux:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>wget https://mirrors.kernel.org/ubuntu/pool/main/n/ncurses/ncurses-base_5.9+20140118-1ubuntu1_all.deb
+sudo dpkg -i ncurses-base_5.9+20140118-1ubuntu1_all.deb
+sudo apt-mark hold ncurses-base
+</code></pre></div></li>
+<li><p>Get low-battery notifications from LXDE&rsquo;s battery monitor:</p>
+
+<ol>
+<li> Right-click on the panel (task bar)</li>
+<li> Choose &ldquo;Add / Remove Panel Items&rdquo;</li>
+<li> Click the &ldquo;Add&rdquo; button</li>
+<li> Choose &ldquo;Battery Monitor&rdquo; from the list</li>
+<li> Click the &ldquo;Edit&rdquo; button</li>
+<li><p>Set the &ldquo;Alarm command&rdquo; field to:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>notify-send -u critical -i battery-empty "Your battery is low" "Plug in the charger!" || xmessage Battery low
+</code></pre></div><p>Note that you must install <code>sudo apt-get install libnotify-bin</code>
+in order to receive fancy notifications from the command above.</p></li>
+<li><p>Set the &ldquo;Alarm time (minutes left)&rdquo; field to: 30</p></li>
+</ol></li>
+</ol>
+
+<div id="automatic-hdmi" class="section"></div><h3 class="heading">Automatic HDMI<a href="#automatic-hdmi" class="permalink" title="Permalink"></a><a href="#__automatic-hdmi__" class="uplink" title="Contents"></a></h3>
+<p>The following scripts configure external displays automatically:</p>
+
+<ul>
+<li>plugin in a HDMI cable and the external display will be used</li>
+<li>unplug the HDMI cable and the internal display will be used</li>
+</ul>
+<p>Simply run <code>acer-c720-reactor&amp;</code> after starting LXDE to use them.</p>
+
+<div id="bin-acer-c720-display" class="section"></div><h4 class="heading">~/bin/acer-c720-display<a href="#bin-acer-c720-display" class="permalink" title="Permalink"></a><a href="#__bin-acer-c720-display__" class="uplink" title="Contents"></a></h4>
+<div class="highlight"><pre class="highlight shell"><code><span class="c">#!/bin/sh</span>
+<span class="c"># Uses external display if connected; or internal display otherwise.</span>
+
+<span class="k">if </span><span class="nb">grep</span> <span class="nt">-q</span> <span class="s1">'^connected'</span> /sys/class/drm/card0-HDMI-A-1/status
+<span class="k">then </span>xrandr <span class="nt">--output</span> HDMI1 <span class="nt">--auto</span> <span class="nt">--dpi</span> 96 <span class="nt">--output</span> eDP1 <span class="nt">--off</span>
+<span class="k">else </span>xrandr <span class="nt">--auto</span>
+<span class="k">fi</span>
+</code></pre></div>
+<div id="bin-acer-c720-reactor" class="section"></div><h4 class="heading">~/bin/acer-c720-reactor<a href="#bin-acer-c720-reactor" class="permalink" title="Permalink"></a><a href="#__bin-acer-c720-reactor__" class="uplink" title="Contents"></a></h4>
+<div class="highlight"><pre class="highlight shell"><code><span class="c">#!/bin/sh</span>
+<span class="c"># Reacts to hardware events and (re)configures the system accordingly.</span>
+
+<span class="nb">trap</span> <span class="s2">"kill -- -</span><span class="nv">$$</span><span class="s2">"</span> EXIT <span class="c"># terminate all background processes on exit</span>
+<span class="nb">trap exit </span>INT TERM <span class="c"># ensure the above trap is triggered on interrupt</span>
+
+<span class="nv">dmesg</span><span class="o">=</span><span class="s1">'dmesg --facility auth'</span>
+<span class="nv">depth</span><span class="o">=</span><span class="si">$(</span><span class="nv">$dmesg</span> | <span class="nb">awk</span> <span class="s1">'
+  / systemd-logind.+: New session c.+ of user .+/ { depth=NR }
+  END { print depth-1 }
+'</span><span class="si">)</span>
+<span class="nv">$dmesg</span> <span class="nt">--follow</span> | <span class="o">{</span>
+  <span class="c"># discard old events</span>
+  <span class="nv">i</span><span class="o">=</span>1
+  <span class="k">while</span> <span class="o">[</span> <span class="nv">$i</span> <span class="nt">-le</span> <span class="nv">$depth</span> <span class="o">]</span><span class="p">;</span> <span class="k">do
+    </span><span class="nb">read </span>_discard
+    <span class="nv">i</span><span class="o">=</span><span class="k">$((</span> i <span class="o">+</span> <span class="m">1</span> <span class="k">))</span>
+  <span class="k">done</span>
+
+  <span class="c"># process new events</span>
+  <span class="k">while </span><span class="nb">read </span>event<span class="p">;</span> <span class="k">do
+    case</span> <span class="s2">"</span><span class="nv">$event</span><span class="s2">"</span> <span class="k">in</span>
+      <span class="c"># lock screen was unlocked after initial login</span>
+      <span class="c"># or after the laptop was resumed from suspend</span>
+      <span class="o">(</span><span class="k">*</span><span class="s1">' systemd-logind'</span><span class="k">*</span><span class="s1">': New session c'</span><span class="k">*</span><span class="s1">'of user '</span><span class="k">*</span><span class="se">\</span>
+      <span class="p">|</span><span class="k">*</span><span class="s1">' systemd-logind'</span><span class="k">*</span><span class="s1">': Lid opened.'</span><span class="se">\</span>
+      <span class="p">|</span><span class="k">*</span><span class="s1">' systemd-logind'</span><span class="k">*</span><span class="s1">': Operation finished.'</span><span class="p">)</span>
+        acer-c720-docking
+        <span class="p">;;</span>
+    <span class="k">esac</span>
+  <span class="k">done</span>
+<span class="o">}</span> &amp;
+
+<span class="nb">stdbuf</span> <span class="nt">-oL</span> udevadm monitor <span class="nt">--udev</span> | <span class="k">while </span><span class="nb">read </span>event<span class="p">;</span> <span class="k">do
+  case</span> <span class="s2">"</span><span class="nv">$event</span><span class="s2">"</span> <span class="k">in</span>
+    <span class="c"># HDMI cable was either plugged in or unplugged</span>
+    <span class="o">(</span><span class="k">*</span><span class="s1">' change '</span><span class="k">*</span><span class="s1">'/devices/pci0000:00/0000:00:02.0/drm/card0 (drm)'</span><span class="p">)</span>
+      acer-c720-display
+      <span class="p">;;</span>
+  <span class="k">esac</span>
+<span class="k">done</span> &amp;
+
+<span class="nb">wait</span>
+</code></pre></div>
+<div id="references" class="section"></div><h2 class="heading">References<a href="#references" class="permalink" title="Permalink"></a><a href="#__references__" class="uplink" title="Contents"></a></h2>
+
+<ul>
+<li><a href="https://web.archive.org/web/20141123222711/http://www.circuidipity.com:80/c720-sidbook.html">Chromebook to Sidbook</a> guide by Daniel Wayne Armstrong</li>
+<li><a href="https://www.reddit.com/r/chrubuntu/comments/1rsxkd/">https://www.reddit.com/r/chrubuntu/comments/1rsxkd/</a></li>
+<li><a href="https://wiki.archlinux.org/index.php/Acer_C720_Chromebook">https://wiki.archlinux.org/index.php/Acer_C720_Chromebook</a></li>
+<li><a href="https://github.com/hugegreenbug/distro-mods">https://github.com/hugegreenbug/distro-mods</a></li>
+</ul>
+</div><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2014 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

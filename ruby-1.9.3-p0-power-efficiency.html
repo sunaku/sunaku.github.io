@@ -1,0 +1,61 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Ruby 1.9.3 power efficiency ends wmiirc woes - The Terminal Programmer</title><meta content="2011-11-02T17:49:14-07:00" name="DCTERMS.created" /><meta content="2011-11-02T17:49:14-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="ruby, energy, consumption, wmii" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="ruby-1.9.3-p0-power-efficiency" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#ruby-1.9.3-p0-power-efficiency" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Ruby 1.9.3 power efficiency ends wmiirc woes</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2011-11-02T17:49:14-07:00"> 2 November 2011</time></header><hr /><div class="description"></div><div class="content"><p>For those who were weary of <a href="https://github.com/sunaku/wmiirc#readme">my Ruby
+wmiirc</a>&rsquo;s power consumption, I am
+happy to announce that the latest <a href="http://www.ruby-lang.org/en/news/2011/10/31/ruby-1-9-3-p0-is-released/">Ruby 1.9.3-p0 stable release</a> has solved
+Ruby&rsquo;s problem of causing excessive CPU wakeups-from-idle which would drain
+your laptop battery much sooner than you&rsquo;d expect.</p>
+<p>On my ASUS UL30A-A2 laptop running Arch Linux,
+<a href="https://web.archive.org/web/20111106040036/http://www.lesswatts.org:80/projects/powertop/">powertop</a> shows that Ruby
+1.9.3-p0 running my wmiirc causes 2 CPU wakeups-from-idle per second:</p>
+
+<pre>
+Top causes for wakeups:
+34.6% (101.0)   chromium
+16.1% ( 46.9)   [hda_intel] &lt;interrupt&gt;
+12.8% ( 37.5)   [kernel scheduler] Load balancing tick
+10.4% ( 30.4)   kworker/0:0
+ 4.0% ( 11.6)   SignalSender
+ 3.8% ( 11.1)   [kernel core] hrtimer_start (tick_sched_timer)
+ 3.8% ( 11.0)   [ath9k] &lt;interrupt&gt;
+ 3.8% ( 11.0)   kworker/u:2
+ 1.7% (  5.0)   syndaemon
+ 1.6% (  4.6)   [acpi] &lt;interrupt&gt;
+ 1.4% (  4.0)   [kernel core] usb_hcd_poll_rh_status (rh_timer_func)
+ 0.9% (  2.5)   wmii
+ 0.7% (  2.1)   liferea
+ 0.7% (  2.0)   [ahci] &lt;interrupt&gt;
+ <b>0.7% (  1.9)   ruby</b>
+ 0.5% (  1.6)   X
+ 0.4% (  1.2)   ario
+ 0.3% (  1.0)   [kernel core] tpt_trig_timer (tpt_trig_timer)
+ 0.3% (  1.0)   ntpd
+</pre>
+<p>This is a <em>significant reduction</em> compared to the 100 CPU wakeups-from-idle
+per second caused by Ruby 1.9.2-p290 running my wmiirc:</p>
+
+<pre>
+Top causes for wakeups:
+26.8% (101.7)   chromium
+<b>26.4% (100.2)   ruby</b>
+12.3% ( 46.9)   [hda_intel] &lt;interrupt&gt;
+ 9.6% ( 36.3)   kworker/0:0
+ 6.3% ( 24.0)   [kernel scheduler] Load balancing tick
+ 3.0% ( 11.5)   [ath9k] &lt;interrupt&gt;
+ 2.9% ( 11.0)   kworker/u:2
+ 2.8% ( 10.7)   SignalSender
+ 2.4% (  9.1)   [kernel core] hrtimer_start (tick_sched_timer)
+ 1.3% (  5.0)   syndaemon
+ 1.2% (  4.6)   [acpi] &lt;interrupt&gt;
+ 1.1% (  4.0)   [kernel core] usb_hcd_poll_rh_status (rh_timer_func)
+ 0.7% (  2.5)   wmii
+ 0.6% (  2.1)   liferea
+ 0.4% (  1.7)   X
+ 0.3% (  1.2)   ario
+ 0.3% (  1.0)   kworker/u:0
+ 0.3% (  1.0)   [kernel core] tpt_trig_timer (tpt_trig_timer)
+ 0.3% (  1.0)   ntpd
+</pre>
+<p>So leave your power cord behind and enjoy <a href="http://wmii.suckless.org">wmii</a>
+with Ruby today! :-)</p>
+</div><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2011 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

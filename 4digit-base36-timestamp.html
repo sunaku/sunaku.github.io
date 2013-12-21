@@ -1,0 +1,1494 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Encoding four base 36 digits as a timestamp - The Terminal Programmer</title><meta content="2015-04-25T22:01:36-07:00" name="DCTERMS.created" /><meta content="2015-05-10T17:43:38-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="solution, algorithm, compression" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="4digit-base36-timestamp" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#4digit-base36-timestamp" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Encoding four base 36 digits as a timestamp</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2015-04-25T22:01:36-07:00">25 April 2015</time><br /><time class="date" datetime="2015-05-10T17:43:38-07:00"><a href="#updates" title="1 update">10 May 2015</a></time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__problem__" href="#problem" class="downlink">Problem</a><ol></ol></li><li><a id="__approach__" href="#approach" class="downlink">Approach</a><ol></ol></li><li><a id="__solution__" href="#solution" class="downlink">Solution</a><ol></ol></li><li><a id="__evaluation__" href="#evaluation" class="downlink">Evaluation</a><ol></ol></li><li><a id="__comparison__" href="#comparison" class="downlink">Comparison</a><ol></ol></li><li><a id="__behind-the-scenes__" href="#behind-the-scenes" class="downlink">Behind the scenes</a><ol><li><a id="__comparison-rb__" href="#comparison-rb" class="downlink">comparison.rb</a><ol></ol></li></ol></li></ol>
+<div id="problem" class="section"></div><h1 class="heading">Problem<a href="#problem" class="permalink" title="Permalink"></a><a href="#__problem__" class="uplink" title="Contents"></a></h1>
+<p>Convert a string containing 4 uppercase alphanumeric characters, whose
+values range from <em>A</em> through <em>Z</em> and <em>0</em> through <em>9</em>, into a &ldquo;HH:MM:SS&rdquo;
+(24 hours, 60 minutes, 60 seconds) timestamp whose value ranges from
+&ldquo;00:00:00&rdquo; through &ldquo;23:59:59&rdquo;.</p>
+<p>The string has 1679616 possible values (36 &times; 36 &times; 36 &times;
+36) whereas the timestamp has 86400 possible values (24 &times; 60 &times;
+60).  Thus the challenge is to convey more information using less.</p>
+<p>How would <em>you</em> solve this problem? Pause for a moment to think about it.
+In fact, go now and implement your solution <em>before</em> reading about my
+particular approach and solution below, as this is quite a fun puzzle! :)</p>
+
+<div id="approach" class="section"></div><h1 class="heading">Approach<a href="#approach" class="permalink" title="Permalink"></a><a href="#__approach__" class="uplink" title="Contents"></a></h1>
+<p>Each character in the input string can be represented as a base 36 digit:</p>
+
+<ul>
+<li>Characters <em>0</em> through <em>9</em> become integers 0 through 9 respectively.</li>
+<li>Characters <em>A</em> through <em>Z</em> become integers 10 through 35 respectively.</li>
+</ul>
+<p>Let&rsquo;s examine the base 36 and binary representations of each character:</p>
+
+<table><thead>
+<tr>
+<th>Character</th>
+<th>Base 36</th>
+<th>Bit 6</th>
+<th>Bit 5</th>
+<th>Bit 4</th>
+<th>Bit 3</th>
+<th>Bit 2</th>
+<th>Bit 1</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><em>0</em></td>
+<td>0</td>
+<td>.</td>
+<td>.</td>
+<td>.</td>
+<td>.</td>
+<td>.</td>
+<td>0</td>
+</tr>
+<tr>
+<td><em>1</em></td>
+<td>1</td>
+<td>.</td>
+<td>.</td>
+<td>.</td>
+<td>.</td>
+<td>.</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>2</em></td>
+<td>2</td>
+<td>.</td>
+<td>.</td>
+<td>.</td>
+<td>.</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td><em>3</em></td>
+<td>3</td>
+<td>.</td>
+<td>.</td>
+<td>.</td>
+<td>.</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>4</em></td>
+<td>4</td>
+<td>.</td>
+<td>.</td>
+<td>.</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td><em>5</em></td>
+<td>5</td>
+<td>.</td>
+<td>.</td>
+<td>.</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>6</em></td>
+<td>6</td>
+<td>.</td>
+<td>.</td>
+<td>.</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td><em>7</em></td>
+<td>7</td>
+<td>.</td>
+<td>.</td>
+<td>.</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>8</em></td>
+<td>8</td>
+<td>.</td>
+<td>.</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td><em>9</em></td>
+<td>9</td>
+<td>.</td>
+<td>.</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>A</em></td>
+<td>10</td>
+<td>.</td>
+<td>.</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td><em>B</em></td>
+<td>11</td>
+<td>.</td>
+<td>.</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>C</em></td>
+<td>12</td>
+<td>.</td>
+<td>.</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td><em>D</em></td>
+<td>13</td>
+<td>.</td>
+<td>.</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>E</em></td>
+<td>14</td>
+<td>.</td>
+<td>.</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td><em>F</em></td>
+<td>15</td>
+<td>.</td>
+<td>.</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>G</em></td>
+<td>16</td>
+<td>.</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td><em>H</em></td>
+<td>17</td>
+<td>.</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>I</em></td>
+<td>18</td>
+<td>.</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td><em>J</em></td>
+<td>19</td>
+<td>.</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>K</em></td>
+<td>20</td>
+<td>.</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td><em>L</em></td>
+<td>21</td>
+<td>.</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>M</em></td>
+<td>22</td>
+<td>.</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td><em>N</em></td>
+<td>23</td>
+<td>.</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>O</em></td>
+<td>24</td>
+<td>.</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td><em>P</em></td>
+<td>25</td>
+<td>.</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>Q</em></td>
+<td>26</td>
+<td>.</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td><em>R</em></td>
+<td>27</td>
+<td>.</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>S</em></td>
+<td>28</td>
+<td>.</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td><em>T</em></td>
+<td>29</td>
+<td>.</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>U</em></td>
+<td>30</td>
+<td>.</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td><em>V</em></td>
+<td>31</td>
+<td>.</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>W</em></td>
+<td>32</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td><em>X</em></td>
+<td>33</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr>
+<td><em>Y</em></td>
+<td>34</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td><em>Z</em></td>
+<td>35</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<p>Notice that bit 6 is present in only 4 characters, <em>W</em> through <em>Z</em>, and
+absent in all others.  Thus, if we randomly picked a character from the
+set of 36 possible characters, the probability of finding bit 6 in our
+pick is 4 &div; 36, or 0.1111111111111111, which approximately denotes a
+11% chance of success.</p>
+<p>In contrast, notice that bit 1 is present in <em>every</em> character. Thus, if
+we randomly picked a character from the set of 36 possible characters, the
+probability of finding bit 1 in our pick is 36 &div; 36, or 1, which
+denotes a 100% chance of success.</p>
+<p>These facts are recorded in the table below.</p>
+
+<table><thead>
+<tr>
+<th>Bit</th>
+<th>Number of characters present in</th>
+<th>Probability of presence</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>6</td>
+<td>4</td>
+<td>0.1111111111111111</td>
+</tr>
+<tr>
+<td>5</td>
+<td>20</td>
+<td>0.5555555555555556</td>
+</tr>
+<tr>
+<td>4</td>
+<td>28</td>
+<td>0.7777777777777778</td>
+</tr>
+<tr>
+<td>3</td>
+<td>32</td>
+<td>0.8888888888888888</td>
+</tr>
+<tr>
+<td>2</td>
+<td>34</td>
+<td>0.9444444444444444</td>
+</tr>
+<tr>
+<td>1</td>
+<td>36</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<p>The timestamp, with its 86400 possible values, <a href="https://en.wikipedia.org/wiki/Pigeonhole_principle">cannot</a> represent all
+1679616 values possible in the string <em>unless</em> we reuse some of them. That
+is, instead of mapping each unique string value to exactly one unique
+timestamp value, we map <em>multiple</em> unique string values to the <em>same</em>
+unique timestamp value, thereby reusing it.</p>
+<p>This reuse happens automatically when we discard information. For example,
+if we discard the fourth character from two different strings &ldquo;ABCD&rdquo; and
+&ldquo;ABCX&rdquo;, then they would both become &ldquo;ABC&rdquo;. Next, if the string &ldquo;ABC&rdquo; were
+mapped to the timestamp &ldquo;01:02:03&rdquo;, then both strings &ldquo;ABCD&rdquo; and &ldquo;ABCX&rdquo;
+would map to the same &ldquo;01:02:03&rdquo; timestamp, thereby achieving reuse.</p>
+<p>We can discard information <em>strategically</em> based on the probabilities
+listed in the table above. In particular, we can discard bits with lower
+presence probabilities with less risk of information loss because
+discarding nonexistent bits from a value does not change it.  For example,
+bit 6 is present 11% of the time, so we only risk information loss 11% of
+the time by discarding it. In contrast, bit 1 is present 100% of the time,
+so we risk information loss 100% of the time by discarding it.</p>
+<p>In binary, the string occupies 24 bits (4 characters &times; 6 bits per
+character) and the timestamp occupies at least 16 bits (2<sup>16</sup> &lt; 86400
+possible values &lt; 2<sup>17).</sup>  Therefore, we need to discard at least 8 bits
+(24 string bits - 16 timestamp bits) of information from the string to fit
+it within the timestamp&rsquo;s 16 bits.  This translates to 2 bits (8 bits
+discarded &div; 4 characters) discarded per character.</p>
+<p>Since lower bits are more likely to be present than higher ones, as the
+table above shows, we should keep as many lower bits as possible and
+discard as few higher bits as necessary. Thus, we shall discard the upper
+2 bits (bit 6 and 5) from each character in the string to fit the string
+within the timestamp.</p>
+
+<div id="solution" class="section"></div><h1 class="heading">Solution<a href="#solution" class="permalink" title="Permalink"></a><a href="#__solution__" class="uplink" title="Contents"></a></h1>
+<p>In the <a href="https://www.ruby-lang.org/en/">Ruby</a> programming language:</p>
+<div class="highlight"><pre class="highlight ruby"><code>
+<span class="c1"># Converts the given string into a "HH:MM:SS" timestamp.</span>
+<span class="k">def</span> <span class="nf">solution</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+  <span class="n">digits</span> <span class="o">=</span> <span class="n">digits36</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+  <span class="n">num_seconds</span> <span class="o">=</span> <span class="n">compress</span><span class="p">(</span><span class="o">*</span><span class="n">digits</span><span class="p">)</span>
+  <span class="no">Time</span><span class="p">.</span><span class="nf">at</span><span class="p">(</span><span class="n">num_seconds</span><span class="p">).</span><span class="nf">utc</span><span class="p">.</span><span class="nf">strftime</span><span class="p">(</span><span class="s1">'%H:%M:%S'</span><span class="p">)</span>
+<span class="k">end</span>
+
+<span class="c1"># Converts each character in the given string into a base 36 digit.</span>
+<span class="k">def</span> <span class="nf">digits36</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+  <span class="n">string</span><span class="p">.</span><span class="nf">each_char</span><span class="p">.</span><span class="nf">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span> <span class="n">digit36</span><span class="p">(</span><span class="n">char</span><span class="p">)</span> <span class="p">}</span>
+<span class="k">end</span>
+
+<span class="c1"># Converts the given character into a base 36 digit:</span>
+<span class="c1"># decimal digits (0..9) + uppercase letters (10..35)</span>
+<span class="k">def</span> <span class="nf">digit36</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+  <span class="k">case</span> <span class="n">char</span>
+  <span class="k">when</span> <span class="s1">'0'</span><span class="o">..</span><span class="s1">'9'</span> <span class="k">then</span> <span class="n">char</span><span class="p">.</span><span class="nf">ord</span> <span class="o">-</span> <span class="s1">'0'</span><span class="p">.</span><span class="nf">ord</span>
+  <span class="k">when</span> <span class="s1">'A'</span><span class="o">..</span><span class="s1">'Z'</span> <span class="k">then</span> <span class="n">char</span><span class="p">.</span><span class="nf">ord</span> <span class="o">-</span> <span class="s1">'A'</span><span class="p">.</span><span class="nf">ord</span> <span class="o">+</span> <span class="mi">10</span>
+  <span class="k">else</span> <span class="k">raise</span> <span class="no">ArgumentError</span><span class="p">,</span> <span class="s2">"not a base36 digit: </span><span class="si">#{</span><span class="n">char</span><span class="p">.</span><span class="nf">inspect</span><span class="si">}</span><span class="s2">"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># Combines the given base 36 digits together into a 16-bit integer.</span>
+<span class="no">SECONDS_PER_DAY</span> <span class="o">=</span> <span class="mi">24</span> <span class="o">*</span> <span class="mi">60</span> <span class="o">*</span> <span class="mi">60</span> <span class="c1"># hours * minutes/hour * seconds/minute</span>
+<span class="no">SECONDS_PER_DAY_BITS</span> <span class="o">=</span> <span class="no">Math</span><span class="p">.</span><span class="nf">log2</span><span class="p">(</span><span class="no">SECONDS_PER_DAY</span><span class="p">).</span><span class="nf">ceil</span> <span class="c1"># 2 ** exponent</span>
+<span class="k">def</span> <span class="nf">compress</span><span class="p">(</span><span class="o">*</span><span class="n">chars</span><span class="p">)</span>
+  <span class="k">return</span> <span class="mi">0</span> <span class="k">if</span> <span class="n">chars</span><span class="p">.</span><span class="nf">empty?</span>
+  <span class="n">bits</span> <span class="o">=</span> <span class="no">SECONDS_PER_DAY_BITS</span> <span class="o">/</span> <span class="n">chars</span><span class="p">.</span><span class="nf">length</span>
+  <span class="n">mask</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">bits</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+  <span class="n">chars</span><span class="p">.</span><span class="nf">inject</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">acc</span><span class="p">,</span> <span class="n">char</span><span class="o">|</span>
+    <span class="c1"># grab lower bits from each character and place them side by side</span>
+    <span class="p">(</span><span class="n">acc</span> <span class="o">&lt;&lt;</span> <span class="n">bits</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">char</span> <span class="o">&amp;</span> <span class="n">mask</span><span class="p">)</span>
+  <span class="k">end</span> <span class="o">%</span> <span class="no">SECONDS_PER_DAY</span>
+<span class="k">end</span>
+
+</code></pre></div><p>Save the above code to a <code>solution.rb</code> file to play with it:</p>
+<div class="highlight"><pre class="highlight ruby"><code>
+<span class="err">$</span> <span class="n">irb</span> <span class="o">--</span><span class="n">simple</span><span class="o">-</span><span class="n">prompt</span> <span class="o">-</span><span class="n">r</span> <span class="p">.</span><span class="nf">/</span><span class="n">solution</span><span class="p">.</span><span class="nf">rb</span>
+<span class="c1">## ruby 2.1.2p95 (2014-05-08) [x86_64-linux-gnu]</span>
+
+<span class="o">&gt;&gt;</span> <span class="n">solution</span> <span class="s2">"ABCD"</span>
+<span class="s2">"12:13:01"</span>
+
+<span class="o">&gt;&gt;</span> <span class="n">digits36</span> <span class="s2">"ABCD"</span>
+<span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">]</span>
+
+<span class="o">&gt;&gt;</span> <span class="n">compress</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span>
+<span class="mi">43981</span>
+
+<span class="o">&gt;&gt;</span> <span class="no">Time</span><span class="p">.</span><span class="nf">at</span><span class="p">(</span><span class="mi">43981</span><span class="p">).</span><span class="nf">utc</span>
+<span class="mi">1970</span><span class="o">-</span><span class="mo">01</span><span class="o">-</span><span class="mo">01</span> <span class="mi">12</span><span class="p">:</span><span class="mi">13</span><span class="p">:</span><span class="mo">01</span> <span class="no">UTC</span>
+
+</code></pre></div><p>The solution above is generic to any number of characters, so try more:</p>
+<div class="highlight"><pre class="highlight ruby"><code>
+<span class="err">$</span> <span class="n">irb</span> <span class="o">--</span><span class="n">simple</span><span class="o">-</span><span class="n">prompt</span> <span class="o">-</span><span class="n">r</span> <span class="p">.</span><span class="nf">/</span><span class="n">solution</span><span class="p">.</span><span class="nf">rb</span>
+<span class="c1">## ruby 2.1.2p95 (2014-05-08) [x86_64-linux-gnu]</span>
+
+<span class="o">&gt;&gt;</span> <span class="n">solution</span> <span class="s2">"ABCDEFG"</span>
+<span class="s2">"03:09:32"</span>
+
+<span class="o">&gt;&gt;</span> <span class="n">digits36</span> <span class="s2">"ABCDEFG"</span>
+<span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">16</span><span class="p">]</span>
+
+<span class="o">&gt;&gt;</span> <span class="n">compress</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">16</span>
+<span class="mi">11372</span>
+
+<span class="o">&gt;&gt;</span> <span class="no">Time</span><span class="p">.</span><span class="nf">at</span><span class="p">(</span><span class="mi">11372</span><span class="p">).</span><span class="nf">utc</span>
+<span class="mi">1970</span><span class="o">-</span><span class="mo">01</span><span class="o">-</span><span class="mo">01</span> <span class="mo">03</span><span class="p">:</span><span class="mi">09</span><span class="p">:</span><span class="mi">32</span> <span class="no">UTC</span>
+
+</code></pre></div>
+<div id="evaluation" class="section"></div><h1 class="heading">Evaluation<a href="#evaluation" class="permalink" title="Permalink"></a><a href="#__evaluation__" class="uplink" title="Contents"></a></h1>
+<p>To evaluate how well the algorithm performs, we feed it different sets of
+input strings and analyze its output: the more input strings it maps to
+unique timestamps, the smaller the reuse probability and the better it is.</p>
+
+<table><thead>
+<tr>
+<th>Algorithm (f : string &rarr; timestamp) characteristics</th>
+<th>Best case</th>
+<th>Worst case</th>
+<th>No case</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>Number of strings (domain)</td>
+<td>65536</td>
+<td>160000</td>
+<td>1679616</td>
+</tr>
+<tr>
+<td>Number of timestamps (codomain)</td>
+<td>65536</td>
+<td>65536</td>
+<td>65536</td>
+</tr>
+<tr>
+<td>Number of unique timestamps</td>
+<td>65536</td>
+<td>20736</td>
+<td>0</td>
+</tr>
+<tr>
+<td>Number of timestamps reused</td>
+<td>0</td>
+<td>44800</td>
+<td>65536</td>
+</tr>
+<tr>
+<td>Probability of timestamp reuse</td>
+<td>0</td>
+<td>0.68359375</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Number of strings mapped to reused timestamps</td>
+<td>0</td>
+<td>139264</td>
+<td>1679616</td>
+</tr>
+<tr>
+<td>Probability of string mapped to reused timestamp</td>
+<td>0</td>
+<td>0.8704</td>
+<td>1</td>
+</tr>
+</tbody></table>
+<p>In the best case, where all input characters fed into the algorithm lack
+the upper bits it discards, information is <em>never</em> lost.  Therefore, the
+probability of timestamp reuse is zero.</p>
+<p>In the worst case, where all input characters fed into the algorithm
+contain the upper bits it discards, some information is <em>always</em> lost.
+Therefore, the probability of timestamp reuse is greater than zero.</p>
+<p>In the &ldquo;no&rdquo; case, where some input characters fed into the algorithm
+contain the upper bits it discards, information is <em>sometimes</em> lost.
+However, since this input set contains <em>all</em> 1679616 possible input
+strings, timestamps will <em>always</em> be reused: the timestamp, with its 86400
+possible values, <a href="https://en.wikipedia.org/wiki/Pigeonhole_principle">cannot</a> represent all 1679616 values possible in the
+string <em>unless</em> we reuse some of them.</p>
+<p>This observation applies to any such algorithm.</p>
+
+<div id="comparison" class="section"></div><h1 class="heading">Comparison<a href="#comparison" class="permalink" title="Permalink"></a><a href="#__comparison__" class="uplink" title="Contents"></a></h1>
+<p>My solution to this problem is based on probabilities. However, there are
+many other solutions, some of which are known as <a href="http://eternallyconfuzzled.com/tuts/algorithms/jsw_tut_hashing.aspx">hash functions</a>.
+Let&rsquo;s compare them, along with my solution, to see how well they perform.</p>
+<p>To compare these algorithms fairly, we need to feed them the <em>same</em> set of
+strings. Unlike the singular evaluation of my solution above, here we
+don&rsquo;t have the luxury of partitioning the input space into best and worst
+cases up front, because such cases <em>vary</em> wildly across these algorithms.</p>
+<p>Here, I have chosen to feed all <a href="http://mathworld.wolfram.com/k-Subset.html">4-subsets</a> of the 36 possible uppercase
+alphanumeric characters, which produces 58905 unique strings containing
+4 unique uppercase alphanumeric characters each, into these algorithms.
+Although this choice poorly approximates reality, wherein strings <em>may</em>
+contain repeated characters, some such sacrifice is necessary to produce
+a non-exhaustive set of inputs with which to compare these algorithms.</p>
+<p>The results are recorded in the table below, sorted by reuse probabilities
+in ascending order: from the best result first to the worst result last.</p>
+<p>The key result to notice here is that <a href="#solution">my solution</a> had the
+best performance among all of these algorithms. I was delighted to see
+this because I expected it fare far worse than <a href="http://eternallyconfuzzled.com/tuts/algorithms/jsw_tut_hashing.aspx">real algorithms</a>. :-)</p>
+<p>One surprising result is that the &empty; solution, which simply discards
+the fourth character and doesn&rsquo;t bother with any of this algorithmic
+nonsense, performs better than half of these algorithms.  Although its
+performance isn&rsquo;t praiseworthy, it nevertheless hints that perhaps,
+sometimes, ignoring a problem can be just as effective as solving it.</p>
+<p>Augh!  What am I saying?  Those are not the words of a true engineer!
+Problems must <em>always</em> be solved and solved well, so long as it&rsquo;s fun. ;-)
+Anyway, that&rsquo;s all folks. I hope you enjoyed this algorithmic treatise.
+<em>But wait!</em> Don&rsquo;t leave just yet because there are some fun <a href="#behind-the-scenes">behind the
+scenes</a> goodies waiting for you below! :-)</p>
+
+<table><thead>
+<tr>
+<th>Algorithm (f : string &rarr; timestamp)</th>
+<th>Number of strings (domain)</th>
+<th>Number of timestamps (codomain)</th>
+<th>Number of unique timestamps</th>
+<th>Number of timestamps reused</th>
+<th>Probability of timestamp reuse</th>
+<th>Number of strings mapped to reused timestamps</th>
+<th>Probability of string mapped to reused timestamp</th>
+</tr>
+</thead><tbody>
+<tr>
+<td><a href="#solution">My solution</a></td>
+<td>58905</td>
+<td>39531</td>
+<td>34690</td>
+<td>4841</td>
+<td>0.12246085350737396</td>
+<td>24215</td>
+<td>0.411085646379764</td>
+</tr>
+<tr>
+<td>Preserve bits 4,3,2,1</td>
+<td>58905</td>
+<td>39531</td>
+<td>34690</td>
+<td>4841</td>
+<td>0.12246085350737396</td>
+<td>24215</td>
+<td>0.411085646379764</td>
+</tr>
+<tr>
+<td><a href="http://eternallyconfuzzled.com/tuts/algorithms/jsw_tut_hashing.aspx">Rotating hash</a></td>
+<td>58905</td>
+<td>42936</td>
+<td>34649</td>
+<td>8287</td>
+<td>0.193008198248556</td>
+<td>24256</td>
+<td>0.4117816823699177</td>
+</tr>
+<tr>
+<td><a href="http://eternallyconfuzzled.com/tuts/algorithms/jsw_tut_hashing.aspx">Bernstein XOR hash</a></td>
+<td>58905</td>
+<td>46718</td>
+<td>35673</td>
+<td>11045</td>
+<td>0.23641851106639838</td>
+<td>23232</td>
+<td>0.39439775910364144</td>
+</tr>
+<tr>
+<td><a href="http://eternallyconfuzzled.com/tuts/algorithms/jsw_tut_hashing.aspx">Shift-Add-XOR hash</a></td>
+<td>58905</td>
+<td>44623</td>
+<td>32440</td>
+<td>12183</td>
+<td>0.2730206395804854</td>
+<td>26465</td>
+<td>0.4492827434003905</td>
+</tr>
+<tr>
+<td>Preserve bits 4,3,2,1 then add bits 6,5</td>
+<td>58905</td>
+<td>40651</td>
+<td>29341</td>
+<td>11310</td>
+<td>0.2782219379597058</td>
+<td>29564</td>
+<td>0.5018928783634666</td>
+</tr>
+<tr>
+<td><a href="http://eternallyconfuzzled.com/tuts/algorithms/jsw_tut_hashing.aspx">Bernstein hash</a></td>
+<td>58905</td>
+<td>43281</td>
+<td>28707</td>
+<td>14574</td>
+<td>0.33672974284327994</td>
+<td>30198</td>
+<td>0.5126559714795009</td>
+</tr>
+<tr>
+<td><a href="http://www.cse.yorku.ca/%7Eoz/hash.html">djb2 hash</a></td>
+<td>58905</td>
+<td>43281</td>
+<td>28707</td>
+<td>14574</td>
+<td>0.33672974284327994</td>
+<td>30198</td>
+<td>0.5126559714795009</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/Pearson_hashing">Pearson hash</a></td>
+<td>58905</td>
+<td>38838</td>
+<td>23805</td>
+<td>15033</td>
+<td>0.3870693650548432</td>
+<td>35100</td>
+<td>0.5958747135217723</td>
+</tr>
+<tr>
+<td><a href="http://www.isthe.com/chongo/tech/comp/fnv/#FNV-1a">FNV-1a hash</a></td>
+<td>58905</td>
+<td>36225</td>
+<td>21085</td>
+<td>15140</td>
+<td>0.4179434092477571</td>
+<td>37820</td>
+<td>0.6420507596978186</td>
+</tr>
+<tr>
+<td><a href="http://www.isthe.com/chongo/tech/comp/fnv/#FNV-1">FNV-1 hash</a></td>
+<td>58905</td>
+<td>35338</td>
+<td>20229</td>
+<td>15109</td>
+<td>0.42755673778934855</td>
+<td>38676</td>
+<td>0.6565826330532213</td>
+</tr>
+<tr>
+<td>Preserve bits 4,3,2,1 then XOR bits 6,5</td>
+<td>58905</td>
+<td>29003</td>
+<td>15230</td>
+<td>13773</td>
+<td>0.47488190876805847</td>
+<td>43675</td>
+<td>0.7414480943892708</td>
+</tr>
+<tr>
+<td>Preserve bits 5,3,2,1</td>
+<td>58905</td>
+<td>21243</td>
+<td>6706</td>
+<td>14537</td>
+<td>0.6843195405545356</td>
+<td>52199</td>
+<td>0.8861556743909685</td>
+</tr>
+<tr>
+<td><a href="http://cpansearch.perl.org/src/MOOLI/Algorithm-Nhash-0.002/lib/Algorithm/Nhash.pm">Exim nhash</a></td>
+<td>58905</td>
+<td>7401</td>
+<td>1280</td>
+<td>6121</td>
+<td>0.8270503985947845</td>
+<td>57625</td>
+<td>0.9782700959171547</td>
+</tr>
+<tr>
+<td>Merge fourth character into others</td>
+<td>58905</td>
+<td>9467</td>
+<td>1477</td>
+<td>7990</td>
+<td>0.8439843667476498</td>
+<td>57428</td>
+<td>0.9749257278669043</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/Fletcher%27s_checksum">Fletcher16 checksum</a></td>
+<td>58905</td>
+<td>4935</td>
+<td>621</td>
+<td>4314</td>
+<td>0.8741641337386018</td>
+<td>58284</td>
+<td>0.9894576012223071</td>
+</tr>
+<tr>
+<td>Preserve bits 5,4,2,1</td>
+<td>58905</td>
+<td>12931</td>
+<td>1610</td>
+<td>11321</td>
+<td>0.8754930013146702</td>
+<td>57295</td>
+<td>0.9726678550207962</td>
+</tr>
+<tr>
+<td><a href="http://www.cse.yorku.ca/%7Eoz/hash.html">sdbm hash</a></td>
+<td>58905</td>
+<td>3343</td>
+<td>331</td>
+<td>3012</td>
+<td>0.9009871373018247</td>
+<td>58574</td>
+<td>0.9943807826160768</td>
+</tr>
+<tr>
+<td>Discard fourth character (&empty; solution)</td>
+<td>58905</td>
+<td>6545</td>
+<td>561</td>
+<td>5984</td>
+<td>0.9142857142857143</td>
+<td>58344</td>
+<td>0.9904761904761905</td>
+</tr>
+<tr>
+<td>Preserve bits 6,3,2,1</td>
+<td>58905</td>
+<td>6561</td>
+<td>331</td>
+<td>6230</td>
+<td>0.9495503734186862</td>
+<td>58574</td>
+<td>0.9943807826160768</td>
+</tr>
+<tr>
+<td>Preserve bits 5,4,3,1</td>
+<td>58905</td>
+<td>7191</td>
+<td>327</td>
+<td>6864</td>
+<td>0.9545264914476429</td>
+<td>58578</td>
+<td>0.9944486885663356</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/BSD_checksum">BSD checksum</a></td>
+<td>58905</td>
+<td>464</td>
+<td>21</td>
+<td>443</td>
+<td>0.9547413793103449</td>
+<td>58884</td>
+<td>0.9996434937611408</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/Longitudinal_redundancy_check">LRC checksum</a></td>
+<td>58905</td>
+<td>129</td>
+<td>4</td>
+<td>125</td>
+<td>0.9689922480620154</td>
+<td>58901</td>
+<td>0.9999320940497411</td>
+</tr>
+<tr>
+<td><a href="http://www.cse.yorku.ca/%7Eoz/hash.html">lose lose hash</a></td>
+<td>58905</td>
+<td>129</td>
+<td>4</td>
+<td>125</td>
+<td>0.9689922480620154</td>
+<td>58901</td>
+<td>0.9999320940497411</td>
+</tr>
+<tr>
+<td>Preserve bits 6,4,2,1</td>
+<td>58905</td>
+<td>6145</td>
+<td>171</td>
+<td>5974</td>
+<td>0.9721724979658258</td>
+<td>58734</td>
+<td>0.9970970206264324</td>
+</tr>
+<tr>
+<td>Preserve bits 6,5,2,1</td>
+<td>58905</td>
+<td>2625</td>
+<td>71</td>
+<td>2554</td>
+<td>0.9729523809523809</td>
+<td>58834</td>
+<td>0.9987946693829047</td>
+</tr>
+<tr>
+<td>Preserve bits 5,4,3,2</td>
+<td>58905</td>
+<td>5655</td>
+<td>150</td>
+<td>5505</td>
+<td>0.9734748010610079</td>
+<td>58755</td>
+<td>0.9974535268652915</td>
+</tr>
+<tr>
+<td>Preserve bits 6,5,3,1</td>
+<td>58905</td>
+<td>1953</td>
+<td>39</td>
+<td>1914</td>
+<td>0.9800307219662059</td>
+<td>58866</td>
+<td>0.9993379169849758</td>
+</tr>
+<tr>
+<td>Preserve bits 6,5,4,1</td>
+<td>58905</td>
+<td>1073</td>
+<td>21</td>
+<td>1052</td>
+<td>0.9804287045666356</td>
+<td>58884</td>
+<td>0.9996434937611408</td>
+</tr>
+<tr>
+<td>Preserve bits 6,5,4,3</td>
+<td>58905</td>
+<td>495</td>
+<td>9</td>
+<td>486</td>
+<td>0.9818181818181818</td>
+<td>58896</td>
+<td>0.9998472116119175</td>
+</tr>
+<tr>
+<td>Preserve bits 6,4,3,1</td>
+<td>58905</td>
+<td>4193</td>
+<td>75</td>
+<td>4118</td>
+<td>0.9821130455521107</td>
+<td>58830</td>
+<td>0.9987267634326458</td>
+</tr>
+<tr>
+<td><a href="https://en.wikipedia.org/wiki/Jenkins_hash_function#one-at-a-time">Jenkins one-at-a-time hash</a></td>
+<td>58905</td>
+<td>9582</td>
+<td>127</td>
+<td>9455</td>
+<td>0.9867459820496765</td>
+<td>58778</td>
+<td>0.9978439860792802</td>
+</tr>
+<tr>
+<td>Preserve bits 6,5,4,2</td>
+<td>58905</td>
+<td>1005</td>
+<td>13</td>
+<td>992</td>
+<td>0.9870646766169154</td>
+<td>58892</td>
+<td>0.9997793056616586</td>
+</tr>
+<tr>
+<td>Preserve bits 6,5,3,2</td>
+<td>58905</td>
+<td>1749</td>
+<td>21</td>
+<td>1728</td>
+<td>0.9879931389365352</td>
+<td>58884</td>
+<td>0.9996434937611408</td>
+</tr>
+<tr>
+<td>Preserve bits 6,4,3,2</td>
+<td>58905</td>
+<td>3621</td>
+<td>37</td>
+<td>3584</td>
+<td>0.9897818282242474</td>
+<td>58868</td>
+<td>0.9993718699601053</td>
+</tr>
+</tbody></table>
+
+<div id="behind-the-scenes" class="section"></div><h1 class="heading">Behind the scenes<a href="#behind-the-scenes" class="permalink" title="Permalink"></a><a href="#__behind-the-scenes__" class="uplink" title="Contents"></a></h1>
+<p>I created <a href="#comparison">the giant data table you see above</a>, which
+compares different algorithms, by first running <a href="#comparison-rb">the comparison
+script</a> and then formatting its results into a nice data
+table:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span>ruby <span class="nt">-r</span> ./comparison.rb <span class="nt">-r</span> pp <span class="nt">-e</span> <span class="s1">'pp Comparator.compare Input.combinations'</span> <span class="o">&gt;</span> comparison.txt
+
+<span class="nv">$ </span>vim comparison.txt <span class="c"># do some post-processing to format the results into a nice data table</span>
+</code></pre></div><p>Similarly, I created <a href="#evaluation">the smaller data table you saw above</a>,
+which compares the best, worst, and &ldquo;no&rdquo; case performance of <a href="#solution">my
+solution</a>, by running these commands:</p>
+<div class="highlight"><pre class="highlight shell"><code>
+<span class="c"># BEST CASE</span>
+
+<span class="nv">$ </span>ruby <span class="nt">-r</span> ./comparison.rb <span class="nt">-r</span> pp <span class="nt">-e</span> <span class="s1">'pp Comparator.compare Input.best_case, /^preserve_lower_bits$/'</span>
+<span class="o">[{</span><span class="s2">"Compression algorithm"</span><span class="o">=&gt;</span>:preserve_lower_bits,
+  <span class="s2">"Number of strings (domain)"</span><span class="o">=&gt;</span>65536,
+  <span class="s2">"Number of timestamps (codomain)"</span><span class="o">=&gt;</span>65536,
+  <span class="s2">"Number of unique timestamps"</span><span class="o">=&gt;</span>65536,
+  <span class="s2">"Number of timestamps reused"</span><span class="o">=&gt;</span>0,
+  <span class="s2">"Probability of timestamp reuse"</span><span class="o">=&gt;</span>0.0,
+  <span class="s2">"Number of strings mapped to reused timestamps"</span><span class="o">=&gt;</span>0,
+  <span class="s2">"Probability of string mapped to reused timestamp"</span><span class="o">=&gt;</span>0.0<span class="o">}]</span>
+
+<span class="c"># WORST CASE</span>
+
+<span class="nv">$ </span>ruby <span class="nt">-r</span> ./comparison.rb <span class="nt">-r</span> pp <span class="nt">-e</span> <span class="s1">'pp Comparator.compare Input.worst_case, /^preserve_lower_bits$/'</span>
+<span class="o">[{</span><span class="s2">"Compression algorithm"</span><span class="o">=&gt;</span>:preserve_lower_bits,
+  <span class="s2">"Number of strings (domain)"</span><span class="o">=&gt;</span>160000,
+  <span class="s2">"Number of timestamps (codomain)"</span><span class="o">=&gt;</span>65536,
+  <span class="s2">"Number of unique timestamps"</span><span class="o">=&gt;</span>20736,
+  <span class="s2">"Number of timestamps reused"</span><span class="o">=&gt;</span>44800,
+  <span class="s2">"Probability of timestamp reuse"</span><span class="o">=&gt;</span>0.68359375,
+  <span class="s2">"Number of strings mapped to reused timestamps"</span><span class="o">=&gt;</span>139264,
+  <span class="s2">"Probability of string mapped to reused timestamp"</span><span class="o">=&gt;</span>0.8704<span class="o">}]</span>
+
+<span class="c"># NO CASE</span>
+
+<span class="nv">$ </span>ruby <span class="nt">-r</span> ./comparison.rb <span class="nt">-r</span> pp <span class="nt">-e</span> <span class="s1">'pp Comparator.compare Input.no_case, /^preserve_lower_bits$/'</span>
+<span class="o">[{</span><span class="s2">"Compression algorithm"</span><span class="o">=&gt;</span>:preserve_lower_bits,
+  <span class="s2">"Number of strings (domain)"</span><span class="o">=&gt;</span>1679616,
+  <span class="s2">"Number of timestamps (codomain)"</span><span class="o">=&gt;</span>65536,
+  <span class="s2">"Number of unique timestamps"</span><span class="o">=&gt;</span>0,
+  <span class="s2">"Number of timestamps reused"</span><span class="o">=&gt;</span>65536,
+  <span class="s2">"Probability of timestamp reuse"</span><span class="o">=&gt;</span>1.0,
+  <span class="s2">"Number of strings mapped to reused timestamps"</span><span class="o">=&gt;</span>1679616,
+  <span class="s2">"Probability of string mapped to reused timestamp"</span><span class="o">=&gt;</span>1.0<span class="o">}]</span>
+
+</code></pre></div><p>You can load <a href="#comparison-rb">the comparison script</a> into an interactive
+Ruby shell and play with the algorithms and comparisons dynamically:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="err">$</span> <span class="n">irb</span> <span class="o">--</span><span class="n">simple</span><span class="o">-</span><span class="n">prompt</span> <span class="o">-</span><span class="n">r</span> <span class="p">.</span><span class="nf">/</span><span class="n">comparison</span><span class="p">.</span><span class="nf">rb</span>
+<span class="c1">## ruby 2.1.2p95 (2014-05-08) [x86_64-linux-gnu]</span>
+
+<span class="o">&gt;&gt;</span> <span class="no">Input</span><span class="p">.</span><span class="nf">singleton_methods</span>
+<span class="p">[</span><span class="ss">:combinations</span><span class="p">,</span> <span class="ss">:permutations</span><span class="p">,</span> <span class="ss">:best_case</span><span class="p">,</span> <span class="ss">:worst_case</span><span class="p">,</span> <span class="ss">:no_case</span><span class="p">]</span>
+
+<span class="o">&gt;&gt;</span> <span class="no">Input</span><span class="p">.</span><span class="nf">combinations</span>
+<span class="c1">#&lt;Enumerator: ...&gt;</span>
+
+<span class="o">&gt;&gt;</span> <span class="no">Input</span><span class="p">.</span><span class="nf">combinations</span><span class="p">.</span><span class="nf">take</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="p">[[</span><span class="s2">"0"</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">,</span> <span class="s2">"2"</span><span class="p">,</span> <span class="s2">"3"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"0"</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">,</span> <span class="s2">"2"</span><span class="p">,</span> <span class="s2">"4"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"0"</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">,</span> <span class="s2">"2"</span><span class="p">,</span> <span class="s2">"5"</span><span class="p">]]</span>
+
+<span class="o">&gt;&gt;</span> <span class="no">Input</span><span class="p">.</span><span class="nf">permutations</span><span class="p">.</span><span class="nf">take</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="p">[[</span><span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"2"</span><span class="p">]]</span>
+
+<span class="o">&gt;&gt;</span> <span class="no">Input</span><span class="p">.</span><span class="nf">best_case</span><span class="p">.</span><span class="nf">take</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="p">[[</span><span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"2"</span><span class="p">]]</span>
+
+<span class="o">&gt;&gt;</span> <span class="no">Input</span><span class="p">.</span><span class="nf">worst_case</span><span class="p">.</span><span class="nf">take</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="p">[[</span><span class="s2">"G"</span><span class="p">,</span> <span class="s2">"G"</span><span class="p">,</span> <span class="s2">"G"</span><span class="p">,</span> <span class="s2">"G"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"G"</span><span class="p">,</span> <span class="s2">"G"</span><span class="p">,</span> <span class="s2">"G"</span><span class="p">,</span> <span class="s2">"H"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"G"</span><span class="p">,</span> <span class="s2">"G"</span><span class="p">,</span> <span class="s2">"G"</span><span class="p">,</span> <span class="s2">"I"</span><span class="p">]]</span>
+
+<span class="o">&gt;&gt;</span> <span class="no">Input</span><span class="p">.</span><span class="nf">no_case</span><span class="p">.</span><span class="nf">take</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="p">[[</span><span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"1"</span><span class="p">],</span> <span class="p">[</span><span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"0"</span><span class="p">,</span> <span class="s2">"2"</span><span class="p">]]</span>
+</code></pre></div><p>You can even define a new algorithm and measure its performance:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="o">&gt;&gt;</span> <span class="k">def</span> <span class="nc">Compressor</span><span class="o">.</span><span class="nf">my_new_solution</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+<span class="o">&gt;&gt;</span>   <span class="n">a</span> <span class="o">+</span> <span class="n">b</span> <span class="o">-</span> <span class="n">c</span> <span class="o">*</span> <span class="n">d</span>
+<span class="o">&gt;&gt;</span> <span class="k">end</span>
+<span class="ss">:my_new_solution</span>
+
+<span class="o">&gt;&gt;</span> <span class="no">Comparator</span><span class="p">.</span><span class="nf">measure</span> <span class="no">Input</span><span class="p">.</span><span class="nf">combinations</span><span class="p">,</span> <span class="ss">:my_new_solution</span>
+<span class="p">{</span><span class="s2">"Compression algorithm"</span><span class="o">=&gt;</span><span class="ss">:my_new_solution</span><span class="p">,</span>
+ <span class="s2">"Number of strings (domain)"</span><span class="o">=&gt;</span><span class="mi">58905</span><span class="p">,</span>
+ <span class="s2">"Number of timestamps (codomain)"</span><span class="o">=&gt;</span><span class="mi">1183</span><span class="p">,</span>
+ <span class="s2">"Number of unique timestamps"</span><span class="o">=&gt;</span><span class="mi">7</span><span class="p">,</span>
+ <span class="s2">"Number of timestamps reused"</span><span class="o">=&gt;</span><span class="mi">1176</span><span class="p">,</span>
+ <span class="s2">"Probability of timestamp reuse"</span><span class="o">=&gt;</span><span class="mf">0.9940828402366864</span><span class="p">,</span>
+ <span class="s2">"Number of strings mapped to reused timestamps"</span><span class="o">=&gt;</span><span class="mi">58898</span><span class="p">,</span>
+ <span class="s2">"Probability of string mapped to reused timestamp"</span><span class="o">=&gt;</span><span class="mf">0.9998811645870469</span><span class="p">}</span>
+</code></pre></div><p>You can also compare it to other algorithms, just as this article did:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="o">&gt;&gt;</span> <span class="no">Comparator</span><span class="p">.</span><span class="nf">compare</span> <span class="no">Input</span><span class="p">.</span><span class="nf">combinations</span>
+<span class="c1"># ... too much output, so it's omitted ...</span>
+</code></pre></div><p>If that&rsquo;s too much, selectively compare just the algorithms you want:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="o">&gt;&gt;</span> <span class="no">Comparator</span><span class="p">.</span><span class="nf">compare</span> <span class="no">Input</span><span class="p">.</span><span class="nf">combinations</span><span class="p">,</span> <span class="sr">/my_new|char/</span>
+<span class="p">[{</span><span class="s2">"Compression algorithm"</span><span class="o">=&gt;</span><span class="ss">:merge_fourth_char_into_others</span><span class="p">,</span>
+  <span class="s2">"Number of strings (domain)"</span><span class="o">=&gt;</span><span class="mi">58905</span><span class="p">,</span>
+  <span class="s2">"Number of timestamps (codomain)"</span><span class="o">=&gt;</span><span class="mi">9936</span><span class="p">,</span>
+  <span class="s2">"Number of unique timestamps"</span><span class="o">=&gt;</span><span class="mi">1841</span><span class="p">,</span>
+  <span class="s2">"Number of timestamps reused"</span><span class="o">=&gt;</span><span class="mi">8095</span><span class="p">,</span>
+  <span class="s2">"Probability of timestamp reuse"</span><span class="o">=&gt;</span><span class="mf">0.8147141706924316</span><span class="p">,</span>
+  <span class="s2">"Number of strings mapped to reused timestamps"</span><span class="o">=&gt;</span><span class="mi">57064</span><span class="p">,</span>
+  <span class="s2">"Probability of string mapped to reused timestamp"</span><span class="o">=&gt;</span><span class="mf">0.9687462863933453</span><span class="p">},</span>
+ <span class="p">{</span><span class="s2">"Compression algorithm"</span><span class="o">=&gt;</span><span class="ss">:discard_fourth_char</span><span class="p">,</span>
+  <span class="s2">"Number of strings (domain)"</span><span class="o">=&gt;</span><span class="mi">58905</span><span class="p">,</span>
+  <span class="s2">"Number of timestamps (codomain)"</span><span class="o">=&gt;</span><span class="mi">6545</span><span class="p">,</span>
+  <span class="s2">"Number of unique timestamps"</span><span class="o">=&gt;</span><span class="mi">561</span><span class="p">,</span>
+  <span class="s2">"Number of timestamps reused"</span><span class="o">=&gt;</span><span class="mi">5984</span><span class="p">,</span>
+  <span class="s2">"Probability of timestamp reuse"</span><span class="o">=&gt;</span><span class="mf">0.9142857142857143</span><span class="p">,</span>
+  <span class="s2">"Number of strings mapped to reused timestamps"</span><span class="o">=&gt;</span><span class="mi">58344</span><span class="p">,</span>
+  <span class="s2">"Probability of string mapped to reused timestamp"</span><span class="o">=&gt;</span><span class="mf">0.9904761904761905</span><span class="p">},</span>
+ <span class="p">{</span><span class="s2">"Compression algorithm"</span><span class="o">=&gt;</span><span class="ss">:my_new_solution</span><span class="p">,</span>
+  <span class="s2">"Number of strings (domain)"</span><span class="o">=&gt;</span><span class="mi">58905</span><span class="p">,</span>
+  <span class="s2">"Number of timestamps (codomain)"</span><span class="o">=&gt;</span><span class="mi">1183</span><span class="p">,</span>
+  <span class="s2">"Number of unique timestamps"</span><span class="o">=&gt;</span><span class="mi">7</span><span class="p">,</span>
+  <span class="s2">"Number of timestamps reused"</span><span class="o">=&gt;</span><span class="mi">1176</span><span class="p">,</span>
+  <span class="s2">"Probability of timestamp reuse"</span><span class="o">=&gt;</span><span class="mf">0.9940828402366864</span><span class="p">,</span>
+  <span class="s2">"Number of strings mapped to reused timestamps"</span><span class="o">=&gt;</span><span class="mi">58898</span><span class="p">,</span>
+  <span class="s2">"Probability of string mapped to reused timestamp"</span><span class="o">=&gt;</span><span class="mf">0.9998811645870469</span><span class="p">}]</span>
+</code></pre></div>
+<div id="comparison-rb" class="section"></div><h2 class="heading">comparison.rb<a href="#comparison-rb" class="permalink" title="Permalink"></a><a href="#__comparison-rb__" class="uplink" title="Contents"></a></h2>
+<p>In the <a href="https://www.ruby-lang.org/en/">Ruby</a> programming language:</p>
+<div class="highlight"><pre class="highlight ruby"><code>
+<span class="c1"># Combines the given base 36 digits together into a 16-bit integer.</span>
+<span class="k">module</span> <span class="nn">Compressor</span>
+  <span class="kp">extend</span> <span class="nb">self</span>
+
+  <span class="c1">#              _ _             _       _   _</span>
+  <span class="c1">#  _ __  _   _| | |  ___  ___ | |_   _| |_(_) ___  _ __</span>
+  <span class="c1"># | '_ \| | | | | | / __|/ _ \| | | | | __| |/ _ \| '_ \</span>
+  <span class="c1"># | | | | |_| | | | \__ \ (_) | | |_| | |_| | (_) | | | |</span>
+  <span class="c1"># |_| |_|\__,_|_|_| |___/\___/|_|\__,_|\__|_|\___/|_| |_|</span>
+  <span class="c1">#</span>
+
+  <span class="c1"># Why bother with all of this? Just discard the fourth character.</span>
+  <span class="k">def</span> <span class="nf">discard_fourth_char</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="mi">36</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="mi">36</span><span class="p">)</span> <span class="o">+</span> <span class="n">c</span>
+  <span class="k">end</span>
+
+  <span class="c1">#                              _       _   _</span>
+  <span class="c1">#  _ __ ___  _   _   ___  ___ | |_   _| |_(_) ___  _ __  ___</span>
+  <span class="c1"># | '_ ` _ \| | | | / __|/ _ \| | | | | __| |/ _ \| '_ \/ __|</span>
+  <span class="c1"># | | | | | | |_| | \__ \ (_) | | |_| | |_| | (_) | | | \__ \</span>
+  <span class="c1"># |_| |_| |_|\__, | |___/\___/|_|\__,_|\__|_|\___/|_| |_|___/</span>
+  <span class="c1">#            |___/</span>
+
+  <span class="k">def</span> <span class="nf">merge_fourth_char_into_others</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="n">c</span> <span class="o">+=</span> <span class="p">(</span><span class="n">d</span> <span class="o">&amp;</span> <span class="mb">0b11</span><span class="p">)</span>
+    <span class="n">b</span> <span class="o">+=</span> <span class="p">(</span><span class="n">d</span> <span class="o">&amp;</span> <span class="mb">0b1100</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">2</span>
+    <span class="n">a</span> <span class="o">+=</span> <span class="p">(</span><span class="n">d</span> <span class="o">&amp;</span> <span class="mb">0b110000</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span>
+    <span class="p">(</span><span class="n">a</span> <span class="o">*</span> <span class="p">(</span><span class="mi">36</span> <span class="o">**</span> <span class="mi">2</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">b</span> <span class="o">*</span> <span class="mi">36</span><span class="p">)</span> <span class="o">+</span> <span class="n">c</span>
+  <span class="k">end</span>
+
+  <span class="c1"># This is the solution described in this article.  (((THE WINNER!)))</span>
+  <span class="k">def</span> <span class="nf">preserve_lower_bits</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="n">upper_byte</span> <span class="o">=</span> <span class="p">((</span><span class="n">a</span> <span class="o">&amp;</span> <span class="mh">0xF</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">b</span> <span class="o">&amp;</span> <span class="mh">0xF</span><span class="p">)</span>
+    <span class="n">lower_byte</span> <span class="o">=</span> <span class="p">((</span><span class="n">c</span> <span class="o">&amp;</span> <span class="mh">0xF</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">d</span> <span class="o">&amp;</span> <span class="mh">0xF</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">upper_byte</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="n">lower_byte</span>
+  <span class="k">end</span>
+
+  <span class="c1"># Generate preserve_bits_WXYZ() functions that try all combinations.</span>
+  <span class="n">preserve_bits_helper</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="k">do</span> <span class="o">|</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">bits</span><span class="o">|</span>
+    <span class="n">fetch_bits</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="k">do</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span>
+      <span class="n">bits</span><span class="p">.</span><span class="nf">each_with_index</span><span class="p">.</span><span class="nf">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">bit</span><span class="p">,</span> <span class="n">index</span><span class="o">|</span>
+        <span class="n">char</span><span class="p">[</span><span class="n">bit</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">index</span>
+      <span class="k">end</span><span class="p">.</span><span class="nf">reduce</span><span class="p">(</span><span class="ss">:|</span><span class="p">).</span><span class="nf">to_i</span>
+    <span class="k">end</span>
+    <span class="n">upper_byte</span> <span class="o">=</span> <span class="p">(</span><span class="n">fetch_bits</span><span class="o">.</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">)</span> <span class="o">|</span> <span class="n">fetch_bits</span><span class="o">.</span><span class="p">(</span><span class="n">b</span><span class="p">)</span>
+    <span class="n">lower_byte</span> <span class="o">=</span> <span class="p">(</span><span class="n">fetch_bits</span><span class="o">.</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">)</span> <span class="o">|</span> <span class="n">fetch_bits</span><span class="o">.</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="p">((</span><span class="n">upper_byte</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="n">lower_byte</span><span class="p">)</span>
+  <span class="k">end</span>
+  <span class="p">(</span><span class="mi">0</span><span class="o">..</span><span class="mi">5</span><span class="p">).</span><span class="nf">to_a</span><span class="p">.</span><span class="nf">combination</span><span class="p">(</span><span class="mi">4</span><span class="p">).</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">bits</span><span class="o">|</span>
+    <span class="n">define_method</span> <span class="s2">"preserve_bits_</span><span class="si">#{</span><span class="n">bits</span><span class="p">.</span><span class="nf">sort</span><span class="p">.</span><span class="nf">reverse</span><span class="p">.</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:next</span><span class="p">).</span><span class="nf">join</span><span class="si">}</span><span class="s2">"</span> <span class="k">do</span>
+      <span class="o">|</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="o">|</span> <span class="n">preserve_bits_helper</span><span class="o">.</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">,</span> <span class="n">bits</span><span class="p">)</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">preserve_lower_bits_then_add_upper_bits</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="n">lower_bits</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="p">{</span><span class="o">|</span><span class="n">char</span><span class="o">|</span> <span class="p">(</span><span class="n">char</span> <span class="o">&amp;</span> <span class="mb">0b001111</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">upper_bits</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="p">{</span><span class="o">|</span><span class="n">char</span><span class="o">|</span> <span class="p">(</span><span class="n">char</span> <span class="o">&amp;</span> <span class="mb">0b110000</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="p">}</span>
+    <span class="n">upper_byte</span> <span class="o">=</span> <span class="p">(</span><span class="n">lower_bits</span><span class="o">.</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">)</span> <span class="o">|</span> <span class="n">lower_bits</span><span class="o">.</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="n">lower_byte</span> <span class="o">=</span> <span class="p">(</span><span class="n">lower_bits</span><span class="o">.</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">)</span> <span class="o">|</span> <span class="n">lower_bits</span><span class="o">.</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="n">extra_byte</span> <span class="o">=</span> <span class="p">(</span><span class="n">upper_bits</span><span class="o">.</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">6</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">upper_bits</span><span class="o">.</span><span class="p">(</span><span class="n">c</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">)</span> <span class="o">|</span>
+                 <span class="p">(</span><span class="n">upper_bits</span><span class="o">.</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="o">|</span> <span class="p">(</span><span class="n">upper_bits</span><span class="o">.</span><span class="p">(</span><span class="n">d</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="p">((</span><span class="n">upper_byte</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="n">lower_byte</span><span class="p">)</span> <span class="o">+</span> <span class="n">extra_byte</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">preserve_lower_bits_then_xor_upper_bits</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="n">lower_bits</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="p">{</span><span class="o">|</span><span class="n">char</span><span class="o">|</span> <span class="p">(</span><span class="n">char</span> <span class="o">&amp;</span> <span class="mb">0b001111</span><span class="p">)</span> <span class="p">}</span>
+    <span class="n">upper_bits</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="p">{</span><span class="o">|</span><span class="n">char</span><span class="o">|</span> <span class="p">(</span><span class="n">char</span> <span class="o">&amp;</span> <span class="mb">0b110000</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">4</span> <span class="p">}</span>
+    <span class="n">xor_helper</span> <span class="o">=</span> <span class="nb">lambda</span> <span class="k">do</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span>
+      <span class="p">((</span><span class="n">upper_bits</span><span class="o">.</span><span class="p">(</span><span class="n">char</span><span class="p">)</span> <span class="o">^</span> <span class="p">(</span><span class="n">lower_bits</span><span class="o">.</span><span class="p">(</span><span class="n">char</span><span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="mi">2</span><span class="p">))</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">)</span> <span class="o">|</span>
+       <span class="p">(</span><span class="n">lower_bits</span><span class="o">.</span><span class="p">(</span><span class="n">char</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mb">0b11</span><span class="p">)</span>
+    <span class="k">end</span>
+    <span class="n">upper_byte</span> <span class="o">=</span> <span class="p">(</span><span class="n">xor_helper</span><span class="o">.</span><span class="p">(</span><span class="n">a</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">)</span> <span class="o">|</span> <span class="n">xor_helper</span><span class="o">.</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+    <span class="n">lower_byte</span> <span class="o">=</span> <span class="p">(</span><span class="n">xor_helper</span><span class="o">.</span><span class="p">(</span><span class="n">b</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">)</span> <span class="o">|</span> <span class="n">xor_helper</span><span class="o">.</span><span class="p">(</span><span class="n">d</span><span class="p">)</span>
+    <span class="p">((</span><span class="n">upper_byte</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="n">lower_byte</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="c1">#                 _             _       _   _</span>
+  <span class="c1">#  _ __ ___  __ _| |  ___  ___ | |_   _| |_(_) ___  _ __  ___</span>
+  <span class="c1"># | '__/ _ \/ _` | | / __|/ _ \| | | | | __| |/ _ \| '_ \/ __|</span>
+  <span class="c1"># | | |  __/ (_| | | \__ \ (_) | | |_| | |_| | (_) | | | \__ \</span>
+  <span class="c1"># |_|  \___|\__,_|_| |___/\___/|_|\__,_|\__|_|\___/|_| |_|___/</span>
+  <span class="c1">#</span>
+
+  <span class="c1"># https://en.wikipedia.org/wiki/Pearson_hashing</span>
+  <span class="no">PEARSON_TABLE</span> <span class="o">=</span> <span class="p">(</span> <span class="mi">0</span> <span class="o">...</span> <span class="mi">2</span><span class="o">**</span><span class="mi">16</span> <span class="p">).</span><span class="nf">to_a</span><span class="p">.</span><span class="nf">shuffle</span>
+  <span class="k">def</span> <span class="nf">pearson_hash</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="nb">hash</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">].</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span>
+      <span class="n">index</span> <span class="o">=</span> <span class="nb">hash</span> <span class="o">^</span> <span class="n">char</span>
+      <span class="nb">hash</span> <span class="o">=</span> <span class="no">PEARSON_TABLE</span><span class="p">[</span><span class="n">index</span><span class="p">]</span>
+    <span class="k">end</span>
+    <span class="nb">hash</span>
+  <span class="k">end</span>
+
+  <span class="c1"># http://eternallyconfuzzled.com/tuts/algorithms/jsw_tut_hashing.aspx</span>
+  <span class="k">def</span> <span class="nf">rotating_hash</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="nb">hash</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">].</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span>
+      <span class="nb">hash</span> <span class="o">=</span> <span class="p">(</span><span class="nb">hash</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">)</span> <span class="o">^</span> <span class="p">(</span><span class="nb">hash</span> <span class="o">&gt;&gt;</span> <span class="mi">28</span><span class="p">)</span> <span class="o">^</span> <span class="n">char</span>
+    <span class="k">end</span>
+    <span class="nb">hash</span>
+  <span class="k">end</span>
+
+  <span class="c1"># http://eternallyconfuzzled.com/tuts/algorithms/jsw_tut_hashing.aspx</span>
+  <span class="k">def</span> <span class="nf">bernstein_hash</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="nb">hash</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">].</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span>
+      <span class="nb">hash</span> <span class="o">=</span> <span class="mi">33</span> <span class="o">*</span> <span class="nb">hash</span> <span class="o">+</span> <span class="n">char</span>
+    <span class="k">end</span>
+    <span class="nb">hash</span>
+  <span class="k">end</span>
+
+  <span class="c1"># http://eternallyconfuzzled.com/tuts/algorithms/jsw_tut_hashing.aspx</span>
+  <span class="k">def</span> <span class="nf">bernstein_xor_hash</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="nb">hash</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">].</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span>
+      <span class="nb">hash</span> <span class="o">=</span> <span class="mi">33</span> <span class="o">*</span> <span class="nb">hash</span> <span class="o">^</span> <span class="n">char</span>
+    <span class="k">end</span>
+    <span class="nb">hash</span>
+  <span class="k">end</span>
+
+  <span class="c1"># http://eternallyconfuzzled.com/tuts/algorithms/jsw_tut_hashing.aspx</span>
+  <span class="k">def</span> <span class="nf">shift_add_xor_hash</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="nb">hash</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">].</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span>
+      <span class="nb">hash</span> <span class="o">^=</span> <span class="p">(</span><span class="nb">hash</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="nb">hash</span> <span class="o">&gt;&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">char</span>
+    <span class="k">end</span>
+    <span class="nb">hash</span>
+  <span class="k">end</span>
+
+  <span class="c1"># http://www.isthe.com/chongo/tech/comp/fnv/#FNV-1</span>
+  <span class="k">def</span> <span class="nf">fnv1_hash</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="nb">hash</span> <span class="o">=</span> <span class="mi">2166136261</span>
+    <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">].</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span>
+      <span class="nb">hash</span> <span class="o">=</span> <span class="p">(</span><span class="nb">hash</span> <span class="o">*</span> <span class="mi">16777619</span><span class="p">)</span> <span class="o">^</span> <span class="n">char</span>
+    <span class="k">end</span>
+    <span class="nb">hash</span>
+  <span class="k">end</span>
+
+  <span class="c1"># http://www.isthe.com/chongo/tech/comp/fnv/#FNV-1a</span>
+  <span class="k">def</span> <span class="nf">fnv1a_hash</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="nb">hash</span> <span class="o">=</span> <span class="mi">2166136261</span>
+    <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">].</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span>
+      <span class="nb">hash</span> <span class="o">=</span> <span class="p">(</span><span class="nb">hash</span> <span class="o">^</span> <span class="n">char</span><span class="p">)</span> <span class="o">*</span> <span class="mi">16777619</span>
+    <span class="k">end</span>
+    <span class="nb">hash</span>
+  <span class="k">end</span>
+
+  <span class="c1"># https://en.wikipedia.org/wiki/Jenkins_hash_function</span>
+  <span class="k">def</span> <span class="nf">jenkins_one_at_a_time_hash</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="nb">hash</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">].</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span>
+      <span class="nb">hash</span> <span class="o">+=</span> <span class="n">char</span>
+      <span class="nb">hash</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">hash</span> <span class="o">&lt;&lt;</span> <span class="mi">10</span><span class="p">)</span>
+      <span class="nb">hash</span> <span class="o">^=</span> <span class="p">(</span><span class="nb">hash</span> <span class="o">&gt;&gt;</span> <span class="mi">6</span><span class="p">)</span>
+    <span class="k">end</span>
+    <span class="nb">hash</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">hash</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="nb">hash</span> <span class="o">^=</span> <span class="p">(</span><span class="nb">hash</span> <span class="o">&gt;&gt;</span> <span class="mi">11</span><span class="p">)</span>
+    <span class="nb">hash</span> <span class="o">+=</span> <span class="p">(</span><span class="nb">hash</span> <span class="o">&lt;&lt;</span> <span class="mi">15</span><span class="p">)</span>
+    <span class="nb">hash</span>
+  <span class="k">end</span>
+
+  <span class="c1"># Algorithm::Nhash - Exim nhash algorithm</span>
+  <span class="c1"># http://cpansearch.perl.org/src/MOOLI/Algorithm-Nhash-0.002/lib/Algorithm/Nhash.pm</span>
+  <span class="no">NHASH_PRIMES</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">17</span><span class="p">,</span> <span class="mi">19</span><span class="p">,</span> <span class="mi">23</span><span class="p">,</span> <span class="mi">29</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">37</span><span class="p">,</span> <span class="mi">41</span><span class="p">,</span> <span class="mi">43</span><span class="p">,</span> <span class="mi">47</span><span class="p">,</span> <span class="mi">53</span><span class="p">,</span> <span class="mi">59</span><span class="p">,</span>
+                  <span class="mi">61</span><span class="p">,</span> <span class="mi">67</span><span class="p">,</span> <span class="mi">71</span><span class="p">,</span> <span class="mi">73</span><span class="p">,</span> <span class="mi">79</span><span class="p">,</span> <span class="mi">83</span><span class="p">,</span> <span class="mi">89</span><span class="p">,</span> <span class="mi">97</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">103</span><span class="p">,</span> <span class="mi">107</span><span class="p">,</span> <span class="mi">109</span><span class="p">,</span> <span class="mi">113</span><span class="p">]</span>
+  <span class="k">def</span> <span class="nf">exim_nhash</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="n">sum</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">].</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span>
+      <span class="n">i</span> <span class="o">+=</span> <span class="mi">28</span>
+      <span class="n">i</span> <span class="o">%=</span> <span class="mi">29</span>
+      <span class="n">sum</span> <span class="o">+=</span> <span class="no">NHASH_PRIMES</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">*</span> <span class="n">char</span>
+    <span class="k">end</span>
+    <span class="n">sum</span>
+  <span class="k">end</span>
+
+  <span class="c1"># https://en.wikipedia.org/wiki/Fletcher%27s_checksum</span>
+  <span class="k">def</span> <span class="nf">fletcher16_checksum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="n">sum1</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="n">sum2</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">].</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span>
+      <span class="n">sum1</span> <span class="o">=</span> <span class="p">(</span><span class="n">sum1</span> <span class="o">+</span> <span class="n">char</span><span class="p">)</span> <span class="o">%</span> <span class="mi">255</span>
+      <span class="n">sum2</span> <span class="o">=</span> <span class="p">(</span><span class="n">sum2</span> <span class="o">+</span> <span class="n">sum1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">255</span>
+    <span class="k">end</span>
+
+    <span class="p">(</span><span class="n">sum2</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">)</span> <span class="o">|</span> <span class="n">sum1</span>
+  <span class="k">end</span>
+
+  <span class="c1"># https://en.wikipedia.org/wiki/BSD_checksum</span>
+  <span class="k">def</span> <span class="nf">bsd_checksum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="n">checksum</span> <span class="o">=</span> <span class="mi">0</span>                 <span class="c1"># The checksum mod 2^16.</span>
+    <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">].</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span>
+      <span class="n">checksum</span> <span class="o">=</span> <span class="p">(</span><span class="n">checksum</span> <span class="o">&gt;&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="p">((</span><span class="n">checksum</span> <span class="o">&amp;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="mi">15</span><span class="p">)</span>
+      <span class="n">checksum</span> <span class="o">+=</span> <span class="n">char</span>
+      <span class="n">checksum</span> <span class="o">&amp;=</span> <span class="mh">0xffff</span>         <span class="c1"># Keep it within bounds.</span>
+    <span class="k">end</span>
+    <span class="n">checksum</span>
+  <span class="k">end</span>
+
+  <span class="c1"># https://en.wikipedia.org/wiki/Longitudinal_redundancy_check</span>
+  <span class="k">def</span> <span class="nf">lrc_checksum</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="n">lrc</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">].</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span>
+      <span class="n">lrc</span> <span class="o">=</span> <span class="p">(</span><span class="n">lrc</span> <span class="o">+</span> <span class="n">char</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span>
+    <span class="k">end</span>
+    <span class="n">lrc</span> <span class="o">=</span> <span class="p">(((</span><span class="n">lrc</span> <span class="o">^</span> <span class="mh">0xFF</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">&amp;</span> <span class="mh">0xFF</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="c1"># http://www.cse.yorku.ca/~oz/hash.html</span>
+  <span class="k">def</span> <span class="nf">djb2_hash</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="nb">hash</span> <span class="o">=</span> <span class="mi">5381</span>
+    <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">].</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span>
+      <span class="nb">hash</span> <span class="o">=</span> <span class="p">((</span><span class="nb">hash</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span><span class="p">)</span> <span class="o">+</span> <span class="nb">hash</span><span class="p">)</span> <span class="o">+</span> <span class="n">char</span> <span class="c1"># hash * 33 + c</span>
+    <span class="k">end</span>
+    <span class="nb">hash</span>
+  <span class="k">end</span>
+
+  <span class="c1"># http://www.cse.yorku.ca/~oz/hash.html</span>
+  <span class="k">def</span> <span class="nf">sdbm_hash</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="nb">hash</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">].</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span>
+      <span class="nb">hash</span> <span class="o">=</span> <span class="n">char</span> <span class="o">+</span> <span class="p">(</span><span class="nb">hash</span> <span class="o">&lt;&lt;</span> <span class="mi">6</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="nb">hash</span> <span class="o">&lt;&lt;</span> <span class="mi">16</span><span class="p">)</span> <span class="o">-</span> <span class="nb">hash</span>
+    <span class="k">end</span>
+    <span class="nb">hash</span>
+  <span class="k">end</span>
+
+  <span class="c1"># http://www.cse.yorku.ca/~oz/hash.html</span>
+  <span class="k">def</span> <span class="nf">lose_lose_hash</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="nb">hash</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">].</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span>
+      <span class="nb">hash</span> <span class="o">+=</span> <span class="n">char</span>
+    <span class="k">end</span>
+    <span class="nb">hash</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+
+<span class="k">module</span> <span class="nn">Solver</span>
+  <span class="kp">extend</span> <span class="nb">self</span>
+
+  <span class="c1"># Converts the given 4-character string into a "HH:MM:SS" timestamp.</span>
+  <span class="k">def</span> <span class="nf">solution</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">compressor</span><span class="p">)</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span>  <span class="o">=</span> <span class="n">digits36</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+    <span class="n">num_seconds</span> <span class="o">=</span> <span class="no">Compressor</span><span class="p">.</span><span class="nf">send</span><span class="p">(</span><span class="n">compressor</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">)</span>
+    <span class="no">Time</span><span class="p">.</span><span class="nf">at</span><span class="p">(</span><span class="n">num_seconds</span><span class="p">).</span><span class="nf">strftime</span><span class="p">(</span><span class="s1">'%H:%M:%S'</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="c1"># Converts each character in the given string into a base 36 digits.</span>
+  <span class="k">def</span> <span class="nf">digits36</span><span class="p">(</span><span class="n">string</span><span class="p">)</span>
+    <span class="n">string</span><span class="p">.</span><span class="nf">each_char</span><span class="p">.</span><span class="nf">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">char</span><span class="o">|</span> <span class="n">digit36</span><span class="p">(</span><span class="n">char</span><span class="p">)</span> <span class="p">}</span>
+  <span class="k">end</span>
+
+  <span class="c1"># Converts the given character into a base 36 digit:</span>
+  <span class="c1"># decimal digits (0..9) + uppercase letters (10..35)</span>
+  <span class="k">def</span> <span class="nf">digit36</span><span class="p">(</span><span class="n">char</span><span class="p">)</span>
+    <span class="k">case</span> <span class="n">char</span>
+    <span class="k">when</span> <span class="s1">'0'</span><span class="o">..</span><span class="s1">'9'</span> <span class="k">then</span> <span class="n">char</span><span class="p">.</span><span class="nf">ord</span> <span class="o">-</span> <span class="s1">'0'</span><span class="p">.</span><span class="nf">ord</span>
+    <span class="k">when</span> <span class="s1">'A'</span><span class="o">..</span><span class="s1">'Z'</span> <span class="k">then</span> <span class="n">char</span><span class="p">.</span><span class="nf">ord</span> <span class="o">-</span> <span class="s1">'A'</span><span class="p">.</span><span class="nf">ord</span> <span class="o">+</span> <span class="mi">10</span>
+    <span class="k">else</span> <span class="o">-</span><span class="mi">1</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="c1"># Converts the given base 36 digit into a character.</span>
+  <span class="k">def</span> <span class="nf">undigit36</span><span class="p">(</span><span class="n">code</span><span class="p">)</span>
+    <span class="k">case</span> <span class="n">code</span>
+    <span class="k">when</span>  <span class="mi">0</span><span class="o">..</span><span class="mi">9</span>  <span class="k">then</span> <span class="p">(</span><span class="s1">'0'</span><span class="p">.</span><span class="nf">ord</span> <span class="o">+</span> <span class="n">code</span><span class="p">).</span><span class="nf">chr</span>
+    <span class="k">when</span> <span class="mi">10</span><span class="o">..</span><span class="mi">35</span> <span class="k">then</span> <span class="p">(</span><span class="s1">'A'</span><span class="p">.</span><span class="nf">ord</span> <span class="o">+</span> <span class="p">(</span><span class="n">code</span> <span class="o">-</span> <span class="mi">10</span><span class="p">)).</span><span class="nf">chr</span>
+    <span class="k">else</span> <span class="s1">'?'</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+
+<span class="k">module</span> <span class="nn">Input</span>
+  <span class="kp">extend</span> <span class="nb">self</span>
+
+  <span class="no">DOMAIN</span> <span class="o">=</span> <span class="p">(</span><span class="s1">'0'</span><span class="o">..</span><span class="s1">'9'</span><span class="p">).</span><span class="nf">to_a</span> <span class="o">+</span> <span class="p">(</span><span class="s1">'A'</span><span class="o">..</span><span class="s1">'Z'</span><span class="p">).</span><span class="nf">to_a</span>
+
+  <span class="k">def</span> <span class="nf">combinations</span>
+    <span class="no">DOMAIN</span><span class="p">.</span><span class="nf">combination</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">permutations</span><span class="p">(</span><span class="n">domain</span><span class="o">=</span><span class="no">DOMAIN</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">block_given?</span>
+      <span class="n">domain</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">a</span><span class="o">|</span>
+        <span class="n">domain</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">b</span><span class="o">|</span>
+          <span class="n">domain</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">c</span><span class="o">|</span>
+            <span class="n">domain</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">d</span><span class="o">|</span>
+              <span class="k">yield</span> <span class="p">[</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">]</span>
+            <span class="k">end</span>
+          <span class="k">end</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+    <span class="k">else</span>
+      <span class="n">enum_for</span> <span class="n">__method__</span><span class="p">,</span> <span class="n">domain</span>
+    <span class="k">end</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">best_case</span>
+    <span class="n">permutations</span> <span class="no">DOMAIN</span><span class="p">[</span><span class="mi">0</span><span class="o">..</span><span class="mi">15</span><span class="p">]</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">worst_case</span>
+    <span class="n">permutations</span> <span class="no">DOMAIN</span><span class="p">[</span><span class="mi">16</span><span class="o">..</span><span class="mi">35</span><span class="p">]</span>
+  <span class="k">end</span>
+
+  <span class="k">alias</span> <span class="n">no_case</span> <span class="n">permutations</span>
+
+<span class="k">end</span>
+
+<span class="k">module</span> <span class="nn">Comparator</span>
+  <span class="kp">extend</span> <span class="nb">self</span>
+
+  <span class="c1"># Compares the fitness of all compressors that match the given regexp.</span>
+  <span class="k">def</span> <span class="nf">compare</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">compressor_regexp</span><span class="o">=</span><span class="sr">//</span><span class="p">)</span>
+    <span class="no">Compressor</span><span class="p">.</span><span class="nf">singleton_methods</span><span class="p">.</span><span class="nf">grep</span><span class="p">(</span><span class="n">compressor_regexp</span><span class="p">).</span>
+      <span class="nf">map</span> <span class="p">{</span> <span class="o">|</span><span class="n">compressor</span><span class="o">|</span> <span class="n">measure</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">compressor</span><span class="p">)</span> <span class="p">}.</span>
+      <span class="nf">sort_by</span> <span class="p">{</span> <span class="o">|</span><span class="n">measurement</span><span class="o">|</span> <span class="n">measurement</span><span class="p">[</span><span class="s1">'Probability of timestamp reuse'</span><span class="p">]</span> <span class="p">}</span>
+  <span class="k">end</span>
+
+  <span class="c1"># Measures the fitness of the given compressor.</span>
+  <span class="k">def</span> <span class="nf">measure</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">compressor</span><span class="p">)</span>
+    <span class="n">reuse_by_timestamp</span> <span class="o">=</span> <span class="n">measure_reuse</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">compressor</span><span class="p">)</span>
+
+    <span class="n">num_keys</span> <span class="o">=</span> <span class="n">reuse_by_timestamp</span><span class="p">.</span><span class="nf">count</span>
+    <span class="n">num_values</span> <span class="o">=</span> <span class="n">reuse_by_timestamp</span><span class="p">.</span><span class="nf">values</span><span class="p">.</span><span class="nf">reduce</span><span class="p">(:</span><span class="o">+</span><span class="p">).</span><span class="nf">to_i</span>
+
+    <span class="n">actual_reuse</span> <span class="o">=</span> <span class="n">reuse_by_timestamp</span><span class="p">.</span><span class="nf">select</span> <span class="p">{</span><span class="o">|</span><span class="n">k</span><span class="p">,</span><span class="n">v</span><span class="o">|</span> <span class="n">v</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="p">}</span>
+    <span class="n">num_keys_reused</span> <span class="o">=</span> <span class="n">actual_reuse</span><span class="p">.</span><span class="nf">count</span>
+    <span class="n">num_values_reused</span> <span class="o">=</span> <span class="n">actual_reuse</span><span class="p">.</span><span class="nf">values</span><span class="p">.</span><span class="nf">reduce</span><span class="p">(:</span><span class="o">+</span><span class="p">).</span><span class="nf">to_i</span>
+
+    <span class="p">{</span>
+      <span class="s1">'Compression algorithm'</span>                            <span class="o">=&gt;</span> <span class="n">compressor</span><span class="p">,</span>
+      <span class="s1">'Number of strings (domain)'</span>                       <span class="o">=&gt;</span> <span class="n">num_values</span><span class="p">,</span>
+      <span class="s1">'Number of timestamps (codomain)'</span>                  <span class="o">=&gt;</span> <span class="n">num_keys</span><span class="p">,</span>
+      <span class="s1">'Number of unique timestamps'</span>                      <span class="o">=&gt;</span> <span class="n">num_keys</span> <span class="o">-</span> <span class="n">num_keys_reused</span><span class="p">,</span>
+      <span class="s1">'Number of timestamps reused'</span>                      <span class="o">=&gt;</span> <span class="n">num_keys_reused</span><span class="p">,</span>
+      <span class="s1">'Probability of timestamp reuse'</span>                   <span class="o">=&gt;</span> <span class="n">num_keys_reused</span> <span class="o">/</span> <span class="n">num_keys</span><span class="p">.</span><span class="nf">to_f</span><span class="p">,</span>
+      <span class="s1">'Number of strings mapped to reused timestamps'</span>    <span class="o">=&gt;</span> <span class="n">num_values_reused</span><span class="p">,</span>
+      <span class="s1">'Probability of string mapped to reused timestamp'</span> <span class="o">=&gt;</span> <span class="n">num_values_reused</span> <span class="o">/</span> <span class="n">num_values</span><span class="p">.</span><span class="nf">to_f</span><span class="p">,</span>
+    <span class="p">}</span>
+  <span class="k">end</span>
+
+  <span class="k">def</span> <span class="nf">measure_reuse</span><span class="p">(</span><span class="n">inputs</span><span class="p">,</span> <span class="n">compressor</span><span class="p">)</span>
+    <span class="n">reuse_by_timestamp</span> <span class="o">=</span> <span class="no">Hash</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">inputs</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">characters</span><span class="o">|</span>
+      <span class="n">string</span> <span class="o">=</span> <span class="n">characters</span><span class="p">.</span><span class="nf">join</span>
+      <span class="n">timestamp</span> <span class="o">=</span> <span class="no">Solver</span><span class="p">.</span><span class="nf">solution</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">compressor</span><span class="p">)</span>
+      <span class="n">reuse_by_timestamp</span><span class="p">[</span><span class="n">timestamp</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="k">end</span>
+    <span class="n">reuse_by_timestamp</span>
+  <span class="k">end</span>
+
+<span class="k">end</span>
+
+</code></pre></div></div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2015-05-10T17:43:38-07:00">10 May 2015: </time></dt><dd class="content"><p>I&rsquo;ve updated the winning solution to operate on any number of input
+characters (not just four) by sampling as many lower bits from each
+character as possible within the limit of the 17-bit, 86400 seconds.</p>
+</dd></dl></aside><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2015 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

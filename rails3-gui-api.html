@@ -1,0 +1,62 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Decoupling GUI from API in Ruby on Rails 3 - The Terminal Programmer</title><meta content="2013-04-17T16:26:10-04:00" name="DCTERMS.created" /><meta content="2013-04-17T16:26:10-04:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="rails, architecture" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="rails3-gui-api" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#rails3-gui-api" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Decoupling GUI from API in Ruby on Rails 3</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2013-04-17T16:26:10-04:00">17 April 2013</time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__config-routes-rb__" href="#config-routes-rb" class="downlink">config/routes.rb</a><ol></ol></li><li><a id="__app-controllers-application_controller-rb__" href="#app-controllers-application_controller-rb" class="downlink">app/controllers/application_controller.rb</a><ol></ol></li><li><a id="__app-controllers-users_controller-rb__" href="#app-controllers-users_controller-rb" class="downlink">app/controllers/users_controller.rb</a><ol></ol></li></ol><p>Having built web applications with Rails 3 and Sencha ExtJS for the past
+year or so, I developed a simple way to decouple GUI concerns from APIs:</p>
+
+<blockquote>
+<p>If a format is specified in the requested URI, then serve the API.
+Otherwise, serve the GUI while indicating that the response is
+non-authoritative, using HTTP status code 203.</p>
+</blockquote>
+<p>The implementation, from routes to controllers, is demonstrated below.
+For example, when <code>GET /users</code> is requested, the GUI is served; but when
+<code>GET /users.json</code> is requested, the API is served.  Similarly, when <code>POST
+/users</code> is requested, the GUI is served; but when <code>POST /users.json</code> is
+requested, the API is served and it responds with the newly created user.</p>
+
+<div id="config-routes-rb" class="section"></div><h2 class="heading">config/routes.rb<a href="#config-routes-rb" class="permalink" title="Permalink"></a><a href="#__config-routes-rb__" class="uplink" title="Contents"></a></h2>
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># You can have the root of your site routed with "root"</span>
+<span class="c1"># just remember to delete public/index.html.</span>
+<span class="n">root</span> <span class="ss">:to</span> <span class="o">=&gt;</span> <span class="s1">'application#index'</span>
+
+<span class="c1"># pass unknown URLs to GUI (HTML5 history.pushState)</span>
+<span class="c1"># http://railscasts.com/episodes/46-catch-all-route</span>
+<span class="n">match</span> <span class="s1">'*path'</span> <span class="o">=&gt;</span> <span class="s1">'application#index'</span>
+</code></pre></div>
+<div id="app-controllers-application_controller-rb" class="section"></div><h2 class="heading">app/controllers/application_controller.rb<a href="#app-controllers-application_controller-rb" class="permalink" title="Permalink"></a><a href="#__app-controllers-application_controller-rb__" class="uplink" title="Contents"></a></h2>
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># serve GUI when no format is specified</span>
+<span class="n">before_filter</span> <span class="k">do</span>
+  <span class="k">unless</span> <span class="n">params</span><span class="p">[</span><span class="ss">:format</span><span class="p">]</span>
+    <span class="n">render</span> <span class="ss">nothing: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">layout: </span><span class="kp">true</span><span class="p">,</span> <span class="ss">status: :non_authoritative_information</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># serve API when a format is specified</span>
+<span class="k">def</span> <span class="nf">index</span>
+  <span class="n">respond_with</span> <span class="kp">nil</span><span class="p">,</span> <span class="ss">location: </span><span class="kp">nil</span><span class="p">,</span> <span class="ss">status: :not_implemented</span>
+<span class="k">end</span>
+<span class="k">alias</span> <span class="n">new</span>     <span class="n">index</span>
+<span class="k">alias</span> <span class="n">create</span>  <span class="n">index</span>
+<span class="k">alias</span> <span class="n">show</span>    <span class="n">index</span>
+<span class="k">alias</span> <span class="n">edit</span>    <span class="n">index</span>
+<span class="k">alias</span> <span class="n">update</span>  <span class="n">index</span>
+<span class="k">alias</span> <span class="n">destroy</span> <span class="n">index</span>
+
+<span class="c1"># serve these formats in respond_with()</span>
+<span class="n">respond_to</span> <span class="ss">:json</span>
+</code></pre></div>
+<div id="app-controllers-users_controller-rb" class="section"></div><h2 class="heading">app/controllers/users_controller.rb<a href="#app-controllers-users_controller-rb" class="permalink" title="Permalink"></a><a href="#__app-controllers-users_controller-rb__" class="uplink" title="Contents"></a></h2>
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">UsersController</span> <span class="o">&lt;</span> <span class="no">ApplicationController</span>
+  <span class="k">def</span> <span class="nf">create</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="no">User</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">params</span><span class="p">[</span><span class="ss">:user</span><span class="p">])</span>
+    <span class="n">respond_with</span><span class="p">(</span>
+      <span class="p">{</span>
+        <span class="ss">success: </span><span class="o">!!</span><span class="n">user</span><span class="p">.</span><span class="nf">save</span><span class="p">,</span>
+        <span class="ss">errors: </span><span class="n">user</span><span class="p">.</span><span class="nf">errors</span><span class="p">,</span>
+        <span class="ss">user: </span><span class="n">user</span><span class="p">,</span>
+      <span class="p">},</span>
+      <span class="ss">location: </span><span class="n">url_for</span><span class="p">(</span><span class="n">user</span><span class="p">)</span>
+    <span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2013 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

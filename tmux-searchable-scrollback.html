@@ -1,0 +1,23 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Searching the scrollback buffer in tmux - The Terminal Programmer</title><meta content="2013-03-08T08:54:36-05:00" name="DCTERMS.created" /><meta content="2013-10-31T23:17:14-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="solution, tmux" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="tmux-searchable-scrollback" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#tmux-searchable-scrollback" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Searching the scrollback buffer in tmux</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2013-03-08T08:54:36-05:00"> 8 March 2013</time><br /><time class="date" datetime="2013-10-31T23:17:14-07:00"><a href="#updates" title="1 update">31 October 2013</a></time></header><hr /><div class="description"></div><div class="content"><p>Before I switched to the <a href="https://tmux.github.io/">tmux terminal multiplexer</a> from the <a href="https://code.google.com/p/wmii/">wmii
+window manager</a> as my primary dwelling in the lands of Linux, I
+relied upon the <a href="http://software.schmorp.de/pkg/rxvt-unicode.html">URxvt terminal emulator</a>&rsquo;s <code>searchable-scrollback</code>
+Perl extension, which let me search its scrollback buffer
+<a href="http://www.codinghorror.com/blog/2005/10/search-if-it-isnt-incremental-its-excremental.html">incrementally</a>.</p>
+<p>I ported that feature to tmux today, by feeding tmux&rsquo;s scrollback buffer
+contents into Vim for incremental search or falling back to the less(1)
+pager for non-incremental search, like this:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="c"># search buffer (using less if Vim is not available)</span>
+bind-key <span class="nt">-n</span> M-/ capture-pane <span class="nt">-S</span> <span class="nt">-32767</span> <span class="nt">-J</span> <span class="se">\;</span> new-window <span class="s1">' \
+  tmux save-buffer - \; delete-buffer | {                 \
+    vim -R -c "set nofen is hls ic" -;                    \
+    test $? -eq 127 &amp;&amp; less;                              \
+  };                                                      \
+'</span> <span class="se">\;</span> send-keys G ? <span class="c"># go to bottom and search upward</span>
+</code></pre></div><p>The neat thing about this snippet is that both vim and less(1) accept the
+same <code>G</code> (scroll to bottom of file) and <code>?</code> (search backward) commands, so
+we jump directly into search mode no matter which of them is actually run.</p>
+</div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2013-10-31T23:17:14-07:00">31 October 2013: </time></dt><dd class="content"><p>I have updated the configuration snippet to preserve long lines and to
+fallback to the less(1) pager only when vim(1) could not be executed.</p>
+</dd></dl></aside><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2013 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

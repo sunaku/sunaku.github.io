@@ -1,0 +1,404 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Dactyl Manuform 5x6 programmable ergonomic keyboard - The Terminal Programmer</title><meta content="2022-10-23T03:29:39-07:00" name="DCTERMS.created" /><meta content="2022-10-23T03:29:39-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="typing, keyboard, layout, ergonomics, programming" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="dactyl-manuform-5x6-keyboard" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#dactyl-manuform-5x6-keyboard" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Dactyl Manuform 5x6 programmable ergonomic keyboard</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2022-10-23T03:29:39-07:00">23 October 2022</time></header><hr /><div class="description"></div><div class="content"><style>.layers-map-container{position:relative;cursor:wait}.layers-map-container .layers-map-sign{position:absolute;box-shadow:inset 0 0 5px indigo;border-radius:5px}.layers-map-container #layers-map-link[href] .layers-map-sign:not(:hover){box-shadow:none}</style><script>// wait until images are loaded before measuring the layers map dimensions,
+// and apply a busy cursor to the layers map (CSS above) until that happens
+$(window).on('load', function() {
+  var $layers_map = $('#layers-map');
+  var layers_map_src = $layers_map.attr('src');
+  var $layers_map_link = $('#layers-map-link');
+
+  // image map dimensions
+  var actual = { w: 2108, h: 771 };
+  var screen = { w: $layers_map.width(), h: $layers_map.height() };
+  var shrink = { x: screen.w / actual.w, y: screen.h / actual.h };
+
+  // layer sign definitions
+  var origin = { x: 627, y: 507, w: 122, h: 122 };
+  var layers = {
+    cursor:   { x: origin.x,              y: origin.y,          w: origin.w, h: origin.h },
+    number:   { x: origin.x+origin.w,     y: origin.y,          w: origin.w, h: origin.h },
+    function: { x: origin.x+origin.w,     y: origin.y+origin.h, w: origin.w, h: origin.h },
+    mouse:    { x: origin.x+(origin.w*5), y: origin.y,          w: origin.w, h: origin.h },
+    symbol:   { x: origin.x+(origin.w*6), y: origin.y,          w: origin.w, h: origin.h },
+    light:    { x: origin.x+(origin.w*5), y: origin.y+origin.h, w: origin.w, h: origin.h },
+  };
+
+  // construct layer signs
+  var $layer_map_signs = $.map(layers, function(outline, layer) {
+    return $('<div/>', {
+      title: 'Activates the ' + layer + ' layer.  Click for details.',
+      class: 'layers-map-sign',
+      css: {
+        top:    Math.floor(outline.y * shrink.y) + 'px',
+        left:   Math.floor(outline.x * shrink.x) + 'px',
+        width:  Math.round(outline.w * shrink.x) + 'px',
+        height: Math.round(outline.h * shrink.y) + 'px'
+      }
+    }).on('mouseover', function() {
+      $layers_map.attr('src', layers_map_src.replace('-base-', '-' + layer + '-'));
+      $layers_map_link.attr('href', '#' + layer + '-layer');
+    }).on('mouseout', function() {
+      $layers_map.attr('src', layers_map_src);
+      $layers_map_link.attr('href', null);
+    });
+  });
+
+  // add layer signs to map
+  $layers_map.after($layer_map_signs);
+
+  // indicate that we're ready by removing the busy cursor set by CSS above
+  $('.layers-map-container').css('cursor', 'auto');
+});</script><blockquote>
+<hr>
+<p><strong><code>DEPRECATED:</code></strong> This has been superseded by <a href="moergo-glove80-keyboard.html">the <em>MoErgo Glove80</em> keyboard</a>.</p>
+<p><strong>NOTE:</strong> Check out the <a href="#layers">interactive layer map</a> for this keyboard below!</p>
+
+<hr>
+</blockquote>
+<p>This is my <a href="https://github.com/abstracthat/dactyl-manuform#readme">Dactyl Manuform</a> keyboard: specifically, a 5-row and 6-column (5x6)
+variant manufactured by <a href="https://ergohaven.xyz/">Ergohaven</a> that I fitted with colorful <a href="https://www.kromekeycaps.com/collections/dye-sublimated-keycaps/products/rainbow-xda-127-keycaps">Rainbow keycaps</a>,
+tactile brown key-switches, and <a href="#firmware">enhanced firmware</a> with legendary <a href="https://github.com/manna-harbour/miryoku#readme">Miryoku</a> design.</p>
+<p><picture><source type="image/webp" srcset="dactyl-manuform-5x6-keyboard-photograph.webp"><img src="dactyl-manuform-5x6-keyboard-photograph.jpg" width="1024" height="572" alt="Photograph of my Dactyl Manuform 5x6 keyboard." title="Photograph of my Dactyl Manuform 5x6 keyboard."></picture>
+</p>
+
+<blockquote>
+<p><strong>Video:</strong> Introduction to the Dactyl Manuform keyboard.</p>
+<p><a class="embed_youtube_video" href="https://www.youtube.com/embed/XScUYxLFt-U?autoplay=1&cc_load_policy=1&modestbranding=1"><img src="https://i.ytimg.com/vi/XScUYxLFt-U/hqdefault.jpg" alt="Click to watch video" width="480" height="360"></a></p>
+</blockquote>
+<p>Prior to this, I used an <a href="https://ergodox-ez.com/">ErgoDox EZ</a> keyboard for 6 years and then a <a href="https://kinesis-ergo.com/shop/advantage2/">Kinesis
+Advantage</a> keyboard for 11 years before that.  All of these have a shared lineage:
+the Advantage has contoured keywells but isn&rsquo;t split, the ErgoDox is split but
+isn&rsquo;t contoured, and the <a href="https://github.com/adereth/dactyl-keyboard#readme">Dactyl</a> has the best of both: it&rsquo;s split <em>and</em> contoured!</p>
+<p><ol class="table-of-contents"><li><a id="__layers__" href="#layers" class="downlink">Layers</a><ol><li><a id="__cursor-layer__" href="#cursor-layer" class="downlink">Cursor layer</a><ol><li><a id="__arrow-keys__" href="#arrow-keys" class="downlink">Arrow keys</a><ol></ol></li><li><a id="__select-edit__" href="#select-edit" class="downlink">Select &amp; edit</a><ol></ol></li></ol></li><li><a id="__number-layer__" href="#number-layer" class="downlink">Number layer</a><ol><li><a id="__prefix-signs__" href="#prefix-signs" class="downlink">Prefix signs</a><ol></ol></li><li><a id="__date-time__" href="#date-time" class="downlink">Date &amp; time</a><ol></ol></li><li><a id="__inequalities__" href="#inequalities" class="downlink">Inequalities</a><ol></ol></li></ol></li><li><a id="__function-layer__" href="#function-layer" class="downlink">Function layer</a><ol></ol></li><li><a id="__symbol-layer__" href="#symbol-layer" class="downlink">Symbol layer</a><ol><li><a id="__base-layer-affinity__" href="#base-layer-affinity" class="downlink">Base layer affinity</a><ol></ol></li><li><a id="__vim-editor-shortcuts__" href="#vim-editor-shortcuts" class="downlink">Vim editor shortcuts</a><ol></ol></li><li><a id="__adjacent-key-bigrams__" href="#adjacent-key-bigrams" class="downlink">Adjacent key bigrams</a><ol></ol></li><li><a id="__outer-corner-bigrams__" href="#outer-corner-bigrams" class="downlink">Outer corner bigrams</a><ol></ol></li><li><a id="__inward-rolling-bigrams__" href="#inward-rolling-bigrams" class="downlink">Inward rolling bigrams</a><ol></ol></li><li><a id="__outward-rolling-bigrams__" href="#outward-rolling-bigrams" class="downlink">Outward rolling bigrams</a><ol></ol></li></ol></li><li><a id="__mouse-layer__" href="#mouse-layer" class="downlink">Mouse layer</a><ol></ol></li><li><a id="__light-layer__" href="#light-layer" class="downlink">Light layer</a><ol></ol></li></ol></li><li><a id="__firmware__" href="#firmware" class="downlink">Firmware</a><ol><li><a id="__extra-qmk-patches__" href="#extra-qmk-patches" class="downlink">Extra QMK patches</a><ol></ol></li><li><a id="__qmk-configurator-app__" href="#qmk-configurator-app" class="downlink">QMK configurator app</a><ol></ol></li><li><a id="__building-the-firmware__" href="#building-the-firmware" class="downlink">Building the firmware</a><ol></ol></li></ol></li></ol></p>
+
+<div id="layers" class="section"></div><h2 class="heading">Layers<a href="#layers" class="permalink" title="Permalink"></a><a href="#__layers__" class="uplink" title="Contents"></a></h2>
+<p>The keyboard boots up into the following default &ldquo;base&rdquo; layer when powered on.
+When held, <span style="color: #D1C4E9">the purple keys</span> in the thumb
+clusters activate the subsequent layers according to the legendary <a href="https://github.com/manna-harbour/miryoku#readme">Miryoku</a>&rsquo;s
+6-layer design with 3-key thumb activation.</p>
+
+<blockquote>
+<p><strong>Interactive:</strong> Hover your mouse over <span style="color: #D1C4E9">the purple keys</span> to see each layer!
+  <noscript>
+    Sorry, this interactive feature needs JavaScript; please enable it.
+  </noscript></p>
+</blockquote>
+
+<div class="layers-map-container">
+  <a id="layers-map-link">
+    <img id="layers-map" src="dactyl-manuform-5x6-keyboard-base-layer.png" />
+  </a>
+</div>
+<p>The keys are arranged in <a href="engrammer-keyboard-layout.html">my variation</a> of <a href="engram-keyboard-layout.html">Arno Klein&rsquo;s Engram
+2.0 layout</a> and they&rsquo;re imbued with the legendary <a href="https://github.com/manna-harbour/miryoku#readme">Miryoku</a> home
+row mods <a href="home-row-mods.html">tamed with enhancements</a>.</p>
+
+<div id="cursor-layer" class="section"></div><h3 class="heading">Cursor layer<a href="#cursor-layer" class="permalink" title="Permalink"></a><a href="#__cursor-layer__" class="uplink" title="Contents"></a></h3>
+<p><picture><source type="image/webp" srcset="dactyl-manuform-5x6-keyboard-cursor-layer.webp"><img src="dactyl-manuform-5x6-keyboard-cursor-layer.png" width="2108" height="771" alt="Diagram of the cursor layer." title="Diagram of the cursor layer."></picture>
+</p>
+
+<blockquote>
+
+<div id="arrow-keys" class="section"></div><h4 class="heading">Arrow keys<a href="#arrow-keys" class="permalink" title="Permalink"></a><a href="#__arrow-keys__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>The up/down arrow keys on the right-hand home row diverge from Vim&rsquo;s HJKL order
+because it feels more natural to follow the inward-rising curve of the keyboard&rsquo;s
+contoured keywell, which elevates the thumb above the pinky finger and, similarly,
+the middle finger (up arrow) above the ring finger (down arrow).</p>
+<p>This is a longstanding preference that I formed 17 years ago, in my early days of
+using the Kinesis Advantage with the <a href="https://www.dvzine.org/zine/">Dvorak layout</a>, whose lack of HJKL provided
+the freedom to reimagine the arrangement of arrow keys on the home row.</p>
+
+<blockquote>
+
+<div id="select-edit" class="section"></div><h4 class="heading">Select &amp; edit<a href="#select-edit" class="permalink" title="Permalink"></a><a href="#__select-edit__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>Editing and selection keys line the outer edges of the home block, respectively.
+This opposition enables inward rolls, where selections can be followed by edits.
+For example, to copy everything, I would first tap the &ldquo;Select all&rdquo; key with my
+pinky finger and then roll inward to tap the &ldquo;Copy&rdquo; key with my index finger.</p>
+<p>The copy and paste keys are stacked vertically, in that order, to allow the index
+finger to rake down upon them in a natural curling motion toward the palm. This
+order is also logical, since pasting requires something to be copied first.</p>
+<p>The versatile &ldquo;Select word/line&rdquo; key at the right edge of the home row is powered
+by <a href="https://getreuer.info/posts/keyboards/select-word/index.html">Pascal Getreuer&rsquo;s word selection QMK macro</a>, which automates common
+selection tasks that require holding down Control and Shift with the arrow keys:</p>
+
+<blockquote>
+<img src="www/getreuer.info/posts/keyboards/select-word/select-word.gif" width="784" height="129" alt="Video demonstration of Pascal Getreuer&#39;s word selection QMK macro" title="Video demonstration of Pascal Getreuer&#39;s word selection QMK macro"></blockquote>
+<p>Tapping it selects the word under the cursor; shift-tapping it selects the line.
+Further taps extend the selection by another word (unshifted) or line (shifted).</p>
+
+<div id="number-layer" class="section"></div><h3 class="heading">Number layer<a href="#number-layer" class="permalink" title="Permalink"></a><a href="#__number-layer__" class="uplink" title="Contents"></a></h3>
+<p><picture><source type="image/webp" srcset="dactyl-manuform-5x6-keyboard-number-layer.webp"><img src="dactyl-manuform-5x6-keyboard-number-layer.png" width="2108" height="771" alt="Diagram of the number layer." title="Diagram of the number layer."></picture>
+</p>
+<p>A 3x3 numeric keypad (using the standard 10-key layout) occupies the home block.
+The period key is poised to be tapped using the metacarpal joint of the thumb,
+allowing the thumb to rest on the zero key, ready for more numerical data entry.</p>
+
+<blockquote>
+
+<div id="prefix-signs" class="section"></div><h4 class="heading">Prefix signs<a href="#prefix-signs" class="permalink" title="Permalink"></a><a href="#__prefix-signs__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>Signs that commonly prefix numbers are positioned above the 3x3 numeric keypad.</p>
+
+<ul>
+<li><code>~</code> approximately</li>
+<li><code>$</code> dollar amount</li>
+<li><code>#</code> literal number</li>
+<li><code>@</code> at the rate of</li>
+</ul>
+
+<blockquote>
+
+<div id="date-time" class="section"></div><h4 class="heading">Date &amp; time<a href="#date-time" class="permalink" title="Permalink"></a><a href="#__date-time__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>The slash and minus keys are positioned for MM/DD and YYYY-MM-DD date entry.
+Similarly, the colon key is positioned above them for HH:MM:SS time stamp entry.</p>
+
+<ul>
+<li><code>:</code> time stamp separator</li>
+<li><code>-</code> ISO-8601 date separator</li>
+<li><code>/</code> American date separator</li>
+</ul>
+
+<blockquote>
+
+<div id="inequalities" class="section"></div><h4 class="heading">Inequalities<a href="#inequalities" class="permalink" title="Permalink"></a><a href="#__inequalities__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>Comparison operators are positioned along the outer left edge of the home block.</p>
+
+<ul>
+<li><code>~</code> approximately</li>
+<li><code>&lt;</code> less than</li>
+<li><code>&gt;</code> greater than</li>
+<li><code>=</code> equal to</li>
+</ul>
+<p>The greater/equals keys are stacked vertically, in that order, to allow the
+index finger to rake down upon them in a natural curling motion toward the palm.</p>
+
+<div id="function-layer" class="section"></div><h3 class="heading">Function layer<a href="#function-layer" class="permalink" title="Permalink"></a><a href="#__function-layer__" class="uplink" title="Contents"></a></h3>
+<p><picture><source type="image/webp" srcset="dactyl-manuform-5x6-keyboard-function-layer.webp"><img src="dactyl-manuform-5x6-keyboard-function-layer.png" width="2108" height="771" alt="Diagram of the function layer." title="Diagram of the function layer."></picture>
+</p>
+<p>The function keys are arranged in the same 10-key layout as the <a href="#number-layer">Number
+layer</a>&rsquo;s 3x3 numeric keypad so that you can develop common muscle
+memory for both layers.  The remaining F10-F12 keys wrap around the home block
+because they&rsquo;re found in shortcuts such as BIOS save/quit, fullscreen toggle,
+and devtools, respectively.</p>
+
+<div id="symbol-layer" class="section"></div><h3 class="heading">Symbol layer<a href="#symbol-layer" class="permalink" title="Permalink"></a><a href="#__symbol-layer__" class="uplink" title="Contents"></a></h3>
+<p>This is the crown jewel of my keyboard&rsquo;s configuration: an entire layer dedicated
+to the entry of symbols that are essential for computer programming.
+It&rsquo;s the result of several hundreds of layout iterations over the last 8+ years.</p>
+<p><picture><source type="image/webp" srcset="dactyl-manuform-5x6-keyboard-symbol-layer.webp"><img src="dactyl-manuform-5x6-keyboard-symbol-layer.png" width="2108" height="771" alt="Diagram of the symbol layer." title="Diagram of the symbol layer."></picture>
+</p>
+
+<blockquote>
+<p>👉
+<span style="color: #FFCDD2">Red</span> groups.
+<span style="color: #BBDEFB">Blue</span> quotes.
+<span style="color: #FFECB3">Yellow</span> Vim.
+<span style="color: #DCEDC8">Green</span> arrows.
+<span style="color: #D1C4E9">Purple</span> flips.</p>
+</blockquote>
+
+<ul>
+<li><code>\</code> is on the thumb for escaping all other symbols without moving your hand.</li>
+<li>For snake_case, <code>_</code> is at the same spot as English&rsquo;s most frequent letter <code>e</code>.</li>
+<li>For assignment, <code>=</code> is on the home row because it&rsquo;s frequent in programming.</li>
+<li>For strings, all quotation marks are located at the top of the home block.</li>
+<li>Bitwise <code>|&amp;</code> and arithmetic <code>-+</code> operators &ldquo;flap down&rdquo; and &ldquo;fold up&rdquo; together.</li>
+<li>Angling arrows <code>-&gt;</code>, <code>=&gt;</code>, <code>~&gt;</code>, <code>&lt;~</code>, <code>&lt;=</code>, <code>&lt;-</code>, and plentiful pipes <code>|&gt;</code>, <code>&lt;|</code> abound!</li>
+</ul>
+
+<blockquote>
+
+<div id="base-layer-affinity" class="section"></div><h4 class="heading">Base layer affinity<a href="#base-layer-affinity" class="permalink" title="Permalink"></a><a href="#__base-layer-affinity__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+
+<ul>
+<li><code>@</code> is at the same relative position as the <code>Tab</code> key on standard keyboards.
+They pair well: the former denotes references and the latter expands them.</li>
+<li><code>`</code> is on the same key as <code>&#39;</code> on the base layer, for <code>&#x0060;&#39;</code> legacy curly quotes.</li>
+<li><code>!</code> is on the same key as <code>Shift</code> on the base layer; both invert things.</li>
+<li><code>:</code> is on the same key as <code>Esc</code> on the base layer; they&rsquo;re duals in Vim.</li>
+</ul>
+
+<blockquote>
+
+<div id="vim-editor-shortcuts" class="section"></div><h4 class="heading">Vim editor shortcuts<a href="#vim-editor-shortcuts" class="permalink" title="Permalink"></a><a href="#__vim-editor-shortcuts__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+
+<ul>
+<li><code>^</code> and <code>$</code> are on the home row, for jumping to the beginning/end of line.</li>
+<li><code>%</code> is on the home row, for jumping to the matching delimiter at cursor.</li>
+<li><code>#</code> is on the home row, to search backwards for the word under cursor.</li>
+<li><code>=</code> is on the home row, to automatically indent the line or selection.</li>
+<li><code>{</code> and <code>}</code> are on the home block, for jumping to previous/next paragraph.</li>
+<li><code>&lt;</code> and <code>&gt;</code> are on the home block, for decreasing/increasing indentation.</li>
+<li><code>:</code> is on the inner thumb key, for entering Vim&rsquo;s command mode.</li>
+<li><code>;</code> is on the outer thumb key, for repeating a f/F/t/T character search.</li>
+<li><code>*</code> is on the thumb joint, to search forwards for the word under cursor.</li>
+</ul>
+
+<blockquote>
+
+<div id="adjacent-key-bigrams" class="section"></div><h4 class="heading">Adjacent key bigrams<a href="#adjacent-key-bigrams" class="permalink" title="Permalink"></a><a href="#__adjacent-key-bigrams__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+
+<ul>
+<li><code>#!</code> for shebang lines in UNIX scripts.</li>
+<li><code>.*</code> for regular expressions.</li>
+<li><code>*.</code> for filesystem globs.</li>
+<li><code>()</code> for parentheses.</li>
+</ul>
+
+<blockquote>
+
+<div id="outer-corner-bigrams" class="section"></div><h4 class="heading">Outer corner bigrams<a href="#outer-corner-bigrams" class="permalink" title="Permalink"></a><a href="#__outer-corner-bigrams__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>These are easy to find because they&rsquo;re on the outer corners of the keyboard.</p>
+
+<ul>
+<li><code>!~</code> for regular expression &ldquo;not matching&rdquo; in Perl, Ruby, and Elixir.</li>
+<li><code>/*</code> and <code>*/</code> for multi-line comments in C, CSS, and JavaScript.</li>
+<li><code>\/</code> for escaped regular expression delimiters in Vim.</li>
+<li><code>~/</code> for home directory paths in UNIX.</li>
+<li><code>?!</code> for interrobang in English prose.</li>
+</ul>
+
+<blockquote>
+
+<div id="inward-rolling-bigrams" class="section"></div><h4 class="heading">Inward rolling bigrams<a href="#inward-rolling-bigrams" class="permalink" title="Permalink"></a><a href="#__inward-rolling-bigrams__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+
+<ul>
+<li><code>&lt;-</code> for assignment in R and in Elixir&rsquo;s <code>with</code> statements.</li>
+<li><code>-&gt;</code> for thin arrows in C, C++, and Elixir.</li>
+<li><code>=&gt;</code> for fat arrows in Perl, Ruby, and Elixir.</li>
+<li><code>=~</code> for regular expression matching in Perl, Ruby, and Elixir.</li>
+<li><code>!~</code> for regular expression &ldquo;not matching&rdquo; in Perl, Ruby, and Elixir.</li>
+<li><code>!=</code> for &ldquo;not equal to&rdquo; value comparison in many languages.</li>
+<li><code>&lt;=</code> for &ldquo;less than or equal to&rdquo; comparison in many languages.</li>
+<li><code>^=</code> for bitwise XOR assignment in C and related languages.</li>
+<li><code>|&gt;</code> for the pipe operator in Elixir.</li>
+<li><code>!(</code> for negating a group in Boolean expressions.</li>
+<li><code>&quot;$</code> for quoted variable substitution in Bourne shell.</li>
+<li><code>!$</code> for last argument of previous command in Bourne shell.</li>
+<li><code>$?</code> for exit status of previous command in Bourne shell.</li>
+<li><code>&lt;%</code> for directive tags in Ruby&rsquo;s ERB and Elixir&rsquo;s EEx templates.</li>
+<li><code>#{</code> for string interpolation in Ruby and Elixir.</li>
+<li><code>#[</code> and <code>![</code> for metadata attributes in Rust.</li>
+<li><code>&#x0060;&#39;</code> for legacy curly quotes.</li>
+<li><code>/?</code> for query parameters in URLs.</li>
+<li><code>/*</code> for starting comments in C, CSS, and JavaScript.</li>
+<li><code>[]</code> for square brackets.</li>
+<li><code>&lt;&gt;</code> for angle brackets.</li>
+<li><code>{}</code> for curly braces.</li>
+</ul>
+
+<blockquote>
+
+<div id="outward-rolling-bigrams" class="section"></div><h4 class="heading">Outward rolling bigrams<a href="#outward-rolling-bigrams" class="permalink" title="Permalink"></a><a href="#__outward-rolling-bigrams__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+
+<ul>
+<li><code>~&gt;</code> for pessimistic version constraint in SemVer.</li>
+<li><code>-=</code> for negative accumulation in C and related languages.</li>
+<li><code>+=</code> for accumulation in C and many languages.</li>
+<li><code>%=</code> for modulo assignment in C and related languages.</li>
+<li><code>&gt;=</code> for &ldquo;greater than or equal to&rdquo; value comparison.</li>
+<li><code>&gt;&amp;</code> and <code>&amp;&lt;</code> for file descriptor redirection in Bourne shell.</li>
+<li><code>$_</code> for value of last argument of previous command in Bourne shell.</li>
+<li><code>%&gt;</code> for directive tags in Ruby&rsquo;s ERB and Elixir&rsquo;s EEx templates.</li>
+<li><code>${</code> for variable interpolation in Bourne shell.</li>
+<li><code>%{</code> for maps (hash tables) in Elixir.</li>
+<li><code>~/</code> for home directory paths in UNIX.</li>
+<li><code>*/</code> for closing comments in C, CSS, and JavaScript.</li>
+</ul>
+
+<div id="mouse-layer" class="section"></div><h3 class="heading">Mouse layer<a href="#mouse-layer" class="permalink" title="Permalink"></a><a href="#__mouse-layer__" class="uplink" title="Contents"></a></h3>
+<p><picture><source type="image/webp" srcset="dactyl-manuform-5x6-keyboard-mouse-layer.webp"><img src="dactyl-manuform-5x6-keyboard-mouse-layer.png" width="2108" height="771" alt="Diagram of the mouse layer." title="Diagram of the mouse layer."></picture>
+</p>
+<p>Movement keys are located centrally in the home block, resembling WASD keys, and
+mouse acceleration controls are poised for pinky finger access, so you can
+independently move the mouse pointer and also change its speed at the same time.</p>
+<p>Mousewheel down/up keys are also placed on the home block, specifically on
+the same keys as <code>J</code>/<code>K</code> (down/up in Vim) on the base layer for muscle memory reuse.</p>
+
+<div id="light-layer" class="section"></div><h3 class="heading">Light layer<a href="#light-layer" class="permalink" title="Permalink"></a><a href="#__light-layer__" class="uplink" title="Contents"></a></h3>
+<p><picture><source type="image/webp" srcset="dactyl-manuform-5x6-keyboard-light-layer.webp"><img src="dactyl-manuform-5x6-keyboard-light-layer.png" width="2108" height="771" alt="Diagram of the light layer." title="Diagram of the light layer."></picture>
+</p>
+<p>Keys for lowering/raising light settings line the central columns of home block,
+whereas keys for applying lighting modes line the outer edges of the home block.</p>
+
+<div id="firmware" class="section"></div><h2 class="heading">Firmware<a href="#firmware" class="permalink" title="Permalink"></a><a href="#__firmware__" class="uplink" title="Contents"></a></h2>
+<p>My keyboard&rsquo;s entire QMK firmware configuration, as described in this article, is
+made <a href="https://github.com/sunaku/qmk_firmware/tree/sunaku_dm5x6/keyboards/handwired/dactyl_manuform/5x6_5/keymaps/sunaku/">available on GitHub</a> in the <code>sunaku_dm5x6</code> branch of my
+personal QMK fork.</p>
+<div class="highlight"><pre class="highlight plaintext"><code>~/qmk_firmware/keyboards/handwired/dactyl_manuform/5x6_5/keymaps/sunaku/
+├── config.h
+├── features -&gt; getreuer/features
+├── getreuer/
+├── keymap_config.json
+├── keymap_footer.c
+├── keymap_header.c
+├── Makefile
+├── README.md
+└── rules.mk
+</code></pre></div>
+<div id="extra-qmk-patches" class="section"></div><h3 class="heading">Extra QMK patches<a href="#extra-qmk-patches" class="permalink" title="Permalink"></a><a href="#__extra-qmk-patches__" class="uplink" title="Contents"></a></h3>
+<p>This configuration includes additional enhancements on top of the standard QMK:</p>
+
+<ol>
+<li>My <a href="home-row-mods.html">crossover bilateral combinations</a> patch, used for <a href="https://github.com/manna-harbour/miryoku#readme">Miryoku</a> home row mods.</li>
+<li><a href="https://getreuer.info/posts/keyboards/select-word/index.html">Pascal Getreuer&rsquo;s word selection QMK macro</a>, utilized in <a href="#cursor-layer">the cursor layer</a>.</li>
+</ol>
+
+<div id="qmk-configurator-app" class="section"></div><h3 class="heading">QMK configurator app<a href="#qmk-configurator-app" class="permalink" title="Permalink"></a><a href="#__qmk-configurator-app__" class="uplink" title="Contents"></a></h3>
+<p>You can upload <a href="https://github.com/sunaku/qmk_firmware/blob/sunaku_dm5x6/keyboards/handwired/dactyl_manuform/5x6_5/keymaps/sunaku/keymap_config.json">the provided QMK Keymap JSON file</a> named
+<code>keymap_config.json</code> into the <a href="https://config.qmk.fm/">QMK Configurator app</a> to view or
+customize the keymap and all of its layers.  When you&rsquo;re finished, download the
+keymap back to the same file, overwriting it.</p>
+
+<div id="building-the-firmware" class="section"></div><h3 class="heading">Building the firmware<a href="#building-the-firmware" class="permalink" title="Permalink"></a><a href="#__building-the-firmware__" class="uplink" title="Contents"></a></h3>
+<p>Navigate into the directory shown in <a href="#firmware">the Firmware section</a> above and run <code>make</code> to:</p>
+
+<ol>
+<li>Convert the <code>keymap_config.json</code> file into C source code.</li>
+<li>Wrap the C source code with a custom header and footer.</li>
+<li>Compile the wrapped up C source code using <code>qmk compile</code>.</li>
+<li>Flash the compiled firmware (HEX file) to the keyboard.</li>
+</ol>
+<p>All these steps are handled by the provided <code>Makefile</code>, shown below for reference:</p>
+<div class="highlight"><pre class="highlight make"><code><span class="c"># NOTE: Don't name the QMK Configurator JSON keymap file as "keymap.json"
+# because `qmk compile` directly translates it into C and compiles it too,
+# thereby completely bypassing this Makefile and our keymap header/footer!
+</span>
+<span class="nv">TOPLEVEL</span><span class="o">=</span><span class="sb">`</span>git rev-parse <span class="nt">--show-toplevel</span><span class="sb">`</span>
+<span class="nv">KEYBOARD</span><span class="o">=</span>handwired/dactyl_manuform/5x6_5
+<span class="nv">KEYMAP</span><span class="o">=</span>sunaku
+
+<span class="nl">all</span><span class="o">:</span> <span class="nf">flash</span>
+
+<span class="nl">flash</span><span class="o">:</span> <span class="nf">build</span>
+	    qmk flash <span class="nt">-kb</span> <span class="p">$(</span>KEYBOARD<span class="p">)</span> <span class="nt">-km</span> <span class="p">$(</span>KEYMAP<span class="p">)</span>
+
+<span class="nl">build</span><span class="o">:</span> <span class="nf">keymap.c config.h rules.mk</span>
+	    <span class="nb">test</span> <span class="o">!</span> <span class="nt">-e</span> keymap.json <span class="c"># see comment at the top of this Makefile</span>
+	    qmk compile <span class="nt">-kb</span> <span class="p">$(</span>KEYBOARD<span class="p">)</span> <span class="nt">-km</span> <span class="p">$(</span>KEYMAP<span class="p">)</span>
+
+<span class="nl">keymap.c</span><span class="o">:</span> <span class="nf">keymap_config.json keymap_header.c keymap_footer.c config.h</span>
+	    qmk json2c <span class="nt">-o</span> <span class="nv">$@</span> <span class="nv">$&lt;</span>
+	    <span class="nv">spot</span><span class="o">=</span><span class="p">$$(</span> <span class="nb">awk</span> <span class="s1">'/THIS FILE WAS GENERATED/ { print NR-1 </span><span class="p">}</span><span class="s1">'</span> <span class="nv">$@</span> <span class="o">)</span> <span class="o">&amp;&amp;</span> <span class="se">\</span>
+	    <span class="nb">sed</span> <span class="nt">-e</span> <span class="s2">"</span><span class="nv">$$</span><span class="s2">spot r keymap_header.c"</span> <span class="nt">-e</span> <span class="s2">"</span><span class="nv">$$</span><span class="s2"> r keymap_footer.c"</span> <span class="nt">-i</span> <span class="nv">$@</span>
+
+<span class="nl">clean</span><span class="o">:</span>
+	    qmk clean
+
+<span class="nl">clobber</span><span class="o">:</span> <span class="nf">clean</span>
+	    <span class="nb">rm</span> <span class="nt">-fv</span> keymap.c
+	    <span class="nb">rm</span> <span class="nt">-fv</span> <span class="p">$(</span>TOPLEVEL<span class="p">)</span>/<span class="p">$$(</span> <span class="nb">echo</span> <span class="p">$(</span>KEYBOARD<span class="p">)</span> | <span class="nb">tr</span> / _ <span class="p">)</span>_<span class="p">$(</span>KEYMAP<span class="p">)</span>.hex
+
+<span class="nl">.PHONY</span><span class="o">:</span> <span class="nf">clean clobber build flash</span>
+</code></pre></div></div><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2022 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>
