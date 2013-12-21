@@ -1,0 +1,396 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Enthium: Engrammer meets Hands Down Promethium - The Terminal Programmer</title><meta content="2024-11-02T15:52:34-04:00" name="DCTERMS.created" /><meta content="2025-08-10T05:20:00-04:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="keyboard, layout, ergonomics, optimization" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="enthium-keyboard-layout" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#enthium-keyboard-layout" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Enthium: Engrammer meets Hands Down Promethium</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2024-11-02T15:52:34-04:00"> 2 November 2024</time><br /><time class="date" datetime="2025-08-10T05:20:00-04:00"><a href="#updates" title="5 updates">10 August 2025</a></time></header><hr /><div class="description"></div><div class="content"><blockquote>
+<div class="highlight"><pre class="highlight plaintext"><code>  q y u o / x l d w z
+b c i e a , k h t n s v
+  ' - = . ; j m g p f
+            r
+</code></pre></div><p><em>Legend:</em> QWERTY=white, Engram=gold, Promethium=green, Enthium=blue.
+
+<picture><source type="image/webp" srcset="enthium-keyboard-layout.webp"><img src="enthium-keyboard-layout.png" width="1343" height="481" alt="Rendering of this layout on an ortholinear keyboard." title="Rendering of this layout on an ortholinear keyboard."></picture>
+
+<img src="https://github.com/sunaku/enthium/raw/main/linux/layout.png" alt="Rendering of this layout on a row-staggered keyboard." title="Rendering of this layout on a row-staggered keyboard.">
+<img src="https://github.com/sunaku/glove80-keymaps/raw/main/README/base-layer-diagram-Enthium.png" alt="Rendering of this layout on my Glove80 keyboard." title="Rendering of this layout on my Glove80 keyboard.">
+<a href="moergo-glove80-keyboard.html"><img src="https://github.com/sunaku/glove80-keymaps/raw/main/README/base-layer-photograph-Enthium.jpg" alt="Photograph of this layout on my Glove80 keyboard." title="Photograph of this layout on my Glove80 keyboard."></a></p>
+</blockquote>
+<p><ol class="table-of-contents"><li><a id="__ignition__" href="#ignition" class="downlink">Ignition</a><ol></ol></li><li><a id="__training__" href="#training" class="downlink">Training</a><ol></ol></li><li><a id="__evaluation__" href="#evaluation" class="downlink">Evaluation</a><ol></ol></li><li><a id="__refinement__" href="#refinement" class="downlink">Refinement</a><ol><li><a id="__pf-and-wv__" href="#pf-and-wv" class="downlink">PF and WV</a><ol></ol></li><li><a id="__q-and-z__" href="#q-and-z" class="downlink">Q and Z</a><ol></ol></li><li><a id="__b-and-v__" href="#b-and-v" class="downlink">B and V</a><ol></ol></li><li><a id="__o-and-u__" href="#o-and-u" class="downlink">O and U</a><ol></ol></li><li><a id="__jcbql-suggestions__" href="#jcbql-suggestions" class="downlink">@jcbql suggestions</a><ol></ol></li></ol></li><li><a id="__performance__" href="#performance" class="downlink">Performance</a><ol></ol></li><li><a id="__conclusion__" href="#conclusion" class="downlink">Conclusion</a><ol></ol></li></ol></p>
+
+<div id="ignition" class="section"></div><h2 class="heading">Ignition<a href="#ignition" class="permalink" title="Permalink"></a><a href="#__ignition__" class="uplink" title="Contents"></a></h2>
+<p>Intrigued by the <a href="https://reddit.com/r/KeyboardLayouts/comments/1g66ivi">Hands Down <em>Promethium</em></a> keyboard layout, which
+enhances the <a href="engram-keyboard-layout.html">Engram</a> layout with a HJKL cluster for Vim as well as advanced layout
+design and optimization heuristics pioneered by <a href="https://sites.google.com/alanreiser.com/handsdown/">Alan Reiser&rsquo;s <em>Hands Down</em> family
+of layouts</a>, I sought to improve upon its placement of punctuation, in
+the spirit of the <a href="engrammer-keyboard-layout.html">Engrammer</a> layout, by moving apostrophe to a different finger
+entirely from <code>YOU</code> and <code>I</code> so it can be typed without same-finger bigrams such as
+<code>you&#39;d</code>, <code>I&#39;d</code>, <code>they&#39;d</code>.</p>
+
+<blockquote>
+<div class="highlight"><pre class="highlight plaintext"><code>  f p d l x ; u o y b z
+  s n t h k , a e i c q
+\ v w g m j / . = - '
+          r
+</code></pre></div></blockquote>
+<p>This change reduced same-finger bigrams <a href="https://cyanophage.github.io/playground.html?layout=fpdlx%3Buoybzsnthk%2Caeicqvwgmj%2F.%3D-%27%5Cr&mode=ergo&lan=english">from 0.58% to 0.55% in Cyanophage&rsquo;s</a>
+analyzer, motivating me to continue customizing the layout and nuances further.
+Notably, I mirrored the layout horizontally because I&rsquo;d like to keep all vowels
+on the left hand (just like Dvorak and Engram/mer), but I was unable to move the R
+thumb key to the right hand in Cyanophage&rsquo;s analyzer playground.  Curiously, this
+<a href="https://cyanophage.github.io/playground.html?layout=byou%3Bxldpfzciea%2Ckhtnsq%27-%3D.%2Fjmgwv%5Cr&mode=ergo&lan=english">resulted in a lower Total Word Effort</a>
+than the canonical version &mdash; but why?</p>
+
+<blockquote>
+<div class="highlight"><pre class="highlight plaintext"><code>  b y o u ; x l d p f
+q c i e a , k h t n s z
+  ' - = . / j m g w v
+            r
+</code></pre></div></blockquote>
+
+<div id="training" class="section"></div><h2 class="heading">Training<a href="#training" class="permalink" title="Permalink"></a><a href="#__training__" class="uplink" title="Contents"></a></h2>
+<p>Next, I began practicing this layout with a fresh training profile on <a href="https://github.com/aradzie/keybr.com#readme">KeyBr</a>.
+After nearly 7.5 hours of training, I finally unlocked all the alphabets at an
+average speed of 42.6 WPM and an accuracy of 95.82%, using <a href="moergo-glove80-keyboard.html">my Glove80
+keyboard</a>.</p>
+
+<blockquote>
+<p><picture><source type="image/webp" srcset="enthium-keyboard-layout-keybr-unlocked.webp"><img src="enthium-keyboard-layout-keybr-unlocked.png" width="1201" height="247" alt="KeyBr status upon unlocking all letters." title="KeyBr status upon unlocking all letters."></picture>
+
+
+<picture><source type="image/webp" srcset="enthium-keyboard-layout-keybr-progress.webp"><img src="enthium-keyboard-layout-keybr-progress.png" width="1718" height="920" alt="KeyBr progress upon unlocking all letters." title="KeyBr progress upon unlocking all letters."></picture>
+
+
+<picture><source type="image/webp" srcset="enthium-keyboard-layout-keybr-statistics.webp"><img src="enthium-keyboard-layout-keybr-statistics.png" width="1746" height="994" alt="KeyBr statistics upon unlocking all letters." title="KeyBr statistics upon unlocking all letters."></picture>
+</p>
+</blockquote>
+<p>During the rigorous training, I wrote the following observations in my notebook:</p>
+
+<ul>
+<li><p>The most apparent and enduring change is the swap of <code>N</code> and <code>S</code> on the right
+hand&rsquo;s home row.  I had experienced the same thing before when switching to
+Engram (<code>HTSN</code>) from BEAKL-15 (<code>STNB</code>) and Dvorak (<code>HTNS</code>), which both have -<code>TN</code>-.</p></li>
+<li><p><code>N</code> feels good to tap with the ring finger, which is stronger than the pinky.</p></li>
+<li><p><code>NG</code>, <code>ND</code>, <code>SP</code> scissors are shortened (clustered closer together) and <em>powerful!</em></p></li>
+<li><p>The layout is compact, with plenty of rolling and <em>flowing around the center</em>
+of the right hand.  I&rsquo;m not impeded in my typing at all; it feels efficient.</p></li>
+<li><p><code>W</code> is taking a long time to clear, but its training helps strengthen <code>N</code> vs <code>S</code>.</p>
+
+<blockquote>
+<p>Cleared <code>W</code> at 3 hours and 18 minutes after completing 356 lessons with speed 43.1 (average) to 59.2 (top) WPM, and accuracy 96.23%.</p>
+</blockquote></li>
+<li><p><code>WN</code> is a same-finger bigram &mdash; the only one I really noticed &mdash; but the
+ring finger is dexterous enough to tap them quickly in succession as it ascends.</p></li>
+<li><p><code>FF</code> on pinky finger&rsquo;s upper row <em>feels weak&hellip;</em> maybe I just need more practice?
+I might consider using a BFh variant to bring <code>B</code> and <code>F</code> down to the home row.</p></li>
+<li><p><code>Q</code> took a long time too and it strained my hand to practice so many one-handed
+<code>QU</code> drills in a short time but, in reality, <code>Q</code> ought to be infrequent.</p>
+
+<blockquote>
+<p>Cleared <code>Q</code> at 6 hours and 45 minutes after completing 720 lessons with speed 42.5 (average) to 60.4 (top) WPM, and accuracy 95.96%.</p>
+</blockquote></li>
+</ul>
+
+<div id="evaluation" class="section"></div><h2 class="heading">Evaluation<a href="#evaluation" class="permalink" title="Permalink"></a><a href="#__evaluation__" class="uplink" title="Contents"></a></h2>
+<p>I spent a day with the layout in the real world to evaluate its effectiveness in
+the terminal and Vim (especially on my Linux laptop keyboard), and noticed that:</p>
+
+<ul>
+<li><code>WN</code> is a stair-step ascension same-finger bigram that I wished I could rake down instead</li>
+<li><code>DW</code> (2u skip) is not as convenient for Vim as it was in Engram (which puts them adjacent)</li>
+<li><code>FG</code> (2u skip) is not as convenient for shell background jobs (<code>bg</code>, <code>fg</code>) as it was in Engram</li>
+<li><code>SW</code> (half scissor) feels a little bit weaker curling inward than reaching up (as in Engram)</li>
+<li><code>FF</code> (e.g. &ldquo;stu<em>ff</em>&rdquo;) is a little bit of a chore for the pinky finger to tap twice in the upper row</li>
+</ul>
+
+<div id="refinement" class="section"></div><h2 class="heading">Refinement<a href="#refinement" class="permalink" title="Permalink"></a><a href="#__refinement__" class="uplink" title="Contents"></a></h2>
+
+<div id="pf-and-wv" class="section"></div><h3 class="heading">PF and WV<a href="#pf-and-wv" class="permalink" title="Permalink"></a><a href="#__pf-and-wv__" class="uplink" title="Contents"></a></h3>
+<p>I really didn&rsquo;t want to deviate from the canonical Hands Down Promethium layout
+(this &ldquo;Enthium&rdquo; derivative was just supposed to be a simple horizontal mirror,
+plus some rearranged punctuation marks) so I reluctantly went to the keyboard
+layout analyzer playgrounds to see how bad it would be to <a href="https://github.com/sunaku/enthium/commit/3e3be6f936d48efde39198d35269949540333eda">swap <code>PF</code> with <code>WV</code>&hellip;</a>
+and to my complete surprise, this change hardly affected the layout&rsquo;s performance:</p>
+
+<blockquote>
+<div class="highlight"><pre class="highlight plaintext"><code>  b y o u ; x l d w v
+q c i e a , k h t n s z
+  ' - = . / j m g p f
+            r
+</code></pre></div></blockquote>
+
+<ul>
+<li>Oxey&rsquo;s analyzer showed no changes at all in the stats!</li>
+<li>KeySolve analyzer showed an increase in FSB from 0.14% to 0.37% but the other
+stats improved: FSS reduced from 0.82% to 0.48%, HSB reduced from 6.05% to
+5.64%, and HSS reduced from 5.97% to 5.50%; everything else was identical.</li>
+<li>Cyanophage analyzer&rsquo;s Total Word Effort increased from 730.9 to 735.9 but all
+other stats remained the same!</li>
+</ul>
+<p>I&rsquo;m <em>so glad</em> this experiment worked out because it makes the layout a lot more
+comfortable for me in practice and it would also further reduce the barrier to
+entry for others seeking to switch over to Enthium from the Engrammer layout. :)</p>
+
+<div id="q-and-z" class="section"></div><h3 class="heading">Q and Z<a href="#q-and-z" class="permalink" title="Permalink"></a><a href="#__q-and-z__" class="uplink" title="Contents"></a></h3>
+<p>After the first month of real-world use, I also <a href="https://github.com/sunaku/enthium/commit/403aa234b3537382fff930e4a0a7688b1b79645a">swapped <code>Q</code> with <code>Z</code></a> to be like Engram (with <code>Q</code> typed by the right pinky finger) in order to avoid
+one-handed QU sequences (in favor of hand alternation) which overwork the left
+pinky finger during KeyBr training (see <a href="#training">the last observation</a> above) and in real usage.</p>
+
+<blockquote>
+<div class="highlight"><pre class="highlight plaintext"><code>  b y o u ; x l d w v
+z c i e a , k h t n s q
+  ' - = . / j m g p f
+            r
+</code></pre></div></blockquote>
+<p>This deviation incurred a modest increase in Oxey&rsquo;s analyzer&rsquo;s Total Redirects
+from 0.350% to 3.389%, along with a decrease in Onehands from 2.206% to 2.091%,
+and a significant increase in the Total Rolls score from 43.816% up to 44.055%.
+Similarly, Cyanophage&rsquo;s Total Word Effort score decreased from 735.9 to 735.1,
+along with a negligible increase in the Effort score from 398.34 up to 398.38,
+and with similarly modest differences in the Trigram Stats score distribution.
+In contrast, there was no change at all in the KeySolve analyzer&rsquo;s statistics!</p>
+
+<div id="b-and-v" class="section"></div><h3 class="heading">B and V<a href="#b-and-v" class="permalink" title="Permalink"></a><a href="#__b-and-v__" class="uplink" title="Contents"></a></h3>
+<p>After the second month of real-world use, I reverted the previous <code>Q</code> and <code>Z</code> swap and
+then rotated <code>B</code> and <code>V</code> out from the upper row to the home row lateral in order to
+avoid reaching up with short pinky fingers or those <a href="https://reddit.com/r/KeyboardLayouts/comments/1fy8nve/_/lqulnww/">weakened by convention</a>.</p>
+
+<blockquote>
+<div class="highlight"><pre class="highlight plaintext"><code>  q y o u ; x l d w z
+b c i e a , k h t n s v
+  ' - = . / j m g p f
+            r
+</code></pre></div></blockquote>
+<p>In the Cyanophage analyzer, this change reduces Pinky/Ring Scissors from 0.49%
+down to 0.35% (huge drop!) and Skip Bigrams (2u) from 0.30% down to 0.29%.
+The other analyzers don&rsquo;t fully comprehend the placement of lateral pinky keys,
+as explained in the note at the top of each analyzer&rsquo;s respective subheading,
+but Oxey&rsquo;s analyzer reports a notable reduction in SFBs from 0.829% to 0.818%.</p>
+
+<div id="o-and-u" class="section"></div><h3 class="heading">O and U<a href="#o-and-u" class="permalink" title="Permalink"></a><a href="#__o-and-u__" class="uplink" title="Contents"></a></h3>
+<p>O and U are swapped (changing the inward-rolling YOU into a redirecting YUO) to
+distribute finger workload more evenly (especially for the middle finger) and
+to avoid same-finger bigrams on AU (as in &ldquo;<em>au</em>thor&rdquo;) and EO (as in &ldquo;p<em>eo</em>ple&rdquo;).</p>
+
+<blockquote>
+<div class="highlight"><pre class="highlight plaintext"><code>  q y u o / x l d w z
+b c i e a , k h t n s v
+  ' - = . ; j m g p f
+            r
+</code></pre></div></blockquote>
+<p>This change was <a href="https://reddit.com/r/KeyboardLayouts/comments/1l5ei0j/_/mwgusgt/">suggested by the creator of Cyanophage&rsquo;s Analyzer himself</a> 🤩 since it
+reduced SFBs from 0.55% to 0.49% and LSBs from 0.23% to 0.20% in his analyzer.
+Similarly, it reduces SFBs to 0.795% in Oxey&rsquo;s analyzer, elevating this layout
+to 🥇 first place in Pascal Getreuer&rsquo;s performance rankings for SFBs and LSBs!</p>
+
+<div id="jcbql-suggestions" class="section"></div><h3 class="heading">@jcbql suggestions<a href="#jcbql-suggestions" class="permalink" title="Permalink"></a><a href="#__jcbql-suggestions__" class="uplink" title="Contents"></a></h3>
+<p>After releasing Enthium v9, I received some powerful performance improvement
+<a href="https://github.com/sunaku/enthium/issues/6">suggestions from @jcbql in GitHub issue 6</a>, which sparked a chain of further
+evaluation of 16 different candidates in search of the next <a href="https://github.com/sunaku/enthium/tree/v10#readme">Enthium v10</a> layout:</p>
+
+<table><thead>
+<tr>
+<th>Metric</th>
+<th>v10</th>
+<th>v9</th>
+<th>Change</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>SFBs</td>
+<td>0.42%</td>
+<td>0.48%</td>
+<td>Improved ✅</td>
+</tr>
+<tr>
+<td>LSBs</td>
+<td>0.15%</td>
+<td>0.18%</td>
+<td>Improved ✅</td>
+</tr>
+<tr>
+<td>Scissors</td>
+<td>0.08%</td>
+<td>0.08%</td>
+<td>Same ⚖️</td>
+</tr>
+<tr>
+<td>Skipgrams (2u)</td>
+<td>0.32%</td>
+<td>0.35%</td>
+<td>Improved ✅</td>
+</tr>
+<tr>
+<td>Rolls</td>
+<td>46.53%</td>
+<td>45.30%</td>
+<td>Improved ✅</td>
+</tr>
+<tr>
+<td>Redirects</td>
+<td>2.18%</td>
+<td>2.06%</td>
+<td>Slight ↑ ⚠️</td>
+</tr>
+<tr>
+<td>Pinky/Ring Scissors</td>
+<td>0.37%</td>
+<td>0.35%</td>
+<td>Slight ↑ ⚠️</td>
+</tr>
+<tr>
+<td>PinkyOff</td>
+<td>3.31%</td>
+<td>3.51%</td>
+<td>Improved ✅</td>
+</tr>
+</tbody></table>
+<img src="https://github.com/user-attachments/assets/38f6bb35-d965-4863-b026-b80831c3e454" alt="Vintage postcard: &quot;Enthium v10: Engrammer meets Promethium&quot;" title="Vintage postcard: &quot;Enthium v10: Engrammer meets Promethium&quot;">
+<div id="performance" class="section"></div><h2 class="heading">Performance<a href="#performance" class="permalink" title="Permalink"></a><a href="#__performance__" class="uplink" title="Contents"></a></h2>
+<p>The <a href="https://www.reddit.com/r/KeyboardLayouts/">keyboard layout community</a> commonly recommends <a href="https://getreuer.info/posts/keyboards/alt-layouts/index.html#which-alt-keyboard-layout-should-i-learn">Pascal Getreuer&rsquo;s
+guide and comparison table</a> as a starting point for layout exploration,
+and you&rsquo;ll see that Enthium is statistically among the best layouts there:</p>
+
+<ul>
+<li>0.42% SFBs &ndash; wins 🥇 first place; beats the entire table!</li>
+<li>0.15% LSBs &ndash; wins 🥇 first place; beats the entire table!</li>
+<li>0.08% scissors &ndash; wins 🥇 first place as a tie with Dvorak</li>
+<li>46.53% rolls &ndash; beats MTGAP, Graphite, Gallium, HandsDownNeu, BEAKL19bis, Halmak</li>
+<li>2.18% redirects &ndash; fourth place; surpassed by Gallium, BEAKL19bis, HandsDownNeu</li>
+<li>3.31% pinky off &ndash; beats APTv3, Semimak, MTGAP, Dvorak, Recurva, Halmak, Engram</li>
+</ul>
+<p>These results come <a href="https://cyanophage.github.io/playground.html?layout=zyuo%3Bqldpx%5Cciea%2Ckhtnsf%27-%3D.%2Fjmgbv*rw&mode=ergo&lan=english&thumb=r">from Cyanophage&rsquo;s Layout Analyzer</a>, as detailed <a href="https://github.com/sunaku/enthium#performance">in the README</a>.</p>
+
+<div id="conclusion" class="section"></div><h2 class="heading">Conclusion<a href="#conclusion" class="permalink" title="Permalink"></a><a href="#__conclusion__" class="uplink" title="Contents"></a></h2>
+<p>The differences between <a href="engram-keyboard-layout.html">Engram</a>/<a href="engrammer-keyboard-layout.html">mer</a> and Enthium are so minimal that one
+might switch to it completely with about 6 hours<sup id="fnref1"><a href="#fn1">1</a></sup> of practice, spread over 2-3
+days (start Friday and use weekend), to unlock all letters in <a href="https://github.com/aradzie/keybr.com#readme">KeyBr</a> training. Enjoy!</p>
+
+<div class="footnotes">
+<hr>
+<ol>
+
+<li id="fn1">
+<p>I&rsquo;m giving a shorter estimate than my own elapsed time since I trained with
+  Promethium before swapping <code>PF</code> with <code>WV</code>; see my observation on clearing <code>W</code>.&nbsp;<a href="#fnref1">&#8617;</a></p>
+</li>
+
+</ol>
+</div>
+</div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2025-08-10T05:20:00-04:00">10 August 2025: </time></dt><dd class="content"><p>With <a href="https://github.com/sunaku/enthium/issues/6">community feedback and extensive testing</a>, I have released <a href="https://github.com/sunaku/enthium/tag/v10">Enthium v10</a>:</p>
+
+<blockquote>
+<p>0.42% SFBs, 0.15% LSBs, 0.08% Scissors, 46.53% Rolls, 2.18% Redirects, 3.31% PinkyOff</p>
+<div class="highlight"><pre class="highlight plaintext"><code>  z y u o ; q l d p x
+w c i e a , k h t n s f
+  ' - = . / j m g b v
+            r
+</code></pre></div></blockquote>
+<p>See <a href="https://github.com/sunaku/enthium/tree/v10#readme">https://github.com/sunaku/enthium/tree/v10#readme</a> for more information.</p>
+<p>Special thanks to @jcbql for performance suggestions in <a href="https://github.com/sunaku/enthium/issues/6">GitHub issue 6</a>.</p>
+<p></p>
+
+<div id="how-does-enthium-v10-compare-to-v9" class="section"></div><h2 class="heading">How does Enthium v10 compare to v9?<a href="#how-does-enthium-v10-compare-to-v9" class="permalink" title="Permalink"></a><a href="#__how-does-enthium-v10-compare-to-v9__" class="uplink" title="Contents"></a></h2>
+
+<table><thead>
+<tr>
+<th>Metric</th>
+<th>v10</th>
+<th>v9</th>
+<th>Change</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>SFBs</td>
+<td>0.42%</td>
+<td>0.48%</td>
+<td>Improved ✅</td>
+</tr>
+<tr>
+<td>LSBs</td>
+<td>0.15%</td>
+<td>0.18%</td>
+<td>Improved ✅</td>
+</tr>
+<tr>
+<td>Scissors</td>
+<td>0.08%</td>
+<td>0.08%</td>
+<td>Same ⚖️</td>
+</tr>
+<tr>
+<td>Skipgrams (2u)</td>
+<td>0.32%</td>
+<td>0.35%</td>
+<td>Improved ✅</td>
+</tr>
+<tr>
+<td>Rolls</td>
+<td>46.53%</td>
+<td>45.30%</td>
+<td>Improved ✅</td>
+</tr>
+<tr>
+<td>Redirects</td>
+<td>2.18%</td>
+<td>2.06%</td>
+<td>Slight ↑ ⚠️</td>
+</tr>
+<tr>
+<td>Pinky/Ring Scissors</td>
+<td>0.37%</td>
+<td>0.35%</td>
+<td>Slight ↑ ⚠️</td>
+</tr>
+<tr>
+<td>PinkyOff</td>
+<td>3.31%</td>
+<td>3.51%</td>
+<td>Improved ✅</td>
+</tr>
+</tbody></table>
+
+<div id="vintage-postcard-generated-by-gemini" class="section"></div><h2 class="heading">Vintage postcard (generated by Gemini)<a href="#vintage-postcard-generated-by-gemini" class="permalink" title="Permalink"></a><a href="#__vintage-postcard-generated-by-gemini__" class="uplink" title="Contents"></a></h2>
+<img src="https://github.com/user-attachments/assets/38f6bb35-d965-4863-b026-b80831c3e454" alt="Vintage postcard: &quot;Enthium v10: Engrammer meets Promethium&quot;" title="Vintage postcard: &quot;Enthium v10: Engrammer meets Promethium&quot;"></dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2025-06-25T22:18:27-04:00">25 June 2025: </time></dt><dd class="content"><p>I&rsquo;ve released <a href="https://github.com/sunaku/enthium/releases/tag/v9">Enthium v9</a>, maximizing performance and shortcut convenience:</p>
+
+<blockquote>
+<p>0.48% SFBs, 0.18% LSBs, 0.08% scissors, 45.30% rolls, 2.83% redirects &ndash; with these results from Cyanophage&rsquo;s analyzer, Enthium now takes first place 🥇 in all 3 categories (SFBs, LSBs, and scissors) in Pascal Getreuer&rsquo;s performance ranking table! 🤯</p>
+<div class="highlight"><pre class="highlight plaintext"><code>  q y u o / x l d w z
+b c i e a , k h t n s v
+  ' - = . ; j m g p f
+            r
+</code></pre></div></blockquote>
+
+<ul>
+<li><p>Minus and equals are clustered for intuitive zooming in/out with Ctrl.</p></li>
+<li><p>Though period and comma are reversed in terms of their shifted symbols
+<code>&gt;</code> and <code>&lt;</code>, this arrangement helps to reduce lateral stretch bigrams
+while clustering <code>&gt;</code> with minus and equals for <code>-&gt;</code> and <code>=&gt;</code> arrows
+and stacking them vertically on traditional row-staggered keyboards.</p></li>
+<li><p>Swap O and U (changing the inward-rolling YOU into a redirecting YUO) to
+distribute finger workload more evenly (especially for the middle finger)
+and to avoid same-finger bigrams on AU (as in &ldquo;<em>au</em>thor&rdquo;) and EO (as in &ldquo;p<em>eo</em>ple&rdquo;).
+This improvement was <a href="https://reddit.com/r/KeyboardLayouts/comments/1l5ei0j/_/mwgusgt/">suggested by</a> the great @cyanophage himself! 🧙✨</p></li>
+</ul>
+<p>See <a href="https://github.com/sunaku/enthium/tree/v9#readme">https://github.com/sunaku/enthium/tree/v9#readme</a> for more information.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2025-01-17T11:06:50-05:00">17 January 2025: </time></dt><dd class="content"><p>Inspired by the ongoing discussion and feedback I&rsquo;ve received on the importance of pinky usage in the Engram family of layouts, I have decided to follow my intuition to <a href="#b-and-v">better accommodate shorter/weak pinkies</a> in <a href="https://github.com/sunaku/enthium/tree/v5">Enthium v5</a>, which needs less reaching up and allows more &ldquo;home row&rdquo; typing.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2024-12-06T10:48:31-05:00"> 6 December 2024: </time></dt><dd class="content"><p>The placement of Q on the vowel hand has been bothering me sometimes when typing the QU sequence which is often followed by more vowels, incurring even more one-handed activity. 😞  Consequently, I have <a href="#q-and-z">decided to swap Q and Z</a> to restore Q to the consonant hand just like in Arno&rsquo;s Engram 2.0 layout.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2024-11-27T07:00:36-05:00">27 November 2024: </time></dt><dd class="content"><p>The placement of <code>/</code> and <code>.</code> has been bothering me for <code>./</code> and <code>../</code>
+filesystem paths, conflicting with Engrammer familiarity (which has <code>/</code> on
+the lower row and <code>;</code> on the upper row), and deviating from Vim&rsquo;s HL directionality
+where I <em>reach up</em> with my right index finger from <code>H</code> to <code>L</code> for the <em>next
+character</em> but then <em>reach down</em> with my left index finger from <code>A</code> to <code>;</code> for the
+<em>next jump</em>. 😅</p>
+<p>Thus I <a href="https://github.com/sunaku/enthium/commit/d88c59331ae8a9a2080555289b920a9c2642cb80">swapped <code>/</code> with <code>;</code></a> and it didn&rsquo;t hinder the layout&rsquo;s performance:</p>
+
+<ul>
+<li>KeySolve analyzer&rsquo;s HSB% score increased by +0.02% from 5.62% to 5.64%</li>
+<li>KeySolve analyzer&rsquo;s HSS% score increased by +0.03% from 5.47% to 5.50%</li>
+<li>Cyanophage analyzer&rsquo;s Effort score fell by -0.13 from 398.47 to 398.34</li>
+<li>Everything else remained the same! 🏆</li>
+</ul>
+<p>It&rsquo;s a funny thing again with intuition: I actually <a href="https://github.com/sunaku/enthium/commit/d77870739450b62d0f3623fba75115f351958216">had Semicolon stacked
+above Slash</a> in Enthium, and Backspace on T1 and Enter on T5 in <a href="https://github.com/sunaku/glove80-keymaps">Glorious Engrammer</a> during
+the early iterations.  And now I&rsquo;m slowly gravitating back to the origins,
+having strayed from the path of least surprise (intuition).</p>
+</dd></dl></aside><div class="comments" id="comments"><h2>Comments</h2><blockquote>
+<p><strong>NOTE:</strong> Comments are temporarily disabled on this page while I migrate them from Disqus to Gisqus (GitHub Discussions) because the former has 💪 forced the display of advertisements 🤑 on this website recently.</p>
+</blockquote>
+</div><hr /><footer><p class="copyright">&copy; 2024&ndash;2025 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>
