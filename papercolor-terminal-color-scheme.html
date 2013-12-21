@@ -1,0 +1,84 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>PaperColor terminal color scheme - The Terminal Programmer</title><meta content="2018-01-09T15:54:15-08:00" name="DCTERMS.created" /><meta content="2018-01-09T15:54:15-08:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="terminal, color, vim, linux" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="papercolor-terminal-color-scheme" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#papercolor-terminal-color-scheme" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">PaperColor terminal color scheme</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2018-01-09T15:54:15-08:00"> 9 January 2018</time></header><hr /><div class="description"></div><div class="content"><p><a href="https://chromium.googlesource.com/apps/libapps/+/HEAD/hterm">hterm</a>, the official terminal emulator for ChromeOS, has foiled my usual
+preference for dark color schemes because its font rendering is optimized for
+light backgrounds that are common on the Web, but not for traditional terminals.</p>
+<p>Thus, I have ported Vim&rsquo;s light <a href="https://github.com/NLKNguyen/papercolor-theme">PaperColor</a> theme to the terminal as follows:</p>
+<img src="papercolor-terminal-color-scheme.png" alt="the color scheme"><img src="papercolor-terminal-color-scheme-man.png" alt="UNIX manual page"><p>To use this color scheme in <a href="https://chromium.googlesource.com/apps/libapps/+/HEAD/hterm">hterm</a>, open the <a href="https://chromium.googlesource.com/apps/libapps/+/HEAD/nassh">nassh</a> extension&rsquo;s settings page,
+open Chrome Developer Tools, and then run the following snippet in the console:</p>
+<div class="highlight"><pre class="highlight javascript"><code><span class="nx">term_</span><span class="p">.</span><span class="nx">prefs_</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="dl">"</span><span class="s2">background-color</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#eeeeee</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">term_</span><span class="p">.</span><span class="nx">prefs_</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="dl">"</span><span class="s2">foreground-color</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#444444</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">term_</span><span class="p">.</span><span class="nx">prefs_</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="dl">"</span><span class="s2">cursor-color</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">rgba(0,95,135, 0.5)</span><span class="dl">"</span><span class="p">);</span> <span class="cm">/* #005f87 */</span>
+<span class="nx">term_</span><span class="p">.</span><span class="nx">prefs_</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="dl">"</span><span class="s2">color-palette-overrides</span><span class="dl">"</span><span class="p">,</span> <span class="p">[</span><span class="dl">"</span><span class="s2">#1c1c1c</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#af0000</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#008700</span><span class="dl">"</span><span class="p">,</span>
+<span class="dl">"</span><span class="s2">#d75f00</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#005faf</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#d70087</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#0087af</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#e4e4e4</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#1c1c1c</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#af0000</span><span class="dl">"</span><span class="p">,</span>
+<span class="dl">"</span><span class="s2">#008700</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#d75f00</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#005faf</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#d70087</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#0087af</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#e4e4e4</span><span class="dl">"</span><span class="p">]);</span>
+</code></pre></div><p>To use this color scheme in Rxvt or XTerm, save the following snippet to a file
+such as <code>~/.Xdefaults</code> and then run <code>xrdb -merge</code> on that file to apply it.  Any
+terminals launched thereafter will use this color scheme, but not existing ones.</p>
+<div class="highlight"><pre class="highlight plaintext"><code>! Colors from "PaperColor" colorscheme for Vim
+! https://github.com/NLKNguyen/papercolor-theme
+
+#define Ansi_0_Color     #1c1c1c
+#define Ansi_8_Color     #1c1c1c
+#define Ansi_1_Color     #af0000
+#define Ansi_9_Color     #af0000
+#define Ansi_2_Color     #008700
+#define Ansi_10_Color    #008700
+#define Ansi_3_Color     #d75f00
+#define Ansi_11_Color    #d75f00
+#define Ansi_4_Color     #005faf
+#define Ansi_12_Color    #005faf
+#define Ansi_5_Color     #d70087
+#define Ansi_13_Color    #d70087
+#define Ansi_6_Color     #0087af
+#define Ansi_14_Color    #0087af
+#define Ansi_7_Color     #e4e4e4
+#define Ansi_15_Color    #e4e4e4
+#define Foreground_Color #444444
+#define Background_Color #eeeeee
+#define Cursor_Color     #005f87
+
+Rxvt*color0       : Ansi_0_Color/*  normal black   */
+Rxvt*color1       : Ansi_1_Color/*  normal red     */
+Rxvt*color2       : Ansi_2_Color/*  normal green   */
+Rxvt*color3       : Ansi_3_Color/*  normal yellow  */
+Rxvt*color4       : Ansi_4_Color/*  normal blue    */
+Rxvt*color5       : Ansi_5_Color/*  normal magenta */
+Rxvt*color6       : Ansi_6_Color/*  normal cyan    */
+Rxvt*color7       : Ansi_7_Color/*  normal white   */
+Rxvt*color8       : Ansi_8_Color/*  bright black   */
+Rxvt*color9       : Ansi_9_Color/*  bright red     */
+Rxvt*color10      : Ansi_10_Color/* bright green   */
+Rxvt*color11      : Ansi_11_Color/* bright yellow  */
+Rxvt*color12      : Ansi_12_Color/* bright blue    */
+Rxvt*color13      : Ansi_13_Color/* bright magenta */
+Rxvt*color14      : Ansi_14_Color/* bright cyan    */
+Rxvt*color15      : Ansi_15_Color/* bright white   */
+Rxvt*foreground   : Foreground_Color
+Rxvt*background   : Background_Color
+Rxvt*cursorColor  : Cursor_Color
+
+XTerm*color0      : Ansi_0_Color/*  normal black   */
+XTerm*color1      : Ansi_1_Color/*  normal red     */
+XTerm*color2      : Ansi_2_Color/*  normal green   */
+XTerm*color3      : Ansi_3_Color/*  normal yellow  */
+XTerm*color4      : Ansi_4_Color/*  normal blue    */
+XTerm*color5      : Ansi_5_Color/*  normal magenta */
+XTerm*color6      : Ansi_6_Color/*  normal cyan    */
+XTerm*color7      : Ansi_7_Color/*  normal white   */
+XTerm*color8      : Ansi_8_Color/*  bright black   */
+XTerm*color9      : Ansi_9_Color/*  bright red     */
+XTerm*color10     : Ansi_10_Color/* bright green   */
+XTerm*color11     : Ansi_11_Color/* bright yellow  */
+XTerm*color12     : Ansi_12_Color/* bright blue    */
+XTerm*color13     : Ansi_13_Color/* bright magenta */
+XTerm*color14     : Ansi_14_Color/* bright cyan    */
+XTerm*color15     : Ansi_15_Color/* bright white   */
+XTerm*colorUL     : Underline_Color
+XTerm*colorRV     : Reverse_Color
+XTerm*foreground  : Foreground_Color
+XTerm*background  : Background_Color
+XTerm*cursorColor : Cursor_Color
+</code></pre></div></div><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "PaperColor terminal color scheme";
+var disqus_url = "https://sunaku.github.io/papercolor-terminal-color-scheme.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2018 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

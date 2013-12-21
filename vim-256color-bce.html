@@ -1,0 +1,174 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Fixing Vim&#39;s Background Color Erase for 256-color tmux and GNU screen - The Terminal Programmer</title><meta content="2013-02-25T16:13:54-08:00" name="DCTERMS.created" /><meta content="2013-03-12T09:49:42-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="solution, vim, tmux, screen, color" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="vim-256color-bce" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#vim-256color-bce" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Fixing Vim&#39;s Background Color Erase for 256-color tmux and GNU screen</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2013-02-25T16:13:54-08:00">25 February 2013&nbsp;<span class="update_count"><a href="#updates" title="2 updates">&middot;&middot;&rarr;</a></span>&nbsp;12 March 2013</time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__summary__" href="#summary" class="downlink">Summary</a><ol></ol></li><li><a id="__problem__" href="#problem" class="downlink">Problem</a><ol></ol></li><li><a id="__approach__" href="#approach" class="downlink">Approach</a><ol></ol></li><li><a id="__solution__" href="#solution" class="downlink">Solution</a><ol></ol></li></ol>
+<div id="summary" class="section"></div><h2 class="heading">Summary<a href="#summary" class="permalink" title="Permalink"></a><a href="#__summary__" class="uplink" title="Contents"></a></h2>
+
+<ol>
+<li><p>Run <code>:set t_ut=</code> to disable <strong>Background Color Erase</strong>.</p></li>
+<li><p>Run <code>:redraw</code> or press <code>&lt;C-L&gt;</code> to repaint the background.</p></li>
+<li><p>Use <a href="https://github.com/nacitar/terminalkeys.vim">terminalkeys</a>
+and <a href="https://github.com/drmikehenry/vim-fixkey">fixkey</a>
+to recognize modifier keys.</p></li>
+</ol>
+
+<div id="problem" class="section"></div><h2 class="heading">Problem<a href="#problem" class="permalink" title="Permalink"></a><a href="#__problem__" class="uplink" title="Contents"></a></h2>
+<p>This is what you would see if you applied the <a href="http://slinky.imukuppi.org/zenburn/">Zenburn</a> color scheme to
+<a href="http://www.vim.org/about.php">Vim</a> running under the <code>TERM=xterm-256color</code> environment inside <a href="https://tmux.github.io/">tmux</a> or
+<a href="https://www.gnu.org/software/screen/">GNU screen</a>, which itself was attached to the <a href="http://www.frexx.de/xterm-256-notes/">xterm-256color</a> terminal:</p>
+<img src="vim-256color-bce-xterm.png" alt="Flaky background in TERM=xterm-256color"><p>Here, the terminal&rsquo;s background color <em>bleeds</em> into Vim&rsquo;s and, depending
+on the contrast between those two colors, makes Vim use highly unpleasant.</p>
+<p>Thankfully, you can fix this by running <code>:set term=screen-256color</code> inside
+Vim or by relaunching Vim under the <code>TERM=screen-256color</code> environment,
+<a href="http://blog.sanctum.geek.nz/term-strings/">as some experts recommend</a>:</p>
+<img src="vim-256color-bce-screen.png" alt="Solid background in TERM=screen-256color"><p>However, if you rely on Vim&rsquo;s ability to sense modifier keys&mdash;such as
+Shift, Control, and Alt&mdash;because you use them to define custom keyboard
+shortcuts <a href="https://github.com/sunaku/.vim">like I do</a>, then you would soon discover that Vim <a href="http://unix.stackexchange.com/q/29907">does
+not recognize</a> some of them inside the screen-256color terminal.</p>
+<p>Thus you would be faced with a most <em>unnerving</em> dilemma:</p>
+
+<ol>
+<li><p>Do you forfeit your custom keyboard shortcuts to gain a proper
+background color by running Vim inside the screen-256color terminal?</p></li>
+<li><p>Do you suffer background color bleeding to retain your custom keyboard
+shortcuts by running Vim inside the xterm-256color terminal?</p></li>
+</ol>
+<p>Alas, is it truly a <em>binary</em> choice?  Must you really forgo your personal
+keyboard shortcuts in order to view your chosen Vim color scheme properly?
+No, I would not accept such a fate; there <em>has</em> to be a better way! <code>&gt;:O</code></p>
+
+<div id="approach" class="section"></div><h2 class="heading">Approach<a href="#approach" class="permalink" title="Permalink"></a><a href="#__approach__" class="uplink" title="Contents"></a></h2>
+<p>I knew about Vim&rsquo;s ability to manipulate its host terminal through its
+<code>t_Co</code> setting, which lets you override how many colors Vim thinks its
+host terminal is capable of rendering.  Thus, looking up <code>:help t_Co</code> in
+Vim revealed numerous terminal settings&mdash;which all happened to be listed
+in the <a href="http://vimdoc.sourceforge.net/htmldoc/term.html#terminal-options">terminal-options</a> section of Vim&rsquo;s help documentation&mdash;that could
+be overridden, hopefully in the same way, to perhaps solve this problem.</p>
+<p>However, there were too many settings in the documentation to practically
+investigate by hand, so I narrowed down the possibilities to the following
+eleven settings by searching for the words &ldquo;color&rdquo; and then &ldquo;clear&rdquo;:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>OUTPUT CODES
+  option  meaning
+  t_AB    set background color (ANSI)
+  t_AF    set foreground color (ANSI)
+  t_cd    clear to end of screen
+  t_ce    clear to end of line
+  t_cl    clear screen
+  t_Co    number of colors
+  t_me    Normal mode (undoes t_mr, t_mb, t_md and color)
+  t_op    reset to original color pair
+  t_Sb    set background color
+  t_Sf    set foreground color
+  t_ut    clearing uses the current background color
+</code></pre></div><p>I then observed the values of these settings in both environments so that
+I could (1) compare them to discover what makes Vim render its background
+color correctly in the screen-256color terminal and then (2) replicate
+those values to achieve the same effect in the xterm-256color terminal.</p>
+<p>screen-256color observations:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>t_cd=^[[J
+t_ce=^[[K
+t_cl=^[[H^[[J
+t_AB=^[[%?%p1%{8}%&lt;%t4%p1%d%e%p1%{16}%&lt;%t10%p1%{8}%-%d%e48;5;%p1%d%;m
+t_AF=^[[%?%p1%{8}%&lt;%t3%p1%d%e%p1%{16}%&lt;%t9%p1%{8}%-%d%e38;5;%p1%d%;m
+t_Co=256
+t_me=^[[0m
+t_op=^[[39;49m
+t_Sb=
+t_Sf=
+t_ut=
+</code></pre></div><p>xterm-256color observations:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>t_cd=^[[J
+t_ce=^[[K
+t_cl=^[[H^[[2J
+t_AB=^[[%?%p1%{8}%&lt;%t4%p1%d%e%p1%{16}%&lt;%t10%p1%{8}%-%d%e48;5;%p1%d%;m
+t_AF=^[[%?%p1%{8}%&lt;%t3%p1%d%e%p1%{16}%&lt;%t9%p1%{8}%-%d%e38;5;%p1%d%;m
+t_Co=256
+t_me=^[[m
+t_op=^[[39;49m
+t_Sb=
+t_Sf=
+t_ut=y
+</code></pre></div><p>Differences in observations:</p>
+<div class="highlight"><pre class="highlight diff"><code><span class="gd">--- screen-256color observations
+</span><span class="gi">+++ xterm-256color observations
+</span><span class="p">@@ -1,11 +1,11 @@</span>
+ t_cd=^[[J
+ t_ce=^[[K
+<span class="gd">-t_cl=^[[H^[[J
+</span><span class="gi">+t_cl=^[[H^[[2J
+</span> t_AB=^[[%?%p1%{8}%&lt;%t4%p1%d%e%p1%{16}%&lt;%t10%p1%{8}%-%d%e48;5;%p1%d%;m
+ t_AF=^[[%?%p1%{8}%&lt;%t3%p1%d%e%p1%{16}%&lt;%t9%p1%{8}%-%d%e38;5;%p1%d%;m
+ t_Co=256
+<span class="gd">-t_me=^[[0m
+</span><span class="gi">+t_me=^[[m
+</span> t_op=^[[39;49m
+ t_Sb=
+ t_Sf=
+<span class="gd">-t_ut=
+</span><span class="gi">+t_ut=y
+</span></code></pre></div><p>Comparing these observations, I found that xterm-256color only differed
+from screen-256color in these three settings: <code>t_cl</code>, <code>t_me</code>, and <code>t_ut</code>.</p>
+
+<div id="solution" class="section"></div><h2 class="heading">Solution<a href="#solution" class="permalink" title="Permalink"></a><a href="#__solution__" class="uplink" title="Contents"></a></h2>
+<p>One by one, I applied the screen-256color value of each differing setting
+to a Vim session that was running inside my desired xterm-256color
+terminal and then pressed Control-L to make Vim redraw itself.  Changing
+<code>t_cl</code> and <code>t_me</code> had no effect but, luckily, <code>t_ut</code> did the trick! :-)</p>
+<p>This makes sense because, according to Vim documentation, not only does
+<code>t_ut</code> control whether Vim &ldquo;uses the current background color&rdquo; to clear
+the screen (also known as <strong>Background Color Erase</strong>, or <strong>BCE</strong> for
+short) but it also takes effect only when its value is a non-empty string.</p>
+<p>In this case, Vim used BCE in xterm-256color because, under that terminal,
+<code>t_ut</code> had value <code>y</code>: a non-empty string.  Conversely, Vim <em>did not</em> use
+BCE in screen-256color because under that terminal, <code>t_ut</code> had <em>no</em> value.</p>
+<p>Therefore, the solution is to simply <em>clear</em> Vim&rsquo;s <code>t_ut</code> value if Vim
+happens to be running inside any 256-color terminal.  You can automate
+this by adding the following snippet to your Vim configuration file:</p>
+<div class="highlight"><pre class="highlight viml"><code><span class="k">if</span> &amp;<span class="nb">term</span> <span class="p">=~</span> <span class="s1">'256color'</span>
+  <span class="c">" disable Background Color Erase (BCE) so that color schemes</span>
+  <span class="c">" render properly when inside 256-color tmux and GNU screen.</span>
+  <span class="c">" see also http://snk.tuxfamily.org/log/vim-256color-bce.html</span>
+  <span class="k">set</span> <span class="nb">t_ut</span><span class="p">=</span>
+<span class="k">endif</span>
+</code></pre></div></div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2013-03-12T09:49:42-07:00">12 March 2013: </time></dt><dd class="content"><p><a href="http://www.reddit.com/r/vim/comments/1a29vk/_/c8u9jfu">Will Gray suggested</a> that we can use
+<a href="https://github.com/godlygeek/vim-files/blob/master/plugin/terminalkeys.vim">Matt Wozniski&rsquo;s <code>terminalkeys.vim</code> configuration
+file</a> to teach Vim how to recognize modified Function
+keys (in addition to Page and Arrow keys) produced by the xterm-256color
+terminal when Vim runs under the <code>TERM=screen-256color</code> environment.</p>
+<p>That configuration file is also available as a <a href="https://github.com/nacitar/terminalkeys.vim">standalone Vim
+plugin</a> for easy installation <a href="https://github.com/sunaku/vim-unbundle">as a
+bundle</a>.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2013-03-11T19:35:45-07:00">11 March 2013: </time></dt><dd class="content"><p><a href="http://www.reddit.com/r/vim/comments/1a29vk/_/c8thqe7">Tom Ryder suggested</a> that, rather
+than <a href="http://blog.sanctum.geek.nz/term-strings/">overriding the <code>TERM</code> environment</a> variable, we should teach
+Vim how to recognize modifier keys produced by the xterm-256color
+terminal, as recommended in <a href="https://github.com/tmux/tmux/wiki/FAQ">the tmux FAQ</a>.</p>
+<p>Following his reference to the &ldquo;How do I make Ctrl-PgUp and Ctrl-PgDn
+work in vim?&rdquo; section of the tmux FAQ and combining the instructions
+therein with <a href="http://unix.stackexchange.com/a/34723/13558">this remedy (see step #4)</a> yielded the following
+configuration snippets:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="c"># ~/.tmux.conf</span>
+setw <span class="nt">-g</span> xterm-keys on
+<span class="nb">set</span> <span class="nt">-g</span> default-terminal <span class="s2">"screen-256color"</span>
+</code></pre></div><p>The above snippet configures tmux to pass modifier keys produced by the
+xterm-256color terminal down to Vim and also to run Vim under the
+<code>TERM=screen-256color</code> environment.</p>
+<div class="highlight"><pre class="highlight viml"><code><span class="c">" ~/.vimrc</span>
+<span class="c">" Make Vim recognize XTerm escape sequences for Page and Arrow</span>
+<span class="c">" keys combined with modifiers such as Shift, Control, and Alt.</span>
+<span class="c">" See http://www.reddit.com/r/vim/comments/1a29vk/_/c8tze8p</span>
+<span class="k">if</span> &amp;<span class="nb">term</span> <span class="p">=~</span> <span class="s1">'^screen'</span>
+  <span class="c">" Page keys https://github.com/tmux/tmux/wiki/FAQ</span>
+  <span class="nb">execute</span> <span class="s2">"set t_kP=\e[5;*~"</span>
+  <span class="nb">execute</span> <span class="s2">"set t_kN=\e[6;*~"</span>
+
+  <span class="c">" Arrow keys http://unix.stackexchange.com/a/34723</span>
+  <span class="nb">execute</span> <span class="s2">"set &lt;xUp&gt;=\e[1;*A"</span>
+  <span class="nb">execute</span> <span class="s2">"set &lt;xDown&gt;=\e[1;*B"</span>
+  <span class="nb">execute</span> <span class="s2">"set &lt;xRight&gt;=\e[1;*C"</span>
+  <span class="nb">execute</span> <span class="s2">"set &lt;xLeft&gt;=\e[1;*D"</span>
+<span class="k">endif</span>
+</code></pre></div><p>The above snippet teaches Vim how to recognize modified Page and Arrow
+keys (but not Function keys) produced by the xterm-256color terminal
+when Vim runs under the <code>TERM=screen-256color</code> environment.</p>
+</dd></dl></aside><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Fixing Vim's Background Color Erase for 256-color tmux and GNU screen";
+var disqus_url = "https://sunaku.github.io/vim-256color-bce.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2013 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

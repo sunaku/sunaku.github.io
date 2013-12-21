@@ -1,0 +1,38 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Enlarging titlebar buttons in XFCE - The Terminal Programmer</title><meta content="2015-03-03T19:26:17-08:00" name="DCTERMS.created" /><meta content="2015-03-03T19:26:17-08:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="solution, usability, linux" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="xfce-enlarge-titlebar-buttons" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#xfce-enlarge-titlebar-buttons" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Enlarging titlebar buttons in XFCE</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2015-03-03T19:26:17-08:00"> 3 March 2015</time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__problem__" href="#problem" class="downlink">Problem</a><ol></ol></li><li><a id="__approach__" href="#approach" class="downlink">Approach</a><ol></ol></li><li><a id="__solution__" href="#solution" class="downlink">Solution</a><ol></ol></li></ol>
+<div id="problem" class="section"></div><h1 class="heading">Problem<a href="#problem" class="permalink" title="Permalink"></a><a href="#__problem__" class="uplink" title="Contents"></a></h1>
+<p>Although the <a href="http://www.xfce.org">XFCE desktop environment</a> offers an
+easy way to enlarge its user interface via Settings -&gt; Appearance -&gt; Fonts -&gt;
+Custom DPI setting, such changes <em>do not apply</em> to titlebar buttons (such as
+the minimize, maximize, and close buttons) whose size remains constant.</p>
+
+<div id="approach" class="section"></div><h1 class="heading">Approach<a href="#approach" class="permalink" title="Permalink"></a><a href="#__approach__" class="uplink" title="Contents"></a></h1>
+<p><a href="https://forum.xfce.org/viewtopic.php?pid=26272#p26272">The only workaround</a> is to modify the
+XFCE theme by enlarging the underlying images that form titlebar buttons.
+Thankfully, I found a way to automate this laborious process as follows.</p>
+
+<div id="solution" class="section"></div><h1 class="heading">Solution<a href="#solution" class="permalink" title="Permalink"></a><a href="#__solution__" class="uplink" title="Contents"></a></h1>
+
+<ol>
+<li><p>Install <a href="http://www.imagemagick.org">ImageMagick</a>:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>sudo apt-get install imagemagick
+</code></pre></div></li>
+<li><p>Start with a copy of an existing theme (&ldquo;Numix&rdquo; in this example):</p>
+<div class="highlight"><pre class="highlight plaintext"><code>mkdir ~/.themes
+cp -rT /usr/share/themes/Numix ~/.themes/Numix-large
+</code></pre></div></li>
+<li><p>Enlarge images for titlebar buttons (to 48 pixels in this example):</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nb">cd</span> ~/.themes/Numix-large/xfwm4
+<span class="k">for </span>image <span class="k">in</span> <span class="o">{</span>top,title,menu,stick,shade,hide,maximize,close<span class="o">}</span>-<span class="k">*</span>.<span class="k">*</span>
+<span class="k">do </span>mogrify <span class="nt">-resize</span> x48 <span class="s2">"</span><span class="nv">$image</span><span class="s2">"</span>
+<span class="k">done</span>
+</code></pre></div></li>
+<li><p>Apply your newly created large theme by choosing it from the list:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>xfwm4-settings
+</code></pre></div></li>
+</ol>
+<p>That&rsquo;s all, enjoy!</p>
+</div><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Enlarging titlebar buttons in XFCE";
+var disqus_url = "https://sunaku.github.io/xfce-enlarge-titlebar-buttons.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2015 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

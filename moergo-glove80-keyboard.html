@@ -1,0 +1,803 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>MoErgo Glove80 programmable ergonomic keyboard - The Terminal Programmer</title><meta content="2023-07-04T05:00:41-07:00" name="DCTERMS.created" /><meta content="2023-07-04T05:00:41-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="typing, keyboard, layout, ergonomics, programming" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="moergo-glove80-keyboard" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#moergo-glove80-keyboard" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">MoErgo Glove80 programmable ergonomic keyboard</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2023-07-04T05:00:41-07:00"> 4 July 2023</time></header><hr /><div class="description"></div><div class="content"><style type="text/css">.layers-map-container{position:relative;cursor:wait}.layers-map-container .layers-map-sign{position:absolute;box-shadow:inset 0 0 5px indigo;border-radius:5px}.layers-map-container #layers-map-link[href] .layers-map-sign:not(:hover){box-shadow:none}</style><script>// wait until images are loaded before measuring the layers map dimensions,
+// and apply a busy cursor to the layers map (CSS above) until that happens
+$(window).on('load', function() {
+  var $layers_map = $('#layers-map');
+  var layers_map_src = $layers_map.attr('src');
+  var $layers_map_link = $('#layers-map-link');
+
+  // image map dimensions
+  var actual = { w: 2345, h: 995 };
+  var screen = { w: $layers_map.width(), h: $layers_map.height() };
+  var shrink = { x: screen.w / actual.w, y: screen.h / actual.h };
+
+  // layer sign definitions
+  var origin = { x: 700, y: 702, w: 135, h: 136 };
+  var layers = {
+    cursor:   { x: origin.x,              y: origin.y+origin.h, w: origin.w, h: origin.h },
+    number:   { x: origin.x+origin.w,     y: origin.y+origin.h, w: origin.w, h: origin.h },
+    function: { x: origin.x,              y: origin.y,          w: origin.w, h: origin.h },
+    mouse:    { x: origin.x+(origin.w*5), y: origin.y+origin.h, w: origin.w, h: origin.h },
+    symbol:   { x: origin.x+(origin.w*6), y: origin.y+origin.h, w: origin.w, h: origin.h },
+    system:   { x: origin.x+(origin.w*6), y: origin.y,          w: origin.w, h: origin.h },
+  };
+
+  // construct layer signs
+  var $layer_map_signs = $.map(layers, function(outline, layer) {
+    return $('<div/>', {
+      title: 'Activates the ' + layer + ' layer.  Click for details.',
+      class: 'layers-map-sign',
+      css: {
+        top:    Math.floor(outline.y * shrink.y) + 'px',
+        left:   Math.floor(outline.x * shrink.x) + 'px',
+        width:  Math.round(outline.w * shrink.x) + 'px',
+        height: Math.round(outline.h * shrink.y) + 'px'
+      }
+    }).on('mouseover', function() {
+      $layers_map.attr('src', layers_map_src.replace('-base-', '-' + layer + '-'));
+      $layers_map_link.attr('href', '#' + layer + '-layer');
+    }).on('mouseout', function() {
+      $layers_map.attr('src', layers_map_src);
+      $layers_map_link.attr('href', null);
+    });
+  });
+
+  // add layer signs to map
+  $layers_map.after($layer_map_signs);
+
+  // indicate that we're ready by removing the busy cursor set by CSS above
+  $('.layers-map-container').css('cursor', 'auto');
+});</script><blockquote>
+<p><strong>NOTE:</strong> Check out the <a href="#layers">interactive map of this keyboard&rsquo;s layers</a> below!</p>
+</blockquote>
+<img src="moergo-glove80-keyboard-photograph.jpg" alt="Photograph of my MoErgo Glove80 keyboard.">
+<blockquote>
+<p>Is that&hellip; Batman&rsquo;s keyboard?! 🦇  No, but it sure makes me feel like him:
+  sitting in the turquoise glow of the Batcomputer, deep within the quiet
+  solitude of the Batcave, saving the world with this ergonomic marvel!</p>
+</blockquote>
+<p>This is my <a href="https://www.moergo.com/">MoErgo Glove80</a> keyboard: a split, columnar, contoured, and wireless
+ergonomic marvel that has become my &ldquo;endgame&rdquo; choice for the foreseeable future.
+Previously, I used an <a href="ergohaven-remnant-keyboard.html">Ergohaven Remnant</a>
+keyboard for 6 months, a <a href="dactyl-manuform-5x6-keyboard.html">Dactyl Manuform 5x6</a>
+keyboard for a year, an <a href="https://ergodox-ez.com/">ErgoDox EZ</a> keyboard for 6 years, and a <a href="https://kinesis-ergo.com/shop/advantage2/">Kinesis
+Advantage</a> keyboard for 11 years prior &mdash; all on the quest for better ergonomics.</p>
+<p><ol class="table-of-contents"><li><a id="__review__" href="#review" class="downlink">Review</a><ol><li><a id="__impression__" href="#impression" class="downlink">Impression</a><ol></ol></li><li><a id="__adaptation__" href="#adaptation" class="downlink">Adaptation</a><ol></ol></li><li><a id="__comparison__" href="#comparison" class="downlink">Comparison</a><ol></ol></li></ol></li><li><a id="__layers__" href="#layers" class="downlink">Layers</a><ol><li><a id="__cursor-layer__" href="#cursor-layer" class="downlink">Cursor layer</a><ol><li><a id="__arrow-keys__" href="#arrow-keys" class="downlink">Arrow keys</a><ol></ol></li><li><a id="__select-edit__" href="#select-edit" class="downlink">Select &amp; edit</a><ol></ol></li></ol></li><li><a id="__number-layer__" href="#number-layer" class="downlink">Number layer</a><ol><li><a id="__date-time__" href="#date-time" class="downlink">Date &amp; time</a><ol></ol></li><li><a id="__arithmetic__" href="#arithmetic" class="downlink">Arithmetic</a><ol></ol></li><li><a id="__prefix-signs__" href="#prefix-signs" class="downlink">Prefix signs</a><ol></ol></li><li><a id="__inequalities__" href="#inequalities" class="downlink">Inequalities</a><ol></ol></li></ol></li><li><a id="__function-layer__" href="#function-layer" class="downlink">Function layer</a><ol></ol></li><li><a id="__symbol-layer__" href="#symbol-layer" class="downlink">Symbol layer</a><ol><li><a id="__base-layer-affinity__" href="#base-layer-affinity" class="downlink">Base layer affinity</a><ol></ol></li><li><a id="__vim-editor-shortcuts__" href="#vim-editor-shortcuts" class="downlink">Vim editor shortcuts</a><ol></ol></li><li><a id="__adjacent-key-bigrams__" href="#adjacent-key-bigrams" class="downlink">Adjacent key bigrams</a><ol></ol></li><li><a id="__outer-corner-bigrams__" href="#outer-corner-bigrams" class="downlink">Outer corner bigrams</a><ol></ol></li><li><a id="__inward-rolling-bigrams__" href="#inward-rolling-bigrams" class="downlink">Inward rolling bigrams</a><ol></ol></li><li><a id="__outward-rolling-bigrams__" href="#outward-rolling-bigrams" class="downlink">Outward rolling bigrams</a><ol></ol></li></ol></li><li><a id="__mouse-layer__" href="#mouse-layer" class="downlink">Mouse layer</a><ol></ol></li><li><a id="__system-layer__" href="#system-layer" class="downlink">System layer</a><ol></ol></li></ol></li><li><a id="__firmware__" href="#firmware" class="downlink">Firmware</a><ol></ol></li></ol></p>
+
+<div id="review" class="section"></div><h2 class="heading">Review<a href="#review" class="permalink" title="Permalink"></a><a href="#__review__" class="uplink" title="Contents"></a></h2>
+<p>Embodying a thoughtful, humanistic design that is <em>forgiving</em> (accommodating a broad range of hand sizes and shapes), <em>inviting</em> (like a lounge chair whose intuitive shape beckons weary hands to perch down for some well deserved rest), and <em>futuristic</em> (like some advanced Space Age technology that Batman would use), the Glove80 provides a comfortable, efficient, and delightful typing experience.</p>
+<p>For me, the Glove80 is like a dream come true because it brings together the best features of all the keyboards I&rsquo;ve used so far on my quest for ergonomics:</p>
+
+<table><thead>
+<tr>
+<th>Ergonomic keyboard</th>
+<th>Duration of use</th>
+<th>Split design?</th>
+<th>Contoured keywells?</th>
+<th>Columnar layout?</th>
+<th>Programmable firmware?</th>
+<th>Low height?</th>
+<th>Wireless capable?</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>MoErgo Glove80 🏆</td>
+<td>1 month</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><a href="ergohaven-remnant-keyboard.html">Ergohaven Remnant</a></td>
+<td>6 months</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td><a href="dactyl-manuform-5x6-keyboard.html">Dactyl Manuform 5x6</a></td>
+<td>1 year</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>ZSA ErgoDox EZ</td>
+<td>6 years</td>
+<td>✅</td>
+<td>❌</td>
+<td>✅</td>
+<td>✅</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Kinesis Advantage</td>
+<td>11 years</td>
+<td>🌔</td>
+<td>✅</td>
+<td>✅</td>
+<td>🌒</td>
+<td>❌</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Goldtouch Adjustable</td>
+<td>1 year</td>
+<td>🌓</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+<tr>
+<td>Microsoft Natural Elite</td>
+<td>2 years</td>
+<td>🌒</td>
+<td>❌</td>
+<td>❌</td>
+<td>❌</td>
+<td>✅</td>
+<td>❌</td>
+</tr>
+</tbody></table>
+<p>I especially revered the Kinesis Advantage for its unconventional yet ingenious design, but I often wished it were split so that I could separate the keywells at shoulder width apart for a more relaxed, natural stance.  Thus I embarked on a split keyboard journey, sacrificing keywells in favor of a split design. 💔 Fortunately, my original wish has now been granted: the Glove80 <em>delivers it all!</em></p>
+
+<div id="impression" class="section"></div><h3 class="heading">Impression<a href="#impression" class="permalink" title="Permalink"></a><a href="#__impression__" class="uplink" title="Contents"></a></h3>
+<p>My first impressions of this keyboard, after connecting it to my computer, were:</p>
+
+<ul>
+<li><p>Everything feels very reachable, like fitting into a pair of gloves!  In particular, the top-row pinky key (Q on QWERTY) is the best I&rsquo;ve ever felt.</p></li>
+<li><p>Excellent thumb cluster: the lower arc follows my thumb&rsquo;s natural motion perfectly, and the nearest upper arc key is also reachable without effort.</p></li>
+<li><p>The keycaps&rsquo; POM material is delightfully smooth and slippery, making it easy (and fun) to slide fingers across.  It&rsquo;s kind of like having wheels on ergonomic office chairs: you can move around your desk while you multitask.</p></li>
+<li><p>Key travel is shorter than the Cherry MX switches I&rsquo;m accustomed to, which is great because I can feel less effort is needed to fully press each key.</p></li>
+<li><p>The positioning of the function keys (which are offset by one key above the number row) makes sense now: the missing F6 cut-out on the left half is out of reach unless I shift my palm off its comfortable perch on the palm rest.</p></li>
+<li><p>The keyboard is very light, making it easy to lift and reposition to suit the task and posture (whether I&rsquo;m sitting or standing at my desk) at hand.</p></li>
+</ul>
+
+<div id="adaptation" class="section"></div><h3 class="heading">Adaptation<a href="#adaptation" class="permalink" title="Permalink"></a><a href="#__adaptation__" class="uplink" title="Contents"></a></h3>
+<p>On my first day using the Glove80, coming from an <a href="ergohaven-remnant-keyboard.html">Ergohaven Remnant</a> keyboard, I felt right at home: achieving 100 WPM on MonkeyType, as shown below. And this speed <em>is with</em> <a href="home-row-mods.html">home row mods</a>, disambiguated by ZMK&rsquo;s <code>global-quick-tap</code> feature! 🚀</p>
+<img src="moergo-glove80-keyboard-monkeytype.png" alt="First day on Glove80: achieved 100 WPM on MonkeyType!"><p>Key travel is definitely less pronounced on the Glove80&rsquo;s special-order Choc v1 Red key switches, which allows for a more rapid inter-key typing speed, and the tighter key spacing afforded by Choc switches (compared to MX switches) along with the Glove80&rsquo;s ergonomic curvature are helping to minimize finger travel around the keyboard.  With more practice (just normal usage over time), I feel confident that I can increase my touch-typing speed even further on the Glove80.</p>
+<p>Porting my QMK keymap from the Remnant over to ZMK on the Glove80 was challenging, mainly because <a href="home-row-mods.html#solution">my home row mods disambiguation logic is so complex</a>.  Notably, I worried whether I would be able to translate all the nuances of my QMK patch (which took over 6 months of occasional development to master) to ZMK, but thankfully it was significantly simpler than what I had imagined: without modifying ZMK source code or writing C extensions, <a href="#firmware">I was able to port</a> nearly all of that monstrous sophistication using <em>declarative snippets</em> of custom behaviors!</p>
+
+<div id="comparison" class="section"></div><h3 class="heading">Comparison<a href="#comparison" class="permalink" title="Permalink"></a><a href="#__comparison__" class="uplink" title="Contents"></a></h3>
+<img src="moergo-glove80-keyboard-comparison.jpg" alt="Bird&#39;s eye view of my Glove80 and Remnant keyboards."><p>In terms of quality, the Glove80 is <em>strong yet light</em>: hallmarks of high-end polycarbonate material, which is also used to make optical lenses in eyeglasses.  This stands opposite to the Remnant&rsquo;s light yet fragile 3D-printed construction, which requires careful handling since it can be damaged easily, say, if dropped.</p>
+<p>In terms of height, the Glove80 achieves a <em>lower height profile</em> due to its center of gravity (its keywell nearly touches the desk!) in combination with low-profile Choc switches and keycaps.  Even at its tallest point, the Glove80 still stands below the height of the Remnant&rsquo;s top-inner corner key (number 5).</p>
+
+<blockquote>
+<img src="moergo-glove80-keyboard-comparison-outer.jpg" alt="Outer profile: looking from the left side toward the center.">
+<blockquote>
+<p>👆 Outer profile: looking from the left side toward the center.</p>
+</blockquote>
+<img src="moergo-glove80-keyboard-comparison-inner.jpg" alt="Inner profile: looking from the center toward the left side.">
+<blockquote>
+<p>👆 Inner profile: looking from the center toward the left side.</p>
+</blockquote>
+<img src="moergo-glove80-keyboard-comparison-front.jpg" alt="Front profile: looking from the palm rest toward the back.">
+<blockquote>
+<p>👆 Front profile: looking from the palm rest toward the back.</p>
+</blockquote>
+<img src="moergo-glove80-keyboard-comparison-back.jpg" alt="Back profile: looking from the back toward the palm rest.">
+<blockquote>
+<p>👆 Back profile: looking from the back toward the palm rest.</p>
+</blockquote>
+</blockquote>
+<p>In terms of weight, the Glove80 <em>feels much lighter</em> than the Remnant even though it weighs negligibly more: using a kitchen scale, I observed that the right half of the Glove80 (with palm rest) weighed 9.7oz / 275g whereas the Remnant&rsquo;s (without palm rest) weighed 9.6oz / 272g.  However, the Glove80&rsquo;s weight is more evenly distributed over its surface so it doesn&rsquo;t feel as heavy when you lift it up; whereas the Remnant&rsquo;s shape is more condensed, bulkier, and harder to grasp.</p>
+<p>In terms of mobility, the Glove80&rsquo;s two halves always communicate wirelessly whereas the left half can be wired, wireless, or both (since it supports <em>connecting to 6 devices simultaneously</em>: 5 Bluetooth devices and 1 USB device).  This allows both halves, especially the right half, to <em>be repositioned at will</em>.  For instance, I sometimes need more writing space on my desk to take notes or doodle, so I simply lift the right half up &amp; away to make room for my notebook.  And when I&rsquo;m finished, I simply move the right half back into position: setting it down wherever I find is comfortable for me, approximately at shoulder width.  This is in stark contrast to the Remnant, which is always and only wired to USB.  As a result, I&rsquo;m hesitant to reposition the Remnant&rsquo;s two halves freely because that may disturb their perfect symmetry, which is tedious to restore accurately.</p>
+<p>In terms of compatibility, the Glove80 <em>works flawlessly with wireless</em> Bluetooth devices, like smartphones, as well as wired USB devices, like laptops.  The former is especially remarkable: I connected my Glove80 to my smartphone as an experiment to type in a passphrase (why struggle with a virtual on-screen keyboard when you&rsquo;ve got the real thing Bluetooth-enabled?) and I was amazed! 🤩  This has unlocked a massive productivity boost for the otherwise inefficient smartphone user interface. It&rsquo;s quite the game changer: Glove80 for the win! ❤️‍🔥</p>
+<p>In terms of firmware, the Glove80&rsquo;s online layout editor makes it easy to customize the keymap and share it with others: there is a free-form text box for notes alongside a &ldquo;Custom Defined Behaviors&rdquo; box for ZMK configuration snippets, which <em>lets you implement advanced features</em> such as <a href="home-row-mods.html">home row mods disambiguation</a>.  And once you&rsquo;ve built and downloaded your keymap from the online layout editor, flashing the resulting <code>*.uf2</code> file is a simple drag &amp; drop operation after entering bootloader mode, which has a robust hardware fail-safe of holding particular keys while powering on the keyboard, as documented in the user guide.</p>
+<p>In terms of documentation, the Glove80 comes with a <a href="https://www.moergo.com/files/glove80-user-guide.pdf">comprehensive user guide</a> that covers everything from ergonomics to soldering; gentle introductory emails when your order is being prepared for shipment; and a <a href="https://discord.gg/cdywSRX9qF">helpful Discord community</a> so thoughtful and engaging that I look forward to participating in it every day.</p>
+<p>In terms of support, the Glove80&rsquo;s inventors are active participants in the Discord community, and they&rsquo;re reachable directly by email and other means too; their <em>professional demeanor and responsiveness</em> is often applauded by customers.  This is significantly better than the Remnant&rsquo;s support, where language and cultural differences sometimes complicate communication and problem resolution.</p>
+<p>Overall, the Glove80 is a phenomenal upgrade over the Remnant and all other ergonomic keyboards I&rsquo;ve used before.  It&rsquo;s like <em>a dream come true</em>: I love it! 👌</p>
+
+<div id="layers" class="section"></div><h2 class="heading">Layers<a href="#layers" class="permalink" title="Permalink"></a><a href="#__layers__" class="uplink" title="Contents"></a></h2>
+<p>The keyboard boots up into the following default &ldquo;base&rdquo; layer when powered on.
+When held, <span style="color: #D1C4E9">the purple keys</span> in the thumb
+clusters activate the subsequent layers according to the legendary <a href="https://github.com/manna-harbour/miryoku#readme">Miryoku</a>&rsquo;s
+6-layer design with 3-key thumb activation.</p>
+
+<blockquote>
+<p><strong>Interactive:</strong> Hover your mouse over <span style="color: #D1C4E9">the purple keys</span> to see each layer!
+  <noscript>
+    Sorry, this interactive feature needs JavaScript; please enable it.
+  </noscript></p>
+</blockquote>
+
+<div class="layers-map-container">
+  <a id="layers-map-link">
+    <img id="layers-map" src="moergo-glove80-keyboard-base-layer.png" />
+  </a>
+</div>
+<p>The keys are arranged in <a href="engrammer-keyboard-layout.html">my variation</a> of <a href="engram-keyboard-layout.html">Arno Klein&rsquo;s Engram
+2.0 layout</a> and they&rsquo;re imbued with the legendary <a href="https://github.com/manna-harbour/miryoku#readme">Miryoku</a> home
+row mods <a href="home-row-mods.html">tamed with enhancements</a>.</p>
+<p>Going beyond Miryoku, I have added a custom <em>layer locking</em> feature whereby a
+Miryoku layer can be set to remain active even after you release its thumb key: while holding the <strong>Lower key</strong>, simply tap your desired Miryoku layer&rsquo;s thumb key. To unlock the layer, tap the <strong>Lower key</strong> again on the same hand as its thumb key.</p>
+
+<div id="cursor-layer" class="section"></div><h3 class="heading">Cursor layer<a href="#cursor-layer" class="permalink" title="Permalink"></a><a href="#__cursor-layer__" class="uplink" title="Contents"></a></h3>
+<img src="moergo-glove80-keyboard-cursor-layer.png" alt="Diagram of the cursor layer.">
+<blockquote>
+
+<div id="arrow-keys" class="section"></div><h4 class="heading">Arrow keys<a href="#arrow-keys" class="permalink" title="Permalink"></a><a href="#__arrow-keys__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>The up/down arrow keys on the right-hand home row diverge from Vim&rsquo;s HJKL order
+because it feels more natural to follow the inward-rising curve of the keyboard&rsquo;s
+contoured keywell, which elevates the thumb above the pinky finger and, similarly,
+the middle finger (up arrow) above the ring finger (down arrow).</p>
+<p>This is a longstanding preference that I formed 17 years ago, in my early days of
+using the Kinesis Advantage with the <a href="https://www.dvzine.org/zine/">Dvorak layout</a>, whose lack of HJKL provided
+the freedom to reimagine the arrangement of arrow keys on the home row.</p>
+
+<blockquote>
+
+<div id="select-edit" class="section"></div><h4 class="heading">Select &amp; edit<a href="#select-edit" class="permalink" title="Permalink"></a><a href="#__select-edit__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>Editing (index finger) and selection (thumb cluster) keys line the inner wall.
+This opposition allows for pinching, where selections can be followed by edits.
+For example, to copy everything, I would first tap the &ldquo;Select all&rdquo; key with my
+thumb and then pinch slightly inward to tap the &ldquo;Copy&rdquo; key with my index finger.</p>
+<p>The copy and paste keys are stacked vertically, in that order, to allow the index
+finger to rake down upon them in a natural curling motion toward the palm. This
+order is also logical, since pasting requires something to be copied first.</p>
+<p>The <em>select &amp; extend word/line</em> keys on the thumb cluster are ZMK macros that approximate
+<a href="https://getreuer.info/posts/keyboards/select-word/index.html">Pascal Getreuer&rsquo;s word selection QMK macro</a>, which automates common
+selection tasks that require holding down Control and Shift with the arrow keys:</p>
+
+<blockquote>
+<img src="www/getreuer.info/posts/keyboards/select-word/select-word.gif" alt="Video demonstration of Pascal Getreuer&#39;s word selection QMK macro"></blockquote>
+<p>In some apps, the <em>select word</em> key cycles to the next successive word each time!</p>
+
+<div id="number-layer" class="section"></div><h3 class="heading">Number layer<a href="#number-layer" class="permalink" title="Permalink"></a><a href="#__number-layer__" class="uplink" title="Contents"></a></h3>
+<img src="moergo-glove80-keyboard-number-layer.png" alt="Diagram of the number layer."><p>A 3x3 numeric keypad (using the standard 10-key layout) occupies the home block.
+The period and comma keys are positioned near the zero key on the thumb cluster.
+Square brackets from the base layer are replaced with parentheses for grouping.</p>
+
+<blockquote>
+
+<div id="date-time" class="section"></div><h4 class="heading">Date &amp; time<a href="#date-time" class="permalink" title="Permalink"></a><a href="#__date-time__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>The slash and minus keys are positioned for MM/DD and YYYY-MM-DD date entry.
+Similarly, the colon key is positioned above them for HH:MM:SS time stamp entry.</p>
+
+<ul>
+<li><code>:</code> time stamp separator</li>
+<li><code>-</code> ISO-8601 date separator</li>
+<li><code>/</code> American date separator</li>
+</ul>
+
+<blockquote>
+
+<div id="arithmetic" class="section"></div><h4 class="heading">Arithmetic<a href="#arithmetic" class="permalink" title="Permalink"></a><a href="#__arithmetic__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>Common arithmetic operators pair along the sides of the 3x3 numeric keypad.</p>
+
+<ul>
+<li><code>%</code> and <code>:</code> for percentages and proportions</li>
+<li><code>+</code> and <code>-</code> for addition and subtraction</li>
+<li><code>*</code> and <code>/</code> for multiplication and division</li>
+</ul>
+
+<blockquote>
+
+<div id="prefix-signs" class="section"></div><h4 class="heading">Prefix signs<a href="#prefix-signs" class="permalink" title="Permalink"></a><a href="#__prefix-signs__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>Signs that commonly prefix numbers line the top of the 3x3 numeric keypad.</p>
+
+<ul>
+<li><code>~</code> approximately</li>
+<li><code>#</code> literal number</li>
+<li><code>$</code> dollar amount</li>
+<li><code>@</code> at the rate of</li>
+</ul>
+
+<blockquote>
+
+<div id="inequalities" class="section"></div><h4 class="heading">Inequalities<a href="#inequalities" class="permalink" title="Permalink"></a><a href="#__inequalities__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>Comparison operators are positioned along the perimeter of the home block.</p>
+
+<ul>
+<li><code>&lt;</code> less than</li>
+<li><code>&gt;</code> greater than</li>
+<li><code>=</code> equal to</li>
+<li><code>~</code> approximately</li>
+</ul>
+
+<div id="function-layer" class="section"></div><h3 class="heading">Function layer<a href="#function-layer" class="permalink" title="Permalink"></a><a href="#__function-layer__" class="uplink" title="Contents"></a></h3>
+<img src="moergo-glove80-keyboard-function-layer.png" alt="Diagram of the function layer."><p>The function keys are arranged in the same 10-key layout as the <a href="#number-layer">Number
+layer</a>&rsquo;s 3x3 numeric keypad so that you can develop common muscle
+memory for both layers.  The remaining F10-F12 keys wrap around the home block
+because they&rsquo;re found in shortcuts such as BIOS save/quit, fullscreen toggle,
+and devtools, respectively.</p>
+
+<div id="symbol-layer" class="section"></div><h3 class="heading">Symbol layer<a href="#symbol-layer" class="permalink" title="Permalink"></a><a href="#__symbol-layer__" class="uplink" title="Contents"></a></h3>
+<p>This is the crown jewel of my keyboard&rsquo;s configuration: an entire layer dedicated
+to the entry of symbols that are essential for computer programming.
+It&rsquo;s the result of several hundreds of layout iterations over the last 8+ years.</p>
+<img src="moergo-glove80-keyboard-symbol-layer.png" alt="Diagram of the symbol layer.">
+<blockquote>
+<p>👉
+<span style="color: #FFCDD2">Red</span> quotes.
+<span style="color: #DCEDC8">Green</span> arrows.
+<span style="color: #BBDEFB">Blue</span> groups.
+<span style="color: #D1C4E9">Purple</span> flips.
+<span style="color: #FFECB3">Yellow</span> Vim.</p>
+</blockquote>
+
+<ul>
+<li><code>\</code> is on the thumb for escaping all other symbols without moving your hand.</li>
+<li>For snake_case, <code>_</code> is at the same spot as English&rsquo;s most frequent letter <code>e</code>.</li>
+<li>For assignment, <code>=</code> is on the home row because it&rsquo;s frequent in programming.</li>
+<li>For strings, common quotation marks are found at the top of the home block.</li>
+<li>Bitwise <code>|&amp;</code> and arithmetic <code>-+</code> operators &ldquo;flap down&rdquo; and &ldquo;fold up&rdquo; together.</li>
+<li>Angling arrows <code>-&gt;</code>, <code>=&gt;</code>, <code>&lt;=</code>, <code>&lt;-</code>; functional programming pipes <code>|&gt;</code>, <code>&lt;|</code> abound!</li>
+</ul>
+
+<blockquote>
+
+<div id="base-layer-affinity" class="section"></div><h4 class="heading">Base layer affinity<a href="#base-layer-affinity" class="permalink" title="Permalink"></a><a href="#__base-layer-affinity__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+
+<ul>
+<li><code>!</code> is on the same key as <code>Shift</code> on the base layer: they both invert things.</li>
+<li><code>();</code> sits just above the inward-rolling &ldquo;you&rdquo; sequence in the <a href="engram-keyboard-layout.html">Engram layout</a>.</li>
+</ul>
+
+<blockquote>
+
+<div id="vim-editor-shortcuts" class="section"></div><h4 class="heading">Vim editor shortcuts<a href="#vim-editor-shortcuts" class="permalink" title="Permalink"></a><a href="#__vim-editor-shortcuts__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+
+<ul>
+<li><code>^</code> and <code>$</code> are on the home row, for jumping to the start/end of current line.</li>
+<li><code>#</code> and <code>*</code> are on the home row, to search behind/ahead for word under cursor.</li>
+<li><code>=</code> is on the home row, to automatically indent current line or selection.</li>
+<li><code>{</code> and <code>}</code> are on the home block, for jumping to previous/next paragraph.</li>
+<li><code>&lt;</code> and <code>&gt;</code> are on the home block, for decreasing/increasing indentation.</li>
+<li><code>,</code> and <code>;</code> are in proper order for previous/next repetition of <code>f/F/t/T</code> jumps.</li>
+<li><code>?</code> and <code>/</code> are stacked vertically, to search behind/ahead for regex pattern.</li>
+<li><code>%</code> is on the upper thumb key, for jumping to cursor&rsquo;s matching delimiter.</li>
+<li><code>:</code> is on the lower thumb key, for entering Vim&rsquo;s command mode comfortably.</li>
+</ul>
+
+<blockquote>
+
+<div id="adjacent-key-bigrams" class="section"></div><h4 class="heading">Adjacent key bigrams<a href="#adjacent-key-bigrams" class="permalink" title="Permalink"></a><a href="#__adjacent-key-bigrams__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+
+<ul>
+<li><code>#!</code> for shebang lines in UNIX scripts.</li>
+<li><code>-&gt;</code> for thin arrows in C, C++, and Elixir.</li>
+<li><code>()</code> for parentheses.</li>
+<li><code>.*</code> for filesystem globs.</li>
+<li><code>*.</code> for regular expressions.</li>
+<li><code>/*</code> and <code>*/</code> for multi-line comments in C, CSS, and JavaScript.</li>
+</ul>
+
+<blockquote>
+
+<div id="outer-corner-bigrams" class="section"></div><h4 class="heading">Outer corner bigrams<a href="#outer-corner-bigrams" class="permalink" title="Permalink"></a><a href="#__outer-corner-bigrams__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>These are easy to find because they&rsquo;re on the outer corners of the keyboard.</p>
+
+<ul>
+<li><code>!~</code> for regular expression &ldquo;not matching&rdquo; in Perl, Ruby, and Elixir.</li>
+<li><code>~/</code> for home directory paths in UNIX.</li>
+<li><code>?!</code> for interrobang in English prose.</li>
+</ul>
+
+<blockquote>
+
+<div id="inward-rolling-bigrams" class="section"></div><h4 class="heading">Inward rolling bigrams<a href="#inward-rolling-bigrams" class="permalink" title="Permalink"></a><a href="#__inward-rolling-bigrams__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+
+<ul>
+<li><code>()</code> for parentheses.</li>
+<li><code>&lt;&gt;</code> for angle brackets.</li>
+<li><code>[]</code> for square brackets.</li>
+<li><code>{}</code> for curly braces.</li>
+<li><code>();</code> for zero-arity function calls in C and related languages.</li>
+<li><code>);</code> for function call statements in C and related languages.</li>
+<li><code>.*</code> for regular expressions.</li>
+<li><code>~/</code> for home directory paths in UNIX.</li>
+<li><code>&lt;-</code> for assignment in R and in Elixir&rsquo;s <code>with</code> statements.</li>
+<li><code>-&gt;</code> for thin arrows in C, C++, and Elixir.</li>
+<li><code>=&gt;</code> for fat arrows in Perl, Ruby, and Elixir.</li>
+<li><code>!=</code> for &ldquo;not equal to&rdquo; value comparison in many languages.</li>
+<li><code>&lt;=</code> for &ldquo;less than or equal to&rdquo; comparison in many languages.</li>
+<li><code>^=</code> for bitwise XOR assignment in C and related languages.</li>
+<li><code>|&gt;</code> for the pipe operator in Elixir.</li>
+<li><code>!(</code> for negating a group in Boolean expressions.</li>
+<li><code>&quot;$</code> for quoted variable substitution in Bourne shell.</li>
+<li><code>!$</code> for last argument of previous command in Bourne shell.</li>
+<li><code>$?</code> for exit status of previous command in Bourne shell.</li>
+<li><code>&lt;%</code> for directive tags in Ruby&rsquo;s ERB and Elixir&rsquo;s EEx templates.</li>
+<li><code>#{</code> for string interpolation in Ruby and Elixir.</li>
+<li><code>&#x0060;&#39;</code> for legacy curly quotes.</li>
+<li><code>&lt;/</code> for element closing tags in XML and HTML.</li>
+<li><code>~&gt;</code> for pessimistic version constraint in SemVer.</li>
+</ul>
+
+<blockquote>
+
+<div id="outward-rolling-bigrams" class="section"></div><h4 class="heading">Outward rolling bigrams<a href="#outward-rolling-bigrams" class="permalink" title="Permalink"></a><a href="#__outward-rolling-bigrams__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+
+<ul>
+<li><code>=~</code> for regular expression matching in Perl, Ruby, and Elixir.</li>
+<li><code>-=</code> for negative accumulation in C and related languages.</li>
+<li><code>+=</code> for accumulation in C and many languages.</li>
+<li><code>%=</code> for modulo assignment in C and related languages.</li>
+<li><code>&gt;=</code> for &ldquo;greater than or equal to&rdquo; value comparison.</li>
+<li><code>&gt;&amp;</code> and <code>&amp;&lt;</code> for file descriptor redirection in Bourne shell.</li>
+<li><code>$_</code> for value of last argument of previous command in Bourne shell.</li>
+<li><code>%&gt;</code> for directive tags in Ruby&rsquo;s ERB and Elixir&rsquo;s EEx templates.</li>
+<li><code>${</code> for variable interpolation in Bourne shell.</li>
+<li><code>%{</code> for maps (hash tables) in Elixir.</li>
+</ul>
+
+<div id="mouse-layer" class="section"></div><h3 class="heading">Mouse layer<a href="#mouse-layer" class="permalink" title="Permalink"></a><a href="#__mouse-layer__" class="uplink" title="Contents"></a></h3>
+<img src="moergo-glove80-keyboard-mouse-layer.png" alt="Diagram of the mouse layer."><p>Movement keys are located centrally in the home block, resembling WASD keys, and
+mouse acceleration controls are poised for pinky finger access, so you can
+independently move the mouse pointer and also change its speed at the same time.</p>
+<p>Mousewheel down/up keys are also placed on the home block, specifically on
+the same keys as <code>J</code>/<code>K</code> (down/up in Vim) on the base layer for muscle memory reuse.</p>
+
+<div id="system-layer" class="section"></div><h3 class="heading">System layer<a href="#system-layer" class="permalink" title="Permalink"></a><a href="#__system-layer__" class="uplink" title="Contents"></a></h3>
+<img src="moergo-glove80-keyboard-system-layer.png" alt="Diagram of the system layer."><p>Keys for controlling RGB matrix settings line the central rows of home block.
+Keys for power and the traditional print-&gt;pause triplet line the thumb cluster.</p>
+
+<div id="firmware" class="section"></div><h2 class="heading">Firmware<a href="#firmware" class="permalink" title="Permalink"></a><a href="#__firmware__" class="uplink" title="Contents"></a></h2>
+<p>My keyboard&rsquo;s entire firmware, as described in this article, is available on the
+Glove80 Layout Editor as a <a href="https://my.glove80.com/#/layout/user/06aedf05-2b73-4764-bca5-e07c0aa91ad8">saved keymap</a>, with discussion in <a href="https://discord.com/channels/877392805654306816/1111469812850380831">this Discord thread</a>. Here is the relevant ZMK configuration snippet saved in the keymap linked above:</p>
+<div class="highlight"><pre class="highlight cpp"><code><span class="c1">//////////////////////////////////////////////////////////////////////</span>
+<span class="c1">// IMPORTANT: You need to set Firmware Version to "pr16.zephyr-3-2" //</span>
+<span class="c1">// under Settings &gt; Advanced Settings in the Glove80 Layout Editor! //</span>
+<span class="c1">//////////////////////////////////////////////////////////////////////</span>
+<span class="c1">//</span>
+<span class="c1">// Sunaku's Layout v13 featuring Engram(mer) layout and Miryoku system</span>
+<span class="c1">//</span>
+<span class="c1">// https://sunaku.github.io/moergo-glove80-keyboard.html</span>
+<span class="c1">// https://discord.com/channels/877392805654306816/1111469812850380831</span>
+<span class="c1">//</span>
+
+<span class="n">behaviors</span> <span class="p">{</span>
+
+    <span class="c1">//</span>
+    <span class="c1">// Miryoku home row mods and thumb layer keys</span>
+    <span class="c1">// https://sunaku.github.io/home-row-mods.html</span>
+    <span class="c1">//</span>
+    <span class="cp">#define TYPING_STREAK_TERM 160 // global-quick-tap-ms
+</span>    <span class="cp">#define INDEX_TAPPING_TERM 200
+</span>    <span class="cp">#define HOMEY_TAPPING_TERM 240
+</span>    <span class="cp">#define THUMB_TAPPING_TERM 200
+</span>    <span class="c1">//</span>
+    <span class="c1">// Glove80 key positions index for positional hold-tap</span>
+    <span class="c1">// https://discord.com/channels/877392805654306816/937645688244826154/1066713913351221248</span>
+    <span class="c1">// https://media.discordapp.net/attachments/937645688244826154/1066713913133121556/image.png</span>
+    <span class="c1">//</span>
+    <span class="c1">// |------------------------|------------------------|</span>
+    <span class="c1">// | LEFT_HAND_KEYS         |        RIGHT_HAND_KEYS |</span>
+    <span class="c1">// |                        |                        |</span>
+    <span class="c1">// |  0  1  2  3  4         |          5  6  7  8  9 |</span>
+    <span class="c1">// | 10 11 12 13 14 15      |      16 17 18 19 20 21 |</span>
+    <span class="c1">// | 22 23 24 25 26 27      |      28 29 30 31 32 33 |</span>
+    <span class="c1">// | 34 35 36 37 38 39      |      40 41 42 43 44 45 |</span>
+    <span class="c1">// | 46 47 48 49 50 51      |      58 59 60 61 62 63 |</span>
+    <span class="c1">// | 64 65 66 67 68         |         75 76 77 78 79 |</span>
+    <span class="c1">// |                69 52   |   57 74                |</span>
+    <span class="c1">// |                 70 53  |  56 73                 |</span>
+    <span class="c1">// |                  71 54 | 55 72                  |</span>
+    <span class="c1">// |------------------------|------------------------|</span>
+    <span class="c1">//</span>
+    <span class="c1">//</span>
+    <span class="cp">#define LEFT_HAND_KEYS      \
+          0  1  2  3  4         \
+         10 11 12 13 14 15      \
+         22 23 24 25 26 27      \
+         34 35 36 37 38 39      \
+         46 47 48 49 50 51      \
+         64 65 66 67 68
+</span>    <span class="cp">#define RIGHT_HAND_KEYS     \
+                                           5  6  7  8  9 \
+                                       16 17 18 19 20 21 \
+                                       28 29 30 31 32 33 \
+                                       40 41 42 43 44 45 \
+                                       58 59 60 61 62 63 \
+                                          75 76 77 78 79
+</span>    <span class="cp">#define THUMB_KEYS          \
+                        69 52       57 74                \
+                         70 53     56 73                 \
+                          71 54   55 72
+</span>    <span class="nl">homey_left:</span> <span class="n">miryoku_home_row_mods_left_hand</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-hold-tap"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"HOME_ROW_MODS_LEFT_HAND"</span><span class="p">;</span>
+        <span class="n">flavor</span> <span class="o">=</span> <span class="s">"balanced"</span><span class="p">;</span>
+        <span class="n">hold</span><span class="o">-</span><span class="n">trigger</span><span class="o">-</span><span class="n">key</span><span class="o">-</span><span class="n">positions</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">RIGHT_HAND_KEYS</span> <span class="n">THUMB_KEYS</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">hold</span><span class="o">-</span><span class="n">trigger</span><span class="o">-</span><span class="n">on</span><span class="o">-</span><span class="n">release</span><span class="p">;</span> <span class="c1">// wait for other home row mods</span>
+        <span class="n">tapping</span><span class="o">-</span><span class="n">term</span><span class="o">-</span><span class="n">ms</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">HOMEY_TAPPING_TERM</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">quick</span><span class="o">-</span><span class="n">tap</span><span class="o">-</span><span class="n">ms</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">TYPING_STREAK_TERM</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">global</span><span class="o">-</span><span class="n">quick</span><span class="o">-</span><span class="n">tap</span><span class="p">;</span> <span class="c1">// with typing streak</span>
+        <span class="cp">#binding-cells = &lt;2&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">homey_right:</span> <span class="n">miryoku_home_row_mods_right_hand</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-hold-tap"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"HOME_ROW_MODS_RIGHT_HAND"</span><span class="p">;</span>
+        <span class="n">flavor</span> <span class="o">=</span> <span class="s">"balanced"</span><span class="p">;</span>
+        <span class="n">hold</span><span class="o">-</span><span class="n">trigger</span><span class="o">-</span><span class="n">key</span><span class="o">-</span><span class="n">positions</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">LEFT_HAND_KEYS</span> <span class="n">THUMB_KEYS</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">hold</span><span class="o">-</span><span class="n">trigger</span><span class="o">-</span><span class="n">on</span><span class="o">-</span><span class="n">release</span><span class="p">;</span> <span class="c1">// wait for other home row mods</span>
+        <span class="n">tapping</span><span class="o">-</span><span class="n">term</span><span class="o">-</span><span class="n">ms</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">HOMEY_TAPPING_TERM</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">quick</span><span class="o">-</span><span class="n">tap</span><span class="o">-</span><span class="n">ms</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">TYPING_STREAK_TERM</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">global</span><span class="o">-</span><span class="n">quick</span><span class="o">-</span><span class="n">tap</span><span class="p">;</span> <span class="c1">// with typing streak</span>
+        <span class="cp">#binding-cells = &lt;2&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">index_left:</span> <span class="n">miryoku_home_row_mods_left_index_shift</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-hold-tap"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"HOME_ROW_MODS_LEFT_INDEX_SHIFT"</span><span class="p">;</span>
+        <span class="n">flavor</span> <span class="o">=</span> <span class="s">"balanced"</span><span class="p">;</span>
+        <span class="n">hold</span><span class="o">-</span><span class="n">trigger</span><span class="o">-</span><span class="n">key</span><span class="o">-</span><span class="n">positions</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">RIGHT_HAND_KEYS</span> <span class="n">THUMB_KEYS</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="c1">//hold-trigger-on-release; // don't wait for other mods</span>
+        <span class="n">tapping</span><span class="o">-</span><span class="n">term</span><span class="o">-</span><span class="n">ms</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">INDEX_TAPPING_TERM</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">quick</span><span class="o">-</span><span class="n">tap</span><span class="o">-</span><span class="n">ms</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">INDEX_TAPPING_TERM</span><span class="o">&gt;</span><span class="p">;</span> <span class="c1">// enable repeat</span>
+        <span class="c1">//global-quick-tap; // no typing streak</span>
+        <span class="cp">#binding-cells = &lt;2&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">index_right:</span> <span class="n">miryoku_home_row_mods_right_index_shift</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-hold-tap"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"HOME_ROW_MODS_RIGHT_INDEX_SHIFT"</span><span class="p">;</span>
+        <span class="n">flavor</span> <span class="o">=</span> <span class="s">"balanced"</span><span class="p">;</span>
+        <span class="n">hold</span><span class="o">-</span><span class="n">trigger</span><span class="o">-</span><span class="n">key</span><span class="o">-</span><span class="n">positions</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">LEFT_HAND_KEYS</span> <span class="n">THUMB_KEYS</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="c1">//hold-trigger-on-release; // don't wait for other mods</span>
+        <span class="n">tapping</span><span class="o">-</span><span class="n">term</span><span class="o">-</span><span class="n">ms</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">INDEX_TAPPING_TERM</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">quick</span><span class="o">-</span><span class="n">tap</span><span class="o">-</span><span class="n">ms</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">INDEX_TAPPING_TERM</span><span class="o">&gt;</span><span class="p">;</span> <span class="c1">// enable repeat</span>
+        <span class="c1">//global-quick-tap; // no typing streak</span>
+        <span class="cp">#binding-cells = &lt;2&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">thumb:</span> <span class="n">miryoku_thumb_layer</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-hold-tap"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"MIRYOKU_LAYER_TAP_WITH_REPEAT"</span><span class="p">;</span>
+        <span class="n">flavor</span> <span class="o">=</span> <span class="s">"balanced"</span><span class="p">;</span>
+        <span class="n">tapping</span><span class="o">-</span><span class="n">term</span><span class="o">-</span><span class="n">ms</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">THUMB_TAPPING_TERM</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">quick</span><span class="o">-</span><span class="n">tap</span><span class="o">-</span><span class="n">ms</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">THUMB_TAPPING_TERM</span><span class="o">&gt;</span><span class="p">;</span> <span class="c1">// enable repeat</span>
+        <span class="c1">//global-quick-tap; // no typing streak</span>
+        <span class="cp">#binding-cells = &lt;2&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">mo</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+
+    <span class="c1">// Shift + LEFT_PARENTHESIS = LESS_THAN</span>
+    <span class="nl">parang_left:</span> <span class="n">left_parenthesis_and_less_than</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-mod-morph"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"LEFT_PARENTHESIS_AND_LESS_THAN"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">LEFT_PARENTHESIS</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">LESS_THAN</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">MOD_LSFT</span><span class="o">|</span><span class="n">MOD_RSFT</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+
+    <span class="c1">// Shift + RIGHT_PARENTHESIS = GREATER_THAN</span>
+    <span class="nl">parang_right:</span> <span class="n">right_parenthesis_and_greater_than</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-mod-morph"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"RIGHT_PARENTHESIS_AND_GREATER_THAN"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">RIGHT_PARENTHESIS</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">GREATER_THAN</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">MOD_LSFT</span><span class="o">|</span><span class="n">MOD_RSFT</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+
+    <span class="c1">// Shift + CapsWord = CapsLock</span>
+    <span class="nl">cappy:</span> <span class="n">capsword_and_capslock</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-mod-morph"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"CAPSWORD_AND_CAPSLOCK"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">caps_word</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">CAPSLOCK</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">MOD_LSFT</span><span class="o">|</span><span class="n">MOD_RSFT</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+
+    <span class="c1">//</span>
+    <span class="c1">// CapsWord - ported from Pascal Getreuer's extension for QMK</span>
+    <span class="c1">// https://zmk.dev/docs/behaviors/caps-word</span>
+    <span class="c1">// https://getreuer.info/posts/keyboards/caps-word/index.html</span>
+    <span class="c1">//</span>
+    <span class="n">behavior_caps_word</span> <span class="p">{</span>
+        <span class="k">continue</span><span class="o">-</span><span class="n">list</span> <span class="o">=</span> <span class="o">&lt;</span><span class="n">UNDERSCORE</span> <span class="n">MINUS</span> <span class="n">BACKSPACE</span> <span class="n">DELETE</span> <span class="n">N1</span> <span class="n">N2</span> <span class="n">N3</span> <span class="n">N4</span> <span class="n">N5</span> <span class="n">N6</span> <span class="n">N7</span> <span class="n">N8</span> <span class="n">N9</span> <span class="n">N0</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+
+    <span class="c1">//</span>
+    <span class="c1">// Custom shifted pairs for the Engram layout</span>
+    <span class="c1">// https://engram.dev/</span>
+    <span class="c1">//</span>
+    <span class="nl">one:</span> <span class="n">engram_one_and_pipe</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-mod-morph"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"ENGRAM_ONE_AND_PIPE"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">N1</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">PIPE</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">MOD_LSFT</span><span class="o">|</span><span class="n">MOD_RSFT</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">two:</span> <span class="n">engram_two_and_equal</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-mod-morph"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"ENGRAM_TWO_AND_EQUAL"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">N2</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">EQUAL</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">MOD_LSFT</span><span class="o">|</span><span class="n">MOD_RSFT</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">three:</span> <span class="n">engram_three_and_tilde</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-mod-morph"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"ENGRAM_THREE_AND_TILDE"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">N3</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">TILDE</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">MOD_LSFT</span><span class="o">|</span><span class="n">MOD_RSFT</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">four:</span> <span class="n">engram_four_and_plus</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-mod-morph"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"ENGRAM_FOUR_AND_PLUS"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">N4</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">PLUS</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">MOD_LSFT</span><span class="o">|</span><span class="n">MOD_RSFT</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">five:</span> <span class="n">engram_five_and_less_than</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-mod-morph"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"ENGRAM_FIVE_AND_LESS_THAN"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">N5</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">LESS_THAN</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">MOD_LSFT</span><span class="o">|</span><span class="n">MOD_RSFT</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">six:</span> <span class="n">engram_six_and_greater_than</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-mod-morph"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"ENGRAM_SIX_AND_GREATER_THAN"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">N6</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">GREATER_THAN</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">MOD_LSFT</span><span class="o">|</span><span class="n">MOD_RSFT</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">seven:</span> <span class="n">engram_seven_and_caret</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-mod-morph"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"ENGRAM_SEVEN_AND_CARET"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">N7</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">CARET</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">MOD_LSFT</span><span class="o">|</span><span class="n">MOD_RSFT</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">eight:</span> <span class="n">engram_eight_and_ampersand</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-mod-morph"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"ENGRAM_EIGHT_AND_AMPERSAND"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">N8</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">AMPERSAND</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">MOD_LSFT</span><span class="o">|</span><span class="n">MOD_RSFT</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">nine:</span> <span class="n">engram_nine_and_percent</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-mod-morph"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"ENGRAM_NINE_AND_PERCENT"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">N9</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">PERCENT</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">MOD_LSFT</span><span class="o">|</span><span class="n">MOD_RSFT</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">zero:</span> <span class="n">engram_zero_and_asterisk</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-mod-morph"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"ENGRAM_ZERO_AND_ASTERISK"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">N0</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">ASTERISK</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">MOD_LSFT</span><span class="o">|</span><span class="n">MOD_RSFT</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">apos:</span> <span class="n">engram_apostrophe_and_left_parenthesis</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-mod-morph"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"ENGRAM_APOSTROPHE_AND_LEFT_PARENTHESIS"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">APOSTROPHE</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">LEFT_PARENTHESIS</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">MOD_LSFT</span><span class="o">|</span><span class="n">MOD_RSFT</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">dquote:</span> <span class="n">engram_double_quotes_and_right_parenthesis</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-mod-morph"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"ENGRAM_DOUBLE_QUOTES_AND_RIGHT_PARENTHESIS"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">DOUBLE_QUOTES</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">RIGHT_PARENTHESIS</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">MOD_LSFT</span><span class="o">|</span><span class="n">MOD_RSFT</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">comma:</span> <span class="n">engram_comma_and_semicolon</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-mod-morph"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"ENGRAM_COMMA_AND_SEMICOLON"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">COMMA</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">SEMICOLON</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">MOD_LSFT</span><span class="o">|</span><span class="n">MOD_RSFT</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">period:</span> <span class="n">engram_period_and_colon</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-mod-morph"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"ENGRAM_PERIOD_AND_COLON"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">PERIOD</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">COLON</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">MOD_LSFT</span><span class="o">|</span><span class="n">MOD_RSFT</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">question:</span> <span class="n">engram_question_and_exclamation</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-mod-morph"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"ENGRAM_QUESTION_AND_EXCLAMATION"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">QUESTION</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">EXCLAMATION</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">MOD_LSFT</span><span class="o">|</span><span class="n">MOD_RSFT</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">hash:</span> <span class="n">engram_hash_and_dollar</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-mod-morph"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"ENGRAM_HASH_AND_DOLLAR"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">HASH</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">DOLLAR</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">MOD_LSFT</span><span class="o">|</span><span class="n">MOD_RSFT</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">at:</span> <span class="n">engram_at_and_grave</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-mod-morph"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"ENGRAM_AT_AND_GRAVE"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">AT</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">GRAVE</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">MOD_LSFT</span><span class="o">|</span><span class="n">MOD_RSFT</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">slash:</span> <span class="n">engram_slash_and_backslash</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-mod-morph"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"ENGRAM_SLASH_AND_BACKSLASH"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">bindings</span> <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">SLASH</span><span class="o">&gt;</span><span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">kp</span> <span class="n">BACKSLASH</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">mods</span> <span class="o">=</span> <span class="o">&lt;</span><span class="p">(</span><span class="n">MOD_LSFT</span><span class="o">|</span><span class="n">MOD_RSFT</span><span class="p">)</span><span class="o">&gt;</span><span class="p">;</span>
+    <span class="p">};</span>
+
+<span class="p">};</span>
+
+<span class="n">macros</span> <span class="p">{</span>
+
+    <span class="c1">//</span>
+    <span class="c1">// Approximation of Pascal Getreuer's SelectWord trick from QMK</span>
+    <span class="c1">// https://getreuer.info/posts/keyboards/select-word/index.html</span>
+    <span class="c1">//</span>
+    <span class="nl">select_word:</span> <span class="n">select_word</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-macro"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"select_word"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">tap</span><span class="o">-</span><span class="n">ms</span> <span class="o">=</span> <span class="o">&lt;</span><span class="mi">0</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">wait</span><span class="o">-</span><span class="n">ms</span> <span class="o">=</span> <span class="o">&lt;</span><span class="mi">0</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">bindings</span>
+        <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">macro_tap</span> <span class="o">&amp;</span><span class="n">kp</span> <span class="n">LC</span><span class="p">(</span><span class="n">RIGHT</span><span class="p">)</span><span class="o">&gt;</span>
+        <span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">macro_wait_time</span> <span class="mi">1</span><span class="o">&gt;</span> <span class="c1">// let cursor move to the next word!</span>
+        <span class="p">,</span> <span class="o">&lt;&amp;</span><span class="n">macro_tap</span> <span class="o">&amp;</span><span class="n">kp</span> <span class="n">LC</span><span class="p">(</span><span class="n">LEFT</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">kp</span> <span class="n">LC</span><span class="p">(</span><span class="n">LS</span><span class="p">(</span><span class="n">RIGHT</span><span class="p">))</span><span class="o">&gt;</span>
+        <span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">extend_word:</span> <span class="n">extend_word</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-macro"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"extend_word"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">tap</span><span class="o">-</span><span class="n">ms</span> <span class="o">=</span> <span class="o">&lt;</span><span class="mi">0</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">wait</span><span class="o">-</span><span class="n">ms</span> <span class="o">=</span> <span class="o">&lt;</span><span class="mi">0</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">bindings</span>
+        <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">macro_tap</span> <span class="o">&amp;</span><span class="n">kp</span> <span class="n">LC</span><span class="p">(</span><span class="n">LS</span><span class="p">(</span><span class="n">RIGHT</span><span class="p">))</span><span class="o">&gt;</span>
+        <span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">select_line:</span> <span class="n">select_line</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-macro"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"select_line"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">tap</span><span class="o">-</span><span class="n">ms</span> <span class="o">=</span> <span class="o">&lt;</span><span class="mi">0</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">wait</span><span class="o">-</span><span class="n">ms</span> <span class="o">=</span> <span class="o">&lt;</span><span class="mi">0</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">bindings</span>
+        <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">macro_tap</span> <span class="o">&amp;</span><span class="n">kp</span> <span class="n">HOME</span> <span class="o">&amp;</span><span class="n">kp</span> <span class="n">LS</span><span class="p">(</span><span class="n">END</span><span class="p">)</span><span class="o">&gt;</span>
+        <span class="p">;</span>
+    <span class="p">};</span>
+    <span class="nl">extend_line:</span> <span class="n">extend_line</span> <span class="p">{</span>
+        <span class="n">compatible</span> <span class="o">=</span> <span class="s">"zmk,behavior-macro"</span><span class="p">;</span>
+        <span class="n">label</span> <span class="o">=</span> <span class="s">"extend_line"</span><span class="p">;</span>
+        <span class="cp">#binding-cells = &lt;0&gt;;
+</span>        <span class="n">tap</span><span class="o">-</span><span class="n">ms</span> <span class="o">=</span> <span class="o">&lt;</span><span class="mi">0</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">wait</span><span class="o">-</span><span class="n">ms</span> <span class="o">=</span> <span class="o">&lt;</span><span class="mi">0</span><span class="o">&gt;</span><span class="p">;</span>
+        <span class="n">bindings</span>
+        <span class="o">=</span> <span class="o">&lt;&amp;</span><span class="n">macro_tap</span> <span class="o">&amp;</span><span class="n">kp</span> <span class="n">LS</span><span class="p">(</span><span class="n">DOWN</span><span class="p">)</span> <span class="o">&amp;</span><span class="n">kp</span> <span class="n">LS</span><span class="p">(</span><span class="n">END</span><span class="p">)</span><span class="o">&gt;</span>
+        <span class="p">;</span>
+    <span class="p">};</span>
+
+<span class="p">};</span>
+</code></pre></div></div><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "MoErgo Glove80 programmable ergonomic keyboard";
+var disqus_url = "https://sunaku.github.io/moergo-glove80-keyboard.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2023 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

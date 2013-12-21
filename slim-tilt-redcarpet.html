@@ -1,0 +1,81 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Using Redcarpet for Markdown in Slim - The Terminal Programmer</title><meta content="2013-10-10T17:37:44-07:00" name="DCTERMS.created" /><meta content="2013-10-10T17:37:44-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="solution, markdown, template, slim, tilt, redcarpet" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="slim-tilt-redcarpet" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#slim-tilt-redcarpet" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Using Redcarpet for Markdown in Slim</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2013-10-10T17:37:44-07:00">10 October 2013</time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__problem__" href="#problem" class="downlink">Problem</a><ol></ol></li><li><a id="__solution__" href="#solution" class="downlink">Solution</a><ol></ol></li><li><a id="__example__" href="#example" class="downlink">Example</a><ol></ol></li></ol><p>The <a href="http://slim-lang.com/">Slim</a> template language lets you embed <a href="http://daringfireball.net/projects/markdown/">Markdown</a> sub-templates and
+its underlying <a href="https://github.com/rtomayko/tilt#readme">Tilt</a> template processing engine lets you use your
+favorite Markdown implementation in Ruby to process them.</p>
+<p>I prefer the <a href="https://github.com/vmg/redcarpet#readme">Redcarpet</a> implementation of Markdown in Ruby because I have
+personally worked with it before to <a href="https://github.com/sunaku/md2man#readme">convert Markdown documents into UNIX
+manual pages</a>.</p>
+
+<div id="problem" class="section"></div><h2 class="heading">Problem<a href="#problem" class="permalink" title="Permalink"></a><a href="#__problem__" class="uplink" title="Contents"></a></h2>
+<p>Tilt assumes that Markdown implementations only accept <em>one</em> set of
+configuration options, whereas Redcarpet accepts <em>two</em> of them:</p>
+
+<ol>
+<li><a href="https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch">Render options</a></li>
+<li><a href="https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use">Markdown extensions</a></li>
+</ol>
+<p>When you tell Tilt to use Redcarpet for rendering Markdown, it <em>only</em>
+passes your configuration options as <strong>Markdown extensions</strong> to Redcarpet.
+Thus we have no standard way of passing <strong>render options</strong> to Redcarpet
+through Tilt.</p>
+
+<div id="solution" class="section"></div><h2 class="heading">Solution<a href="#solution" class="permalink" title="Permalink"></a><a href="#__solution__" class="uplink" title="Contents"></a></h2>
+<p>We can work around this limitation by passing a pre-configured renderer
+(which is already configured with our desired render options) as part of
+the Markdown extensions for Redcarpet.  For example:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">renderer_class</span> <span class="o">=</span> <span class="no">Redcarpet</span><span class="o">::</span><span class="no">Render</span><span class="o">::</span><span class="no">HTML</span>
+<span class="n">render_options</span> <span class="o">=</span> <span class="p">{}</span> <span class="c1"># TODO: fill this in!</span>
+<span class="n">renderer</span> <span class="o">=</span> <span class="n">renderer_class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">render_options</span><span class="p">)</span>
+
+<span class="no">Slim</span><span class="o">::</span><span class="no">Embedded</span><span class="p">.</span><span class="nf">set_default_options</span> <span class="ss">:markdown</span> <span class="o">=&gt;</span> <span class="p">{</span>
+  <span class="ss">:renderer</span> <span class="o">=&gt;</span> <span class="n">renderer</span>
+<span class="p">}</span>
+</code></pre></div>
+<div id="example" class="section"></div><h2 class="heading">Example<a href="#example" class="permalink" title="Permalink"></a><a href="#__example__" class="uplink" title="Contents"></a></h2>
+<p>Here is a complete, working example to help you get started:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'slim'</span>
+<span class="nb">require</span> <span class="s1">'tilt'</span>
+<span class="nb">require</span> <span class="s1">'redcarpet'</span>
+
+<span class="n">renderer_class</span> <span class="o">=</span> <span class="no">Redcarpet</span><span class="o">::</span><span class="no">Render</span><span class="o">::</span><span class="no">HTML</span>
+<span class="n">render_options</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="c1"># https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch</span>
+  <span class="ss">:filter_html</span>     <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:no_images</span>       <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:no_links</span>        <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:no_styles</span>       <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:safe_links_only</span> <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:with_toc_data</span>   <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:hard_wrap</span>       <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:xhtml</span>           <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:prettify</span>        <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:link_attributes</span> <span class="o">=&gt;</span> <span class="p">{},</span>
+<span class="p">}</span>
+<span class="n">renderer</span> <span class="o">=</span> <span class="n">renderer_class</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">render_options</span><span class="p">)</span>
+
+<span class="n">markdown_extensions</span> <span class="o">=</span> <span class="p">{</span>
+  <span class="c1"># https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use</span>
+  <span class="ss">:no_intra_emphasis</span>            <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:tables</span>                       <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:fenced_code_blocks</span>           <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:autolink</span>                     <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:disable_indented_code_blocks</span> <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:strikethrough</span>                <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:lax_spacing</span>                  <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:space_after_headers</span>          <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:superscript</span>                  <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:underline</span>                    <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:highlight</span>                    <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:quote</span>                        <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:footnotes</span>                    <span class="o">=&gt;</span> <span class="kp">false</span><span class="p">,</span>
+  <span class="ss">:renderer</span>                     <span class="o">=&gt;</span> <span class="n">renderer</span>
+<span class="p">}</span>
+
+<span class="c1"># https://github.com/slim-template/slim/issues/245#issuecomment-8833818</span>
+<span class="no">Slim</span><span class="o">::</span><span class="no">Embedded</span><span class="p">.</span><span class="nf">set_default_options</span> <span class="ss">:markdown</span> <span class="o">=&gt;</span> <span class="n">markdown_extensions</span>
+<span class="no">Tilt</span><span class="p">.</span><span class="nf">register</span> <span class="no">Tilt</span><span class="o">::</span><span class="no">RedcarpetTemplate</span><span class="o">::</span><span class="no">Redcarpet2</span><span class="p">,</span> <span class="s1">'markdown'</span><span class="p">,</span> <span class="s1">'mkd'</span><span class="p">,</span> <span class="s1">'md'</span>
+<span class="no">Tilt</span><span class="p">.</span><span class="nf">prefer</span> <span class="no">Tilt</span><span class="o">::</span><span class="no">RedcarpetTemplate</span><span class="o">::</span><span class="no">Redcarpet2</span><span class="p">,</span> <span class="s1">'markdown'</span>
+</code></pre></div></div><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Using Redcarpet for Markdown in Slim";
+var disqus_url = "https://sunaku.github.io/slim-tilt-redcarpet.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2013 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

@@ -1,0 +1,136 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Tomorrow terminal color scheme - The Terminal Programmer</title><meta content="2012-10-08T19:38:34-07:00" name="DCTERMS.created" /><meta content="2014-07-13T00:00:00-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="terminal, color, vim, linux" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="tomorrow-terminal-color-scheme" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#tomorrow-terminal-color-scheme" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Tomorrow terminal color scheme</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2012-10-08T19:38:34-07:00"> 8 October 2012&nbsp;<span class="update_count"><a href="#updates" title="1 update">&middot;&rarr;</a></span>&nbsp;13 July 2014</time></header><hr /><div class="description"></div><div class="content"><p>I took the <a href="https://github.com/chriskempson/tomorrow-theme/blob/master/Xdefaults/XresourceTomorrowNight">TomorrowNight</a> and <a href="https://github.com/chriskempson/tomorrow-theme/blob/master/Xdefaults/XresourceTomorrowNightEighties">TomorrowNightEighties</a> terminal color
+schemes from <a href="https://github.com/chriskempson/tomorrow-theme#readme">Chris Kempson&rsquo;s Tomorrow theme</a> and remixed them,
+per my taste, for visual harmony and readability in dark hours.  Behold!</p>
+<img src="tomorrow-terminal-color-scheme.png" alt="the color scheme"><img src="tomorrow-terminal-color-scheme-man.png" alt="UNIX manual page"><p>To use this color scheme in <a href="https://chromium.googlesource.com/apps/libapps/+/HEAD/hterm">hterm</a>, open the <a href="https://chromium.googlesource.com/apps/libapps/+/HEAD/nassh">nassh</a> extension&rsquo;s settings page,
+open Chrome Developer Tools, and then run the following snippet in the console:</p>
+<div class="highlight"><pre class="highlight javascript"><code><span class="nx">term_</span><span class="p">.</span><span class="nx">prefs_</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="dl">"</span><span class="s2">background-color</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#2d2d2d</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">term_</span><span class="p">.</span><span class="nx">prefs_</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="dl">"</span><span class="s2">foreground-color</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#cccccc</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">term_</span><span class="p">.</span><span class="nx">prefs_</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="dl">"</span><span class="s2">cursor-color</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">rgba(174,175,173, 0.5)</span><span class="dl">"</span><span class="p">);</span> <span class="cm">/* #aeafad */</span>
+<span class="nx">term_</span><span class="p">.</span><span class="nx">prefs_</span><span class="p">.</span><span class="kd">set</span><span class="p">(</span><span class="dl">"</span><span class="s2">color-palette-overrides</span><span class="dl">"</span><span class="p">,</span> <span class="p">[</span><span class="dl">"</span><span class="s2">#000000</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#f2777a</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#99cc99</span><span class="dl">"</span><span class="p">,</span>
+<span class="dl">"</span><span class="s2">#de935f</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#81a2be</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#cc99cc</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#94CCCC</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#515151</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#666666</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#f2777a</span><span class="dl">"</span><span class="p">,</span>
+<span class="dl">"</span><span class="s2">#99cc99</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#f0c674</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#81a2be</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#cc99cc</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#94CCCC</span><span class="dl">"</span><span class="p">,</span> <span class="dl">"</span><span class="s2">#393939</span><span class="dl">"</span><span class="p">]);</span>
+</code></pre></div><p>To use this color scheme in Rxvt or XTerm, save the following snippet to a file
+such as <code>~/.Xdefaults</code> and then run <code>xrdb -merge</code> on that file to apply it.  Any
+terminals launched thereafter will use this color scheme, but not existing ones.</p>
+<div class="highlight"><pre class="highlight plaintext"><code>! BLK
+#define _color0        #000000
+#define _color8        #1d1f21
+
+! RED
+! TomorrowNightEighties.t_red
+#define _color1        #f2777a
+#define _color9        _color1
+
+! GRN
+! TomorrowNightEighties.t_green
+#define _color2        #99cc99
+#define _color10       _color2
+
+! YEL
+! TomorrowNight.t_yellow
+#define _color3        #f0c674
+#define _color11       _color3
+
+! BLU
+! TomorrowNight.t_blue
+#define _color4        #81a2be
+#define _color12       _color4
+
+! MAG
+! TomorrowNightEighties.t_purple
+#define _color5        #cc99cc
+#define _color13       _color5
+
+! CYN
+! TomorrowNightEighties.t_aqua(hue,value) + TomorrowNight.t_aqua(saturation)
+#define _color6        #94CCCC
+#define _color14       _color6
+
+! WHT
+! TomorrowNightEighties.t_selection
+#define _color7        #dadada
+! TomorrowNightEighties.t_current_line
+#define _color15       #e4e4e4
+
+! FMT
+#define _colorBD       _color11
+#define _colorUL       _color6
+
+! TXT
+! TomorrowNightEighties.t_foreground
+#define _foreground    #cccccc
+! TomorrowNightEighties.t_background
+#define _background    #2d2d2d
+#define _cursorColor   #aeafad
+
+URxvt*color0         : _color0
+URxvt*color1         : _color1
+URxvt*color2         : _color2
+URxvt*color3         : _color3
+URxvt*color4         : _color4
+URxvt*color5         : _color5
+URxvt*color6         : _color6
+URxvt*color7         : _color7
+URxvt*color8         : _color8
+URxvt*color9         : _color9
+URxvt*color10        : _color10
+URxvt*color11        : _color11
+URxvt*color12        : _color12
+URxvt*color13        : _color13
+URxvt*color14        : _color14
+URxvt*color15        : _color15
+URxvt*colorBD        : _colorBD
+URxvt*colorIT        : _colorIT
+URxvt*colorUL        : _colorUL
+URxvt*foreground     : _foreground
+URxvt*background     : _background
+URxvt*cursorColor    : _cursorColor
+
+XTerm*color0         : _color0
+XTerm*color1         : _color1
+XTerm*color2         : _color2
+XTerm*color3         : _color3
+XTerm*color4         : _color4
+XTerm*color5         : _color5
+XTerm*color6         : _color6
+XTerm*color7         : _color7
+XTerm*color8         : _color8
+XTerm*color9         : _color9
+XTerm*color10        : _color10
+XTerm*color11        : _color11
+XTerm*color12        : _color12
+XTerm*color13        : _color13
+XTerm*color14        : _color14
+XTerm*color15        : _color15
+XTerm*colorBD        : _colorBD
+XTerm*colorIT        : _colorIT
+XTerm*colorUL        : _colorUL
+XTerm*foreground     : _foreground
+XTerm*background     : _background
+XTerm*cursorColor    : _cursorColor
+
+! enable coloring for bold and underlined text
+XTerm*vt100.boldColors     : False
+XTerm*vt100.colorBDMode    : True
+XTerm*vt100.colorULMode    : True
+XTerm*vt100.colorRVMode    : False
+XTerm*vt100.veryBoldColors : 6
+</code></pre></div></div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2014-07-13T00:00:00-07:00">13 July 2014: </time></dt><dd class="content"><ul>
+<li><p>Changed non-bright yellow from <span style="background: #de935f;
+color: black">this orangish</span> hue to <span style="background:
+#f0c674; color: black">this yellowish</span> hue.</p></li>
+<li><p>Changed bright black from <span style="background: #666666; color:
+white">this grayish</span> hue to this <span style="background:
+#1d1f21; color: white">this blackish</span> hue.</p></li>
+<li><p>Changed non-bright white from <span style="background: #515151; color:
+white">this grayish</span> hue to this <span style="background:
+#dadada; color: black">this whitish</span> hue.</p></li>
+<li><p>Changed bright white from <span style="background: #393939; color:
+white">this grayish</span> hue to this <span style="background:
+#e4e4e4; color: black">this whitish</span> hue.</p></li>
+</ul>
+</dd></dl></aside><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Tomorrow terminal color scheme";
+var disqus_url = "https://sunaku.github.io/tomorrow-terminal-color-scheme.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2012&ndash;2014 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

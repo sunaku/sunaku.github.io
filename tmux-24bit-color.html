@@ -1,0 +1,618 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Adding 24-bit TrueColor RGB escape sequences to tmux - The Terminal Programmer</title><meta content="2016-01-29T21:45:58-08:00" name="DCTERMS.created" /><meta content="2016-01-29T21:45:58-08:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="solution, patch, tmux" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="tmux-24bit-color" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#tmux-24bit-color" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Adding 24-bit TrueColor RGB escape sequences to tmux</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2016-01-29T21:45:58-08:00">29 January 2016</time></header><hr /><div class="description"></div><div class="content"><img src="tmux-24bit-color.png" alt="Demonstration of 24-bit colors in tmux under st 0.6"><p><ol class="table-of-contents"><li><a id="__story__" href="#story" class="downlink">Story</a><ol></ol></li><li><a id="__usage__" href="#usage" class="downlink">Usage</a><ol></ol></li><li><a id="__patch__" href="#patch" class="downlink">Patch</a><ol></ol></li></ol></p>
+
+<div id="story" class="section"></div><h1 class="heading">Story<a href="#story" class="permalink" title="Permalink"></a><a href="#__story__" class="uplink" title="Contents"></a></h1>
+<p>Several months ago, <a href="https://github.com/tmux/tmux/issues/34#issuecomment-141222470">I embarked on a journey</a> to revive
+<a href="https://gist.github.com/zchee/9f6f2ca17acf49e04088">Koichi Shiraishi&rsquo;s patch</a>, which derives from <a href="https://gist.github.com/choppsv1/dd00858d4f7f356ce2cf">Christian Hopps&rsquo;s patch</a>, which in turn derives from <a href="https://gist.github.com/ArnisL/6156593">Arnis Lapsa&rsquo;s patch</a>.  This patchwork
+added support for 24-bit RGB color escape sequences in tmux but remained
+unofficial and diverged over time because it wasn&rsquo;t contributed upstream.</p>
+<p>With Nicholas Marriott&rsquo;s invaluable assistance and testing/encouragement from
+fellow tmux enthusiasts, I rebased the once obsolete patchwork atop tmux&rsquo;s
+master branch, enhanced it further, and <a href="https://github.com/tmux/tmux/pull/112">contributed it back as a pull
+request</a>.  The result of all this effort is illustrated by the smooth bands
+of 24-bit color gradients permeating the lower half of the screenshot above.</p>
+<p>Nicholas Marriott finally <a href="https://github.com/tmux/tmux/commit/427b8204268af5548d09b830e101c59daa095df9">merged the pull request into tmux&rsquo;s master branch</a>
+yesterday, making it an official part of tmux and bringing my months-long
+journey to a happy end: it feels victorious to have helped improve tmux
+<a href="tmux-refocus-patch.html">again</a> because, in addition to being one of <a href="about.html#favorite-tool">my
+favorite tools</a>, tmux is indispensable to hordes of
+programmers today and, given the terminal environment&rsquo;s triumphant 50-year
+resilience to digital obsolescence, perhaps even so in decades to come!</p>
+
+<div id="usage" class="section"></div><h1 class="heading">Usage<a href="#usage" class="permalink" title="Permalink"></a><a href="#__usage__" class="uplink" title="Contents"></a></h1>
+<p>Enable the <code>Tc</code> terminal capability for the outer terminal (to which tmux is
+attached) by setting the <code>terminal-overrides</code> option in tmux and subsequently
+detach and reattach tmux, as the following example (wherein <code>$TERM</code> is
+<code>st-256color</code> and <code>%</code> is a shell prompt) illustrates:</p>
+
+<ol>
+<li><p>Outside tmux:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>% echo $TERM
+st-256color
+
+% tmux attach
+</code></pre></div></li>
+<li><p>Inside tmux:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>% tmux set-option -ga terminal-overrides ",st-256color:Tc"
+
+% tmux detach
+</code></pre></div></li>
+<li><p>Outside tmux:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>% tmux attach
+</code></pre></div></li>
+</ol>
+<p>Afterwards, you can run the following command to check whether the <code>Tc</code>
+terminal capability has been enabled properly for the outer terminal:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>tmux info | grep Tc
+</code></pre></div><p>If the command reports <code>Tc: [missing]</code>, then support for 24-bit colors <em>has
+not</em> been enabled properly because the <code>terminal-overrides</code> option may have
+specified the outer terminal&rsquo;s <code>$TERM</code> value incorrectly or because tmux may
+have been reattached to an entirely different outer terminal altogether.</p>
+
+<div id="patch" class="section"></div><h1 class="heading">Patch<a href="#patch" class="permalink" title="Permalink"></a><a href="#__patch__" class="uplink" title="Contents"></a></h1>
+<p>This patch (<a href="tmux-24bit-color.txt">available as a downloadable Git patch
+file</a>) adds support for 24-bit RGB color escape
+sequences in tmux, as <a href="https://github.com/tmux/tmux/issues/34">requested in tmux issue #34</a>, by adjusting <a href="https://gist.github.com/zchee/9f6f2ca17acf49e04088">Koichi
+Shiraishi&rsquo;s patch</a>, which derives from <a href="https://gist.github.com/choppsv1/dd00858d4f7f356ce2cf">Christian Hopps&rsquo;s patch</a>,
+which in turn derives from <a href="https://gist.github.com/ArnisL/6156593">Arnis Lapsa&rsquo;s patch</a>, with <a href="https://github.com/tmux/tmux/pull/112">Nicholas
+Marriott&rsquo;s assistance</a>.</p>
+<div class="highlight"><pre class="highlight diff"><code><span class="p">---
+</span> grid.c     |  11 +++-
+ input.c    |  35 +++++++-----
+ tmux.1     |  12 ++--
+ tmux.h     |  20 ++++++-
+ tty-term.c |   1 +
+ tty.c      | 185 ++++++++++++++++++++++++++++++++++++++++++++++++++-----------
+ 6 files changed, 209 insertions(+), 55 deletions(-)
+
+diff --git a/grid.c b/grid.c
+<span class="gh">index c24e6c6..782032f 100644
+</span><span class="gd">--- a/grid.c
+</span><span class="gi">+++ b/grid.c
+</span><span class="p">@@ -37,7 +37,7 @@</span>
+
+ /* Default grid cell data. */
+ const struct grid_cell grid_default_cell = {
+<span class="gd">-   0, 0, 8, 8, { { ' ' }, 0, 1, 1 }
+</span><span class="gi">+   0, 0, { .fg = 8 }, { .bg = 8 }, { { ' ' }, 0, 1, 1 }
+</span> };
+ const struct grid_cell_entry grid_default_entry = {
+        0, { .data = { 0, 8, 8, ' ' } }
+<span class="p">@@ -284,6 +284,7 @@</span> grid_set_cell(struct grid *gd, u_int px, u_int py, const struct grid_cell *gc)
+        struct grid_line    *gl;
+        struct grid_cell_entry  *gce;
+        struct grid_cell    *gcp;
+<span class="gi">+   int          extended;
+</span>
+        if (grid_check_y(gd, py) != 0)
+                return;
+<span class="p">@@ -293,8 +294,12 @@</span> grid_set_cell(struct grid *gd, u_int px, u_int py, const struct grid_cell *gc)
+        gl = &amp;gd-&gt;linedata[py];
+        gce = &amp;gl-&gt;celldata[px];
+
+-   if ((gce-&gt;flags &amp; GRID_FLAG_EXTENDED) || gc-&gt;data.size != 1 ||
+<span class="gd">-       gc-&gt;data.width != 1) {
+</span><span class="gi">+   extended = (gce-&gt;flags &amp; GRID_FLAG_EXTENDED);
++   if (!extended &amp;&amp; (gc-&gt;data.size != 1 || gc-&gt;data.width != 1))
++       extended = 1;
++   if (!extended &amp;&amp; (gc-&gt;flags &amp; (GRID_FLAG_FGRGB|GRID_FLAG_BGRGB)))
++       extended = 1;
++   if (extended) {
+</span>                if (~gce-&gt;flags &amp; GRID_FLAG_EXTENDED) {
+                        gl-&gt;extddata = xreallocarray(gl-&gt;extddata,
+                            gl-&gt;extdsize + 1, sizeof *gl-&gt;extddata);
+<span class="gh">diff --git a/input.c b/input.c
+index 1772a4c..ae20502 100644
+</span><span class="gd">--- a/input.c
+</span><span class="gi">+++ b/input.c
+</span><span class="p">@@ -1629,18 +1629,20 @@</span> input_csi_dispatch_sgr_256(struct input_ctx *ictx, int fgbg, u_int *i)
+        c = input_get(ictx, *i, 0, -1);
+        if (c == -1) {
+                if (fgbg == 38) {
+<span class="gd">-           gc-&gt;flags &amp;= ~GRID_FLAG_FG256;
+</span><span class="gi">+           gc-&gt;flags &amp;= ~(GRID_FLAG_FG256|GRID_FLAG_FGRGB);
+</span>                        gc-&gt;fg = 8;
+                } else if (fgbg == 48) {
+<span class="gd">-           gc-&gt;flags &amp;= ~GRID_FLAG_BG256;
+</span><span class="gi">+           gc-&gt;flags &amp;= ~(GRID_FLAG_BG256|GRID_FLAG_BGRGB);
+</span>                        gc-&gt;bg = 8;
+                }
+        } else {
+                if (fgbg == 38) {
+                        gc-&gt;flags |= GRID_FLAG_FG256;
+<span class="gi">+           gc-&gt;flags &amp;= ~GRID_FLAG_FGRGB;
+</span>                        gc-&gt;fg = c;
+                } else if (fgbg == 48) {
+                        gc-&gt;flags |= GRID_FLAG_BG256;
+<span class="gi">+           gc-&gt;flags &amp;= ~GRID_FLAG_BGRGB;
+</span>                        gc-&gt;bg = c;
+                }
+        }
+<span class="p">@@ -1651,7 +1653,7 @@</span> void
+ input_csi_dispatch_sgr_rgb(struct input_ctx *ictx, int fgbg, u_int *i)
+ {
+        struct grid_cell    *gc = &amp;ictx-&gt;cell.cell;
+<span class="gd">-   int          c, r, g, b;
+</span><span class="gi">+   int          r, g, b;
+</span>
+        (*i)++;
+        r = input_get(ictx, *i, 0, -1);
+<span class="p">@@ -1666,13 +1668,18 @@</span> input_csi_dispatch_sgr_rgb(struct input_ctx *ictx, int fgbg, u_int *i)
+        if (b == -1 || b &gt; 255)
+                return;
+
+-   c = colour_find_rgb(r, g, b);
+        if (fgbg == 38) {
+<span class="gd">-       gc-&gt;flags |= GRID_FLAG_FG256;
+-       gc-&gt;fg = c;
+</span><span class="gi">+       gc-&gt;flags &amp;= ~GRID_FLAG_FG256;
++       gc-&gt;flags |= GRID_FLAG_FGRGB;
++       gc-&gt;fg_rgb.r = r;
++       gc-&gt;fg_rgb.g = g;
++       gc-&gt;fg_rgb.b = b;
+</span>        } else if (fgbg == 48) {
+<span class="gd">-       gc-&gt;flags |= GRID_FLAG_BG256;
+-       gc-&gt;bg = c;
+</span><span class="gi">+       gc-&gt;flags &amp;= ~GRID_FLAG_BG256;
++       gc-&gt;flags |= GRID_FLAG_BGRGB;
++       gc-&gt;bg_rgb.r = r;
++       gc-&gt;bg_rgb.g = g;
++       gc-&gt;bg_rgb.b = b;
+</span>        }
+ }
+
+@@ -1754,11 +1761,11 @@ input_csi_dispatch_sgr(struct input_ctx *ictx)
+                case 35:
+                case 36:
+                case 37:
+<span class="gd">-           gc-&gt;flags &amp;= ~GRID_FLAG_FG256;
+</span><span class="gi">+           gc-&gt;flags &amp;= ~(GRID_FLAG_FG256|GRID_FLAG_FGRGB);
+</span>                        gc-&gt;fg = n - 30;
+                        break;
+                case 39:
+<span class="gd">-           gc-&gt;flags &amp;= ~GRID_FLAG_FG256;
+</span><span class="gi">+           gc-&gt;flags &amp;= ~(GRID_FLAG_FG256|GRID_FLAG_FGRGB);
+</span>                        gc-&gt;fg = 8;
+                        break;
+                case 40:
+<span class="p">@@ -1769,11 +1776,11 @@</span> input_csi_dispatch_sgr(struct input_ctx *ictx)
+                case 45:
+                case 46:
+                case 47:
+<span class="gd">-           gc-&gt;flags &amp;= ~GRID_FLAG_BG256;
+</span><span class="gi">+           gc-&gt;flags &amp;= ~(GRID_FLAG_BG256|GRID_FLAG_BGRGB);
+</span>                        gc-&gt;bg = n - 40;
+                        break;
+                case 49:
+<span class="gd">-           gc-&gt;flags &amp;= ~GRID_FLAG_BG256;
+</span><span class="gi">+           gc-&gt;flags &amp;= ~(GRID_FLAG_BG256|GRID_FLAG_BGRGB);
+</span>                        gc-&gt;bg = 8;
+                        break;
+                case 90:
+<span class="p">@@ -1784,7 +1791,7 @@</span> input_csi_dispatch_sgr(struct input_ctx *ictx)
+                case 95:
+                case 96:
+                case 97:
+<span class="gd">-           gc-&gt;flags &amp;= ~GRID_FLAG_FG256;
+</span><span class="gi">+           gc-&gt;flags &amp;= ~(GRID_FLAG_FG256|GRID_FLAG_FGRGB);
+</span>                        gc-&gt;fg = n;
+                        break;
+                case 100:
+<span class="p">@@ -1795,7 +1802,7 @@</span> input_csi_dispatch_sgr(struct input_ctx *ictx)
+                case 105:
+                case 106:
+                case 107:
+<span class="gd">-           gc-&gt;flags &amp;= ~GRID_FLAG_BG256;
+</span><span class="gi">+           gc-&gt;flags &amp;= ~(GRID_FLAG_BG256|GRID_FLAG_BGRGB);
+</span>                        gc-&gt;bg = n - 10;
+                        break;
+                }
+<span class="gh">diff --git a/tmux.1 b/tmux.1
+index 6a4b561..fcf388a 100644
+</span><span class="gd">--- a/tmux.1
+</span><span class="gi">+++ b/tmux.1
+</span><span class="p">@@ -2925,7 +2925,7 @@</span> and poor for interactive programs such as shells.
+ .Op Ic on | off
+ .Xc
+ Allow programs to change the window name using a terminal escape
+<span class="gd">-sequence (\\033k...\\033\\\\).
+</span><span class="gi">+sequence (\eek...\ee\e\e).
+</span> The default is on.
+ .Pp
+ .It Xo Ic alternate-screen
+<span class="p">@@ -4029,7 +4029,7 @@</span> This command only works from outside
+ .El
+ .Sh TERMINFO EXTENSIONS
+ .Nm
+<span class="gd">-understands some extensions to
+</span><span class="gi">+understands some unofficial extensions to
+</span> .Xr terminfo 5 :
+ .Bl -tag -width Ds
+ .It Em Cs , Cr
+<span class="p">@@ -4053,10 +4053,12 @@</span> $ printf '\e033[4 q'
+ If
+ .Em Se
+ is not set, \&amp;Ss with argument 0 will be used to reset the cursor style instead.
+<span class="gi">+.It Em \&amp;Tc
++Indicate that the terminal supports the
++.Ql direct colour
++RGB escape sequence (for example, \ee[38;2;255;255;255m).
+</span> .It Em \&amp;Ms
+<span class="gd">-This sequence can be used by
+-.Nm
+-to store the current buffer in the host terminal's selection (clipboard).
+</span><span class="gi">+Store the current buffer in the host terminal's selection (clipboard).
+</span> See the
+ .Em set-clipboard
+ option above and the
+<span class="gh">diff --git a/tmux.h b/tmux.h
+index 1ca6ef3..4bdc8af 100644
+</span><span class="gd">--- a/tmux.h
+</span><span class="gi">+++ b/tmux.h
+</span><span class="p">@@ -387,6 +387,7 @@</span> enum tty_code_code {
+        TTYC_SMSO,  /* enter_standout_mode, so */
+        TTYC_SMUL,  /* enter_underline_mode, us */
+        TTYC_SS,    /* set cursor style, Ss */
+<span class="gi">+   TTYC_TC,    /* 24-bit "true" colour, Tc */
+</span>        TTYC_TSL,   /* to_status_line, tsl */
+        TTYC_VPA,   /* row_address, cv */
+        TTYC_XENL,  /* eat_newline_glitch, xn */
+<span class="p">@@ -643,16 +644,31 @@</span> enum utf8_state {
+ #define GRID_FLAG_BG256 0x2
+ #define GRID_FLAG_PADDING 0x4
+ #define GRID_FLAG_EXTENDED 0x8
+<span class="gi">+#define GRID_FLAG_FGRGB 0x10
++#define GRID_FLAG_BGRGB 0x20
+</span>
+ /* Grid line flags. */
+ #define GRID_LINE_WRAPPED 0x1
+
++/* Grid cell RGB colours. */
+<span class="gi">+struct grid_cell_rgb {
++   u_char  r;
++   u_char  g;
++   u_char  b;
++};
++
+</span> /* Grid cell data. */
+ struct grid_cell {
+        u_char          flags;
+        u_char          attr;
+<span class="gd">-   u_char          fg;
+-   u_char          bg;
+</span><span class="gi">+   union {
++       u_char      fg;
++       struct grid_cell_rgb    fg_rgb;
++   };
++   union {
++       u_char      bg;
++       struct grid_cell_rgb    bg_rgb;
++   };
+</span>        struct utf8_data    data;
+
+ };
+<span class="gh">diff --git a/tty-term.c b/tty-term.c
+index 4d41fd8..a3a2636 100644
+</span><span class="gd">--- a/tty-term.c
+</span><span class="gi">+++ b/tty-term.c
+</span><span class="p">@@ -254,6 +254,7 @@</span> const struct tty_term_code_entry tty_term_codes[] = {
+        [TTYC_SMSO] = { TTYCODE_STRING, "smso" },
+        [TTYC_SMUL] = { TTYCODE_STRING, "smul" },
+        [TTYC_SS] = { TTYCODE_STRING, "Ss" },
+<span class="gi">+   [TTYC_TC] = { TTYCODE_FLAG, "Tc" },
+</span>        [TTYC_TSL] = { TTYCODE_STRING, "tsl" },
+        [TTYC_VPA] = { TTYCODE_STRING, "vpa" },
+        [TTYC_XENL] = { TTYCODE_FLAG, "xenl" },
+<span class="gh">diff --git a/tty.c b/tty.c
+index 52521be..c6fc221 100644
+</span><span class="gd">--- a/tty.c
+</span><span class="gi">+++ b/tty.c
+</span><span class="p">@@ -36,8 +36,15 @@</span> static int tty_log_fd = -1;
+ void   tty_read_callback(struct bufferevent *, void *);
+ void   tty_error_callback(struct bufferevent *, short, void *);
+
++static int tty_same_fg(const struct grid_cell *, const struct grid_cell *);
+<span class="gi">+static int tty_same_bg(const struct grid_cell *, const struct grid_cell *);
++static int tty_same_colours(const struct grid_cell *, const struct grid_cell *);
++static int tty_is_fg(const struct grid_cell *, int);
++static int tty_is_bg(const struct grid_cell *, int);
++
+</span> void   tty_set_italics(struct tty *);
+ int    tty_try_256(struct tty *, u_char, const char *);
+<span class="gi">+int    tty_try_rgb(struct tty *, const struct grid_cell_rgb *, const char *);
+</span>
+ void   tty_colours(struct tty *, const struct grid_cell *);
+ void   tty_check_fg(struct tty *, struct grid_cell *);
+<span class="p">@@ -61,6 +68,74 @@</span> void tty_default_colours(struct grid_cell *, const struct window_pane *);
+ #define tty_pane_full_width(tty, ctx) \
+        ((ctx)-&gt;xoff == 0 &amp;&amp; screen_size_x((ctx)-&gt;wp-&gt;screen) &gt;= (tty)-&gt;sx)
+
++static int
+<span class="gi">+tty_same_fg(const struct grid_cell *gc1, const struct grid_cell *gc2)
++{
++   int flags1, flags2;
++
++   flags1 = (gc1-&gt;flags &amp; (GRID_FLAG_FG256|GRID_FLAG_FGRGB));
++   flags2 = (gc2-&gt;flags &amp; (GRID_FLAG_FG256|GRID_FLAG_FGRGB));
++
++   if (flags1 != flags2)
++       return (0);
++
++   if (flags1 &amp; GRID_FLAG_FGRGB) {
++       if (gc1-&gt;fg_rgb.r != gc2-&gt;fg_rgb.r)
++           return (0);
++       if (gc1-&gt;fg_rgb.g != gc2-&gt;fg_rgb.g)
++           return (0);
++       if (gc1-&gt;fg_rgb.b != gc2-&gt;fg_rgb.b)
++           return (0);
++       return (1);
++   }
++   return (gc1-&gt;fg == gc2-&gt;fg);
++}
++
++static int
++tty_same_bg(const struct grid_cell *gc1, const struct grid_cell *gc2)
++{
++   int flags1, flags2;
++
++   flags1 = (gc1-&gt;flags &amp; (GRID_FLAG_BG256|GRID_FLAG_BGRGB));
++   flags2 = (gc2-&gt;flags &amp; (GRID_FLAG_BG256|GRID_FLAG_BGRGB));
++
++   if (flags1 != flags2)
++       return (0);
++
++   if (flags1 &amp; GRID_FLAG_BGRGB) {
++       if (gc1-&gt;bg_rgb.r != gc2-&gt;bg_rgb.r)
++           return (0);
++       if (gc1-&gt;bg_rgb.g != gc2-&gt;bg_rgb.g)
++           return (0);
++       if (gc1-&gt;bg_rgb.b != gc2-&gt;bg_rgb.b)
++           return (0);
++       return (1);
++   }
++   return (gc1-&gt;bg == gc2-&gt;bg);
++}
++
++static int
++tty_same_colours(const struct grid_cell *gc1, const struct grid_cell *gc2)
++{
++   return (tty_same_fg(gc1, gc2) &amp;&amp; tty_same_bg(gc1, gc2));
++}
++
++static int
++tty_is_fg(const struct grid_cell *gc, int c)
++{
++   if (gc-&gt;flags &amp; (GRID_FLAG_FG256|GRID_FLAG_FGRGB))
++       return (0);
++   return (gc-&gt;fg == c);
++}
++
++static int
++tty_is_bg(const struct grid_cell *gc, int c)
++{
++   if (gc-&gt;flags &amp; (GRID_FLAG_BG256|GRID_FLAG_BGRGB))
++       return (0);
++   return (gc-&gt;bg == c);
++}
++
+</span> void
+ tty_create_log(void)
+ {
+<span class="p">@@ -1423,12 +1498,10 @@</span> void
+ tty_colours(struct tty *tty, const struct grid_cell *gc)
+ {
+        struct grid_cell    *tc = &amp;tty-&gt;cell;
+<span class="gd">-   u_char           fg = gc-&gt;fg, bg = gc-&gt;bg, flags = gc-&gt;flags;
+</span>        int          have_ax, fg_default, bg_default;
+
+        /* No changes? Nothing is necessary. */
+<span class="gd">-   if (fg == tc-&gt;fg &amp;&amp; bg == tc-&gt;bg &amp;&amp;
+-       ((flags ^ tc-&gt;flags) &amp; (GRID_FLAG_FG256|GRID_FLAG_BG256)) == 0)
+</span><span class="gi">+   if (tty_same_colours(gc, tc))
+</span>                return;
+
+        /*
+<span class="p">@@ -1437,8 +1510,8 @@</span> tty_colours(struct tty *tty, const struct grid_cell *gc)
+         * case if only one is default need to fall onward to set the other
+         * colour.
+         */
+<span class="gd">-   fg_default = (fg == 8 &amp;&amp; !(flags &amp; GRID_FLAG_FG256));
+-   bg_default = (bg == 8 &amp;&amp; !(flags &amp; GRID_FLAG_BG256));
+</span><span class="gi">+   fg_default = tty_is_fg(gc, 8);
++   bg_default = tty_is_bg(gc, 8);
+</span>        if (fg_default || bg_default) {
+                /*
+                 * If don't have AX but do have op, send sgr0 (op can't
+<span class="p">@@ -1451,48 +1524,52 @@</span> tty_colours(struct tty *tty, const struct grid_cell *gc)
+                if (!have_ax &amp;&amp; tty_term_has(tty-&gt;term, TTYC_OP))
+                        tty_reset(tty);
+                else {
+<span class="gd">-           if (fg_default &amp;&amp;
+-               (tc-&gt;fg != 8 || tc-&gt;flags &amp; GRID_FLAG_FG256)) {
+</span><span class="gi">+           if (fg_default &amp;&amp; !tty_is_fg(tc, 8)) {
+</span>                                if (have_ax)
+                                        tty_puts(tty, "\033[39m");
+<span class="gd">-               else if (tc-&gt;fg != 7 ||
+-                   tc-&gt;flags &amp; GRID_FLAG_FG256)
+</span><span class="gi">+               else if (!tty_is_fg(tc, 7))
+</span>                                        tty_putcode1(tty, TTYC_SETAF, 7);
+                                tc-&gt;fg = 8;
+<span class="gd">-               tc-&gt;flags &amp;= ~GRID_FLAG_FG256;
+</span><span class="gi">+               tc-&gt;flags &amp;= ~(GRID_FLAG_FG256|GRID_FLAG_FGRGB);
+</span>                        }
+<span class="gd">-           if (bg_default &amp;&amp;
+-               (tc-&gt;bg != 8 || tc-&gt;flags &amp; GRID_FLAG_BG256)) {
+</span><span class="gi">+           if (bg_default &amp;&amp; !tty_is_bg(tc, 8)) {
+</span>                                if (have_ax)
+                                        tty_puts(tty, "\033[49m");
+<span class="gd">-               else if (tc-&gt;bg != 0 ||
+-                   tc-&gt;flags &amp; GRID_FLAG_BG256)
+</span><span class="gi">+               else if (!tty_is_bg(tc, 0))
+</span>                                        tty_putcode1(tty, TTYC_SETAB, 0);
+                                tc-&gt;bg = 8;
+<span class="gd">-               tc-&gt;flags &amp;= ~GRID_FLAG_BG256;
+</span><span class="gi">+               tc-&gt;flags &amp;= ~(GRID_FLAG_BG256|GRID_FLAG_BGRGB);
+</span>                        }
+                }
+        }
+
+        /* Set the foreground colour. */
+<span class="gd">-   if (!fg_default &amp;&amp; (fg != tc-&gt;fg ||
+-       ((flags &amp; GRID_FLAG_FG256) != (tc-&gt;flags &amp; GRID_FLAG_FG256))))
+</span><span class="gi">+   if (!fg_default &amp;&amp; !tty_same_fg(gc, tc))
+</span>                tty_colours_fg(tty, gc);
+
+        /*
+         * Set the background colour. This must come after the foreground as
+         * tty_colour_fg() can call tty_reset().
+         */
+<span class="gd">-   if (!bg_default &amp;&amp; (bg != tc-&gt;bg ||
+-       ((flags &amp; GRID_FLAG_BG256) != (tc-&gt;flags &amp; GRID_FLAG_BG256))))
+</span><span class="gi">+   if (!bg_default &amp;&amp; !tty_same_bg(gc, tc))
+</span>                tty_colours_bg(tty, gc);
+ }
+
+ void
+ tty_check_fg(struct tty *tty, struct grid_cell *gc)
+ {
+<span class="gd">-   u_int   colours;
+</span><span class="gi">+   struct grid_cell_rgb    *rgb = &amp;gc-&gt;fg_rgb;
++   u_int            colours;
+</span>
++   /* Is this a 24-bit colour? */
+<span class="gi">+   if (gc-&gt;flags &amp; GRID_FLAG_FGRGB) {
++       /* Not a 24-bit terminal? Translate to 256-colour palette. */
++       if (!tty_term_flag(tty-&gt;term, TTYC_TC)) {
++           gc-&gt;flags &amp;= ~GRID_FLAG_FGRGB;
++           gc-&gt;flags |= GRID_FLAG_FG256;
++           gc-&gt;fg = colour_find_rgb(rgb-&gt;r, rgb-&gt;g, rgb-&gt;b);
++       }
++   }
+</span>        colours = tty_term_number(tty-&gt;term, TTYC_COLORS);
+
+        /* Is this a 256-colour colour? */
+<span class="p">@@ -1524,8 +1601,18 @@</span> tty_check_fg(struct tty *tty, struct grid_cell *gc)
+ void
+ tty_check_bg(struct tty *tty, struct grid_cell *gc)
+ {
+<span class="gd">-   u_int   colours;
+</span><span class="gi">+   struct grid_cell_rgb    *rgb = &amp;gc-&gt;bg_rgb;
++   u_int            colours;
+</span>
++   /* Is this a 24-bit colour? */
+<span class="gi">+   if (gc-&gt;flags &amp; GRID_FLAG_BGRGB) {
++       /* Not a 24-bit terminal? Translate to 256-colour palette. */
++       if (!tty_term_flag(tty-&gt;term, TTYC_TC)) {
++           gc-&gt;flags &amp;= ~GRID_FLAG_BGRGB;
++           gc-&gt;flags |= GRID_FLAG_BG256;
++           gc-&gt;bg = colour_find_rgb(rgb-&gt;r, rgb-&gt;g, rgb-&gt;b);
++       }
++   }
+</span>        colours = tty_term_number(tty-&gt;term, TTYC_COLORS);
+
+        /* Is this a 256-colour colour? */
+<span class="p">@@ -1560,12 +1647,21 @@</span> tty_colours_fg(struct tty *tty, const struct grid_cell *gc)
+        u_char           fg = gc-&gt;fg;
+        char             s[32];
+
++   tc-&gt;flags &amp;= ~(GRID_FLAG_FG256|GRID_FLAG_FGRGB);
+<span class="gi">+
++   /* Is this a 24-bit colour? */
++   if (gc-&gt;flags &amp; GRID_FLAG_FGRGB) {
++       if (tty_try_rgb(tty, &amp;gc-&gt;fg_rgb, "38") == 0)
++           goto save_fg;
++       /* Should not get here, already converted in tty_check_fg. */
++       return;
++   }
++
+</span>        /* Is this a 256-colour colour? */
+        if (gc-&gt;flags &amp; GRID_FLAG_FG256) {
+<span class="gd">-       /* Try as 256 colours. */
+</span>                if (tty_try_256(tty, fg, "38") == 0)
+                        goto save_fg;
+<span class="gd">-       /* Else already handled by tty_check_fg. */
+</span><span class="gi">+       /* Should not get here, already converted in tty_check_fg. */
+</span>                return;
+        }
+
+@@ -1581,9 +1677,12 @@ tty_colours_fg(struct tty *tty, const struct grid_cell *gc)
+
+ save_fg:
+        /* Save the new values in the terminal current cell. */
+<span class="gd">-   tc-&gt;fg = fg;
+-   tc-&gt;flags &amp;= ~GRID_FLAG_FG256;
+-   tc-&gt;flags |= gc-&gt;flags &amp; GRID_FLAG_FG256;
+</span><span class="gi">+   if (gc-&gt;flags &amp; GRID_FLAG_FGRGB)
++       memcpy(&amp;tc-&gt;fg_rgb, &amp;gc-&gt;fg_rgb, sizeof tc-&gt;fg_rgb);
++   else
++       tc-&gt;fg = fg;
++   tc-&gt;flags &amp;= ~(GRID_FLAG_FGRGB|GRID_FLAG_FG256);
++   tc-&gt;flags |= (gc-&gt;flags &amp; (GRID_FLAG_FG256|GRID_FLAG_FGRGB));
+</span> }
+
+ void
+<span class="p">@@ -1593,12 +1692,19 @@</span> tty_colours_bg(struct tty *tty, const struct grid_cell *gc)
+        u_char           bg = gc-&gt;bg;
+        char             s[32];
+
++   /* Is this a 24-bit colour? */
+<span class="gi">+   if (gc-&gt;flags &amp; GRID_FLAG_BGRGB) {
++       if (tty_try_rgb(tty, &amp;gc-&gt;bg_rgb, "48") == 0)
++           goto save_bg;
++       /* Should not get here, already converted in tty_check_bg. */
++       return;
++   }
++
+</span>        /* Is this a 256-colour colour? */
+        if (gc-&gt;flags &amp; GRID_FLAG_BG256) {
+<span class="gd">-       /* Try as 256 colours. */
+</span>                if (tty_try_256(tty, bg, "48") == 0)
+                        goto save_bg;
+<span class="gd">-       /* Else already handled by tty_check_bg. */
+</span><span class="gi">+       /* Should not get here, already converted in tty_check_bg. */
+</span>                return;
+        }
+
+@@ -1614,9 +1720,12 @@ tty_colours_bg(struct tty *tty, const struct grid_cell *gc)
+
+ save_bg:
+        /* Save the new values in the terminal current cell. */
+<span class="gd">-   tc-&gt;bg = bg;
+-   tc-&gt;flags &amp;= ~GRID_FLAG_BG256;
+-   tc-&gt;flags |= gc-&gt;flags &amp; GRID_FLAG_BG256;
+</span><span class="gi">+   if (gc-&gt;flags &amp; GRID_FLAG_BGRGB)
++       memcpy(&amp;tc-&gt;bg_rgb, &amp;gc-&gt;bg_rgb, sizeof tc-&gt;bg_rgb);
++   else
++       tc-&gt;bg = bg;
++   tc-&gt;flags &amp;= ~(GRID_FLAG_BGRGB|GRID_FLAG_BG256);
++   tc-&gt;flags |= (gc-&gt;flags &amp; (GRID_FLAG_BG256|GRID_FLAG_BGRGB));
+</span> }
+
+ int
+<span class="p">@@ -1656,6 +1765,20 @@</span> fallback:
+        return (0);
+ }
+
++int
+<span class="gi">+tty_try_rgb(struct tty *tty, const struct grid_cell_rgb *rgb, const char *type)
++{
++   char    s[32];
++
++   if (!tty_term_flag(tty-&gt;term, TTYC_TC))
++       return (-1);
++
++   xsnprintf(s, sizeof s, "\033[%s;2;%hhu;%hhu;%hhum", type, rgb-&gt;r,
++       rgb-&gt;g, rgb-&gt;b);
++   tty_puts(tty, s);
++   return (0);
++}
++
+</span> void
+ tty_default_colours(struct grid_cell *gc, const struct window_pane *wp)
+ {
+<span class="gd">--
+</span><span class="p">2.7.0
+</span></code></pre></div></div><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Adding 24-bit TrueColor RGB escape sequences to tmux";
+var disqus_url = "https://sunaku.github.io/tmux-24bit-color.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2016 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

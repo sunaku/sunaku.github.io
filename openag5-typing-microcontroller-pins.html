@@ -1,0 +1,47 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Tying wires to microcontroller pins - The Terminal Programmer</title><meta content="2008-04-03T20:07:23-07:00" name="DCTERMS.created" /><meta content="2008-04-03T20:07:23-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="hardware, hack" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="openag5-typing-microcontroller-pins" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#openag5-typing-microcontroller-pins" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Tying wires to microcontroller pins</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2008-04-03T20:07:23-07:00"> 3 April 2008</time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__progress-so-far__" href="#progress-so-far" class="downlink">Progress so far</a><ol></ol></li><li><a id="__the-road-ahead__" href="#the-road-ahead" class="downlink">The road ahead</a><ol></ol></li></ol>
+<div id="progress-so-far" class="section"></div><h2 class="heading">Progress so far<a href="#progress-so-far" class="permalink" title="Permalink"></a><a href="#__progress-so-far__" class="uplink" title="Contents"></a></h2>
+<p>I finished building <a href="http://openag5.tuxfamily.org/#Schematic-for-MON08-programmer">the MON08 programmer
+circuit</a> last
+week, so the next step was to run wires from the circuit onto the <a href="http://openag5.tuxfamily.org/#primary_board_front">connection
+points</a> on the primary
+PCB(Printed Circuit Board).</p>
+<img src="openag5-typing-microcontroller-pins.jpg" alt="Knots around microcontroller pins"><p>At first, I tried soldering 0.25mm <a href="http://en.wikipedia.org/wiki/Wire_wrap">wire
+wrap</a> wires onto the OSC1 and RESET
+pins on the micro-controller. However, the tip of my soldering iron was far
+too big (and blunt) for the job, allowing me to accidentally solder the tops
+first three pins together!</p>
+<p>What a mess that was! I spent half an hour scraping it away with the tip of a
+1.8mm <a href="http://en.wikipedia.org/wiki/Screw#Types_of_screw_drive">slotted (flat
+head)</a> screw driver.
+Afterwards, I ensured that that the pins were once again unconnected,
+independent, and free using my trusty <a href="http://en.wikipedia.org/wiki/Continuity_tester">continuity
+tester</a>.</p>
+<p>With that soldering lesson well learned, I proceeded to try a different
+approach: I would literally tie wires onto the pins (see photo above). This
+was tricky.</p>
+<p>I stripped off some insulation from each wire and bent the underlying metal
+into a crude &ldquo;U&rdquo; shaped hook. After <em>much</em> persistence (though mostly luck, it
+seemed) I was able to loop each wire around its corresponding pin. Then it was
+just a matter of twisting the excess length of metal around the insulation.
+<em>Et viola!</em> A metal knot. :-)</p>
+<p>Finally, I secured the wires using masking tape so that they don&rsquo;t move around
+and accidentally cause the knots to touch the neighboring microcontroller
+pins.</p>
+
+<div id="the-road-ahead" class="section"></div><h2 class="heading">The road ahead<a href="#the-road-ahead" class="permalink" title="Permalink"></a><a href="#__the-road-ahead__" class="uplink" title="Contents"></a></h2>
+<p>Now I need to solder 0.60mm wires to the remaining connection points and try
+to read the micro-controller&rsquo;s flash EEPROM.</p>
+<p>Initially, I thought I would have to install Windows XP on my computer
+(groan!) just to use the
+<a href="http://www.pemicro.com/support/download_processor.cfm?family=1">ICS08JBZ</a>
+programmer software to communicate with my MON08 programmer circuit. But
+luckily, I found an excellent open source tool called <a href="http://sourceforge.net/projects/monitor-68hc08/">monitor-
+68HC08</a> written by <a href="http://stwp.demaine.info/">DEMAINE
+Benoît-Pierre</a> which does the job. This tool&rsquo;s
+source code will come in handy if I end up having to crack the
+microcontroller&rsquo;s security code by brute force.</p>
+</div><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Tying wires to microcontroller pins";
+var disqus_url = "https://sunaku.github.io/openag5-typing-microcontroller-pins.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2008 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

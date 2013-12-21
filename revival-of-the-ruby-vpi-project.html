@@ -1,0 +1,48 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Revival of the ruby-vpi project - The Terminal Programmer</title><meta content="2006-02-12T00:00:00-08:00" name="DCTERMS.created" /><meta content="2006-08-07T00:00:00-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="ruby, verilog, cosimulation, open source" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="revival-of-the-ruby-vpi-project" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#revival-of-the-ruby-vpi-project" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Revival of the ruby-vpi project</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2006-02-12T00:00:00-08:00">12 February 2006&nbsp;<span class="update_count"><a href="#updates" title="1 update">&middot;&rarr;</a></span>&nbsp; 7 August 2006</time></header><hr /><div class="description"></div><div class="content"><p>A week ago, I was in search of Verilog TF, ACC, or VPI bindings for Ruby in
+order to simplify the task of writing a fairly complex Verilog test bench.
+Luckily, I came across Kazuhiro HIWADA&rsquo;s <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-list/18193">ruby-vpi
+extension</a></p>
+<p>This extension, through clever use of pthreads and mutual exclusion, enabled
+me to run a Ruby script from within Verilog via the standard PLI callback
+mechanism. However, that was the extent of its ability; it did not provide a
+means to pass parameters back and forth between Verilog and Ruby.</p>
+<p>Naturally, I began implementing the ability to pass parameters and access the
+Verilog module under test via the VPI specification. After a few sleepless
+days, my hard work&mdash;although a bit hackish&mdash;paid off.</p>
+<p>I tried my best to contact the original author, Mr. Hiwada, in hopes of
+contributing my additions to him. However, I failed to locate a more recent
+means of contact than his e-mail address listed on his <a href="http://easter.kuee.kyoto-u.ac.jp/%7Ehiwada/ruby/">old (1999)
+website</a>.</p>
+<p>Alas, it seemed that ruby-vpi was genuinely abandoned. So I decided to revive
+this wonderful project and coordinate further development through rubyforge.</p>
+<p>I would like to thank Mr. Hiwada for creating the basic infrastructure for
+this project, so many years ago. I shall now continue his noble work alongside
+my Masters thesis for which I hope to utilize this extension.</p>
+</div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2006-08-07T00:00:00-07:00"> 7 August 2006: </time></dt><dd class="content"><p>I was finally able to contact Mr. Hiwada at <a href="http://www.toshiba.co.jp/">Toshiba
+Japan</a>!</p>
+<p>He generously granted me permission to continue this project under the GNU GPL
+license (or any other license for that matter).</p>
+<p>His response is reproduced below, with extraneous e-mail headers and addresses
+removed for privacy.</p>
+<div class="highlight"><pre class="highlight plaintext"><code>Date: Mon, 07 Aug 2006 17:49:27 +0900
+From: 檜田　和浩
+To: Suraj N. Kurapati
+Subject: Re: regarding ruby-vpi for verilog
+
+Hello Mr. Kurapati,
+
+I'm sorry I'm completely away from my old e-mail address.
+
+Currently I have no time to play with HDL, but I'm very happy to hear
+the evolution, thanks to your efforts.
+
+Please feel free to carry on the project. (I will never be vocal about
+licence issue. I thought it as public domain.)
+
+Thanks for information.
+Best regards.
+</code></pre></div></dd></dl></aside><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Revival of the ruby-vpi project";
+var disqus_url = "https://sunaku.github.io/revival-of-the-ruby-vpi-project.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2006 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

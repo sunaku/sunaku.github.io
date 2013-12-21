@@ -1,0 +1,25 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Using ruby-debug with ruby-vpi - The Terminal Programmer</title><meta content="2006-11-06T00:00:00-08:00" name="DCTERMS.created" /><meta content="2006-11-06T00:00:00-08:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="ruby, verilog, debugging" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="ruby-vpi-using-ruby-debug" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#ruby-vpi-using-ruby-debug" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Using ruby-debug with ruby-vpi</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2006-11-06T00:00:00-08:00"> 6 November 2006</time></header><hr /><div class="description"></div><div class="content"><p>Here is one way to use <a href="http://rubyforge.org/projects/ruby-debug">ruby-debug</a>
+to help debug your ruby-vpi test benches. See the <a href="http://www.datanoise.com/articles/category/ruby-debug">ruby-debug development
+blog</a> to learn more
+ways.</p>
+
+<ol>
+<li>Add the following code to the top of your <code>bench.rb</code> file.</li>
+</ol>
+<div class="highlight"><pre class="highlight plaintext"><code>require 'ruby-debug'
+Debugger.start
+</code></pre></div>
+<ol>
+<li>Add the command <code>debugger</code> in your where you wish to start a debugging session.</li>
+</ol>
+<p>Now you have a powerful and <em>fast</em> interactive Ruby debugger at your disposal.
+The best part is that ruby-debug can be used <em>remotely</em>.</p>
+<p>As a result, we can start a ruby-debug server within a ruby-vpi bench and then
+use a graphical tool for debugging. RadRails is <a href="http://www.radrails.org/blog/2006/10/2/working-on-rails-debugging">already working towards such
+a goal</a> for
+Ruby on Rails.</p>
+</div><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Using ruby-debug with ruby-vpi";
+var disqus_url = "https://sunaku.github.io/ruby-vpi-using-ruby-debug.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2006 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

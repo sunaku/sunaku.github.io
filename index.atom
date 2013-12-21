@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="utf-8" ?><feed xmlns="http://www.w3.org/2005/Atom"><id>https://sunaku.github.io/</id><link href="https://sunaku.github.io/" /><link href="https://sunaku.github.io/index.atom" rel="self" /><title>The Terminal Programmer</title><subtitle type="html"><![CDATA[<a href="about.html"><img src="www/afterglow.ie/LinuxZealot.png" alt="This image is the &quot;Linux Zealot&quot; icon from the &quot;Forum Faces 2&quot;
+   icon set by Cian Walsh of Afterglow Design (www.afterglow.ie)"></a><p><a href="https://github.com/sunaku">I program</a>, incessantly,                     <br>
+and I fear it will be the <a href="the-cult-of-codethulu.html">end of me</a>.        <br>
+I cannot stop, for it commands my will,     <br>
+<a href="about.html">thus I am</a> the terminal programmer, <a href="4-reminders-6-paramitas-1-universe.html">nil</a>.   <br></p>
+]]></subtitle><updated>2023-07-04T15:37:55-07:00</updated><author><name>Suraj N. Kurapati</name></author><entry><id>https://sunaku.github.io/tmux-yank-osc52.html</id><link href="https://sunaku.github.io/tmux-yank-osc52.html" /><title>Copying to clipboard from tmux and Vim using OSC 52</title><updated>2023-07-04T15:37:55-07:00</updated><published>2014-04-19T13:04:46-07:00</published><author><name>Suraj N. Kurapati</name></author><category term="solution"></category><category term="tmux"></category><category term="vim"></category><category term="terminal"></category><category term="clipboard"></category><category term="yank"></category><summary type="html"><![CDATA[<dl><dt class="title"><time datetime="2023-07-04T15:37:55-07:00"> 4 July 2023: </time></dt><dd class="content"><p>Updated the tmux configuration snippet to enable allow-passthrough for tmux 3.3
+and newer. Thanks to Jonathan Wheeler for <a href="https://github.com/sunaku/home/issues/6#issuecomment-1603608453">suggesting this solution</a>, which I had
+<a href="https://github.com/sunaku/home/commit/dfea3f4f6853ca1658118fc312152d5dcacdfcde">previously implemented in August 2022</a> but missed updating here.</p>
+</dd></dl><dl><dt class="title"><time datetime="2022-02-10T17:48:39-08:00">10 February 2022: </time></dt><dd class="content"><p>Verify the <code>$DISPLAY</code> environment variable before attempting <code>xsel</code> and <code>xclip</code>.</p>
+</dd></dl><dl><dt class="title"><time datetime="2021-09-28T23:04:01-07:00">28 September 2021: </time></dt><dd class="content"><p>Pipe the text to be copied into <code>tmux load-buffer</code> instead of passing it as an
+argument to <code>tmux set-buffer</code>, thereby avoiding any shell (mis)interpretation.
+Thanks to Jonathan Wheeler for reporting <a href="http://disq.us/p/2cucd4d">this issue</a>.</p>
+</dd></dl><dl><dt class="title"><time datetime="2021-08-17T21:39:36-07:00">17 August 2021: </time></dt><dd class="content"><p>Restored X11 support in the <code>yank</code> script because its removal didn&rsquo;t prevent
+the entire terminal screen to be copied to tmux clipboard when using Vim.</p>
+</dd></dl><dl><dt class="title"><time datetime="2021-06-26T12:11:06-07:00">26 June 2021: </time></dt><dd class="content"><p>Removed X11 support from the <code>yank</code> script because running it from within Vim
+caused the entire terminal screen to be copied to tmux clipboard. Also, removed
+the workaround of clearing the KiTTY terminal clipboard before yanking; use the
+<code>clipboard_control no-append</code> setting in <code>~/.config/kitty/kitty.conf</code> instead:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>clipboard_control write-clipboard write-primary no-append
+</code></pre></div></dd></dl><dl><dt class="title"><time datetime="2020-04-02T13:06:00-07:00"> 2 April 2020: </time></dt><dd class="content"><p>Larry Sanderson contributed this Vim configuration snippet that <em>automates</em>
+yanking to system clipboard by calling the <code>yank(1)</code> script in this article:</p>
+<div class="highlight"><pre class="highlight viml"><code><span class="c">" Set it up so all yanks copy to system clipboard</span>
+<span class="k">function</span><span class="p">!</span> CopyYank<span class="p">()</span> abort
+  <span class="k">call</span> Yank<span class="p">(</span><span class="k">join</span><span class="p">(</span><span class="k">v</span><span class="p">:</span>event<span class="p">.</span>regcontents<span class="p">,</span> <span class="s2">"\n"</span><span class="p">))</span>
+<span class="k">endfunction</span>
+autocmd <span class="nb">TextYankPost</span> * <span class="k">call</span> CopyYank<span class="p">()</span>
+</code></pre></div></dd></dl><dl><dt class="title"><time datetime="2018-09-27T21:25:21-07:00">27 September 2018: </time></dt><dd class="content"><p>Fixed tmux detection under nested SSH. Added support for <a href="https://sw.kovidgoyal.net/kitty/protocol-extensions.html#pasting-to-clipboard">KiTTY</a> terminal.</p>
+<p>When you start an SSH session from inside tmux, the <code>$TMUX</code> environment
+variable does not carry forward into that newly started SSH session.  As a
+result, when you run the <code>yank</code> script inside that SSH session, it doesn&rsquo;t
+realize that it&rsquo;s actually attached to a tmux client (since <code>$TMUX</code> is not set)
+and it therefore doesn&rsquo;t specially wrap the OSC 52 sequence for tmux.
+As a result, tmux discards the bare OSC 52 sequence and it all falls apart.</p>
+<p>To solve this, we instead look to the <code>$TERM</code> environment variable, which
+begins with the word &ldquo;screen&rdquo; for all terminal sessions started under tmux.</p>
+</dd></dl><dl><dt class="title"><time datetime="2018-08-08T16:35:07-07:00"> 8 August 2018: </time></dt><dd class="content"><p>Vim snippet now handles <code>/bin/sh: /dev/tty: No such device or address</code> errors
+on some systems by using <code>writefile()</code> instead of shell redirection.  It also
+provides a convenient <code>Yank()</code> function to abstract away the <code>yank</code> system call.</p>
+</dd></dl><dl><dt class="title"><time datetime="2017-04-29T10:44:40-07:00">29 April 2017: </time></dt><dd class="content"><p>Updated configuration snippet for tmux 2.4, using <code>send-keys -X copy-pipe</code>.</p>
+</dd></dl><dl><dt class="title"><time datetime="2016-01-16T21:21:57-08:00">16 January 2016: </time></dt><dd class="content"><p><a href="http://www.cs.unc.edu/%7Egb/">Gary Bishop</a> discovered that the Vim mapping
+presented in this article needed to <em>explicitly</em> redirect the OSC 52 escape
+sequence generated by the yank(1) script to the terminal device in order to
+work correctly in certain environments (Linux =&gt; tmux =&gt; ssh =&gt; Chromebook):</p>
+<div class="highlight"><pre class="highlight viml"><code><span class="p">:</span><span class="k">call</span> <span class="nb">system</span><span class="p">(</span><span class="s1">'yank &gt; /dev/tty'</span><span class="p">,</span> @<span class="m">0</span><span class="p">)</span>
+</code></pre></div><p>See the comments thread at the bottom of this article for more information.</p>
+</dd></dl><dl><dt class="title"><time datetime="2014-11-09T11:40:00-08:00"> 9 November 2014: </time></dt><dd class="content"><p>Updated yank(1) script. Added <code>M-Y</code> and <code>y</code> copy-pipe shortcuts for tmux.</p>
+</dd></dl><dl><dt class="title"><time datetime="2014-07-09T13:09:01-07:00"> 9 July 2014: </time></dt><dd class="content"><p>I have updated the yank(1) script in this article to copy its input text
+into tmux&rsquo;s clipboard <em>in addition to</em> the operating system clipboard.</p>
+</dd></dl>]]></summary></entry><entry><id>https://sunaku.github.io/moergo-glove80-keyboard.html</id><link href="https://sunaku.github.io/moergo-glove80-keyboard.html" /><title>MoErgo Glove80 programmable ergonomic keyboard</title><updated>2023-07-04T05:00:41-07:00</updated><published>2023-07-04T05:00:41-07:00</published><author><name>Suraj N. Kurapati</name></author><category term="typing"></category><category term="keyboard"></category><category term="layout"></category><category term="ergonomics"></category><category term="programming"></category></entry><entry><id>https://sunaku.github.io/home-row-mods.html</id><link href="https://sunaku.github.io/home-row-mods.html" /><title>Taming home row mods with bilateral combinations</title><updated>2023-03-05T10:38:00-08:00</updated><published>2022-10-16T05:06:31-07:00</published><author><name>Suraj N. Kurapati</name></author><category term="typing"></category><category term="keyboard"></category><category term="ergonomics"></category><category term="optimization"></category><category term="firmware"></category><summary type="html"><![CDATA[<dl><dt class="title"><time datetime="2023-03-05T10:38:00-08:00"> 5 March 2023: </time></dt><dd class="content"><p>Inspired by <a href="https://zmk.dev/docs/behaviors/hold-tap#global-quick-tap">ZMK&rsquo;s global-quick-tap</a> feature, I&rsquo;ve
+implemented a <em>typing streak timeout</em> setting that suppresses home row mods
+while actively typing.</p>
+<div class="highlight"><pre class="highlight c"><code><span class="cp">#define BILATERAL_COMBINATIONS_TYPING_STREAK_TIMEOUT 160  </span><span class="cm">/* ms */</span><span class="cp">
+</span></code></pre></div><p>However, this obstructs the Shift modifier when typing parentheses or
+punctuation marks such as <code>!</code> and <code>?</code> at the end of a sentence; and it requires
+a dedicated Shift key as a workaround, per <a href="https://github.com/urob/zmk-config#timeless-homerow-mods">@urob&rsquo;s &ldquo;timeless&rdquo; mods for
+ZMK</a>. So I went on to
+exempt Shift modifiers from typing streaks using a bitmask:</p>
+<div class="highlight"><pre class="highlight c"><code><span class="cp">#define BILATERAL_COMBINATIONS_TYPING_STREAK_MODMASK (~MOD_MASK_SHIFT)
+</span></code></pre></div><p>With all this, typing feels natural again!  No more unconscious fears
+about accidentally triggering home row mods. 😌  It&rsquo;s a complete game changer! 🤩</p>
+</dd></dl><dl><dt class="title"><time datetime="2023-01-29T02:49:08Z">29 January 2023: </time></dt><dd class="content"><p>I have fixed some corner cases, simplified the configuration, improved chording support, and upgraded to QMK 0.19.10.  Eager mods are now enabled by default (so that mod-clicks <em>Just Work</em> out of the box) but you can delay them via <code>#define</code> settings.</p>
+
+<ul>
+<li>Removed <code>CHORDSIZE</code> setting since it&rsquo;s now hard-coded to the maximum allowed value in QMK.</li>
+<li>Removed <code>EAGERMODS</code> setting since &ldquo;eager mods&rdquo; are now always enabled by default.</li>
+<li>Renamed <code>EAGERMASK</code> setting to <code>DELAY_MODS_THAT_MATCH</code> and thereby inverted its meaning (it now specifies modifiers that should be delayed, not made eager).</li>
+<li>Renamed <code>DEFERMODS</code> setting to <code>DELAY_MATCHED_MODS_BY</code>.</li>
+<li>Renamed <code>CROSSOVER</code> setting to <code>ALLOW_CROSSOVER_AFTER</code>.</li>
+<li>Renamed <code>SAMESIDED</code> setting to <code>ALLOW_SAMESIDED_AFTER</code>.</li>
+</ul>
+<p>For example, here is a diff showing how my personal configuration has changed since my last update to this article and associated set of patches:</p>
+<div class="highlight"><pre class="highlight diff"><code><span class="gd">-#define BILATERAL_COMBINATIONS_EAGERMODS 1
+-#define BILATERAL_COMBINATIONS_EAGERMASK (~MOD_MASK_GUI)
+-#define BILATERAL_COMBINATIONS_DEFERMODS 100
+-#define BILATERAL_COMBINATIONS_CROSSOVER 75
+-#define BILATERAL_COMBINATIONS_SAMESIDED 3000
+-#define BILATERAL_COMBINATIONS_CHORDSIZE 4 // one side GUI, Alt, Shift, Control
+</span><span class="gi">+#define BILATERAL_COMBINATIONS_DELAY_MODS_THAT_MATCH MOD_MASK_GUI
++#define BILATERAL_COMBINATIONS_DELAY_MATCHED_MODS_BY 100
++#define BILATERAL_COMBINATIONS_ALLOW_CROSSOVER_AFTER 75
++#define BILATERAL_COMBINATIONS_ALLOW_SAMESIDED_AFTER 3000
+</span></code></pre></div></dd></dl><dl><dt class="title"><time datetime="2022-11-19T12:30:19-08:00">19 November 2022: </time></dt><dd class="content"><p>I have added support for chord tapping (multiple mod keys) and <a href="https://getreuer.info/posts/keyboards/achordion/#achordion_eager_mod">&ldquo;eager mods&rdquo;</a> for
+mod-click mouse usage.  The overall logic is illustrated visually as a
+<a href="#solution">flowchart</a> and the <a href="#settings">various <code>#define</code> settings</a> are now
+documented here as well.</p>
+<p>This is, by far, the <em>crispest</em> typing experience I&rsquo;ve felt in years! :)</p>
+</dd></dl><dl><dt class="title"><time datetime="2022-10-27T23:41:10-07:00">27 October 2022: </time></dt><dd class="content"><p>I have replaced the <code>FLASHMODS</code> mask definition with a
+new <code>DEFERMODS</code> timeout in order to implement <a href="https://github.com/manna-harbour/qmk_firmware/pull/48#issuecomment-1271070490">Miryoku&rsquo;s
+suggestion</a> of (1) suppressing all modifiers as &ldquo;flashing mods&rdquo; and
+(2) registering them later, after a timeout, for mod-click mouse usage.</p>
+<div class="highlight"><pre class="highlight diff"><code><span class="gd">-#define BILATERAL_COMBINATIONS_FLASHMODS MOD_MASK_GUI
+</span><span class="gi">+#define BILATERAL_COMBINATIONS_DEFERMODS 100
+</span></code></pre></div></dd></dl>]]></summary></entry><entry><id>https://sunaku.github.io/ergohaven-remnant-keyboard.html</id><link href="https://sunaku.github.io/ergohaven-remnant-keyboard.html" /><title>Ergohaven Remnant programmable ergonomic keyboard</title><updated>2023-01-28T23:57:21-08:00</updated><published>2023-01-28T23:57:21-08:00</published><author><name>Suraj N. Kurapati</name></author><category term="typing"></category><category term="keyboard"></category><category term="layout"></category><category term="ergonomics"></category><category term="programming"></category></entry><entry><id>https://sunaku.github.io/dactyl-manuform-5x6-keyboard.html</id><link href="https://sunaku.github.io/dactyl-manuform-5x6-keyboard.html" /><title>Dactyl Manuform 5x6 programmable ergonomic keyboard</title><updated>2022-10-23T03:29:39-07:00</updated><published>2022-10-23T03:29:39-07:00</published><author><name>Suraj N. Kurapati</name></author><category term="typing"></category><category term="keyboard"></category><category term="layout"></category><category term="ergonomics"></category><category term="programming"></category></entry><entry><id>https://sunaku.github.io/engrammer-keyboard-layout.html</id><link href="https://sunaku.github.io/engrammer-keyboard-layout.html" /><title>Engrammer - Arno&#39;s Engram layout for programmers</title><updated>2022-08-28T09:50:40Z</updated><published>2022-08-28T09:50:40Z</published><author><name>Suraj N. Kurapati</name></author><category term="keyboard"></category><category term="layout"></category><category term="ergonomics"></category><category term="optimization"></category></entry><entry><id>https://sunaku.github.io/engram-keyboard-layout.html</id><link href="https://sunaku.github.io/engram-keyboard-layout.html" /><title>Switching to Arno&#39;s Engram 2.0 keyboard layout</title><updated>2021-05-07T06:45:13Z</updated><published>2021-05-07T06:45:13Z</published><author><name>Suraj N. Kurapati</name></author><category term="keyboard"></category><category term="layout"></category><category term="ergonomics"></category><category term="optimization"></category></entry><entry><id>https://sunaku.github.io/tmux-select-pane.html</id><link href="https://sunaku.github.io/tmux-select-pane.html" /><title>Intelligently navigating tmux panes and Vim splits</title><updated>2020-04-25T22:03:25-07:00</updated><published>2015-05-05T17:43:38-07:00</published><author><name>Suraj N. Kurapati</name></author><category term="solution"></category><category term="usability"></category><category term="tmux"></category><category term="vim"></category><summary type="html"><![CDATA[<dl><dt class="title"><time datetime="2020-04-25T22:03:25-07:00">25 April 2020: </time></dt><dd class="content"><p>I&rsquo;ve published the code in this article as an installable tmux/Vim plugin:</p>
+
+<ul>
+<li><a href="https://github.com/sunaku/tmux-navigate">https://github.com/sunaku/tmux-navigate</a></li>
+</ul>
+<p>Thanks to <a href="https://github.com/bradleyharden">@bradleyharden</a> for contributing a
+working example of TPM plugin conversion and giving me the opportunity to host
+this plugin in my GitHub.</p>
+</dd></dl><dl><dt class="title"><time datetime="2019-08-01T13:57:00-07:00"> 1 August 2019: </time></dt><dd class="content"><p>Erase stray ESC + hjkl keys for panes that are misidentified as containing Vim.
+This occurs when holding down the shortcut keys or using an old Vim that leaves
+behind a dirty window title labeled &ldquo;Thanks for flying Vim!&rdquo;.</p>
+</dd></dl><dl><dt class="title"><time datetime="2019-06-27T21:24:32-07:00">27 June 2019: </time></dt><dd class="content"><p>Use the <code>#{q:}</code> shell quoting directive in tmux-2.9a when interpolating tmux
+variables to properly support pane titles that contain quotation marks.</p>
+</dd></dl><dl><dt class="title"><time datetime="2019-02-20T21:39:36-08:00">20 February 2019: </time></dt><dd class="content"><p>When Vim is launched from within <code>git commit</code> as the editor for a git commit
+message, the value of <code>#{pane_current_command}</code> is <code>git</code> instead of <code>vim</code>.</p>
+</dd></dl><dl><dt class="title"><time datetime="2019-02-14T19:01:28-08:00">14 February 2019: </time></dt><dd class="content"><p><a href="https://www.reddit.com/r/vim/comments/akxado/_/egf6fic">Use</a> <code>-b</code> option for <code>run-shell</code> instead of the <code>&amp;</code> shell background operator:</p>
+<div class="highlight"><pre class="highlight shell"><code>bind-key <span class="nt">-n</span> M-h run-shell <span class="nt">-b</span> <span class="s2">"</span><span class="nv">$navigate_left</span><span class="s2">"</span>
+bind-key <span class="nt">-n</span> M-j run-shell <span class="nt">-b</span> <span class="s2">"</span><span class="nv">$navigate_down</span><span class="s2">"</span>
+bind-key <span class="nt">-n</span> M-k run-shell <span class="nt">-b</span> <span class="s2">"</span><span class="nv">$navigate_up</span><span class="s2">"</span>
+bind-key <span class="nt">-n</span> M-l run-shell <span class="nt">-b</span> <span class="s2">"</span><span class="nv">$navigate_right</span><span class="s2">"</span>
+bind-key <span class="nt">-n</span> M-<span class="se">\ </span>run-shell <span class="nt">-b</span> <span class="s2">"</span><span class="nv">$navigate_back</span><span class="s2">"</span>
+</code></pre></div></dd></dl><dl><dt class="title"><time datetime="2019-01-31T08:07:31-08:00">31 January 2019: </time></dt><dd class="content"><p>Fixed a <a href="https://www.reddit.com/r/neovim/comments/akxmyn/_/efc4u0k">corner case</a> of NeoVim not clearing title quickly enough upon exit.</p>
+</dd></dl><dl><dt class="title"><time datetime="2019-01-30T12:28:41-08:00">30 January 2019: </time></dt><dd class="content"><p>Renamed <code>M-;</code> to <code>M-\</code> to fix a tmux configuration error in QWERTY shortcuts:</p>
+<div class="highlight"><pre class="highlight shell"><code>.tmux.conf: usage: bind-key <span class="o">[</span><span class="nt">-cnr</span><span class="o">]</span> <span class="o">[</span><span class="nt">-T</span> key-table] key <span class="nb">command</span> <span class="o">[</span>arguments]
+</code></pre></div><p>Simpler shortcut definitions and faster execution by running in background:</p>
+<div class="highlight"><pre class="highlight shell"><code>bind-key <span class="nt">-n</span> M-h run-shell <span class="s2">"</span><span class="nv">$navigate_left</span><span class="s2">  &amp;"</span>
+bind-key <span class="nt">-n</span> M-j run-shell <span class="s2">"</span><span class="nv">$navigate_down</span><span class="s2">  &amp;"</span>
+bind-key <span class="nt">-n</span> M-k run-shell <span class="s2">"</span><span class="nv">$navigate_up</span><span class="s2">    &amp;"</span>
+bind-key <span class="nt">-n</span> M-l run-shell <span class="s2">"</span><span class="nv">$navigate_right</span><span class="s2"> &amp;"</span>
+bind-key <span class="nt">-n</span> M-<span class="se">\ </span>run-shell <span class="s2">"</span><span class="nv">$navigate_back</span><span class="s2">  &amp;"</span>
+</code></pre></div></dd></dl><dl><dt class="title"><time datetime="2019-01-21T12:19:21-08:00">21 January 2019: </time></dt><dd class="content"><p>Added support for seamless navigation of embedded NeoVim terminal sessions.</p>
+</dd></dl><dl><dt class="title"><time datetime="2018-09-06T23:22:36-07:00"> 6 September 2018: </time></dt><dd class="content"><p>I&rsquo;ve rolled my own replacement for the <a href="https://github.com/christoomey/vim-tmux-navigator">vim-tmux-navigator</a> plugin: the tmux
+keybindings presented in this article now handle Vim navigation without the
+need for any special Vim plugins (or configuration thereof). It <em>Just Works!</em></p>
+<p>To illustrate, here is how the code used to appear before this update:</p>
+<div class="highlight"><pre class="highlight viml"><code><span class="c">" in ~/.vimrc</span>
+nnoremap <span class="p">&lt;</span><span class="k">silent</span><span class="p">&gt;</span> <span class="p">&lt;</span>A<span class="p">-</span><span class="k">h</span><span class="p">&gt;</span> <span class="p">:</span>TmuxNavigateLeft<span class="p">&lt;</span>Return<span class="p">&gt;</span>
+nnoremap <span class="p">&lt;</span><span class="k">silent</span><span class="p">&gt;</span> <span class="p">&lt;</span>A<span class="p">-</span><span class="k">j</span><span class="p">&gt;</span> <span class="p">:</span>TmuxNavigateDown<span class="p">&lt;</span>Return<span class="p">&gt;</span>
+nnoremap <span class="p">&lt;</span><span class="k">silent</span><span class="p">&gt;</span> <span class="p">&lt;</span>A<span class="p">-</span><span class="k">k</span><span class="p">&gt;</span> <span class="p">:</span>TmuxNavigateUp<span class="p">&lt;</span>Return<span class="p">&gt;</span>
+nnoremap <span class="p">&lt;</span><span class="k">silent</span><span class="p">&gt;</span> <span class="p">&lt;</span>A<span class="p">-</span><span class="k">l</span><span class="p">&gt;</span> <span class="p">:</span>TmuxNavigateRight<span class="p">&lt;</span>Return<span class="p">&gt;</span>
+nnoremap <span class="p">&lt;</span><span class="k">silent</span><span class="p">&gt;</span> <span class="p">&lt;</span>A<span class="p">-</span>;<span class="p">&gt;</span> <span class="p">:</span>TmuxNavigatePrevious<span class="p">&lt;</span>Return<span class="p">&gt;</span>
+</code></pre></div><div class="highlight"><pre class="highlight shell"><code><span class="c"># in ~/.tmux.conf</span>
+bind-key <span class="nt">-n</span> M-h run-shell <span class="s1">'                                  \
+  case "#{pane_current_command}" in (*vim*) inside=1;; esac; \
+  case "${inside:-0}#{window_zoomed_flag}" in                \
+  (00) tmux select-pane -L                          ;;       \
+  (10) tmux send-keys M-h                           ;;       \
+  (11) tmux send-keys C-w h                         ;;       \
+  esac                                                       \
+'</span>
+</code></pre></div></dd></dl><dl><dt class="title"><time datetime="2018-07-24T17:24:38-07:00">24 July 2018: </time></dt><dd class="content"><p>Improved the specificity of the glob pattern for detecting Vim&rsquo;s presence.</p>
+</dd></dl><dl><dt class="title"><time datetime="2016-10-08T14:38:34-07:00"> 8 October 2016: </time></dt><dd class="content"><p>Replaced the positional argument arithmetic with <code>case</code> statements.  The code
+still uses binary encoding but it&rsquo;s more compact and easier to read now. :)</p>
+<p>To illustrate, here is how the code appeared before this change:</p>
+<div class="highlight"><pre class="highlight shell"><code>bind-key <span class="nt">-n</span> M-h run-shell                                     <span class="s1">' \
+  test #{window_zoomed_flag} -eq 0; max=$?;                     \
+  cmd="#{pane_current_command}"; test -n "${cmd#*vim}"; vim=$?; \
+  set --                                                        \
+    "tmux select-pane -L"                                       \
+    ""                                                          \
+    "tmux send-keys M-h"                                        \
+    "tmux send-keys C-w h";                                     \
+  shift $(( 2*vim + max ));                                     \
+  eval "$1";                                                    \
+'</span>
+</code></pre></div><p>In contrast, here is how the code appears now, after the change:</p>
+<div class="highlight"><pre class="highlight shell"><code>bind-key <span class="nt">-n</span> M-h run-shell                              <span class="s1">' \
+  case "#{pane_current_command}" in (*vi*) vim=1;; esac; \
+  case "${vim:-0}#{window_zoomed_flag}" in               \
+  (00) tmux select-pane -L                            ;; \
+  (10) tmux send-keys M-h                             ;; \
+  (11) tmux send-keys C-w h                           ;; \
+  esac                                                   \
+'</span>
+</code></pre></div><p>I&rsquo;ll need to update the explanation section accordingly, someday!</p>
+</dd></dl>]]></summary></entry><entry><id>https://sunaku.github.io/gruvbox-terminal-color-scheme.html</id><link href="https://sunaku.github.io/gruvbox-terminal-color-scheme.html" /><title>Gruvbox terminal color scheme</title><updated>2018-12-20T19:17:07-08:00</updated><published>2016-03-03T16:37:00-08:00</published><author><name>Suraj N. Kurapati</name></author><category term="terminal"></category><category term="color"></category><category term="vim"></category><category term="linux"></category><summary type="html"><![CDATA[<dl><dt class="title"><time datetime="2018-12-20T19:17:07-08:00">20 December 2018: </time></dt><dd class="content"><p>Changed blacks to grays because they were unreadable against background.</p>
+</dd></dl>]]></summary></entry><entry><id>https://sunaku.github.io/elixir-fileio-speedup.html</id><link href="https://sunaku.github.io/elixir-fileio-speedup.html" /><title>Speeding up I/O on very large files in Elixir</title><updated>2018-12-18T20:40:41-08:00</updated><published>2017-03-07T16:35:00-08:00</published><author><name>Suraj N. Kurapati</name></author><category term="solution"></category><category term="elixir"></category><category term="cache"></category><category term="unicode"></category><category term="performance"></category><summary type="html"><![CDATA[<dl><dt class="title"><time datetime="2018-12-18T20:40:41-08:00">18 December 2018: </time></dt><dd class="content"><p>This article <a href="https://hexdocs.pm/flow/Flow.html#module-performance-discussions">has been superseded</a> by Elixir&rsquo;s
+<a href="https://elixir-lang.org/blog/2016/07/14/announcing-genstage/">Flow and GenStage</a> libraries:</p>
+
+<blockquote>
+<p><a class="embed_youtube_video" href="https://www.youtube.com/embed/srtMWzyqdp8?autoplay=1&cc_load_policy=1&modestbranding=1&start=244"><img src="https://i.ytimg.com/vi/srtMWzyqdp8/hqdefault.jpg" alt="Click to watch video" width="480" height="360"></a></p>
+</blockquote>
+</dd></dl>]]></summary></entry><entry><id>https://sunaku.github.io/iex-eval-stdin.html</id><link href="https://sunaku.github.io/iex-eval-stdin.html" /><title>Automating interactive Elixir evaluation via stdin</title><updated>2018-10-28T17:33:46-07:00</updated><published>2018-10-28T17:33:46-07:00</published><author><name>Suraj N. Kurapati</name></author><category term="solution"></category><category term="terminal"></category><category term="elixir"></category><category term="tool"></category></entry></feed>

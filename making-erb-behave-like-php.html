@@ -1,0 +1,36 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Making ERB behave like PHP - The Terminal Programmer</title><meta content="2006-08-26T00:00:00-07:00" name="DCTERMS.created" /><meta content="2006-08-26T00:00:00-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="php, eruby, whitespace" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="making-erb-behave-like-php" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#making-erb-behave-like-php" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Making ERB behave like PHP</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2006-08-26T00:00:00-07:00">26 August 2006</time></header><hr /><div class="description"></div><div class="content"><p>I was surprised to find that ERB&rsquo;s code embedding tags <code>&lt;% ... %&gt;</code> produce
+a newline character by default. This was causing many formatting problems in
+the generated output, so I <a href="https://github.com/sunaku/ruby-vpi/blob/master/lib/ruby-vpi/erb.rb">hacked ERB</a> to not
+produce any output for its code embedding tags, just like PHP:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'erb'</span>
+
+<span class="c1"># A version of ERB whose embedding tags behave like those</span>
+<span class="c1"># of PHP. That is, only &lt;%= ... %&gt; tags produce output,</span>
+<span class="c1"># whereas &lt;% ... %&gt; tags do *not* produce any output.</span>
+<span class="k">class</span> <span class="nc">ERB</span>
+  <span class="k">alias</span> <span class="n">original_initialize</span> <span class="n">initialize</span>
+
+  <span class="k">def</span> <span class="nf">initialize</span> <span class="n">aInput</span><span class="p">,</span> <span class="o">*</span><span class="n">aArgs</span>
+    <span class="c1"># ensure that only &lt;%= ... %&gt; tags generate output</span>
+      <span class="n">input</span> <span class="o">=</span> <span class="n">aInput</span><span class="p">.</span><span class="nf">gsub</span> <span class="sr">%r{&lt;%=.*?%&gt;}m</span> <span class="k">do</span> <span class="o">|</span><span class="n">s</span><span class="o">|</span>
+        <span class="k">if</span> <span class="p">(</span><span class="vg">$'</span> <span class="o">=~</span> <span class="sr">/\r?\n/</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span>
+          <span class="n">s</span> <span class="o">&lt;&lt;</span> <span class="vg">$&amp;</span>
+        <span class="k">else</span>
+          <span class="n">s</span>
+        <span class="k">end</span>
+      <span class="k">end</span>
+
+      <span class="n">aArgs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="s1">'&gt;'</span>
+
+    <span class="n">original_initialize</span> <span class="n">input</span><span class="p">,</span> <span class="o">*</span><span class="n">aArgs</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div><p>The hack involves setting ERB&rsquo;s tag trimming mode to <code>&quot;&gt;&quot;</code>, which supresses
+the generation of a newline character after a tag&rsquo;s closing delimiter, and
+appending an extra newline to ERB&rsquo;s value embedding tags <code>&lt;%= ... %&gt;</code> which
+happen to be at the end of a line.</p>
+</div><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Making ERB behave like PHP";
+var disqus_url = "https://sunaku.github.io/making-erb-behave-like-php.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2006 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

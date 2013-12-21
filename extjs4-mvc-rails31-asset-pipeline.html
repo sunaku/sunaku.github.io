@@ -1,0 +1,52 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Putting ExtJS 4 into Rails 3.1&#39;s asset pipeline - The Terminal Programmer</title><meta content="2011-09-29T15:22:02-07:00" name="DCTERMS.created" /><meta content="2012-11-07T21:33:30-08:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="solution, extjs, rails, sprockets, javascript, ruby" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="extjs4-mvc-rails31-asset-pipeline" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#extjs4-mvc-rails31-asset-pipeline" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Putting ExtJS 4 into Rails 3.1&#39;s asset pipeline</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2011-09-29T15:22:02-07:00">29 September 2011&nbsp;<span class="update_count"><a href="#updates" title="1 update">&middot;&rarr;</a></span>&nbsp; 7 November 2012</time></header><hr /><div class="description"></div><div class="content"><p><a href="http://www.sencha.com/learn/the-mvc-application-architecture/">ExtJS 4&rsquo;s MVC architecture</a> organizes
+source files in the following structure so that its <code>Ext.Loader</code> class can
+dynamically fetch and load the necessary Javascript files at runtime.</p>
+
+<ul>
+<li>app/
+
+<ul>
+<li>controller/</li>
+<li>model/</li>
+<li>store/</li>
+<li>view/</li>
+</ul></li>
+<li>app.js</li>
+</ul>
+<p>In a Rails 3.1 application, you can place the above structure under the
+<code>app/assets/javascripts</code> directory and package it as a monolithic
+Javascript <em>asset</em> using <a href="https://guides.rubyonrails.org/asset_pipeline.html">Rails 3.1&rsquo;s asset pipeline</a> by adding the
+following snippet to the <code>app/assets/javascripts/application.js</code> file:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>//= require_tree ./app/model
+//= require_tree ./app/store
+//= require_tree ./app/view
+//= require_tree ./app/controller
+//= require app
+</code></pre></div><p>Next, add an <code>.erb</code> extension to the <code>app/assets/javascripts/app.js</code> file
+and then register the packaged ExtJS 4 MVC components by adding the
+following snippet to the <code>app/assets/javascripts/app.js.erb</code> file:</p>
+<div class="highlight"><pre class="highlight erb"><code>Ext.application({
+<span class="cp">&lt;%</span> <span class="no">Dir</span><span class="p">[</span><span class="no">File</span><span class="p">.</span><span class="nf">expand_path</span><span class="p">(</span><span class="s1">'../app/*/'</span><span class="p">,</span> <span class="kp">__FILE__</span><span class="p">)].</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">subdir</span><span class="o">|</span> <span class="cp">%&gt;</span>
+  <span class="cp">&lt;%=</span> <span class="no">File</span><span class="p">.</span><span class="nf">basename</span><span class="p">(</span><span class="n">subdir</span><span class="p">)</span> <span class="cp">%&gt;</span>s: <span class="cp">&lt;%=</span>
+    <span class="c1"># omit all file extensions (js, js.erb, etc.) from the file name</span>
+    <span class="no">Dir</span><span class="p">[</span><span class="n">subdir</span> <span class="o">+</span> <span class="s1">'/*.js*'</span><span class="p">].</span><span class="nf">map</span> <span class="p">{</span><span class="o">|</span><span class="n">f</span><span class="o">|</span> <span class="no">File</span><span class="p">.</span><span class="nf">basename</span><span class="p">(</span><span class="n">f</span><span class="p">)[</span><span class="sr">/^[^.]+/</span><span class="p">]</span> <span class="p">}.</span><span class="nf">to_json</span>
+  <span class="cp">%&gt;</span>,
+<span class="cp">&lt;%</span> <span class="k">end</span> <span class="cp">%&gt;</span>
+// ... the rest of your ExtJS 4 application definition goes here ...
+});
+</code></pre></div><p>You now have ExtJS 4&rsquo;s MVC architecture in Rails 3.1&rsquo;s asset pipeline. :-)</p>
+<p>Note that, during development, the asset pipeline caches the result of
+rendering the <code>app/assets/javascripts/app.js.erb</code> file in memory.  As a
+result, if you add new files to or remove existing files from the
+<code>app/assets/javascripts/app/</code> directory tree, then you must either (1)
+modify the <code>public/javascripts/app.js</code> file and reload your browser or (2)
+restart your Rails application (web server) to force the asset pipeline to
+render and cache the new output.</p>
+</div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2012-11-07T21:33:30-08:00"> 7 November 2012: </time></dt><dd class="content"><p>I developed <a href="sencha-architect2-rails31-asset-pipeline.html">a new way</a>
+to compile ExtJS applications (whether handwritten or generated by
+Sencha Architect) into Rails assets.</p>
+</dd></dl></aside><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Putting ExtJS 4 into Rails 3.1's asset pipeline";
+var disqus_url = "https://sunaku.github.io/extjs4-mvc-rails31-asset-pipeline.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2011&ndash;2012 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Vim script management system - The Terminal Programmer</title><meta content="2010-04-08T18:24:00-07:00" name="DCTERMS.created" /><meta content="2011-11-22T23:14:27-08:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="vim, plugin, ruby, git" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="vim-script-management-system" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#vim-script-management-system" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Vim script management system</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2010-04-08T18:24:00-07:00"> 8 April 2010&nbsp;<span class="update_count"><a href="#updates" title="5 updates">&middot;&middot;&middot;&middot;&middot;&rarr;</a></span>&nbsp;22 November 2011</time></header><hr /><div class="description"></div><div class="content"><p>Inspired by <a href="http://github.com/tpope/vim-pathogen">pathogen</a> and <a href="http://www.vim.org/scripts/script.php?script_id=642">GLVS</a>, I put together <a href="http://github.com/sunaku/.vim">a very simple
+system</a> for managing Vim scripts (known as <strong>bundles</strong>
+henceforth) downloaded from <a href="http://www.vim.org/scripts/">http://www.vim.org/scripts/</a>.</p>
+<p>Bundles are kept in their own self-contained subdirectories inside the
+<code>~/.vim/bundle/</code> directory and they are added dynamically to Vim&rsquo;s
+runtimepath by the following activation code (which has since evolved into
+the <a href="https://github.com/sunaku/vim-unbundle">unbundle.vim</a> plugin) in the <code>~/.vimrc</code> file:</p>
+<div class="highlight"><pre class="highlight viml"><code><span class="c">" register bundles found in the runtimepath</span>
+<span class="k">let</span> <span class="nv">s:bundles</span> <span class="p">=</span> <span class="k">tr</span><span class="p">(</span><span class="nb">globpath</span><span class="p">(</span>&amp;<span class="nb">runtimepath</span><span class="p">,</span> <span class="s1">'bundle/*/.'</span><span class="p">),</span> <span class="s2">"\n"</span><span class="p">,</span> <span class="s1">','</span><span class="p">)</span>
+<span class="k">let</span> <span class="nv">s:afters</span> <span class="p">=</span> <span class="k">tr</span><span class="p">(</span><span class="nb">globpath</span><span class="p">(</span><span class="nv">s:bundles</span><span class="p">,</span> <span class="s1">'after/.'</span><span class="p">),</span> <span class="s2">"\n"</span><span class="p">,</span> <span class="s1">','</span><span class="p">)</span>
+<span class="k">let</span> &amp;<span class="nb">runtimepath</span> <span class="p">=</span> <span class="k">join</span><span class="p">([</span><span class="nv">s:bundles</span><span class="p">,</span> &amp;<span class="nb">runtimepath</span><span class="p">,</span> <span class="nv">s:afters</span><span class="p">],</span> <span class="s1">','</span><span class="p">)</span>
+
+<span class="c">" activate ftplugin/ scripts inside bundles</span>
+<span class="k">filetype</span> off
+<span class="k">filetype</span> plugin <span class="nb">indent</span> <span class="k">on</span>
+</code></pre></div><p>Bundles are installed and upgraded by the <a href="https://github.com/sunaku/.vim/blob/c92d67e237781cd49523bea8bd0faa56d9643b12/bundle/get.rb">get.rb</a> script (which has since
+evolved into the <a href="https://github.com/sunaku/.vim/blob/master/bin/update">update</a> script) which looks for <code>~/.vim/bundle/*.get</code>
+files that specify their respective bundles&rsquo; <code>script_id</code> numbers taken
+from their download URLs:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>http://vim.org/scripts/script.php?script_id=NUMBER
+</code></pre></div><p>Thus I am able to easily install, upgrade, and remove bundles.  See <a href="http://github.com/sunaku/.vim">my
+personal Vim configuration</a> for further details.</p>
+</div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2011-11-22T23:14:27-08:00">22 November 2011: </time></dt><dd class="content"><p>I switched back to the old <code>*.get</code> file approach for installing and
+updating bundles. But this time, I am cloning Git repositories instead
+of pulling Git submodules or downloading Vim script packages.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2011-11-06T15:58:33-08:00"> 6 November 2011: </time></dt><dd class="content"><p>I have implemented <a href="https://evaryont.me">Colin Shea</a>&rsquo;s awesome ftbundles
+idea in <a href="https://github.com/sunaku/vim-unbundle">unbundle.vim</a> whereby
+bundles placed under <code>ftbundle/&lt;filetype&gt;/</code> are loaded lazily, when
+<code>&lt;filetype&gt;</code> is first referenced in Vim.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2011-10-17T14:38:30-07:00">17 October 2011: </time></dt><dd class="content"><p>I released the bundle registration logic listed in this article as a
+standalone Vim plugin called
+<a href="https://github.com/sunaku/vim-unbundle">unbundle.vim</a>.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2011-03-23T13:37:02-07:00">23 March 2011: </time></dt><dd class="content"><p>Since <a href="http://vim-scripts.org">http://vim-scripts.org</a> mirrors all available Vim scripts as Git
+repositories, I have removed the <code>get.rb</code> script in favor of installing
+bundles as Git submodules.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2010-09-14T16:55:25-07:00">14 September 2010: </time></dt><dd class="content"><p>An anonymous &ldquo;Alexander&rdquo; found a bug in the bundle registration logic
+under Windows (where commas in the runtimepath were considered to be
+escaped by Vim because our glob patterns resulted in native Windows
+filesystem paths that used a backslash character as the directory
+separator) and suggested the solution of appending a period to the
+directory glob patterns.</p>
+</dd></dl></aside><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Vim script management system";
+var disqus_url = "https://sunaku.github.io/vim-script-management-system.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2010&ndash;2011 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

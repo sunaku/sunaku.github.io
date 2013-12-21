@@ -1,0 +1,36 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Guiltless monkeypatching with UUID - The Terminal Programmer</title><meta content="2011-03-30T13:18:23-07:00" name="DCTERMS.created" /><meta content="2011-03-30T13:18:23-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="metaprogramming, uuid, ruby" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="guiltless-monkeypatching-with-uuid" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#guiltless-monkeypatching-with-uuid" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Guiltless monkeypatching with UUID</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2011-03-30T13:18:23-07:00">30 March 2011</time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__example-in-ruby__" href="#example-in-ruby" class="downlink">Example in Ruby</a><ol></ol></li></ol><p>Feeling guilty about
+<a href="http://en.wikipedia.org/wiki/Monkey_patch">monkeypatching</a>?  Then free
+yourself from fear of name collisions and peer ridicule by naming your
+monkeypatched constructs with <a href="http://en.wikipedia.org/wiki/Universally_unique_identifier">universally unique identifiers
+(UUIDs)</a> and
+be finally at peace with your inner, monkeypatching self!</p>
+<div class="highlight"><pre class="highlight shell"><code>uuidgen | <span class="nb">sed</span> <span class="s1">'y/-/_/; s/^/_/'</span>
+</code></pre></div><p>The above command generates a UUID that conforms to <code>/^\w+$/</code> and is
+therefore ready for use in mainstream programming languages today.</p>
+
+<div id="example-in-ruby" class="section"></div><h2 class="heading">Example in Ruby<a href="#example-in-ruby" class="permalink" title="Permalink"></a><a href="#__example-in-ruby__" class="uplink" title="Contents"></a></h2>
+<p>Although you would typically monkeypatch in Ruby like this:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">Array</span>
+  <span class="k">alias</span> <span class="n">__inspect__</span> <span class="nb">inspect</span>
+  <span class="k">def</span> <span class="nf">inspect</span>
+    <span class="s2">"&lt;MonkeyPatchedArray:</span><span class="si">#{</span><span class="n">__inspect__</span><span class="si">}</span><span class="s2">&gt;"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">].</span><span class="nf">inspect</span> <span class="c1">#=&gt; "&lt;MonkeyPatchedArray:[1, 2, 3]&gt;"</span>
+</code></pre></div><p>You can achieve the same effect, without guilt, like this:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">Array</span>
+  <span class="k">alias</span> <span class="n">_fba86586_e89d_4ed4_ba5c_395776a674b3</span> <span class="nb">inspect</span>
+  <span class="k">def</span> <span class="nf">inspect</span>
+    <span class="s2">"&lt;GuiltlesslyMonkeyPatchedArray(</span><span class="si">#{</span>
+      <span class="n">_fba86586_e89d_4ed4_ba5c_395776a674b3</span>
+    <span class="si">}</span><span class="s2">)&gt;"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">].</span><span class="nf">inspect</span> <span class="c1">#=&gt; "&lt;GuiltlesslyMonkeyPatchedArray([1, 2, 3])&gt;"</span>
+</code></pre></div></div><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Guiltless monkeypatching with UUID";
+var disqus_url = "https://sunaku.github.io/guiltless-monkeypatching-with-uuid.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2011 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

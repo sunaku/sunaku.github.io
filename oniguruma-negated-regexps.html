@@ -1,0 +1,89 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Negated regular expressions in Oniguruma and Ruby - The Terminal Programmer</title><meta content="2011-11-13T13:33:11-08:00" name="DCTERMS.created" /><meta content="2011-11-15T21:42:00-08:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="oniguruma, regular expression, negation, ruby, feature" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="oniguruma-negated-regexps" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#oniguruma-negated-regexps" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Negated regular expressions in Oniguruma and Ruby</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2011-11-13T13:33:11-08:00">13 November 2011&nbsp;<span class="update_count"><a href="#updates" title="1 update">&middot;&rarr;</a></span>&nbsp;15 November 2011</time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__overview__" href="#overview" class="downlink">Overview</a><ol></ol></li><li><a id="__wholly-negated-regular-expressions__" href="#wholly-negated-regular-expressions" class="downlink">Wholly negated regular expressions</a><ol></ol></li><li><a id="__partly-negated-regular-expressions__" href="#partly-negated-regular-expressions" class="downlink">Partly negated regular expressions</a><ol></ol></li><li><a id="__conclusion__" href="#conclusion" class="downlink">Conclusion</a><ol></ol></li></ol><p>About a week ago, I submitted <a href="https://redmine.ruby-lang.org/issues/5588">this feature request</a> asking for the ability to
+negate regular expressions in Ruby.  I have since implemented the feature
+myself by <a href="https://github.com/sunaku/ruby/compare/5588_regexp_v">patching Ruby trunk</a> and <a href="https://github.com/sunaku/onig-5.9.2/compare/v5.9.2...master">patching
+Oniguruma 5.9.2</a> beside it.
+And now, I shall explain to you how it all works.</p>
+
+<div id="overview" class="section"></div><h2 class="heading">Overview<a href="#overview" class="permalink" title="Permalink"></a><a href="#__overview__" class="uplink" title="Contents"></a></h2>
+<p>Regular expressions can be negated either as a whole (<code>/.../v</code>) or in part
+<code>/(?v:...)/</code>) through the negation flag (<code>v</code>).  The letter <em>v</em> was chosen
+for the negation flag because it comes from the <a href="http://en.wikipedia.org/wiki/Ed_%28text_editor%29">ed(1)</a> program of UNIX
+heritage, where it serves a global command that negates the sense of the
+regular expression passed in.  This <em>v</em> heritage can also be found in
+<a href="http://en.wikipedia.org/wiki/Grep">grep(1)</a>, whose <code>-v</code> command-line
+option inverts its matching behavior.</p>
+
+<div id="wholly-negated-regular-expressions" class="section"></div><h2 class="heading">Wholly negated regular expressions<a href="#wholly-negated-regular-expressions" class="permalink" title="Permalink"></a><a href="#__wholly-negated-regular-expressions__" class="uplink" title="Contents"></a></h2>
+<p>This is the simplest part of the implementation.  We match the negated
+regular expression as usual, treating it as if it were not negated, and
+then negate the result of that match if there were no matching errors.</p>
+
+<div id="partly-negated-regular-expressions" class="section"></div><h2 class="heading">Partly negated regular expressions<a href="#partly-negated-regular-expressions" class="permalink" title="Permalink"></a><a href="#__partly-negated-regular-expressions__" class="uplink" title="Contents"></a></h2>
+<p>At parse time, a partly negated regular expression, say <em>r</em> in <code>/(?v:r)/</code>,
+is expanded into <code>/(?:rN)?.*?/</code> where <em>N</em> is a special instruction
+(<code>OP_NEGATE</code>) that causes the regular expression matching engine to treat
+the input matched thus far as a mismatch.</p>
+<p>For example, the <code>/a(?v:b)c/</code> parse tree looks like this after expansion:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>PATTERN: /a(?v:b)c/ (US-ASCII)
+&lt;list:275ca40&gt;
+   &lt;string:275c9f0&gt;a
+   &lt;enclose:275c950&gt; option:4
+      &lt;quantifier:2755640&gt;{0,1}
+         &lt;string:275c9a0&gt;b
+   &lt;quantifier:2755690&gt;{0,-1}?
+      &lt;anychar:275af20&gt;
+   &lt;string:2755550&gt;c
+</code></pre></div><p>Since <em>r</em> is wrapped in an optional non-capturing group (<code>/(?:rN)?/</code>), the
+matching engine is able to continue onward when <em>r</em> does not match.
+However, if <em>r</em> did not match because the matching engine reached
+non-matching input characters, then those characters will obstruct the
+matching engine from continuing onward.  That is why <code>/.*?/</code> is provided.</p>
+<p>For example, when <code>/a(?v:b)c/</code> is matched against the input <code>&quot;axyzc&quot;</code>, the
+non-matching input characters (<code>&quot;xyz&quot;</code>) will obstruct the matching engine
+from matching the rest of the regular expression (<code>/c/</code>) against the rest
+of the input (<code>&quot;xyzc&quot;</code>).  However, since <code>/.*?/</code> consumes <code>&quot;xyz&quot;</code>, the
+matching engine can proceed to match <code>/c/</code> against <code>&quot;c&quot;</code>.</p>
+
+<div id="conclusion" class="section"></div><h2 class="heading">Conclusion<a href="#conclusion" class="permalink" title="Permalink"></a><a href="#__conclusion__" class="uplink" title="Contents"></a></h2>
+<p>In all, this was a <em>challenging</em> and fun learning experience for me.  I
+brushed up on my rusty (thanks Ruby!) knowledge of the C language and the
+<a href="http://www.gnu.org/s/gdb/">GDB</a> debugger while also adding some shiny
+new tools to my repertoire:</p>
+
+<ul>
+<li><a href="http://clewn.sourceforge.net">Clewn</a> for graphical operation of
+<a href="http://www.gnu.org/s/gdb/">GDB</a> through <a href="http://www.vim.org">GVim</a></li>
+<li><a href="http://cscope.sourceforge.net">Cscope</a> for answering the inverse of
+questions I ask <a href="http://ctags.sourceforge.net">Ctags</a></li>
+</ul>
+<p>I have submitted my patches simultaneously to the Ruby developers and to
+the author of Oniguruma, and now await their response.  If all goes well,
+we might see this feature in Ruby and Oniguruma someday.  Enjoy! :-]</p>
+</div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2011-11-15T21:42:00-08:00">15 November 2011: </time></dt><dd class="content"><p>After playing with Oniguruma in GDB some more, I learned that its
+negative lookahead implementation follows the same approach as my
+<code>OP_NEGATE</code> addition: if the subexpression matches completely, then
+trigger a mismatch.</p>
+<p>Consequently, I was able to remove my <code>OP_NEGATE</code> addition by expanding
+<code>/(?v:r)/</code> into <code>/(?:(?!r).)/</code>, where the negative lookahead serves as a
+barrier that protects <code>.</code> from anything that matches the negated <em>r</em>.</p>
+<div class="highlight"><pre class="highlight plaintext"><code>PATTERN: /a(?v:b)c/ (US-ASCII)
+&lt;list:136aad0&gt;
+   &lt;string:136ab70&gt;a
+   &lt;enclose:136ac10&gt; option:4
+      &lt;list:136a850&gt;
+         &lt;anchor:136b250&gt; prec read not
+            &lt;string:136ab20&gt;b
+         &lt;anychar:136b2a0&gt;
+   &lt;string:136ac60&gt;c
+</code></pre></div><p>Now, you can think of partly negated regular expressions as barriers
+that match a single input character.  If you want them to match more (or
+less) input characters, then you can simply quantify them accordingly.</p>
+<p>Finally, the idea behind this negative lookahead expansion comes from
+<a href="http://www.ruby-forum.com/topic/133413#595368">Akira TANAKA&rsquo;s 2007 suggestion</a> on specifying partly
+negated regular expressions in Ruby 1.8.  Only, I realized it too late:
+after implementing <code>OP_NEGATE</code> and learning how Oniguruma really works.</p>
+</dd></dl></aside><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Negated regular expressions in Oniguruma and Ruby";
+var disqus_url = "https://sunaku.github.io/oniguruma-negated-regexps.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2011 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

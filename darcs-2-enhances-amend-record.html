@@ -1,0 +1,36 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Darcs 2 enhances amend-record - The Terminal Programmer</title><meta content="2008-05-15T23:13:02-07:00" name="DCTERMS.created" /><meta content="2008-05-15T23:13:02-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="darcs, version control, open source" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="darcs-2-enhances-amend-record" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#darcs-2-enhances-amend-record" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Darcs 2 enhances amend-record</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2008-05-15T23:13:02-07:00">15 May 2008</time></header><hr /><div class="description"></div><div class="content"><p><a href="http://wiki.darcs.net/DarcsWiki/DarcsTwo">Version 2</a> of
+<a href="http://darcs.net">Darcs</a>, the &ldquo;feel good&rdquo; <a href="http://betterexplained.com/articles/intro-to-distributed-version-%0Acontrol-illustrated/">distributed version
+control</a>
+system, was <a href="http://darcs.net/darcs-2.0.0.tar.gz">released recently</a>. This
+version includes a new feature that I long awaited for, and almost <a href="http://rubyforge.org/projects/recur/">invented
+my own</a> version control system for:</p>
+
+<blockquote>
+<p>The main lesson regarding these new semantics is that <strong>patches depends on
+primitive patches, not on named patches</strong>. A named patch is really just a set
+of primitive patches.</p>
+</blockquote>
+<p>To better understand this feature, consider this example:</p>
+
+<ol>
+<li>Patch X modifies files A, B, and C.</li>
+<li>Patch Y modifies files A and C.</li>
+<li>You modify file B and want to amend patch X.</li>
+</ol>
+<p>Darcs 2 allows this (hurray!) whereas Darcs 1 does not. As a result, you had
+to go through a fair bit of <em>manual</em> labor to achieve the same effect in Darcs
+1:</p>
+
+<ol>
+<li>Create a temporary branch.</li>
+<li>Unrecord patch Y.</li>
+<li>Amend patch X.</li>
+<li>Push the new patch X.</li>
+<li>Recreate patch Y.</li>
+<li>Finally, push patch Y.</li>
+</ol>
+</div><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Darcs 2 enhances amend-record";
+var disqus_url = "https://sunaku.github.io/darcs-2-enhances-amend-record.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2008 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

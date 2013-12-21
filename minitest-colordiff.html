@@ -1,0 +1,143 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Colorful assertion failure diffs in MiniTest - The Terminal Programmer</title><meta content="2011-11-05T23:06:19-07:00" name="DCTERMS.created" /><meta content="2014-07-31T10:45:41-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="solution, ruby, testing, color, diff" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="minitest-colordiff" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#minitest-colordiff" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Colorful assertion failure diffs in MiniTest</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2011-11-05T23:06:19-07:00"> 5 November 2011&nbsp;<span class="update_count"><a href="#updates" title="3 updates">&middot;&middot;&middot;&rarr;</a></span>&nbsp;31 July 2014</time></header><hr /><div class="description"></div><div class="content"><img src="minitest-colordiff-after.png" alt="A colorful MiniTest diff, after patching."><p><ol class="table-of-contents"><li><a id="__problem__" href="#problem" class="downlink">Problem</a><ol></ol></li><li><a id="__approach__" href="#approach" class="downlink">Approach</a><ol></ol></li><li><a id="__solution__" href="#solution" class="downlink">Solution</a><ol><li><a id="__bin-gdiff__" href="#bin-gdiff" class="downlink">~/bin/gdiff</a><ol><li><a id="__ruby-on-rails-integration__" href="#ruby-on-rails-integration" class="downlink">Ruby on Rails integration</a><ol></ol></li></ol></li></ol></li></ol></p>
+
+<div id="problem" class="section"></div><h1 class="heading">Problem<a href="#problem" class="permalink" title="Permalink"></a><a href="#__problem__" class="uplink" title="Contents"></a></h1>
+<p>After a long day of practicing test driven development in Ruby, I grew
+weary of mentally parsing the colorless diffs that MiniTest displays when
+<code>assert_equal</code> fails:</p>
+<img src="minitest-colordiff-before.png" alt="A typical MiniTest diff, before patching.">
+<div id="approach" class="section"></div><h1 class="heading">Approach<a href="#approach" class="permalink" title="Permalink"></a><a href="#__approach__" class="uplink" title="Contents"></a></h1>
+<p>I dove into the MiniTest codebase using <a href="http://betterthangrep.com">ack</a>,
+hoping to find some way to pipe its diff output into
+<a href="http://colordiff.sourceforge.net">colordiff</a> during display, and
+discovered that MiniTest already shells out to diff(1) to produce its diff
+output.</p>
+<p>In fact, <a href="https://github.com/seattlerb/minitest/blob/9a57c520ceac76abfe6105866f8548a94eb357b6/lib/minitest/assertions.rb#L20-L28">MiniTest tries several different flavors of diff(1)</a> before falling back to the standard one.  One of these flavors is the
+mysterious <code>gdiff</code>, which neither exists on my Arch Linux system nor is
+available in its package repositories. <em>That&rsquo;s the ticket!</em></p>
+
+<div id="solution" class="section"></div><h1 class="heading">Solution<a href="#solution" class="permalink" title="Permalink"></a><a href="#__solution__" class="uplink" title="Contents"></a></h1>
+<p>I quickly masqueraded colordiff as gdiff within my user account:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>ln -s `which colordiff` ~/bin/gdiff
+</code></pre></div><p>re-ran my failing test, and saw <em>colored</em> diffs in the failure report!</p>
+
+<div id="bin-gdiff" class="section"></div><h2 class="heading">~/bin/gdiff<a href="#bin-gdiff" class="permalink" title="Permalink"></a><a href="#__bin-gdiff__" class="uplink" title="Contents"></a></h2>
+<p>Three years later, in the summer of 2014, I wrote my own gdiff script in
+Ruby to further enhance the readability of MiniTest&rsquo;s <code>assert_equal</code> diffs
+by intelligently combining two complementary approaches of visualizing
+intra-line differences into a single format:</p>
+<img src="minitest-colordiff-after.png" alt="A colorful MiniTest diff, after patching."><p>There are several things happening in the screenshot above:</p>
+
+<ol>
+<li><p>The changes are first visualized as a line-wise diff using the
+<code>diff-highlight</code> script (if available) that comes bundled with Git itself.</p></li>
+<li><p>A redundant hunk header (in this case: <tt style="background: #94CCCC;
+color: black">@@ -1 +1 @@</tt>) is displayed in reverse video to indicate
+where the first visualization ends and where the second begins.</p></li>
+<li><p>The changes are visualized <em>again</em> as a character-wise diff by
+squashing common portions of changed lines <a href="http://neurotap.blogspot.com/2012/04/character-level-diff-in-git-gui.html">using Git&rsquo;s native
+<code>--word-diff-regex</code> algorithm</a>
+<em>unless</em> the hunk being visualized only consists of whitespace changes.</p></li>
+</ol>
+<p>As you can see, the second visualization complements the first by showing
+you the character-wise differences within the line-wise differences!  This
+combination provides a more meaningful difference visualization overall.</p>
+<p>In addition, this gdiff(1) script goes beyond standard diff(1) to:</p>
+
+<ul>
+<li>color-code file headers according to difference highlighting colors</li>
+<li>provide human-friendly descriptions of MiniTest value assertions</li>
+<li>use blue instead of green for users who indicate that they are
+colorblind by setting <a href="https://pypi.python.org/pypi/fragments">the <code>$COLORBLIND</code> environment variable</a></li>
+</ul>
+<p>Finally, here is the source code of my gdiff(1) script, <a href="https://github.com/sunaku/home/blob/master/bin/gdiff">also available on
+GitHub</a>, ready for
+use.  Simply download it into your <code>~/bin</code> directory and happy diffing! :)</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1">#!/usr/bin/env ruby</span>
+<span class="c1">#</span>
+<span class="c1"># MiniTest runs this command to show the differences between expected and</span>
+<span class="c1"># actual values in assert_equal(), so we make it word-aware and colorful.</span>
+<span class="c1">#</span>
+<span class="c1"># You can make this script use blue instead of green by setting the COLORBLIND</span>
+<span class="c1"># environment variable, as described at https://pypi.python.org/pypi/fragments</span>
+<span class="c1">#</span>
+<span class="c1"># See http://sunaku.github.io/minitest-colordiff.html for more information.</span>
+<span class="c1">#</span>
+
+<span class="nb">require</span> <span class="s1">'shellwords'</span>
+
+<span class="no">FILE_BEGIN_REGEXP</span> <span class="o">=</span> <span class="sr">/\A\e\[1mdiff/</span>
+<span class="no">HUNK_BEGIN_REGEXP</span> <span class="o">=</span> <span class="sr">/(?=^\e\[36m@@)/</span>
+
+<span class="c1"># highlight the different inside changed lines while keeping unified output</span>
+<span class="n">linewise_diff</span> <span class="o">=</span> <span class="sb">`git diff --color=always </span><span class="si">#{</span><span class="no">ARGV</span><span class="p">.</span><span class="nf">shelljoin</span><span class="si">}</span><span class="sb"> |
+( perl /usr/share/doc/git/contrib/diff-highlight/diff-highlight || cat )`</span>
+
+<span class="n">linewise_hunks</span> <span class="o">=</span> <span class="n">linewise_diff</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="no">HUNK_BEGIN_REGEXP</span><span class="p">)</span>
+
+<span class="c1"># squash common portions of changed lines and only highlight the differences</span>
+<span class="c1"># http://neurotap.blogspot.com/2012/04/character-level-diff-in-git-gui.html</span>
+<span class="n">charwise_diff</span> <span class="o">=</span> <span class="sb">`git diff --color=always --color-words \
+--word-diff-regex='[^[:space:]]|([[:alnum:]]|UTF_8_GUARD)+' </span><span class="si">#{</span><span class="no">ARGV</span><span class="p">.</span><span class="nf">shelljoin</span><span class="si">}</span><span class="sb">`</span>
+
+<span class="n">charwise_hunks</span> <span class="o">=</span> <span class="n">charwise_diff</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="no">HUNK_BEGIN_REGEXP</span><span class="p">).</span><span class="nf">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">hunk</span><span class="o">|</span>
+  <span class="c1"># nullify character-wise diffs that don't give any whitespace information</span>
+  <span class="k">if</span> <span class="n">hunk</span> <span class="o">=~</span> <span class="sr">/\S\e\[3[12]m.*?\e\[m/</span>
+    <span class="c1"># highlight headers to indicate that these character-wise diffs are</span>
+    <span class="c1"># alternate representations of the line-wise diffs that precede them</span>
+    <span class="c1"># and also highlight the changes themselves in character-wise diffs</span>
+    <span class="n">hunk</span><span class="p">.</span><span class="nf">gsub</span><span class="p">(</span><span class="sr">/\A\e\[36(?=m@@)|\e\[3[12](?=m.*?\e\[m)/</span><span class="p">,</span> <span class="s1">'\&amp;;7'</span><span class="p">)</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="c1"># combine the diffs by joining the charwise output into the linewise output</span>
+<span class="c1"># and use uniq() to show only one copy of common hunks between both outputs</span>
+<span class="n">diff</span> <span class="o">=</span> <span class="n">linewise_hunks</span><span class="p">.</span><span class="nf">zip</span><span class="p">(</span><span class="n">charwise_hunks</span><span class="p">).</span><span class="nf">map</span><span class="p">(</span><span class="o">&amp;</span><span class="ss">:uniq</span><span class="p">).</span><span class="nf">flatten</span><span class="p">.</span><span class="nf">map</span> <span class="k">do</span> <span class="o">|</span><span class="n">hunk</span><span class="o">|</span>
+  <span class="k">if</span> <span class="n">hunk</span> <span class="o">=~</span> <span class="no">FILE_BEGIN_REGEXP</span>
+    <span class="c1"># strip diff headers and git index headers which mention /tmp/* files</span>
+    <span class="n">hunk</span><span class="p">.</span><span class="nf">sub</span><span class="p">(</span><span class="sr">/\A.+\bexpect.+\bbutwas.+\n\e\[1mindex.+\n/</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span><span class="o">.</span>
+
+    <span class="c1"># provide human-friendly descriptions of MiniTest value assertions</span>
+    <span class="nb">sub</span><span class="p">(</span><span class="sr">/(?&lt;=m-{3}\s)\S+?\bexpect\S+/</span><span class="p">,</span>  <span class="s1">'I expected it to be...'</span><span class="p">).</span>
+    <span class="nf">sub</span><span class="p">(</span><span class="sr">/(?&lt;=m\+{3}\s)\S+?\bbutwas\S+/</span><span class="p">,</span> <span class="s1">'but it actually was...'</span><span class="p">)</span><span class="o">.</span>
+
+    <span class="c1"># color-code file headers according to difference highlighting colors</span>
+    <span class="nb">sub</span><span class="p">(</span><span class="sr">/^\e\[1(?=m-{3})/</span><span class="p">,</span> <span class="s1">'\&amp;;31'</span><span class="p">).</span><span class="nf">sub</span><span class="p">(</span><span class="sr">/^\e\[1(?=m\+{3})/</span><span class="p">,</span> <span class="s1">'\&amp;;32'</span><span class="p">)</span>
+  <span class="k">else</span>
+    <span class="n">hunk</span>
+  <span class="k">end</span>
+<span class="k">end</span><span class="p">.</span><span class="nf">join</span>
+
+<span class="c1"># use blue instead of green for users who indicate that they are colorblind</span>
+<span class="n">diff</span> <span class="o">=</span> <span class="n">diff</span><span class="p">.</span><span class="nf">gsub</span><span class="p">(</span><span class="sr">/(\e\[[\w;]*\b3)2m/</span><span class="p">,</span> <span class="s1">'\14m'</span><span class="p">)</span> <span class="k">if</span> <span class="no">ENV</span><span class="p">[</span><span class="s1">'COLORBLIND'</span><span class="p">]</span>
+
+<span class="nb">print</span> <span class="n">diff</span>
+</code></pre></div>
+<div id="ruby-on-rails-integration" class="section"></div><h3 class="heading">Ruby on Rails integration<a href="#ruby-on-rails-integration" class="permalink" title="Permalink"></a><a href="#__ruby-on-rails-integration__" class="uplink" title="Contents"></a></h3>
+<p>Installing the above gdiff script is not enough for Ruby on Rails (which
+provides its own, plain &ldquo;expected but was&rdquo; message for assertion failures)
+so the following monkeypatch is necessary in your test helper to override
+Ruby on Rails&rsquo; assertion failure messages with MiniTest&rsquo;s native diffing.</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="k">class</span> <span class="nc">Minitest::Unit</span>
+  <span class="k">alias</span> <span class="n">_0dcfe0e3_de10_40df_bc94_da27aa85c215</span> <span class="n">puke</span>
+  <span class="k">def</span> <span class="nf">puke</span> <span class="n">klass</span><span class="p">,</span> <span class="n">meth</span><span class="p">,</span> <span class="n">e</span>
+    <span class="k">if</span> <span class="n">e</span><span class="p">.</span><span class="nf">message</span> <span class="o">=~</span> <span class="sr">/\\A&lt;(.*?)&gt; expected but was\\n&lt;(.*?)&gt;\\.\\Z/m</span>
+      <span class="n">e</span><span class="p">.</span><span class="nf">message</span><span class="p">.</span><span class="nf">replace</span> <span class="no">Object</span><span class="p">.</span><span class="nf">new</span><span class="p">.</span><span class="nf">extend</span><span class="p">(</span><span class="no">Minitest</span><span class="o">::</span><span class="no">Assertions</span><span class="p">).</span><span class="nf">diff</span><span class="p">(</span><span class="vg">$1</span><span class="p">,</span> <span class="vg">$2</span><span class="p">)</span>
+    <span class="k">end</span>
+    <span class="n">_0dcfe0e3_de10_40df_bc94_da27aa85c215</span> <span class="n">klass</span><span class="p">,</span> <span class="n">meth</span><span class="p">,</span> <span class="n">e</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div><p>After adding the above snippet to your <code>test/test_helper.rb</code> file, you
+should now see the forementioned gdiff script being used in Ruby on Rails!</p>
+</div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2014-07-31T10:45:41-07:00">31 July 2014: </time></dt><dd class="content"><p>Added <a href="#ruby-on-rails-integration">a monkeypatch</a> to integrate <a href="#bin-gdiff">my
+<code>~/bin/gdiff</code> script</a> into Ruby on Rails testing.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2014-07-29T07:41:21-07:00">29 July 2014: </time></dt><dd class="content"><p>Updated <a href="#bin-gdiff">my <code>~/bin/gdiff</code> script</a> to (1) highlight changes
+in character-wise diffs using reverse video style and (2) be resilient
+when the <code>diff-highlight</code> script is not available.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2014-07-15T22:48:39-07:00">15 July 2014: </time></dt><dd class="content"><p>Added <a href="#bin-gdiff">my own <code>~/bin/gdiff</code> script</a>, which visualizes
+differences in MiniTest assertion failures more intelligently than
+colordiff(1) and even wdiff(1).</p>
+</dd></dl></aside><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Colorful assertion failure diffs in MiniTest";
+var disqus_url = "https://sunaku.github.io/minitest-colordiff.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2011&ndash;2014 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

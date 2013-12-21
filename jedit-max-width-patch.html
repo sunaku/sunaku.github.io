@@ -1,0 +1,77 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Truly elastic word-wrapping in jEdit - The Terminal Programmer</title><meta content="2006-12-14T21:57:14-08:00" name="DCTERMS.created" /><meta content="2011-02-15T15:56:00Z" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="jedit, text, formatting" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="jedit-max-width-patch" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#jedit-max-width-patch" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Truly elastic word-wrapping in jEdit</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2006-12-14T21:57:14-08:00">14 December 2006&nbsp;<span class="update_count"><a href="#updates" title="1 update">&middot;&rarr;</a></span>&nbsp;15 February 2011</time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__problem__" href="#problem" class="downlink">Problem</a><ol></ol></li><li><a id="__approach__" href="#approach" class="downlink">Approach</a><ol></ol></li><li><a id="__solution__" href="#solution" class="downlink">Solution</a><ol></ol></li></ol>
+<div id="problem" class="section"></div><h1 class="heading">Problem<a href="#problem" class="permalink" title="Permalink"></a><a href="#__problem__" class="uplink" title="Contents"></a></h1>
+<p>jEdit&rsquo;s soft word-wrap feature, when used with a <strong>wrap-margin</strong> of zero,
+dynamically wraps text to fit the window. However, this feature isn&rsquo;t very
+useful on a wide-screen display because most lines of text are not wrapped
+since they are not long enough to span the entire screen.</p>
+<p>In such cases, I would prefer having a finite wrap-margin to limit how long
+lines need to be in order to be wrapped. However, when a finite wrap-margin is
+used, the text does not elastically wrap to the window when the window is
+thinner than the limit.</p>
+
+<div id="approach" class="section"></div><h1 class="heading">Approach<a href="#approach" class="permalink" title="Permalink"></a><a href="#__approach__" class="uplink" title="Contents"></a></h1>
+<p>Thus, I wanted the best of both worlds: a <em>maximum width</em> feature, like the
+<strong>max-width</strong> property in CSS, which would:</p>
+
+<ol>
+<li><p>elastically wrap text to the window&rsquo;s width when it is thinner than the maximum width</p></li>
+<li><p>wrap text to the maximum width when the window&rsquo;s width is wider than the maximum width</p></li>
+</ol>
+<p>When <a href="http://sourceforge.net/mailarchive/forum.php?thread_id=31224167&forum_id=5663">I requested this feature on the jEdit users mailing list</a>, the developers had mixed opinions about incorporating it. Nevertheless,
+they helped me implement the feature in my own copy of the jEdit source
+code.</p>
+<p>I posted <a href="ext/jedit/max_width_for_soft_wrap.diff">the patch file for this feature</a> to the mailing list soon after.</p>
+
+<div id="solution" class="section"></div><h1 class="heading">Solution<a href="#solution" class="permalink" title="Permalink"></a><a href="#__solution__" class="uplink" title="Contents"></a></h1>
+<div class="highlight"><pre class="highlight diff"><code><span class="gh">Index: org/gjt/sp/jedit/textarea/TextArea.java
+===================================================================
+</span><span class="gd">--- org/gjt/sp/jedit/textarea/TextArea.java (revision 11614)
+</span><span class="gi">+++ org/gjt/sp/jedit/textarea/TextArea.java (working copy)
+</span><span class="p">@@ -5775,6 +5775,41 @@</span>
+        {
+                this.maxLineLen = maxLineLen;
+
++       /**
+<span class="gi">+           Makes soft word-wrap mode behave like the CSS "max-width" property:
++
++           1. When the window width is less than the maximum, the wrapping
++              behaves like wrap-margin is 0 (fits to the window).
++
++           2. When the window width is greater than the maximum, the wrapping behaves
++              like fixed wrap-margin (wrapping restricted to the maximum width).
++
++           @see discussion of this feature at:
++                http://sourceforge.net/mailarchive/forum.php?thread_id=31224167&amp;forum_id=5663
++       */
++       if(softWrap)
++       {
++           // determine width of maximum rendered line
++           char[] foo = new char[maxLineLen];
++           for(int i = 0; i &lt; foo.length; i++)
++           {
++               foo[i] = ' ';
++           }
++
++           int maxRenderedLineLen = (int)painter.getFont().getStringBounds(
++               foo,0,foo.length,
++               painter.getFontRenderContext())
++               .getWidth();
++
++
++           if(painter.getWidth() &lt; maxRenderedLineLen)
++           {
++               wrapToWidth = true;
++               wrapMargin = painter.getWidth() - charWidth * 3;
++               return;
++           }
++       }
++
+</span>                if(maxLineLen &lt;= 0)
+                {
+                        if(softWrap)
+</code></pre></div></div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2011-02-15T15:56:00Z">15 February 2011: </time></dt><dd class="content"><p>My patch <a href="http://sourceforge.net/p/jedit/svn/19368/">was finally accepted</a> into the jEdit source tree!</p>
+</dd></dl></aside><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Truly elastic word-wrapping in jEdit";
+var disqus_url = "https://sunaku.github.io/jedit-max-width-patch.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2006&ndash;2011 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

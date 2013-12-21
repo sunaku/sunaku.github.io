@@ -1,0 +1,271 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>wmii-3.1 configuration in Ruby - The Terminal Programmer</title><meta content="2006-07-01T00:00:00-07:00" name="DCTERMS.created" /><meta content="2011-02-23T21:35:59-08:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="wmii, ruby" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="wmii-3.1-ruby-config" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#wmii-3.1-ruby-config" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">wmii-3.1 configuration in Ruby</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2006-07-01T00:00:00-07:00"> 1 July 2006&nbsp;<span class="update_count"><a href="#updates" title="5 updates">&middot;&middot;&middot;&middot;&middot;&rarr;</a></span>&nbsp;23 February 2011</time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__quick-light-ruby-interface__" href="#quick-light-ruby-interface" class="downlink">Quick &amp; light Ruby interface</a><ol></ol></li><li><a id="__interactive-ruby-shell__" href="#interactive-ruby-shell" class="downlink">Interactive Ruby shell</a><ol></ol></li><li><a id="__logging-and-recovery__" href="#logging-and-recovery" class="downlink">Logging and recovery</a><ol></ol></li><li><a id="__related-works__" href="#related-works" class="downlink">Related works</a><ol></ol></li><li><a id="__screen-shots__" href="#screen-shots" class="downlink">Screen shots</a><ol><li><a id="__a-colorful-mess__" href="#a-colorful-mess" class="downlink">A colorful mess</a><ol></ol></li><li><a id="__automated-arrangements__" href="#automated-arrangements" class="downlink">Automated arrangements</a><ol></ol></li><li><a id="__multiple-client-selection__" href="#multiple-client-selection" class="downlink">Multiple client selection</a><ol></ol></li></ol></li><li><a id="__requirements__" href="#requirements" class="downlink">Requirements</a><ol><li><a id="__ruby__" href="#ruby" class="downlink">Ruby</a><ol></ol></li><li><a id="__wmii__" href="#wmii" class="downlink">wmii</a><ol><li><a id="__patches__" href="#patches" class="downlink">Patches</a><ol></ol></li></ol></li></ol></li><li><a id="__interactive-live-demonstration__" href="#interactive-live-demonstration" class="downlink">Interactive live demonstration</a><ol><li><a id="__operations-on-multiple-clients__" href="#operations-on-multiple-clients" class="downlink">Operations on multiple clients</a><ol></ol></li><li><a id="__easy-column-manipulation__" href="#easy-column-manipulation" class="downlink">Easy column manipulation</a><ol></ol></li><li><a id="__automated-client-arrangement__" href="#automated-client-arrangement" class="downlink">Automated client arrangement</a><ol></ol></li><li><a id="__temporary-working-area__" href="#temporary-working-area" class="downlink">Temporary working area</a><ol></ol></li></ol></li><li><a id="__installation__" href="#installation" class="downlink">Installation</a><ol></ol></li></ol><p>This article presents <a href="#patches">my patches</a> to the <a href="http://suckless.org">wmii</a> window manager and <a href="https://github.com/sunaku/wmiirc">my Ruby-based configuration</a> thereof.  You can <a href="ext/wmii/wmiirc-3.1.tgz">download wmii-3.1</a> with my patches pre-applied or clone it yourself
+from <a href="https://github.com/sunaku/wmii">my GitHub repository</a>:</p>
+<div class="highlight"><pre class="highlight shell"><code>git clone git://github.com/sunaku/wmii.git
+</code></pre></div>
+<div id="quick-light-ruby-interface" class="section"></div><h2 class="heading">Quick &amp; light Ruby interface<a href="#quick-light-ruby-interface" class="permalink" title="Permalink"></a><a href="#__quick-light-ruby-interface__" class="uplink" title="Contents"></a></h2>
+<p>The <a href="http://home.gna.org/rubyixp/">ruby-ixp library</a> is used to communicate
+directly with <a href="http://suckless.org/contrib/guide/wmii-3/guide-en/guide_en/node9.html">wmii&rsquo;s IXP file
+system</a>
+instead of the <strong>wmiir</strong> tool. Thus, wmii&rsquo;s responsiveness is <em>dramatically</em>
+improved.</p>
+<p>A light <a href="http://snk.tuxfamily.org/lib/rumai/api/Rumai.html">abstraction layer</a>
+is built atop the ruby-ixp library to encapsulate access to wmii. This layer
+includes the ability to dynamically traverse the IXP file system by simply
+calling methods (thanks to Ruby&rsquo;s <code>method_missing</code> facility). For instance,
+you can write &ldquo;foo&rdquo; into the file <code>/view/sel/sel/tags</code> via any of the
+following:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="no">Wmii</span><span class="p">.</span><span class="nf">current_client</span><span class="p">.</span><span class="nf">tags</span> <span class="o">=</span> <span class="s1">'foo'</span>
+<span class="no">Wmii</span><span class="p">.</span><span class="nf">fs</span><span class="p">.</span><span class="nf">view</span><span class="p">.</span><span class="nf">sel</span><span class="p">.</span><span class="nf">sel</span><span class="p">.</span><span class="nf">tags</span> <span class="o">=</span> <span class="s1">'foo'</span>
+<span class="no">Ixp</span><span class="o">::</span><span class="no">Client</span><span class="p">.</span><span class="nf">write</span> <span class="s1">'/view/sel/sel/tags'</span><span class="p">,</span> <span class="s1">'foo'</span>
+</code></pre></div>
+<div id="interactive-ruby-shell" class="section"></div><h2 class="heading">Interactive Ruby shell<a href="#interactive-ruby-shell" class="permalink" title="Permalink"></a><a href="#__interactive-ruby-shell__" class="uplink" title="Contents"></a></h2>
+<p>The <strong>wmiish</strong> tool can be used to interact with wmii <em>without</em> having to
+install my <strong>wmiirc</strong>. It presents the previously discussed light abstraction
+layer within a standard IRB session. In fact, it even accepts the standard IRB
+command-line options!</p>
+
+<div id="logging-and-recovery" class="section"></div><h2 class="heading">Logging and recovery<a href="#logging-and-recovery" class="permalink" title="Permalink"></a><a href="#__logging-and-recovery__" class="uplink" title="Contents"></a></h2>
+<p>Unhandled exceptions are logged to <code>~/.wmii-3/wmiirc.log</code> and then reported to
+the user, who can then choose to recover from or fix the error. Thus, you
+won&rsquo;t be left helpless if your configuration breaks.</p>
+
+<div id="related-works" class="section"></div><h2 class="heading">Related works<a href="#related-works" class="permalink" title="Permalink"></a><a href="#__related-works__" class="uplink" title="Contents"></a></h2>
+<p><a href="http://eigenclass.org/hiki.rb?wmii+ruby">ruby-wmii</a> is Mauricio Fernandez&rsquo;s
+popular Ruby-based configuration for wmii. It is very sophisticated and
+extensible, through a nice plugin interface.</p>
+
+<div id="screen-shots" class="section"></div><h2 class="heading">Screen shots<a href="#screen-shots" class="permalink" title="Permalink"></a><a href="#__screen-shots__" class="uplink" title="Contents"></a></h2>
+<p>As they say, &ldquo;a picture is worth a thousand words&rdquo;. So whet your appetite with
+these screen shots before diving into the discussion below. But don&rsquo;t forget
+that you&rsquo;ll be trying these out yourself shortly, in the interactive <em>live</em>
+demonstration!</p>
+
+<div id="a-colorful-mess" class="section"></div><h3 class="heading">A colorful mess<a href="#a-colorful-mess" class="permalink" title="Permalink"></a><a href="#__a-colorful-mess__" class="uplink" title="Contents"></a></h3>
+<p>I first made a mess, colored generously for aesthetics, in my view by
+executing <code>for c in red green blue black orange brown gray navy gold; do xterm
+-bg $c -title $c -e read &amp; done</code> in my shell. Then, I started up <strong>wmiish</strong> to
+demonstrate some of the stuff discussed below.</p>
+<img src="ext/wmii/screens/0.png" alt="An empty desktop."><img src="ext/wmii/screens/1.png" alt="The first inhabitant."><img src="ext/wmii/screens/2.png" alt="A colorful desktop.">
+<div id="automated-arrangements" class="section"></div><h3 class="heading">Automated arrangements<a href="#automated-arrangements" class="permalink" title="Permalink"></a><a href="#__automated-arrangements__" class="uplink" title="Contents"></a></h3>
+<p>The tile arrangement, caused by the <code>current_view.tile!</code> command:</p>
+<img src="ext/wmii/screens/3.png" alt="current_view.tile!"><p>The grid arrangement, caused by the <code>current_view.grid!</code> command:</p>
+<img src="ext/wmii/screens/4.png" alt="current_view.grid!"><p>The diamond arrangement, caused by the <code>current_view.diamond!</code> command:</p>
+<img src="ext/wmii/screens/5.png" alt="current_view.diamond!">
+<div id="multiple-client-selection" class="section"></div><h3 class="heading">Multiple client selection<a href="#multiple-client-selection" class="permalink" title="Permalink"></a><a href="#__multiple-client-selection__" class="uplink" title="Contents"></a></h3>
+<p>Here I reorganized the view to give enough space for the terminal by typing
+the following code.</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># apply tiling arrangement</span>
+<span class="n">current_view</span><span class="p">.</span><span class="nf">tile!</span>
+
+<span class="c1"># set second column to stacking mode</span>
+<span class="n">current_view</span><span class="p">[</span><span class="mi">2</span><span class="p">].</span><span class="nf">mode</span> <span class="o">=</span> <span class="ss">:stack</span>
+</code></pre></div><img src="ext/wmii/screens/6.png" alt="Back to the drawing board."><p>Next I selected the three primary colored clients (NOTE: I normally do this by
+right-clicking on their title bars or through other shortcuts, because that&rsquo;s
+how my <strong>wmiirc</strong>&lsquo;s event loop is configured) by typing the following code.
+Notice that those clients <em>also</em> appear in the &ldquo;SEL&rdquo; view.</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># the primary colors</span>
+<span class="n">colors</span> <span class="o">=</span> <span class="sx">%w[ red green blue ]</span>
+
+<span class="c1"># select clients named after the primary colors</span>
+<span class="n">clients</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">c</span><span class="o">|</span>
+  <span class="k">if</span> <span class="n">colors</span><span class="p">.</span><span class="nf">include?</span> <span class="n">c</span><span class="p">.</span><span class="nf">name</span>
+    <span class="n">c</span><span class="p">.</span><span class="nf">select!</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div><img src="ext/wmii/screens/7.png" alt="A selection of primary colors."><p>Finally I put each client in the selection into its own view by typing the
+following code.</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1"># tag each selected client with its own name</span>
+<span class="n">selected_clients</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">c</span><span class="o">|</span>
+  <span class="n">c</span><span class="p">.</span><span class="nf">tag!</span> <span class="n">c</span><span class="p">.</span><span class="nf">name</span>
+<span class="k">end</span>
+</code></pre></div><img src="ext/wmii/screens/8.png" alt="Tagging the selection.">
+<div id="requirements" class="section"></div><h2 class="heading">Requirements<a href="#requirements" class="permalink" title="Permalink"></a><a href="#__requirements__" class="uplink" title="Contents"></a></h2>
+
+<div id="ruby" class="section"></div><h3 class="heading">Ruby<a href="#ruby" class="permalink" title="Permalink"></a><a href="#__ruby__" class="uplink" title="Contents"></a></h3>
+<p>You need at least version 1.8 of Ruby installed.</p>
+
+<div id="wmii" class="section"></div><h3 class="heading">wmii<a href="#wmii" class="permalink" title="Permalink"></a><a href="#__wmii__" class="uplink" title="Contents"></a></h3>
+<p>Apply <a href="ext/wmii/patches/wmii-3.1.patch">this giant patch</a>, which
+includes <a href="#patches">all of my patches</a>, before compiling and installing
+wmii-3.1. Note that if you&rsquo;re only interested in trying <strong>wmiish</strong>, then
+only the &ldquo;unique client ID numbers in file system&rdquo; patch is necessary.</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span><span class="nb">ls
+</span>wmii-3.1.patch wmii-3.1.tar.gz
+
+<span class="nv">$ </span><span class="nb">tar </span>zxf wmii-3.1.tar.gz
+
+<span class="nv">$ </span>patch <span class="nt">-p0</span> &lt; wmii-3.1.patch
+patching file wmii-3.1/cmd/wm/area.c
+patching file wmii-3.1/cmd/wm/client.c
+patching file wmii-3.1/cmd/wm/fs.c
+patching file wmii-3.1/cmd/wm/wm.h
+
+<span class="nv">$ </span><span class="nb">cd </span>wmii-3.1
+
+<span class="nv">$ </span>make <span class="nb">install</span>
+</code></pre></div>
+<div id="patches" class="section"></div><h4 class="heading">Patches<a href="#patches" class="permalink" title="Permalink"></a><a href="#__patches__" class="uplink" title="Contents"></a></h4>
+
+<ul>
+<li><p>Column focus wraps horizontally in a view. When the right-most column is currently focused, selecting the nonexistent column at the right will put focus on the left-most column, and vice versa.</p>
+
+<ul>
+<li><a href="ext/wmii/patches/wmii-3.1_select_area_wrap.patch">patch file</a></li>
+<li><a href="http://thread.gmane.org/gmane.comp.window-managers.wmii/724.html">discussion</a></li>
+</ul></li>
+<li><p>Unique client ID numbers are presented in the IXP file system to avoid many race conditions and simpify the task of scripting. For example, without this patch, when the number of clients in an area changes, the area&rsquo;s indices, through which those clients are accessed, change. Thus, you lose track of your client(s) of interest every time there is a change to the current area. :-(</p>
+
+<ul>
+<li><a href="ext/wmii/patches/wmii-3.1_client_index_fs.patch">patch file</a></li>
+<li><a href="http://thread.gmane.org/gmane.comp.window-managers.wmii/989.html">discussion</a></li>
+</ul></li>
+<li><p>Prevents a segfault from occuring when a client is sent to the column it is already in.</p>
+
+<ul>
+<li><a href="ext/wmii/patches/wmii-3.1_sendto_segfault_fix.patch">patch file</a></li>
+<li><a href="http://thread.gmane.org/gmane.comp.window-managers.wmii/993.html">discussion</a></li>
+</ul></li>
+<li><p>Enables sending of clients from the floating area to any other area, via the <code>sendto area_number</code> command.</p>
+
+<ul>
+<li><a href="ext/wmii/patches/wmii-3.1_sendto_any_area.patch">patch file</a></li>
+<li><a href="http://thread.gmane.org/gmane.comp.window-managers.wmii/1004.html">discussion</a></li>
+</ul></li>
+<li><p>Enables swapping of a client with the currently focused client in any column, via the <code>swap column_number</code> command.</p>
+
+<ul>
+<li><a href="ext/wmii/patches/wmii-3.1_swap_any_column.patch">patch file</a></li>
+<li><a href="http://thread.gmane.org/gmane.comp.window-managers.wmii/1010.html">discussion</a></li>
+</ul></li>
+<li><p>Enables creation and focusing of an empty view, as long as it is currently focused, via the <code>view name_of_view</code> command.</p>
+
+<ul>
+<li><a href="ext/wmii/patches/wmii-3.1_allow_current_empty_view.patch">patch file</a></li>
+<li><a href="http://thread.gmane.org/gmane.comp.window-managers.wmii/1027.html">discussion</a></li>
+</ul></li>
+<li><p>Fixes a bug that causes wmii-3.1 to freeze when the /event file is read too quickly by too many readers.</p>
+
+<ul>
+<li><a href="ext/wmii/patches/wmii-3.1_libixp_overload_fix.patch">patch file</a></li>
+<li><a href="http://thread.gmane.org/gmane.comp.window-managers.wmii/1048.html">discussion</a></li>
+</ul></li>
+</ul>
+
+<div id="interactive-live-demonstration" class="section"></div><h2 class="heading">Interactive live demonstration<a href="#interactive-live-demonstration" class="permalink" title="Permalink"></a><a href="#__interactive-live-demonstration__" class="uplink" title="Contents"></a></h2>
+<p>Once you&rsquo;ve satisfied the requirements, you can try this demonstration (in
+real-time!) using <strong>wmiish</strong>. Also, have a look at the provided documentation
+for available commands and my <strong>wmiirc</strong> configuration for more examples to
+try.</p>
+
+<div id="operations-on-multiple-clients" class="section"></div><h3 class="heading">Operations on multiple clients<a href="#operations-on-multiple-clients" class="permalink" title="Permalink"></a><a href="#__operations-on-multiple-clients__" class="uplink" title="Contents"></a></h3>
+<p>You can select multiple clients and perform operations on them. This is useful
+when you want to do something with a group of clients but don&rsquo;t want to
+manually focus one, perform the action, focus the next one, and so on.</p>
+<p>Another important aspect is that selected clients stay selected until they are
+unselected. This allows you to continue performing tasks on the selection
+without having to reselect the same clients after every operation.</p>
+<p>For example, try executing the following commands in <strong>wmiish</strong>.</p>
+
+<ul>
+<li>Make all clients, except those in the current column, also appear inside the &ldquo;foo&rdquo; view:</li>
+</ul>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">current_view</span><span class="p">.</span><span class="nf">select!</span> <span class="n">current_area</span><span class="p">.</span><span class="nf">unselect!</span> <span class="n">selected_clients</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span><span class="o">|</span><span class="n">c</span><span class="o">|</span> <span class="n">c</span><span class="p">.</span><span class="nf">tag!</span> <span class="s1">'foo'</span><span class="p">}</span>
+</code></pre></div>
+<ul>
+<li>Make all unselected clients in the current view also appear in the &ldquo;qux&rdquo; view:</li>
+</ul>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">current_view</span><span class="p">.</span><span class="nf">invert_selection!</span> <span class="n">selected_clients</span><span class="p">.</span><span class="nf">each</span> <span class="p">{</span><span class="o">|</span><span class="n">c</span><span class="o">|</span> <span class="n">c</span><span class="p">.</span><span class="nf">tag!</span> <span class="s1">'qux'</span><span class="p">}</span>
+<span class="n">current_view</span><span class="p">.</span><span class="nf">invert_selection!</span>
+</code></pre></div>
+<div id="easy-column-manipulation" class="section"></div><h3 class="heading">Easy column manipulation<a href="#easy-column-manipulation" class="permalink" title="Permalink"></a><a href="#__easy-column-manipulation__" class="uplink" title="Contents"></a></h3>
+<p>You can insert a group of clients to the top, bottom, or after the currently
+focused client of <em>any</em> column using <a href="http://snk.tuxfamily.org/lib/rumai/api/Rumai/Area.html">these simple
+methods</a>.</p>
+<p>For example, try executing the following commands in <strong>wmiish</strong>.</p>
+
+<ul>
+<li>Send all clients in the current column to the floating area:</li>
+</ul>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">current_view</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nf">concat!</span> <span class="n">current_area</span>
+</code></pre></div>
+<ul>
+<li>Move the second two clients from the first column to the top of the third column:</li>
+</ul>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">current_view</span><span class="p">[</span><span class="mi">3</span><span class="p">].</span><span class="nf">unshift!</span> <span class="n">current_view</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="nf">clients</span><span class="p">[</span><span class="mi">1</span><span class="o">..</span><span class="mi">2</span><span class="p">]</span>
+</code></pre></div>
+<div id="automated-client-arrangement" class="section"></div><h3 class="heading">Automated client arrangement<a href="#automated-client-arrangement" class="permalink" title="Permalink"></a><a href="#__automated-client-arrangement__" class="uplink" title="Contents"></a></h3>
+<p>You can arrange all clients in the current view using <a href="http://snk.tuxfamily.org/lib/rumai/api/Rumai/View.html">these automated
+arrangements</a>. They
+help you maintain clean, uncluttered, usable views.</p>
+<p>For example, try executing the following commands in <strong>wmiish</strong>.</p>
+
+<ul>
+<li>Apply <a href="http://larswm.fnurt.net/">LarsWM</a> style tiling arrangement:</li>
+</ul>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">current_view</span><span class="p">.</span><span class="nf">tile!</span>
+</code></pre></div>
+<ul>
+<li>Apply wmii-2 style grid arrangement:</li>
+</ul>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">current_view</span><span class="p">.</span><span class="nf">grid!</span>
+</code></pre></div>
+<ul>
+<li>Apply a diamond-shaped arrangement:</li>
+</ul>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">current_view</span><span class="p">.</span><span class="nf">diamond!</span>
+</code></pre></div>
+<ul>
+<li>Put each client in its own column:</li>
+</ul>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">current_view</span><span class="p">.</span><span class="nf">grid!</span> <span class="mi">1</span>
+</code></pre></div>
+<ul>
+<li>Put three clients per each column:</li>
+</ul>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">current_view</span><span class="p">.</span><span class="nf">grid!</span> <span class="mi">3</span>
+</code></pre></div>
+<ul>
+<li>Squeeze all clients into a single column:</li>
+</ul>
+<div class="highlight"><pre class="highlight ruby"><code><span class="n">current_view</span><span class="p">.</span><span class="nf">grid!</span> <span class="mi">0</span>
+</code></pre></div>
+<div id="temporary-working-area" class="section"></div><h3 class="heading">Temporary working area<a href="#temporary-working-area" class="permalink" title="Permalink"></a><a href="#__temporary-working-area__" class="uplink" title="Contents"></a></h3>
+<p>You can send selected clients to a temporary working area (see the <a href="http://thread.gmane.org/gmane.comp.window-managers.wmii/978.html">rationale
+and use case</a> for
+this idea) and bring them back again when you&rsquo;re finished. Try this by
+executing <code>toggle_temp_view</code> in <strong>wmiish</strong>.</p>
+
+<div id="installation" class="section"></div><h2 class="heading">Installation<a href="#installation" class="permalink" title="Permalink"></a><a href="#__installation__" class="uplink" title="Contents"></a></h2>
+
+<ol>
+<li><p>Download and extract the contents of the package into your <code>~/.wmii-3</code> directory.</p></li>
+<li><p>Edit the <code>~/.wmii-3/wmiirc-config.rb</code> file to accomodate your needs.</p></li>
+<li><p>Reboot <strong>wmii</strong>.</p></li>
+</ol>
+</div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2011-02-23T21:35:59-08:00">23 February 2011: </time></dt><dd class="content"><p>I&rsquo;m happy to announce an exciting new development in <a href="http://github.com/sunaku/wmiirc/">my
+wmiirc</a>: the ability to instantiate the same
+status bar applet more than once and with different parameters.</p>
+<p>See <a href="http://thread.gmane.org/gmane.comp.misc.suckless/4812">this discussion</a>
+for more information.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2010-01-02T18:02:58-08:00"> 2 January 2010: </time></dt><dd class="content"><p>Sparked by an idea by <a href="https://github.com/NathanNeff">Nathan Neff</a>, I have
+greatly modularized <a href="http://github.com/sunaku/wmiirc/">my wmiirc</a> by splitting
+the giant <code>config.yaml</code> file into many smaller files and adding the ability
+for them to &ldquo;import&rdquo; each other.</p>
+<p>This allows us to share and maintain common code while having a different mix
+of status applets, keyboard shortcuts, color schemes, and so on.</p>
+<p>See <a href="http://thread.gmane.org/gmane.comp.misc.suckless/577">this discussion</a>
+for more information.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2009-05-11T02:43:07-07:00">11 May 2009: </time></dt><dd class="content"><p>I&rsquo;ve reached a new milestone in the evolution of <a href="http://github.com/sunaku/wmiirc/">my
+wmiirc</a>: the entire configuration is now
+described in YAML, with Ruby embedded inside.</p>
+<p>See <a href="http://thread.gmane.org/gmane.comp.window-managers.wmii/3462">this discussion</a> for more information.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2008-01-26T00:00:00-08:00">26 January 2008: </time></dt><dd class="content"><p>I wrote a 9P2000 client in pure Ruby, refactored <strong>wmii-irb</strong> to use it, and
+released the result as <a href="http://snk.tuxfamily.org/lib/rumai/">Rumai</a>.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2007-02-27T04:40:03-08:00">27 February 2007: </time></dt><dd class="content"><p>I have upgraded <strong>wmiish</strong> to work with the latest wmii from hg tip and
+released it as <a href="http://article.gmane.org/gmane.comp.window-%0Amanagers.wmii/1704">wmii-
+irb</a>.</p>
+</dd></dl></aside><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "wmii-3.1 configuration in Ruby";
+var disqus_url = "https://sunaku.github.io/wmii-3.1-ruby-config.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2006&ndash;2011 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

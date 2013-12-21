@@ -1,0 +1,63 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Tamsyn 1.7b programming font review - The Terminal Programmer</title><meta content="2011-12-10T00:28:34-08:00" name="DCTERMS.created" /><meta content="2013-10-22T00:06:09-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="review, patch" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="tamsyn-1.7b-font-review" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#tamsyn-1.7b-font-review" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Tamsyn 1.7b programming font review</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2011-12-10T00:28:34-08:00">10 December 2011&nbsp;<span class="update_count"><a href="#updates" title="2 updates">&middot;&middot;&rarr;</a></span>&nbsp;22 October 2013</time></header><hr /><div class="description"></div><div class="content"><style type="text/css">blockquote img{display:inline}</style><blockquote>
+<p><strong>NOTE:</strong> I&rsquo;ve published my changes to this font as a <a href="https://github.com/sunaku/tamzen-font">new Tam<em>zen</em> font</a>.</p>
+</blockquote>
+<p><a href="http://www.fial.com/%7Escott/tamsyn-font/">Tamsyn</a> is the <em>crispest</em> monospace font I&rsquo;ve ever seen &mdash; it doesn&rsquo;t even need
+antialiasing! A new 1.7b version was released yesterday with tweaks to existing
+ASCII characters along with new additions to the Extended Latin characters set.</p>
+
+<blockquote>
+<p><img src="tamsyn-1.7b-font-review/Tamsyn8x17r.png" alt="Tamsyn8x17r.bdf">
+<img src="tamsyn-1.7b-font-review/Tamsyn8x17b.png" alt="Tamsyn8x17b.bdf">
+<img src="tamsyn-1.7b-font-review/Tamsyn8x15r.png" alt="Tamsyn8x15r.bdf">
+<img src="tamsyn-1.7b-font-review/Tamsyn8x15b.png" alt="Tamsyn8x15b.bdf">
+<img src="tamsyn-1.7b-font-review/Tamsyn7x14r.png" alt="Tamsyn7x14r.bdf">
+<img src="tamsyn-1.7b-font-review/Tamsyn7x14b.png" alt="Tamsyn7x14b.bdf">
+<img src="tamsyn-1.7b-font-review/Tamsyn7x14r.png" alt="Tamsyn7x14r.bdf">
+<img src="tamsyn-1.7b-font-review/Tamsyn7x14b.png" alt="Tamsyn7x14b.bdf">
+<img src="tamsyn-1.7b-font-review/Tamsyn6x11r.png" alt="Tamsyn6x11r.bdf">
+<img src="tamsyn-1.7b-font-review/Tamsyn6x11b.png" alt="Tamsyn6x11b.bdf"></p>
+</blockquote>
+<p>I like the following changes to the ASCII characters set in the new version:</p>
+
+<ul>
+<li>NUL - drawn as empty square; useful for programming</li>
+<li><code>1</code> - underscore below makes it easier to recognize</li>
+<li><code>S</code> - more streamlined and similar to lowercase <code>s</code></li>
+<li><code>C</code>, <code>G</code>, <code>O</code>, and <code>Q</code> - more roundness, hurray!</li>
+</ul>
+<p>However, I dislike the following changes because they detract from the distinct
+styling of Tamsyn; particularly the uniform roundness of its characters:</p>
+
+<ul>
+<li><code>l</code> - roundness is gone; it reminds me of Courier :(</li>
+<li><code>y</code> - less round; too different from the round <code>g</code></li>
+<li><code>w</code> - roundness is gone; too sharp and jagged</li>
+</ul>
+<p>Though I&rsquo;m neutral about the following changes and will give them a chance:</p>
+
+<ul>
+<li><code>t</code> - small loss of roundness and more centered now</li>
+<li><code>f</code> - less round and the horizontal stroke is higher</li>
+<li><code>j</code> - less round in the descender stroke</li>
+</ul>
+</div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2013-10-22T00:06:09-07:00">22 October 2013: </time></dt><dd class="content"><p>Added support for <a href="https://powerline.readthedocs.org/en/master/overview.html#screenshots">Powerline symbols</a> using <a href="https://bitbucket.org/ZyX_I/bitmap-font-patcher">ZyX-I&rsquo;s bitmap-font-patcher</a>:</p>
+
+<blockquote>
+<p><img src="https://github.com/sunaku/tamzen-font/raw/master/png/TamzenForPowerline8x15r.png" alt="TamzenForPowerline8x15r.bdf">
+<img src="https://github.com/sunaku/tamzen-font/raw/master/png/TamzenForPowerline8x15b.png" alt="TamzenForPowerline8x15b.bdf"></p>
+</blockquote>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2011-12-17T16:34:47-08:00">17 December 2011: </time></dt><dd class="content"><p>I sent this review to Scott Fial, the creator of Tamsyn, but from his
+reply, it seems unlikely that the changes I dislike will be reverted.  Alas!</p>
+<p>So I took matters into my own hands and backported the <code>l</code>, <code>y</code>, and <code>w</code>
+characters from the previous 1.6 version using FontForge and xmbdfed,
+and finally published the result as <a href="https://github.com/sunaku/tamzen-font">the Tamzen font</a> on GitHub:</p>
+
+<blockquote>
+<p><img src="https://github.com/sunaku/tamzen-font/raw/master/png/Tamzen8x15r.png" alt="Tamzen8x15r.bdf">
+<img src="https://github.com/sunaku/tamzen-font/raw/master/png/Tamzen8x15b.png" alt="Tamzen8x15b.bdf"></p>
+</blockquote>
+</dd></dl></aside><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Tamsyn 1.7b programming font review";
+var disqus_url = "https://sunaku.github.io/tamsyn-1.7b-font-review.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2011&ndash;2013 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

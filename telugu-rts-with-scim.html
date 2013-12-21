@@ -1,0 +1,75 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Telugu RTS with SCIM - The Terminal Programmer</title><meta content="2006-02-01T00:13:54-08:00" name="DCTERMS.created" /><meta content="2010-06-30T19:04:00-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="telugu, transliteration, scim, linux" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="telugu-rts-with-scim" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#telugu-rts-with-scim" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Telugu RTS with SCIM</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2006-02-01T00:13:54-08:00"> 1 February 2006&nbsp;<span class="update_count"><a href="#updates" title="1 update">&middot;&rarr;</a></span>&nbsp;30 June 2010</time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__features__" href="#features" class="downlink">Features</a><ol><li><a id="__sunna-generation-inside-a-word__" href="#sunna-generation-inside-a-word" class="downlink">Sunna generation inside a word</a><ol></ol></li><li><a id="__sunna-generation-at-the-end-of-a-word__" href="#sunna-generation-at-the-end-of-a-word" class="downlink">Sunna generation at the end of a word</a><ol></ol></li><li><a id="__preventing-sunna-generation__" href="#preventing-sunna-generation" class="downlink">Preventing sunna generation</a><ol></ol></li></ol></li><li><a id="__requirements__" href="#requirements" class="downlink">Requirements</a><ol></ol></li><li><a id="__installation__" href="#installation" class="downlink">Installation</a><ol></ol></li></ol><p>I am happy to announce that an implementation of the Telugu RTS
+transliteration scheme is now available for <a href="http://www.scim-im.org/">SCIM</a>!  Special thanks to Mr. Naoto TAKAHASHI of
+<a href="http://www.m17n.org/m17n-lib-en/">m17n-lib</a>, who kindly implemented its
+state machine.</p>
+<img src="telugu-rts-with-scim-demo.gif" alt="Telugu RTS with SCIM in Ubuntu Breezy"><p>Please try out this transliteration scheme (see instructions below) and
+notify me about any problems. Also, see <a href="telugu-rts-with-scim-demo.html">this related article</a> about the demonstration video above.</p>
+
+<div id="features" class="section"></div><h1 class="heading">Features<a href="#features" class="permalink" title="Permalink"></a><a href="#__features__" class="uplink" title="Contents"></a></h1>
+<p>In addition to the functionality expected from its elder sibling, <a href="telugu-rts-with-iiimf.html">Telugu
+RTS for IIIMF</a>, this one features automatic
+sunna generation inside a word and, when possbile, at the end of a word.</p>
+
+<div id="sunna-generation-inside-a-word" class="section"></div><h2 class="heading">Sunna generation inside a word<a href="#sunna-generation-inside-a-word" class="permalink" title="Permalink"></a><a href="#__sunna-generation-inside-a-word__" class="uplink" title="Contents"></a></h2>
+<p>Usually you would type &lsquo;gaaMdhi&rsquo; to generate &lsquo;గాంధి&rsquo;, but now you can type
+more naturally: both &lsquo;gaandhi&rsquo; and &lsquo;gaamdhi&rsquo; generate &lsquo;గాంధి&rsquo;.</p>
+
+<div id="sunna-generation-at-the-end-of-a-word" class="section"></div><h2 class="heading">Sunna generation at the end of a word<a href="#sunna-generation-at-the-end-of-a-word" class="permalink" title="Permalink"></a><a href="#__sunna-generation-at-the-end-of-a-word__" class="uplink" title="Contents"></a></h2>
+<p>Instead of typing &lsquo;chakraM&rsquo; to generate &lsquo;చక్రం&rsquo;, you can type more naturally:
+&lsquo;chakram&rsquo; to generate the same thing.</p>
+
+<div id="preventing-sunna-generation" class="section"></div><h2 class="heading">Preventing sunna generation<a href="#preventing-sunna-generation" class="permalink" title="Permalink"></a><a href="#__preventing-sunna-generation__" class="uplink" title="Contents"></a></h2>
+<p>As specified in the RTS, you can manually override this automatic sunna
+generation by typing an ampersand (&amp;) after an &lsquo;n&rsquo; or &lsquo;m&rsquo; character.</p>
+<p>For example, &lsquo;vandE&rsquo; and &lsquo;vamdE&rsquo; yield &lsquo;వందే&rsquo;, whereas &lsquo;van&amp;dE&rsquo; and &lsquo;vam&amp;dE&rsquo;
+yield &lsquo;వన్దే&rsquo;. Similarly &lsquo;padyam&rsquo; yields &lsquo;పద్యం&rsquo;, whereas &lsquo;padyam&amp;&rsquo; yields
+&lsquo;పద్యమ్&rsquo;.</p>
+<p>Note that sunna is not generated if a word ends with an &lsquo;n&rsquo;. So, ending a
+word with &lsquo;n&rsquo; and &lsquo;n&amp;&rsquo; yields the same result.</p>
+
+<div id="requirements" class="section"></div><h1 class="heading">Requirements<a href="#requirements" class="permalink" title="Permalink"></a><a href="#__requirements__" class="uplink" title="Contents"></a></h1>
+<p>Get from <a href="http://www.m17n.org/m17n-lib-en/">m17n-lib</a>:</p>
+
+<ul>
+<li>m17n-lib 1.3.1 or newer</li>
+<li>m17n-db 1.3.1 or newer</li>
+</ul>
+<p>Get from <a href="http://www.scim-im.org/">SCIM</a>:</p>
+
+<ul>
+<li>scim 1.0.2-3 or newer</li>
+<li>scim-m17n 1.0.2-3 or newer</li>
+<li>scim-gtk2-immodule 1.0.2-3 or newer</li>
+</ul>
+
+<div id="installation" class="section"></div><h1 class="heading">Installation<a href="#installation" class="permalink" title="Permalink"></a><a href="#__installation__" class="uplink" title="Contents"></a></h1>
+<p>For the time being, download the state machine <a href="ext/scim/te-rts.mim">from here</a>.</p>
+<p>The m17n-lib developers are planning to create a m17n-contrib package in
+which they will accept user contributed state machines. I plan to submit
+this state machine, such that it will be included with the core m17n-lib
+distribution in the future.</p>
+
+<ol>
+<li><p>As root, copy the <code>te-rts.mim</code> file into <code>/usr/share/m17n/</code></p></li>
+<li><p>As yourself, kill any existing SCIM processes:</p>
+<div class="highlight"><pre class="highlight shell"><code>ps aux | <span class="nb">grep </span>scim | <span class="nb">awk</span> <span class="s1">'{print $2}'</span> | xargs <span class="nb">kill</span>
+</code></pre></div></li>
+<li><p>Start SCIM:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nb">export </span><span class="nv">XMODIFIERS</span><span class="o">=</span><span class="s1">'@im=SCIM'</span>
+<span class="nb">export </span><span class="nv">GTK_IM_MODULE</span><span class="o">=</span>scim
+<span class="nb">export </span><span class="nv">QT_IM_MODULE</span><span class="o">=</span>scim
+scim <span class="nt">-d</span> &amp;
+</code></pre></div></li>
+<li><p>Launch any GTK2 program, such as <code>gedit</code>, and press Control+Space.</p></li>
+<li><p>Choose &ldquo;Telugu &gt; M17N-te-rts&rdquo; from the gtk2-immodule applet.</p></li>
+<li><p>Start typing Telugu text using the RTS transliteration scheme!</p></li>
+</ol>
+</div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2010-06-30T19:04:00-07:00">30 June 2010: </time></dt><dd class="content"><p>I submitted <a href="http://cvs.m17n.org/viewcvs/m17n/m17n-contrib/im/te-rts.mim?view=log#rev1.4">a new revision of the state
+machine</a> which assigns new Unicode characters for <code>@2</code>, <code>~c</code>,
+<code>~j</code>, <code>~l</code>, and <code>~L</code>; allows <code>_</code> to be typed normally; adds <code>j&amp;n</code> to produce
+<code>jn</code> literally; and cleans up the source code.</p>
+</dd></dl></aside><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Telugu RTS with SCIM";
+var disqus_url = "https://sunaku.github.io/telugu-rts-with-scim.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2006&ndash;2010 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

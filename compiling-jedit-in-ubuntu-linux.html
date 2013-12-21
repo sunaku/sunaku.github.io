@@ -1,0 +1,32 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Compiling jEdit under Ubuntu - The Terminal Programmer</title><meta content="2006-07-29T00:00:00-07:00" name="DCTERMS.created" /><meta content="2006-07-29T00:00:00-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="jedit, ubuntu, linux" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="compiling-jedit-in-ubuntu-linux" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#compiling-jedit-in-ubuntu-linux" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Compiling jEdit under Ubuntu</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2006-07-29T00:00:00-07:00">29 July 2006</time></header><hr /><div class="description"></div><div class="content"><p>Here I&rsquo;ll show you how to compile the <a href="http://jedit.org">jEdit</a> text
+editor from source in <a href="http://www.ubuntu.com">Ubuntu GNU/Linux</a>.</p>
+
+<ol>
+<li><p>Install the Sun JDK for Java 5.</p></li>
+<li><p>Install the following packages:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>sudo apt-get install ant ant-optional xsltproc \
+docbook docbook-xml docbook-xsl passivetex
+</code></pre></div></li>
+<li><p>Download <a href="http://xmlgraphics.apache.org/fop/">Apache FOP</a> and
+extract it into your system&rsquo;s temporary directory: <code>/tmp</code></p></li>
+<li><p>Obtain jEdit&rsquo;s source code from its SVN repository:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>svn co https://svn.sourceforge.net/svnroot/jedit/jEdit/trunk
+</code></pre></div></li>
+<li><p>Save the following text to a file named <code>build.properties</code>:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>build.dir=build
+dist.dir=dist
+xsltproc.executable=/usr/bin/xsltproc
+docbook.xsl=/usr/share/xml/docbook/stylesheet/nwalsh/
+docbook.catalog=/usr/share/xml/docbook/schema/dtd/4.2/catalog
+fop.dir=/tmp/fop-0.20.5
+</code></pre></div></li>
+<li><p>Build the distribution from the source code:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>ant dist
+</code></pre></div></li>
+<li><p>Look inside the <code>dist</code> directory to enjoy the fruit of your labor! :)</p></li>
+</ol>
+</div><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Compiling jEdit under Ubuntu";
+var disqus_url = "https://sunaku.github.io/compiling-jedit-in-ubuntu-linux.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2006 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

@@ -1,0 +1,254 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Taming home row mods with bilateral combinations - The Terminal Programmer</title><meta content="2022-10-16T05:06:31-07:00" name="DCTERMS.created" /><meta content="2023-03-05T10:38:00-08:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="typing, keyboard, ergonomics, optimization, firmware" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="home-row-mods" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#home-row-mods" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Taming home row mods with bilateral combinations</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2022-10-16T05:06:31-07:00">16 October 2022&nbsp;<span class="update_count"><a href="#updates" title="4 updates">&middot;&middot;&middot;&middot;&rarr;</a></span>&nbsp; 5 March 2023</time></header><hr /><div class="description"></div><div class="content"><p>For the past 2 years, I&rsquo;ve used <a href="https://precondition.github.io/home-row-mods">home row mods</a> designed by the legendary
+<a href="https://github.com/manna-harbour/miryoku">Miryoku</a>, where the Super, Alt, Control, and Shift modifier keys are embedded
+in the home row as dual role &ldquo;mod-tap&rdquo; keys through <a href="ergohaven-remnant-keyboard.html">my programmable keyboard</a>&rsquo;s QMK firmware.</p>
+
+<blockquote>
+<img src="home-row-mods.png" alt="Home row and standard modifiers on a typical 60% keyboard."></blockquote>
+<p>These keys behave normally when tapped, sending their assigned character (such as
+the letter &ldquo;A&rdquo;) to the computer. But when held, they become modifier keys,
+sending their assigned modifier (such as Alt or Shift) to the computer instead.</p>
+<p>This literally puts all modifier keys at your fingertips, thereby eliminating
+the need to move your fingers away from the home row to reach them.</p>
+<p><ol class="table-of-contents"><li><a id="__problem__" href="#problem" class="downlink">Problem</a><ol><li><a id="__same-hand-chords__" href="#same-hand-chords" class="downlink">Same-hand chords</a><ol></ol></li><li><a id="__dual-hand-chords__" href="#dual-hand-chords" class="downlink">Dual-hand chords</a><ol></ol></li><li><a id="__typing-streaks__" href="#typing-streaks" class="downlink">Typing streaks</a><ol></ol></li></ol></li><li><a id="__solution__" href="#solution" class="downlink">Solution</a><ol><li><a id="__patches__" href="#patches" class="downlink">Patches</a><ol></ol></li><li><a id="__example__" href="#example" class="downlink">Example</a><ol><li><a id="__rules-mk__" href="#rules-mk" class="downlink">rules.mk</a><ol></ol></li><li><a id="__config-h__" href="#config-h" class="downlink">config.h</a><ol></ol></li></ol></li><li><a id="__usage__" href="#usage" class="downlink">Usage</a><ol><li><a id="__allowing-same-sided-combinations__" href="#allowing-same-sided-combinations" class="downlink">Allowing same-sided combinations</a><ol></ol></li><li><a id="__allowing-crossover-combinations__" href="#allowing-crossover-combinations" class="downlink">Allowing crossover combinations</a><ol></ol></li><li><a id="__delaying-modifier-activation__" href="#delaying-modifier-activation" class="downlink">Delaying modifier activation</a><ol></ol></li><li><a id="__suppressing-modifiers-while-typing__" href="#suppressing-modifiers-while-typing" class="downlink">Suppressing modifiers while typing</a><ol></ol></li></ol></li></ol></li></ol></p>
+
+<div id="problem" class="section"></div><h2 class="heading">Problem<a href="#problem" class="permalink" title="Permalink"></a><a href="#__problem__" class="uplink" title="Contents"></a></h2>
+<p>The main issue with home row mods is the <em>unintended activation</em> of modifiers.
+When typing quickly, I sometimes press keys together like a piano chord instead
+of tapping and releasing keys individually like distinct notes on a piano scale.
+This can activate home row mods and trigger unwanted shortcuts on my computer,
+such as launching an app, closing a window, or sending an unfinished e-mail. 😱</p>
+<p>Over time, the negative feedback from these misfires has trained me to type more
+slowly and <em>thoughtfully</em>, burdening my mind with uncertainty that impedes my
+natural typing rhythm and unconscious flow of thoughts onto the computer screen.</p>
+
+<div id="same-hand-chords" class="section"></div><h3 class="heading">Same-hand chords<a href="#same-hand-chords" class="permalink" title="Permalink"></a><a href="#__same-hand-chords__" class="uplink" title="Contents"></a></h3>
+<p>When typing the word &ldquo;clock&rdquo; in the <a href="engram-keyboard-layout.html">Engram layout</a>, I tend to chord &ldquo;ck&rdquo;
+by first holding down &ldquo;c&rdquo; with my left pinky finger, tapping &ldquo;k&rdquo; with my left
+index finger, and finally releasing them both simultaneously or in the reverse order.</p>
+
+<blockquote>
+<img src="home-row-mods-unilateral.png" alt="Same-hand chord &quot;ck&quot; in the word &quot;clock&quot;."></blockquote>
+<p><a href="https://github.com/manna-harbour/miryoku">Miryoku</a>&rsquo;s experimental &ldquo;<a href="https://github.com/qmk/qmk_firmware/pull/17715">bilateral combinations</a>&rdquo; feature attempts to solve
+this problem by suppressing home row mods for chords that begin and end on the
+same side of the keyboard.  This way, it only affects home row mods for chords that
+cross over to the other side of the keyboard; so they&rsquo;re <em>bilateral</em> combinations.</p>
+<p>However, it has a longstanding <a href="https://github.com/manna-harbour/qmk_firmware/issues/27">bug called &ldquo;flashing mods&rdquo;</a> where
+the Super key would always be sent to the computer for same-hand chords, even
+though their home row mods should be suppressed.  This makes me accidentally
+trigger the Start Menu when typing words like &ldquo;clock&rdquo; and &ldquo;sock&rdquo; due to my &ldquo;ck&rdquo;
+chording tendency.</p>
+<p>With sleepless determination, I recently fixed this and <a href="https://github.com/manna-harbour/qmk_firmware/pull/48">contributed a patch</a>.</p>
+
+<div id="dual-hand-chords" class="section"></div><h3 class="heading">Dual-hand chords<a href="#dual-hand-chords" class="permalink" title="Permalink"></a><a href="#__dual-hand-chords__" class="uplink" title="Contents"></a></h3>
+<p>When typing the word &ldquo;end&rdquo; in the <a href="engram-keyboard-layout.html">Engram layout</a>, I tend to chord the
+entire word by first holding down &ldquo;e&rdquo; with my left middle finger and then holding
+down &ldquo;n&rdquo; with right pinky finger, before finally tapping &ldquo;d&rdquo; with my right middle
+finger. The first two keys essentially form a stable base from which the third
+can be reached. Similarly, I chord &ldquo;est&rdquo; in the same way when typing the word
+&ldquo;best&rdquo;.</p>
+
+<blockquote>
+<img src="home-row-mods-bilateral.png" alt="Dual-hand chord &quot;en&quot; and same-hand chord &quot;nd&quot; in the word &quot;end&quot;."></blockquote>
+<p>Thanks to the increased typing speed made possible by my &ldquo;flashing mods&rdquo; patch
+for <a href="#same-hand-chords">same-hand chords</a>, I was able to make the above
+observations which revealed a blind spot in Miryoku&rsquo;s bilateral combinations
+concept: it only intercepts same-hand home row mods and completely ignores
+the dual-handed ones!</p>
+<p>This seemed like the key to solving the problem, so I plunged in with more
+sleepless determination and created a new <a href="https://github.com/manna-harbour/qmk_firmware/pull/54">feature called <em>&ldquo;crossover&rdquo;</em> bilateral
+combinations</a> to intercept fast &ldquo;rolls&rdquo; that cross over the
+left/right boundary.</p>
+
+<div id="typing-streaks" class="section"></div><h3 class="heading">Typing streaks<a href="#typing-streaks" class="permalink" title="Permalink"></a><a href="#__typing-streaks__" class="uplink" title="Contents"></a></h3>
+<p>When typing the word &ldquo;stress&rdquo; in the <a href="engram-keyboard-layout.html">Engram layout</a>, I tend to chord the
+end of the word (after typing &ldquo;str&rdquo;) by first holding down &ldquo;e&rdquo; with my left
+middle finger and then tapping &ldquo;s&rdquo; with right ring finger twice.  If done too slowly,
+this will trigger the &ldquo;es&rdquo; bilateral combination (which sends the <code>Ctrl-S</code>
+shortcut to the computer, in my case) instead of tapping &ldquo;e&rdquo; and &ldquo;s&rdquo; separately.</p>
+
+<blockquote>
+<img src="home-row-mods-streak.png" alt="Dual-hand chord &quot;es&quot; and key repetition in the word &quot;stress&quot;."></blockquote>
+<p>There is a brilliant solution to this problem in <a href="https://zmk.dev/docs/behaviors/hold-tap#global-quick-tap">ZMK&rsquo;s <code>global-quick-tap</code>
+feature</a>, which cleverly suppresses modifiers during periods of
+active typing.  For instance, in the example above, I tap &ldquo;r&rdquo; immediately before
+the &ldquo;es&rdquo; chord: thus, by measuring the amount of time that has passed between the
+tap and chord, we can detect whether the chord occurred within a typing streak
+and suppress it!</p>
+<p>Duly inspired, I&rsquo;ve implemented this idea in QMK via a configurable <em>typing
+streak timeout</em> setting that automatically suppresses home row mods while typing:</p>
+<div class="highlight"><pre class="highlight c"><code><span class="cp">#define BILATERAL_COMBINATIONS_TYPING_STREAK_TIMEOUT 160 </span><span class="cm">/* milliseconds */</span><span class="cp">
+</span></code></pre></div><p>However, this tends to obstruct the Shift modifier when typing parentheses or
+punctuation marks such as <code>!</code> and <code>?</code> at the end of a sentence; and it requires a
+dedicated Shift key as a workaround, per <a href="https://github.com/urob/zmk-config#timeless-homerow-mods">@urob&rsquo;s &ldquo;timeless&rdquo; mods for
+ZMK</a>. So I went further
+and exempted Shift modifiers from typing streaks in a bitwise mask:</p>
+<div class="highlight"><pre class="highlight c"><code><span class="cp">#define BILATERAL_COMBINATIONS_TYPING_STREAK_MODMASK (~MOD_MASK_SHIFT)
+</span></code></pre></div><p>And so, with all this, typing feels natural again!  No more unconscious fears
+about accidentally triggering home row mods. 😌  It&rsquo;s a complete game changer! 🤩</p>
+
+<div id="solution" class="section"></div><h2 class="heading">Solution<a href="#solution" class="permalink" title="Permalink"></a><a href="#__solution__" class="uplink" title="Contents"></a></h2>
+<p>Armed with <a href="#patches">my patches</a> for the <a href="#problem">aforementioned problems</a>, I have finally tamed home
+row mods!  But <em>how</em> does it even work, you ask?  Well, it&rsquo;s all quite <em>coincidental</em>:</p>
+
+<blockquote>
+<p>Can&rsquo;t see <a href="home-row-mods-flowchart.svg">SVG image</a>?  Try the <a href="home-row-mods-flowchart.png">PNG image</a>, <a href="home-row-mods-flowchart.pdf">PDF document</a>, or <a href="home-row-mods-flowchart.dot">source file</a>.
+<img src="home-row-mods-flowchart.svg" alt="Flowchart: Miryoku&#39;s flowchart Combinations for Home Row Mods in QMK"></p>
+</blockquote>
+<p>Three main user actions drive the logic: tapping, holding, and releasing keys.
+Everything happens depending on what keys they hold and how long they hold them.</p>
+
+<ul>
+<li>The green hexagons are external events representing a user&rsquo;s actions.</li>
+<li>The blue ovals are a chord&rsquo;s main stages of life: begin, extend, end.</li>
+<li>The pink folders are <code>#define</code> settings, documented individually below.</li>
+<li>The yellow components are QMK functions, which I treat as system calls.</li>
+<li>The gray boxes are internal storage mutations that track state changes.</li>
+</ul>
+
+<div id="patches" class="section"></div><h3 class="heading">Patches<a href="#patches" class="permalink" title="Permalink"></a><a href="#__patches__" class="uplink" title="Contents"></a></h3>
+<p>Apply the following patch or check out a ready-to-use branch or working example.</p>
+
+<ul>
+<li>Patch #56. <a href="https://github.com/manna-harbour/qmk_firmware/pull/56">Endgame: multi-mod crossover chords and typing streaks</a> for:
+
+<ul>
+<li>QMK: Consolidated <a href="https://github.com/qmk/qmk_firmware/compare/master...sunaku:miryoku_bilateral#files_bucket">patch</a> or ready-to-use <a href="https://github.com/sunaku/qmk_firmware/tree/miryoku_bilateral">branch</a> with a working <a href="https://github.com/sunaku/qmk_firmware/tree/sunaku_remnant/keyboards/ergohaven/remnant/keymaps/sunaku">example</a></li>
+<li>Vial: Consolidated <a href="https://github.com/vial-kb/vial-qmk/compare/vial...sunaku:vial-qmk:miryoku_bilateral#files_bucket">patch</a> or ready-to-use <a href="https://github.com/sunaku/vial-qmk/tree/miryoku_bilateral">branch</a> with a working <a href="https://github.com/sunaku/vial-qmk/tree/sunaku_remnant/keyboards/ergohaven/remnant/keymaps/sunaku">example</a></li>
+</ul></li>
+</ul>
+<p>This patch supersedes my previous patches, listed below, by adding support for
+chord tapping (multiple mod keys) and &ldquo;<a href="https://getreuer.info/posts/keyboards/achordion/#achordion_eager_mod">eager mods</a>&rdquo; for mod-click mouse usage.</p>
+
+<ul>
+<li><em>Obsolete</em>: Patch #54. <a href="https://github.com/manna-harbour/qmk_firmware/pull/54">Crossover combinations for dual-hand chords and rolls</a></li>
+<li><em>Obsolete</em>: Patch #48. <a href="https://github.com/manna-harbour/qmk_firmware/pull/48">Unilateral mod-tap shouldn&rsquo;t send GUI to the computer</a></li>
+</ul>
+
+<div id="example" class="section"></div><h3 class="heading">Example<a href="#example" class="permalink" title="Permalink"></a><a href="#__example__" class="uplink" title="Contents"></a></h3>
+<p>Below are the relevant parts <a href="https://github.com/sunaku/qmk_firmware/tree/sunaku_remnant/keyboards/ergohaven/remnant/keymaps/sunaku/">of my configuration</a> that put everything in action, producing the best typing experience I&rsquo;ve felt
+since adopting <a href="https://github.com/manna-harbour/miryoku">Miryoku</a>. Enjoy! 😎</p>
+
+<blockquote>
+
+<div id="rules-mk" class="section"></div><h4 class="heading">rules.mk<a href="#rules-mk" class="permalink" title="Permalink"></a><a href="#__rules-mk__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<div class="highlight"><pre class="highlight make"><code><span class="nv">DEFERRED_EXEC_ENABLE</span> <span class="o">=</span> <span class="nb">yes</span>
+</code></pre></div>
+<blockquote>
+
+<div id="config-h" class="section"></div><h4 class="heading">config.h<a href="#config-h" class="permalink" title="Permalink"></a><a href="#__config-h__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<div class="highlight"><pre class="highlight c"><code><span class="cm">/* QMK */</span>
+<span class="cp">#define TAPPING_TERM 200
+#define IGNORE_MOD_TAP_INTERRUPT </span><span class="cm">/* for rolling on mod-tap keys */</span><span class="cp">
+</span>
+<span class="cm">/* Miryoku */</span>
+<span class="cp">#define BILATERAL_COMBINATIONS
+#define BILATERAL_COMBINATIONS_LIMIT_CHORD_TO_N_KEYS 4 </span><span class="cm">/* GUI, Alt, Ctrl, Shift */</span><span class="cp">
+#define BILATERAL_COMBINATIONS_DELAY_MODS_THAT_MATCH MOD_MASK_GUI
+#define BILATERAL_COMBINATIONS_DELAY_MATCHED_MODS_BY 120  </span><span class="cm">/* ms */</span><span class="cp">
+#define BILATERAL_COMBINATIONS_ALLOW_CROSSOVER_AFTER 80   </span><span class="cm">/* ms */</span><span class="cp">
+#define BILATERAL_COMBINATIONS_ALLOW_SAMESIDED_AFTER 3000 </span><span class="cm">/* ms */</span><span class="cp">
+#define BILATERAL_COMBINATIONS_TYPING_STREAK_TIMEOUT 160  </span><span class="cm">/* ms */</span><span class="cp">
+#define BILATERAL_COMBINATIONS_TYPING_STREAK_MODMASK (~MOD_MASK_SHIFT)
+</span></code></pre></div>
+<div id="usage" class="section"></div><h3 class="heading">Usage<a href="#usage" class="permalink" title="Permalink"></a><a href="#__usage__" class="uplink" title="Contents"></a></h3>
+<p>To enable bilateral combinations:</p>
+
+<ol>
+<li><p>Add the following line to your <code>config.h</code> file:</p>
+<div class="highlight"><pre class="highlight c"><code><span class="cp">#define BILATERAL_COMBINATIONS
+</span></code></pre></div></li>
+<li><p>Add the following line to your <code>rules.mk</code> file to enable QMK&rsquo;s deferred execution facility.</p>
+<div class="highlight"><pre class="highlight make"><code><span class="nv">DEFERRED_EXEC_ENABLE</span> <span class="o">=</span> <span class="nb">yes</span>
+</code></pre></div></li>
+</ol>
+
+<blockquote>
+
+<div id="allowing-same-sided-combinations" class="section"></div><h4 class="heading">Allowing same-sided combinations<a href="#allowing-same-sided-combinations" class="permalink" title="Permalink"></a><a href="#__allowing-same-sided-combinations__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>To enable <em>same-sided</em> combinations (which start on one side of the keyboard and end on the same side, such as <code>RSFT_T(KC_J)</code> and <code>RCTL_T(KC_K)</code> in the abbreviation &ldquo;jk&rdquo; which stands for &ldquo;just kidding&rdquo;), add the following line to your <code>config.h</code> and define a value: hold times greater than that value will permit same-sided combinations.</p>
+<p>For example, if you typed <code>RSFT_T(KC_J)</code> and <code>RCTL_T(KC_K)</code> faster than the defined value, the keys <code>KC_J</code> and <code>KC_K</code> would be sent to the computer.  In contrast, if you typed slower than the defined value, the keys <code>RSFT(KC_K)</code> would be sent to the computer.</p>
+<div class="highlight"><pre class="highlight c"><code><span class="cp">#define BILATERAL_COMBINATIONS_ALLOW_SAMESIDED_AFTER 500
+</span></code></pre></div>
+<blockquote>
+
+<div id="allowing-crossover-combinations" class="section"></div><h4 class="heading">Allowing crossover combinations<a href="#allowing-crossover-combinations" class="permalink" title="Permalink"></a><a href="#__allowing-crossover-combinations__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>To enable <em>crossover</em> bilateral combinations (which start on one side of the keyboard and cross over to the other side, such as <code>RSFT_T(KC_J)</code> and <code>LGUI_T(KC_A)</code> in the word &ldquo;jam&rdquo;), add the following line to your <code>config.h</code> and define a value: hold times greater than that value will permit crossover bilateral combinations.</p>
+<p>For example, if you typed <code>RSFT_T(KC_J)</code> and <code>LGUI_T(KC_A)</code> faster than the defined value, the keys <code>KC_J</code> and <code>KC_A</code> would be sent to the computer.  In contrast, if you typed slower than the defined value, the keys <code>RSFT(KC_A)</code> would be sent to the computer.</p>
+<div class="highlight"><pre class="highlight c"><code><span class="cp">#define BILATERAL_COMBINATIONS_ALLOW_CROSSOVER_AFTER 75
+</span></code></pre></div>
+<blockquote>
+
+<div id="delaying-modifier-activation" class="section"></div><h4 class="heading">Delaying modifier activation<a href="#delaying-modifier-activation" class="permalink" title="Permalink"></a><a href="#__delaying-modifier-activation__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>To delay the registration of certain modifiers (such as <code>KC_LGUI</code> and <code>KC_RGUI</code>, which are considered to be &ldquo;flashing mods&rdquo; because they suddenly &ldquo;flash&rdquo; or pop up the &ldquo;Start Menu&rdquo; in Microsoft Windows) during bilateral combinations, you can define a <code>BILATERAL_COMBINATIONS_DELAY_MODS_THAT_MATCH</code> setting specifying which modifiers should be delayed, and a <code>BILATERAL_COMBINATIONS_DELAY_MATCHED_MODS_BY</code> setting specifying how long that delay (measured in milliseconds) should be.</p>
+
+<ol>
+<li><p>Add the following line to your <code>config.h</code> and define a bitwise mask that matches the modifiers you want to delay.  For example, here we are defining the mask to only match the GUI and ALT modifiers.</p>
+<div class="highlight"><pre class="highlight c"><code><span class="cp">#define BILATERAL_COMBINATIONS_DELAY_MODS_THAT_MATCH (MOD_MASK_GUI|MOD_MASK_ALT)
+</span></code></pre></div></li>
+<li><p>Add the following line to your <code>config.h</code> and define a timeout value (measured in milliseconds) that specifies how long modifiers matched by <code>BILATERAL_COMBINATIONS_DELAY_MODS_THAT_MATCH</code> should be delayed.  For example, here we are defining the timeout to be 100 milliseconds long.</p>
+<div class="highlight"><pre class="highlight c"><code><span class="cp">#define BILATERAL_COMBINATIONS_DELAY_MATCHED_MODS_BY 100
+</span></code></pre></div></li>
+</ol>
+
+<blockquote>
+
+<div id="suppressing-modifiers-while-typing" class="section"></div><h4 class="heading">Suppressing modifiers while typing<a href="#suppressing-modifiers-while-typing" class="permalink" title="Permalink"></a><a href="#__suppressing-modifiers-while-typing__" class="uplink" title="Contents"></a></h4>
+</blockquote>
+<p>To suppress mod-tap holds within a <em>typing streak</em>, add the following line to your <code>config.h</code> and define a timeout value: a typing streak ends when this much time passes after the last key in the streak is tapped.  Until such time has passed, mod-tap holds are converted into regular taps.  The default value of this definition is <code>0</code>, which disables this feature entirely.  Overall, this feature is similar in spirit to ZMK&rsquo;s global-quick-tap feature.</p>
+<div class="highlight"><pre class="highlight c"><code><span class="cp">#define BILATERAL_COMBINATIONS_TYPING_STREAK_TIMEOUT 175
+</span></code></pre></div><p>If you wish to target only certain modifiers (instead of all possible modifiers) for the <em>typing streak timeout</em> setting described above, add the following line to your <code>config.h</code> and define a bit mask: only those modifiers that match this mask will be governed by the typing streak timeout.  For example, to exempt Shift modifiers from the typing streak timeout while still targeting all other modifiers, you can specify the following mask.</p>
+<div class="highlight"><pre class="highlight c"><code><span class="cp">#define BILATERAL_COMBINATIONS_TYPING_STREAK_MODMASK (~MOD_MASK_SHIFT)
+</span></code></pre></div></div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2023-03-05T10:38:00-08:00"> 5 March 2023: </time></dt><dd class="content"><p>Inspired by <a href="https://zmk.dev/docs/behaviors/hold-tap#global-quick-tap">ZMK&rsquo;s global-quick-tap</a> feature, I&rsquo;ve
+implemented a <em>typing streak timeout</em> setting that suppresses home row mods
+while actively typing.</p>
+<div class="highlight"><pre class="highlight c"><code><span class="cp">#define BILATERAL_COMBINATIONS_TYPING_STREAK_TIMEOUT 160  </span><span class="cm">/* ms */</span><span class="cp">
+</span></code></pre></div><p>However, this obstructs the Shift modifier when typing parentheses or
+punctuation marks such as <code>!</code> and <code>?</code> at the end of a sentence; and it requires
+a dedicated Shift key as a workaround, per <a href="https://github.com/urob/zmk-config#timeless-homerow-mods">@urob&rsquo;s &ldquo;timeless&rdquo; mods for
+ZMK</a>. So I went on to
+exempt Shift modifiers from typing streaks using a bitmask:</p>
+<div class="highlight"><pre class="highlight c"><code><span class="cp">#define BILATERAL_COMBINATIONS_TYPING_STREAK_MODMASK (~MOD_MASK_SHIFT)
+</span></code></pre></div><p>With all this, typing feels natural again!  No more unconscious fears
+about accidentally triggering home row mods. 😌  It&rsquo;s a complete game changer! 🤩</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2023-01-29T02:49:08Z">29 January 2023: </time></dt><dd class="content"><p>I have fixed some corner cases, simplified the configuration, improved chording support, and upgraded to QMK 0.19.10.  Eager mods are now enabled by default (so that mod-clicks <em>Just Work</em> out of the box) but you can delay them via <code>#define</code> settings.</p>
+
+<ul>
+<li>Removed <code>CHORDSIZE</code> setting since it&rsquo;s now hard-coded to the maximum allowed value in QMK.</li>
+<li>Removed <code>EAGERMODS</code> setting since &ldquo;eager mods&rdquo; are now always enabled by default.</li>
+<li>Renamed <code>EAGERMASK</code> setting to <code>DELAY_MODS_THAT_MATCH</code> and thereby inverted its meaning (it now specifies modifiers that should be delayed, not made eager).</li>
+<li>Renamed <code>DEFERMODS</code> setting to <code>DELAY_MATCHED_MODS_BY</code>.</li>
+<li>Renamed <code>CROSSOVER</code> setting to <code>ALLOW_CROSSOVER_AFTER</code>.</li>
+<li>Renamed <code>SAMESIDED</code> setting to <code>ALLOW_SAMESIDED_AFTER</code>.</li>
+</ul>
+<p>For example, here is a diff showing how my personal configuration has changed since my last update to this article and associated set of patches:</p>
+<div class="highlight"><pre class="highlight diff"><code><span class="gd">-#define BILATERAL_COMBINATIONS_EAGERMODS 1
+-#define BILATERAL_COMBINATIONS_EAGERMASK (~MOD_MASK_GUI)
+-#define BILATERAL_COMBINATIONS_DEFERMODS 100
+-#define BILATERAL_COMBINATIONS_CROSSOVER 75
+-#define BILATERAL_COMBINATIONS_SAMESIDED 3000
+-#define BILATERAL_COMBINATIONS_CHORDSIZE 4 // one side GUI, Alt, Shift, Control
+</span><span class="gi">+#define BILATERAL_COMBINATIONS_DELAY_MODS_THAT_MATCH MOD_MASK_GUI
++#define BILATERAL_COMBINATIONS_DELAY_MATCHED_MODS_BY 100
++#define BILATERAL_COMBINATIONS_ALLOW_CROSSOVER_AFTER 75
++#define BILATERAL_COMBINATIONS_ALLOW_SAMESIDED_AFTER 3000
+</span></code></pre></div></dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2022-11-19T12:30:19-08:00">19 November 2022: </time></dt><dd class="content"><p>I have added support for chord tapping (multiple mod keys) and <a href="https://getreuer.info/posts/keyboards/achordion/#achordion_eager_mod">&ldquo;eager mods&rdquo;</a> for
+mod-click mouse usage.  The overall logic is illustrated visually as a
+<a href="#solution">flowchart</a> and the <a href="#settings">various <code>#define</code> settings</a> are now
+documented here as well.</p>
+<p>This is, by far, the <em>crispest</em> typing experience I&rsquo;ve felt in years! :)</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2022-10-27T23:41:10-07:00">27 October 2022: </time></dt><dd class="content"><p>I have replaced the <code>FLASHMODS</code> mask definition with a
+new <code>DEFERMODS</code> timeout in order to implement <a href="https://github.com/manna-harbour/qmk_firmware/pull/48#issuecomment-1271070490">Miryoku&rsquo;s
+suggestion</a> of (1) suppressing all modifiers as &ldquo;flashing mods&rdquo; and
+(2) registering them later, after a timeout, for mod-click mouse usage.</p>
+<div class="highlight"><pre class="highlight diff"><code><span class="gd">-#define BILATERAL_COMBINATIONS_FLASHMODS MOD_MASK_GUI
+</span><span class="gi">+#define BILATERAL_COMBINATIONS_DEFERMODS 100
+</span></code></pre></div></dd></dl></aside><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Taming home row mods with bilateral combinations";
+var disqus_url = "https://sunaku.github.io/home-row-mods.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2022&ndash;2023 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

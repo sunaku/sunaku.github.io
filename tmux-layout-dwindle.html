@@ -1,0 +1,319 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Porting dwm&#39;s dwindle layout to tmux - The Terminal Programmer</title><meta content="2016-05-12T15:50:59-07:00" name="DCTERMS.created" /><meta content="2016-05-14T23:04:54-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="solution, tmux, dwm, shell, script" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="tmux-layout-dwindle" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#tmux-layout-dwindle" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Porting dwm&#39;s dwindle layout to tmux</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2016-05-12T15:50:59-07:00">12 May 2016&nbsp;<span class="update_count"><a href="#updates" title="2 updates">&middot;&middot;&rarr;</a></span>&nbsp;14 May 2016</time></header><hr /><div class="description"></div><div class="content"><img src="tmux-layout-dwindle.png" alt="A sample result of running `tmux-layout-dwindle`."><p><ol class="table-of-contents"><li><a id="__problem__" href="#problem" class="downlink">Problem</a><ol></ol></li><li><a id="__solution__" href="#solution" class="downlink">Solution</a><ol><li><a id="__bin-tmux-layout-dwindle__" href="#bin-tmux-layout-dwindle" class="downlink">~/bin/tmux-layout-dwindle</a><ol></ol></li></ol></li></ol></p>
+
+<div id="problem" class="section"></div><h1 class="heading">Problem<a href="#problem" class="permalink" title="Permalink"></a><a href="#__problem__" class="uplink" title="Contents"></a></h1>
+<p>After months of tolerating the corruption of my perfectly balanced <em>Binary
+Space Partition</em>ed (BSP) layouts in tmux whenever I happened to temporarily
+create a split pane to pursue some context-dependent endeavor, I dedicated
+myself to safeguarding my BSP layouts once and for all by automating their
+restoration.</p>
+
+<div id="solution" class="section"></div><h1 class="heading">Solution<a href="#solution" class="permalink" title="Permalink"></a><a href="#__solution__" class="uplink" title="Contents"></a></h1>
+<p>Thus I present to you my port of <a href="http://dwm.suckless.org/patches/fibonacci">Niki Yoshiuchi&rsquo;s dwindle and spiral
+layouts</a> from dwm to tmux in
+the form of a POSIX shell script, listed below and <a href="https://github.com/sunaku/home/blob/master/bin/tmux-layout-dwindle">available on GitHub</a>, which
+surpasses dwm&rsquo;s concept by letting you dwindle or spiral panes <em>toward any
+corner</em> while laying the main pane <em>along any side</em> of your tmux window.</p>
+
+<div id="bin-tmux-layout-dwindle" class="section"></div><h2 class="heading">~/bin/tmux-layout-dwindle<a href="#bin-tmux-layout-dwindle" class="permalink" title="Permalink"></a><a href="#__bin-tmux-layout-dwindle__" class="uplink" title="Contents"></a></h2>
+<div class="highlight"><pre class="highlight shell"><code><span class="c">#!/bin/sh -eu</span>
+<span class="c">#</span>
+<span class="c"># Usage: tmux-layout-dwindle [tblrhvsc]...</span>
+<span class="c">#</span>
+<span class="c"># Arranges panes in the current window into Binary Space Partitions of</span>
+<span class="c"># dwindling size towards a corner of the screen (tl, tr, bl, br) along</span>
+<span class="c"># a straight line (c) or spiral trajectory (s) while laying out branch</span>
+<span class="c"># panes either vertically (v) or horizontally (h) to produce one of 16</span>
+<span class="c"># possible orientations, illustrated below, of which "brvc" is default.</span>
+<span class="c">#</span>
+<span class="c"># Inspired by the dwindle and spiral layout concepts by Niki Yoshiuchi</span>
+<span class="c"># in dwm's fibonacci patch &lt;http://dwm.suckless.org/patches/fibonacci&gt;.</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#                        oooo    ooo  .ooooo.</span>
+<span class="c">#                         `88.  .8'  d88' `"Y8</span>
+<span class="c">#                          `88..8'   888</span>
+<span class="c">#                           `888'    888   .o8</span>
+<span class="c">#                            `8'     `Y8bod8P'</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#                           vertical corner</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#         tlvc                                           trvc</span>
+<span class="c">#</span>
+<span class="c">#         +--+--+-----+-----------+ +-----------+-----+--+--+</span>
+<span class="c">#         |\\|5 |     |           | |           |     | 5|//|</span>
+<span class="c">#         +--+--+  3  |           | |           |  3  +--+--+</span>
+<span class="c">#         |  4  |     |           | |           |     |  4  |</span>
+<span class="c">#         +-----+-----+     1     | |     1     +-----+-----+</span>
+<span class="c">#         |           |           | |           |           |</span>
+<span class="c">#         |     2     |           | |           |     2     |</span>
+<span class="c">#         |           |           | |           |           |</span>
+<span class="c">#         +-----------+-----------+ +-----------+-----------+</span>
+<span class="c">#</span>
+<span class="c">#         +-----------+-----------+ +-----------+-----------+</span>
+<span class="c">#         |           |           | |           |           |</span>
+<span class="c">#         |     2     |           | |           |     2     |</span>
+<span class="c">#         |           |           | |           |           |</span>
+<span class="c">#         +-----+-----+     1     | |     1     +-----+-----+</span>
+<span class="c">#         |  4  |     |           | |           |     |  4  |</span>
+<span class="c">#         +--+--+  3  |           | |           |  3  +--+--+</span>
+<span class="c">#         |//|5 |     |           | |           |     | 5|\\|</span>
+<span class="c">#         +--+--+-----+-----------+ +-----------+-----+--+--+</span>
+<span class="c">#</span>
+<span class="c">#         blvc                                           brvc</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#                        oooo    ooo  .oooo.o</span>
+<span class="c">#                         `88.  .8'  d88(  "8</span>
+<span class="c">#                          `88..8'   `"Y88b.</span>
+<span class="c">#                           `888'    o.  )88b</span>
+<span class="c">#                            `8'     8""888P'</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#                           vertical spiral</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#         tlvs                                           trvs</span>
+<span class="c">#</span>
+<span class="c">#         +-----+-----+-----------+ +-----------+-----+-----+</span>
+<span class="c">#         |     |  4  |           | |           |  4  |     |</span>
+<span class="c">#         |  3  +--+--+           | |           +--+--+  3  |</span>
+<span class="c">#         |     |\\|5 |           | |           | 5|//|     |</span>
+<span class="c">#         +-----+--+--+     1     | |     1     +--+--+-----+</span>
+<span class="c">#         |           |           | |           |           |</span>
+<span class="c">#         |     2     |           | |           |     2     |</span>
+<span class="c">#         |           |           | |           |           |</span>
+<span class="c">#         +-----------+-----------+ +-----------+-----------+</span>
+<span class="c">#</span>
+<span class="c">#         +-----------+-----------+ +-----------+-----------+</span>
+<span class="c">#         |           |           | |           |           |</span>
+<span class="c">#         |     2     |           | |           |     2     |</span>
+<span class="c">#         |           |           | |           |           |</span>
+<span class="c">#         +-----+--+--+     1     | |     1     +--+--+-----+</span>
+<span class="c">#         |     |//|5 |           | |           | 5|\\|     |</span>
+<span class="c">#         |  3  +--+--+           | |           +--+--+  3  |</span>
+<span class="c">#         |     |  4  |           | |           |  4  |     |</span>
+<span class="c">#         +-----+-----+-----------+ +-----------+-----+-----+</span>
+<span class="c">#</span>
+<span class="c">#         blvs                                           brvs</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#                        oooo</span>
+<span class="c">#                        `888</span>
+<span class="c">#                         888 .oo.    .ooooo.</span>
+<span class="c">#                         888P"Y88b  d88' `"Y8</span>
+<span class="c">#                         888   888  888</span>
+<span class="c">#                         888   888  888   .o8</span>
+<span class="c">#                        o888o o888o `Y8bod8P'</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#                          horizontal corner</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#         tlhc                                           trhc</span>
+<span class="c">#</span>
+<span class="c">#         +-----+-----+-----------+ +-----------+-----+-----+</span>
+<span class="c">#         | \\\ |     |           | |           |     | /// |</span>
+<span class="c">#         +-----+  4  |           | |           |  4  +-----+</span>
+<span class="c">#         |  5  |     |           | |           |     |  5  |</span>
+<span class="c">#         +-----+-----+     2     | |     2     +-----+-----+</span>
+<span class="c">#         |           |           | |           |           |</span>
+<span class="c">#         |     3     |           | |           |     3     |</span>
+<span class="c">#         |           |           | |           |           |</span>
+<span class="c">#         +-----------+-----------+ +-----------+-----------+</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         |           1           | |           1           |</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         +-----------------------+ +-----------------------+</span>
+<span class="c">#</span>
+<span class="c">#         +-----------------------+ +-----------------------+</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         |           1           | |           1           |</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         +-----------+-----------+ +-----------+-----------+</span>
+<span class="c">#         |           |           | |           |           |</span>
+<span class="c">#         |     3     |           | |           |     3     |</span>
+<span class="c">#         |           |           | |           |           |</span>
+<span class="c">#         +-----+-----+     2     | |     2     +-----+-----+</span>
+<span class="c">#         |  5  |     |           | |           |     |  5  |</span>
+<span class="c">#         +-----+  4  |           | |           |  4  +-----+</span>
+<span class="c">#         | /// |     |           | |           |     | \\\ |</span>
+<span class="c">#         +-----+-----+-----------+ +-----------+-----+-----+</span>
+<span class="c">#</span>
+<span class="c">#         blhc                                           brhc</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#                        oooo</span>
+<span class="c">#                        `888</span>
+<span class="c">#                         888 .oo.    .oooo.o</span>
+<span class="c">#                         888P"Y88b  d88(  "8</span>
+<span class="c">#                         888   888  `"Y88b.</span>
+<span class="c">#                         888   888  o.  )88b</span>
+<span class="c">#                        o888o o888o 8""888P'</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#                          horizontal spiral</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#         tlhs                                           trhs</span>
+<span class="c">#</span>
+<span class="c">#         +-----------+-----------+ +-----------+-----------+</span>
+<span class="c">#         |           |           | |           |           |</span>
+<span class="c">#         |     3     |           | |           |     3     |</span>
+<span class="c">#         |           |           | |           |           |</span>
+<span class="c">#         +-----+-----+     2     | |     2     +-----+-----+</span>
+<span class="c">#         |     | \\\ |           | |           | /// |     |</span>
+<span class="c">#         |  4  +-----+           | |           +-----+  4  |</span>
+<span class="c">#         |     |  5  |           | |           |  5  |     |</span>
+<span class="c">#         +-----+-----+-----------+ +-----------+-----+-----+</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         |           1           | |           1           |</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         +-----------------------+ +-----------------------+</span>
+<span class="c">#</span>
+<span class="c">#         +-----------------------+ +-----------------------+</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         |           1           | |           1           |</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         |                       | |                       |</span>
+<span class="c">#         +-----+-----+-----------+ +-----------+-----+-----+</span>
+<span class="c">#         |     |  5  |           | |           |  5  |     |</span>
+<span class="c">#         |  4  +-----+           | |           +-----+  4  |</span>
+<span class="c">#         |     | /// |           | |           | \\\ |     |</span>
+<span class="c">#         +-----+-----+     2     | |     2     +-----+-----+</span>
+<span class="c">#         |           |           | |           |           |</span>
+<span class="c">#         |     3     |           | |           |     3     |</span>
+<span class="c">#         |           |           | |           |           |</span>
+<span class="c">#         +-----------+-----------+ +-----------+-----------+</span>
+<span class="c">#</span>
+<span class="c">#         blhs                                           brhs</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c">#</span>
+<span class="c"># Written in 2016 by Suraj N. Kurapati &lt;https://github.com/sunaku&gt;</span>
+<span class="c"># Documented at &lt;https://sunaku.github.io/tmux-layout-dwindle.html&gt;</span>
+
+<span class="c"># parse any orientation flags specified among the command-line arguments</span>
+<span class="k">case</span> <span class="s2">"</span><span class="nv">$*</span><span class="s2">"</span> <span class="k">in</span>
+  <span class="o">(</span><span class="k">*</span>t<span class="k">*</span><span class="p">)</span>   <span class="nv">corner_tb</span><span class="o">=</span>+ <span class="nv">spiral_tb</span><span class="o">=</span>        <span class="p">;;</span> <span class="c"># top</span>
+  <span class="o">(</span><span class="k">*</span>b<span class="k">*</span><span class="p">|</span><span class="k">*</span><span class="p">)</span> <span class="nv">corner_tb</span><span class="o">=</span>  <span class="nv">spiral_tb</span><span class="o">=</span>+       <span class="p">;;</span> <span class="c"># bottom</span>
+<span class="k">esac</span>
+<span class="k">case</span> <span class="s2">"</span><span class="nv">$*</span><span class="s2">"</span> <span class="k">in</span>
+  <span class="o">(</span><span class="k">*</span>l<span class="k">*</span><span class="p">)</span>   <span class="nv">corner_lr</span><span class="o">=</span>+ <span class="nv">spiral_lr</span><span class="o">=</span>        <span class="p">;;</span> <span class="c"># left</span>
+  <span class="o">(</span><span class="k">*</span>r<span class="k">*</span><span class="p">|</span><span class="k">*</span><span class="p">)</span> <span class="nv">corner_lr</span><span class="o">=</span>  <span class="nv">spiral_lr</span><span class="o">=</span>+       <span class="p">;;</span> <span class="c"># right</span>
+<span class="k">esac</span>
+<span class="k">case</span> <span class="s2">"</span><span class="nv">$*</span><span class="s2">"</span> <span class="k">in</span>
+  <span class="o">(</span><span class="k">*</span>h<span class="k">*</span><span class="p">)</span>   <span class="nv">modulo_hv</span><span class="o">=</span>0 <span class="nv">is_vertical</span><span class="o">=</span><span class="nb">false</span> <span class="p">;;</span> <span class="c"># horizontal</span>
+  <span class="o">(</span><span class="k">*</span>v<span class="k">*</span><span class="p">|</span><span class="k">*</span><span class="p">)</span> <span class="nv">modulo_hv</span><span class="o">=</span>1 <span class="nv">is_vertical</span><span class="o">=</span><span class="nb">true</span>  <span class="p">;;</span> <span class="c"># vertical</span>
+<span class="k">esac</span>
+<span class="k">case</span> <span class="s2">"</span><span class="nv">$*</span><span class="s2">"</span> <span class="k">in</span>
+  <span class="o">(</span><span class="k">*</span>s<span class="k">*</span><span class="p">)</span>   <span class="nv">is_spiral</span><span class="o">=</span><span class="nb">true</span>                <span class="p">;;</span> <span class="c"># spiral</span>
+  <span class="o">(</span><span class="k">*</span>c<span class="k">*</span><span class="p">|</span><span class="k">*</span><span class="p">)</span> <span class="nv">is_spiral</span><span class="o">=</span><span class="nb">false</span>               <span class="p">;;</span> <span class="c"># corner</span>
+<span class="k">esac</span>
+
+<span class="c"># gather information about the current state of the window and its panes</span>
+<span class="nb">set</span> <span class="nt">--</span> <span class="si">$(</span>tmux list-panes <span class="nt">-F</span> <span class="s1">'#{pane_id}'</span><span class="si">)</span>
+<span class="nv">selected_pane</span><span class="o">=</span><span class="si">$(</span>tmux display-message <span class="nt">-p</span> <span class="s1">'#{pane_id}'</span><span class="si">)</span>
+<span class="nv">historic_pane</span><span class="o">=</span><span class="si">$(</span>tmux last-pane 2&gt;/dev/null <span class="se">\;\</span>
+                     display-message <span class="nt">-p</span> <span class="s1">'#{pane_id}'</span> <span class="se">\;\</span>
+                     last-pane<span class="si">)</span> <span class="o">||</span> : <span class="c"># exit 1: no last pane</span>
+<span class="nv">window_height</span><span class="o">=</span><span class="si">$(</span>tmux display-message <span class="nt">-p</span> <span class="s1">'#{window_height}'</span><span class="si">)</span>
+
+<span class="c"># execute all tmux commands in one shot to avoid flickering and slowness</span>
+<span class="nb">exec </span>tmux <span class="si">$(</span><span class="o">{</span>
+
+  <span class="c"># flatten current layout, stacking all panes vertically like pancakes</span>
+  <span class="nb">echo </span><span class="k">select</span><span class="nt">-layout</span> even-vertical
+
+  <span class="c"># transform pane stack into binary space partitions of dwindling size</span>
+  <span class="nv">count</span><span class="o">=</span>1
+  <span class="k">for </span>pane_id<span class="p">;</span> <span class="k">do
+    if</span> <span class="o">[</span> <span class="nv">$count</span> <span class="nt">-eq</span> <span class="nv">$# </span><span class="o">]</span><span class="p">;</span> <span class="k">then
+      </span><span class="nb">break</span> <span class="c"># skip last pane because .+1 wraps around to the first pane</span>
+    <span class="k">elif</span> <span class="o">[</span> <span class="k">$((</span> count <span class="o">%</span> <span class="m">2</span> <span class="k">))</span> <span class="nt">-eq</span> <span class="nv">$modulo_hv</span> <span class="o">]</span><span class="p">;</span> <span class="k">then
+      </span><span class="nv">move_h</span><span class="o">=</span>+
+      <span class="k">if</span> <span class="nv">$is_spiral</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="k">$((</span> count <span class="o">%</span> <span class="m">5</span> <span class="k">))</span> <span class="nt">-gt</span> 2 <span class="o">]</span>
+      <span class="k">then </span><span class="nv">move_b</span><span class="o">=</span><span class="nv">$spiral_lr</span>
+      <span class="k">else </span><span class="nv">move_b</span><span class="o">=</span><span class="nv">$corner_lr</span>
+      <span class="k">fi
+    else
+      </span><span class="nv">move_h</span><span class="o">=</span>
+      <span class="k">if</span> <span class="nv">$is_spiral</span> <span class="o">&amp;&amp;</span> <span class="o">[</span> <span class="k">$((</span> count <span class="o">%</span> <span class="m">5</span> <span class="k">))</span> <span class="nt">-gt</span> 2 <span class="o">]</span>
+      <span class="k">then </span><span class="nv">move_b</span><span class="o">=</span><span class="nv">$spiral_tb</span>
+      <span class="k">else </span><span class="nv">move_b</span><span class="o">=</span><span class="nv">$corner_tb</span>
+      <span class="k">fi
+    fi
+    </span><span class="nb">echo </span>resize-pane <span class="nt">-t</span> <span class="nv">$pane_id</span> <span class="nt">-y</span> <span class="nv">$window_height</span> <span class="c"># make room for move</span>
+    <span class="nb">echo </span><span class="k">select</span><span class="nt">-pane</span> <span class="nt">-t</span> <span class="nv">$pane_id</span> <span class="c"># for relative pane addressing in move</span>
+    <span class="nb">echo </span>move-pane <span class="nt">-d</span> <span class="nt">-s</span> .+1 <span class="nt">-t</span> <span class="nb">.</span> <span class="k">${</span><span class="nv">move_h</span>:+-h<span class="k">}</span> <span class="k">${</span><span class="nv">move_b</span>:+-b<span class="k">}</span> <span class="c"># move it</span>
+    <span class="nv">count</span><span class="o">=</span><span class="k">$((</span> count <span class="o">+</span> <span class="m">1</span> <span class="k">))</span>
+  <span class="k">done</span>
+
+  <span class="c"># divide available space evenly among panes (binary space partitions)</span>
+  <span class="nv">branch_height</span><span class="o">=</span><span class="nv">$window_height</span>
+  <span class="nv">count</span><span class="o">=</span>1
+  <span class="k">for </span>pane_id<span class="p">;</span> <span class="k">do
+    if</span> <span class="o">[</span> <span class="nv">$count</span> <span class="nt">-eq</span> <span class="nv">$# </span><span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">!</span> <span class="nv">$is_vertical</span><span class="p">;</span> <span class="k">then
+      </span><span class="nb">break</span> <span class="c"># skip last pane because it will already be sized correctly</span>
+    <span class="k">elif</span> <span class="o">[</span> <span class="k">$((</span> count <span class="o">%</span> <span class="m">2</span> <span class="k">))</span> <span class="nt">-eq</span> 1 <span class="o">]</span><span class="p">;</span> <span class="k">then</span>
+      <span class="c"># every other pane is a branch in the binary space partition tree</span>
+      <span class="nv">parent_height</span><span class="o">=</span><span class="nv">$branch_height</span>
+      <span class="nv">branch_height</span><span class="o">=</span><span class="k">$((</span> branch_height <span class="o">/</span> <span class="m">2</span> <span class="k">))</span>
+      <span class="k">if</span> <span class="nv">$is_vertical</span>
+      <span class="k">then </span><span class="nv">resize_y</span><span class="o">=</span><span class="nv">$parent_height</span>
+      <span class="k">else </span><span class="nv">resize_y</span><span class="o">=</span><span class="nv">$branch_height</span>
+      <span class="k">fi
+      </span><span class="nb">echo </span>resize-pane <span class="nt">-t</span> <span class="nv">$pane_id</span> <span class="nt">-y</span> <span class="nv">$resize_y</span>
+    <span class="k">fi
+    </span><span class="nv">count</span><span class="o">=</span><span class="k">$((</span> count <span class="o">+</span> <span class="m">1</span> <span class="k">))</span>
+  <span class="k">done</span>
+
+  <span class="c"># restore pane selection back to how it was before we did any of this</span>
+  <span class="nb">test</span> <span class="nt">-n</span> <span class="s2">"</span><span class="nv">$historic_pane</span><span class="s2">"</span> <span class="o">&amp;&amp;</span> <span class="nb">echo </span><span class="k">select</span><span class="nt">-pane</span> <span class="nt">-t</span> <span class="nv">$historic_pane</span>
+  <span class="nb">echo </span><span class="k">select</span><span class="nt">-pane</span> <span class="nt">-t</span> <span class="nv">$selected_pane</span>
+
+<span class="o">}</span> | <span class="nb">sed</span> <span class="s1">'s/$/ ;/'</span><span class="si">)</span>
+</code></pre></div></div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2016-05-14T23:04:54-07:00">14 May 2016: </time></dt><dd class="content"><ul>
+<li>Add <code>s</code> flag for spiral trajectory.</li>
+</ul>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2016-05-13T13:28:58-07:00">13 May 2016: </time></dt><dd class="content"><ul>
+<li>Add <code>h</code> flag for horizontal branches.</li>
+<li>Restore current/last pane selection.</li>
+</ul>
+</dd></dl></aside><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Porting dwm's dwindle layout to tmux";
+var disqus_url = "https://sunaku.github.io/tmux-layout-dwindle.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2016 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

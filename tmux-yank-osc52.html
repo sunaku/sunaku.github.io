@@ -1,0 +1,220 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Copying to clipboard from tmux and Vim using OSC 52 - The Terminal Programmer</title><meta content="2014-04-19T13:04:46-07:00" name="DCTERMS.created" /><meta content="2023-07-04T15:37:55-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="solution, tmux, vim, terminal, clipboard, yank" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="tmux-yank-osc52" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#tmux-yank-osc52" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Copying to clipboard from tmux and Vim using OSC 52</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2014-04-19T13:04:46-07:00">19 April 2014&nbsp;<span class="update_count"><a href="#updates" title="12 updates">&middot;&middot;&middot;&middot;&middot;&middot;&middot;&middot;&middot;&middot;&middot;&middot;&rarr;</a></span>&nbsp; 4 July 2023</time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__problem__" href="#problem" class="downlink">Problem</a><ol></ol></li><li><a id="__approach__" href="#approach" class="downlink">Approach</a><ol></ol></li><li><a id="__solution__" href="#solution" class="downlink">Solution</a><ol><li><a id="__osc-52-escapes-the-new-way__" href="#osc-52-escapes-the-new-way" class="downlink">OSC 52 escapes (the new way)</a><ol><li><a id="__create-a-bin-yank-script__" href="#create-a-bin-yank-script" class="downlink">Create a ~/bin/yank script</a><ol></ol></li><li><a id="__configure-your-tmux-conf__" href="#configure-your-tmux-conf" class="downlink">Configure your ~/.tmux.conf</a><ol></ol></li><li><a id="__configure-your-vimrc__" href="#configure-your-vimrc" class="downlink">Configure your ~/.vimrc</a><ol></ol></li></ol></li><li><a id="__x11-forwarding-the-old-way__" href="#x11-forwarding-the-old-way" class="downlink">X11 forwarding (the old way)</a><ol><li><a id="__configure-your-tmux-conf-1__" href="#configure-your-tmux-conf-1" class="downlink">Configure your ~/.tmux.conf</a><ol></ol></li><li><a id="__configure-your-vimrc-1__" href="#configure-your-vimrc-1" class="downlink">Configure your ~/.vimrc</a><ol></ol></li></ol></li></ol></li></ol>
+<div id="problem" class="section"></div><h1 class="heading">Problem<a href="#problem" class="permalink" title="Permalink"></a><a href="#__problem__" class="uplink" title="Contents"></a></h1>
+<p>I switched to an <a href="https://www.theverge.com/2013/10/23/4948120/acer-c720-chromebook-review">Acer C720 chromebook</a> as my primary computer
+recently. However, its X11-based Aura desktop environment <a href="https://github.com/dnschneid/crouton/issues/1">lacks X11 clipboard
+integration</a>, which prevents
+me from using X11 forwarding to run <a href="http://www.vergenet.net/%7Econrad/software/xsel/">the xsel(1) program</a> as a means of copying and
+pasting text between my system clipboard and programs running remotely in SSH.
+So, I had to find a different solution for my copy/paste needs.</p>
+
+<div id="approach" class="section"></div><h1 class="heading">Approach<a href="#approach" class="permalink" title="Permalink"></a><a href="#__approach__" class="uplink" title="Contents"></a></h1>
+<p>In my search, I came across the <a href="https://chromium.googlesource.com/apps/libapps/+/master/nassh/doc/FAQ.md#Is-OSC-52-aka-clipboard-operations_supported">OSC 52 escape sequence</a>,
+which tells the receiving terminal to copy some specified text into the user&rsquo;s system clipboard.</p>
+<p>However, this escape sequence is only partially supported in the current stable
+version of <code>tmux</code> (version 1.9a as of this writing), which limits the amount of
+text that can be copied (<a href="https://www.mail-archive.com/tmux-users%40lists.sourceforge.net/msg05941.html">per my observations</a>)
+to a meager 180 bytes!</p>
+<p>I <a href="https://www.mail-archive.com/tmux-users%40lists.sourceforge.net/msg05928.html">reported this issue</a> to
+the tmux-users mailing list, where developer Nicholas Marriott quickly <a href="https://www.mail-archive.com/tmux-users%40lists.sourceforge.net/msg05950.html">provided a
+patch</a> to
+fix it.  Armed with this patch, I distilled my working knowledge into <a href="#osc-52-escapes-the-new-way">a <code>yank</code>
+script, integrated with tmux and Vim</a>.</p>
+<p>Now I can easily copy text from tmux and Vim running in <em>any</em> terminal session
+(whether local, remote, or even <em>nested</em> therein!) without needing X11
+forwarding and having to keep environment variables like <code>$DISPLAY</code> and
+<code>$XAUTHORITY</code> up to date!  Finally, to paste text from the system clipboard into
+a terminal session, I simply use the Control-Shift-V shortcut of the <a href="https://chromium.googlesource.com/apps/libapps/+/master/nassh">Secure
+Shell</a> terminal
+emulator.  And so, what began as a problem
+led to the discovery of a superior solution!  :-)</p>
+
+<div id="solution" class="section"></div><h1 class="heading">Solution<a href="#solution" class="permalink" title="Permalink"></a><a href="#__solution__" class="uplink" title="Contents"></a></h1>
+
+<div id="osc-52-escapes-the-new-way" class="section"></div><h2 class="heading">OSC 52 escapes (the new way)<a href="#osc-52-escapes-the-new-way" class="permalink" title="Permalink"></a><a href="#__osc-52-escapes-the-new-way__" class="uplink" title="Contents"></a></h2>
+
+<div id="create-a-bin-yank-script" class="section"></div><h3 class="heading">Create a ~/bin/yank script<a href="#create-a-bin-yank-script" class="permalink" title="Permalink"></a><a href="#__create-a-bin-yank-script__" class="uplink" title="Contents"></a></h3>
+<p>In <code>~/bin/yank</code> file, which is also <a href="https://github.com/sunaku/home/blob/master/bin/yank">available on GitHub</a>:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="c">#!/bin/sh</span>
+<span class="c">#</span>
+<span class="c"># Usage: yank [FILE...]</span>
+<span class="c">#</span>
+<span class="c"># Copies the contents of the given files (or stdin, if no files are given) to</span>
+<span class="c"># the terminal that runs this program.  If this program is run inside tmux(1),</span>
+<span class="c"># then it also copies the given contents into tmux's current clipboard buffer.</span>
+<span class="c"># If this program is run inside X11, then it also copies to the X11 clipboard.</span>
+<span class="c">#</span>
+<span class="c"># This is achieved by writing an OSC 52 escape sequence to the said terminal.</span>
+<span class="c"># The maximum length of an OSC 52 escape sequence is 100_000 bytes, of which</span>
+<span class="c"># 7 bytes are occupied by a "\033]52;c;" header, 1 byte by a "\a" footer, and</span>
+<span class="c"># 99_992 bytes by the base64-encoded result of 74_994 bytes of copyable text.</span>
+<span class="c">#</span>
+<span class="c"># In other words, this program can only copy up to 74_994 bytes of its input.</span>
+<span class="c"># However, in such cases, this program tries to bypass the input length limit</span>
+<span class="c"># by copying directly to the X11 clipboard if a $DISPLAY server is available;</span>
+<span class="c"># otherwise, it emits a warning (on stderr) about the number of bytes dropped.</span>
+<span class="c">#</span>
+<span class="c"># NOTE: You might also need to allow this script to bypass tmux (through the</span>
+<span class="c"># "Ptmux;" escape sequence) by enabling allow-passthrough in your tmux.conf:</span>
+<span class="c">#</span>
+<span class="c">#   set-window-option -g allow-passthrough on</span>
+<span class="c">#</span>
+<span class="c"># See http://en.wikipedia.org/wiki/Base64 for the 4*ceil(n/3) length formula.</span>
+<span class="c"># See http://sourceforge.net/p/tmux/mailman/message/32221257 for copy limits.</span>
+<span class="c"># See http://sourceforge.net/p/tmux/tmux-code/ci/a0295b4c2f6 for DCS in tmux.</span>
+<span class="c">#</span>
+<span class="c"># Written in 2014 by Suraj N. Kurapati &lt;https://github.com/sunaku&gt;</span>
+<span class="c"># Also documented at https://sunaku.github.io/tmux-yank-osc52.html</span>
+
+<span class="nv">input</span><span class="o">=</span><span class="si">$(</span> <span class="nb">cat</span> <span class="s2">"</span><span class="nv">$@</span><span class="s2">"</span> <span class="si">)</span>
+input<span class="o">()</span> <span class="o">{</span> <span class="nb">printf</span> %s <span class="s2">"</span><span class="nv">$input</span><span class="s2">"</span> <span class="p">;</span><span class="o">}</span>
+known<span class="o">()</span> <span class="o">{</span> <span class="nb">command</span> <span class="nt">-v</span> <span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span> <span class="o">&gt;</span>/dev/null <span class="p">;</span><span class="o">}</span>
+maybe<span class="o">()</span> <span class="o">{</span> known <span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span> <span class="o">&amp;&amp;</span> input | <span class="s2">"</span><span class="nv">$@</span><span class="s2">"</span> <span class="p">;</span><span class="o">}</span>
+alive<span class="o">()</span> <span class="o">{</span> known <span class="s2">"</span><span class="nv">$1</span><span class="s2">"</span> <span class="o">&amp;&amp;</span> <span class="s2">"</span><span class="nv">$@</span><span class="s2">"</span> <span class="o">&gt;</span>/dev/null 2&gt;&amp;1 <span class="p">;</span><span class="o">}</span>
+
+<span class="c"># copy to tmux</span>
+<span class="nb">test</span> <span class="nt">-n</span> <span class="s2">"</span><span class="nv">$TMUX</span><span class="s2">"</span> <span class="o">&amp;&amp;</span> maybe tmux load-buffer -
+
+<span class="c"># copy via X11</span>
+<span class="nb">test</span> <span class="nt">-n</span> <span class="s2">"</span><span class="nv">$DISPLAY</span><span class="s2">"</span> <span class="o">&amp;&amp;</span> alive xhost <span class="o">&amp;&amp;</span> <span class="o">{</span>
+  maybe xsel <span class="nt">-i</span> <span class="nt">-b</span> <span class="o">||</span> maybe xclip <span class="nt">-sel</span> c
+<span class="o">}</span>
+
+<span class="c"># copy via OSC 52</span>
+printf_escape<span class="o">()</span> <span class="o">{</span>
+  <span class="nv">esc</span><span class="o">=</span><span class="nv">$1</span>
+  <span class="nb">test</span> <span class="nt">-n</span> <span class="s2">"</span><span class="nv">$TMUX</span><span class="s2">"</span> <span class="nt">-o</span> <span class="nt">-z</span> <span class="s2">"</span><span class="k">${</span><span class="nv">TERM</span><span class="p">##screen*</span><span class="k">}</span><span class="s2">"</span> <span class="o">&amp;&amp;</span> <span class="nv">esc</span><span class="o">=</span><span class="s2">"</span><span class="se">\0</span><span class="s2">33Ptmux;</span><span class="se">\0</span><span class="s2">33</span><span class="nv">$esc</span><span class="se">\0</span><span class="s2">33</span><span class="se">\\</span><span class="s2">"</span>
+  <span class="nb">printf</span> <span class="s2">"</span><span class="nv">$esc</span><span class="s2">"</span>
+<span class="o">}</span>
+<span class="nv">len</span><span class="o">=</span><span class="si">$(</span> input | <span class="nb">wc</span> <span class="nt">-c</span> <span class="si">)</span> <span class="nv">max</span><span class="o">=</span>74994
+<span class="nb">test</span> <span class="nv">$len</span> <span class="nt">-gt</span> <span class="nv">$max</span> <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">"</span><span class="nv">$0</span><span class="s2">: input is </span><span class="k">$((</span> len <span class="o">-</span> max <span class="k">))</span><span class="s2"> bytes too long"</span> <span class="o">&gt;</span>&amp;2
+printf_escape <span class="s2">"</span><span class="se">\0</span><span class="s2">33]52;c;</span><span class="si">$(</span> input | <span class="nb">head</span> <span class="nt">-c</span> <span class="nv">$max</span> | <span class="nb">base64</span> | <span class="nb">tr</span> <span class="nt">-d</span> <span class="s1">'\r\n'</span> <span class="si">)</span><span class="se">\a</span><span class="s2">"</span>
+</code></pre></div>
+<div id="configure-your-tmux-conf" class="section"></div><h3 class="heading">Configure your ~/.tmux.conf<a href="#configure-your-tmux-conf" class="permalink" title="Permalink"></a><a href="#__configure-your-tmux-conf__" class="uplink" title="Contents"></a></h3>
+
+<blockquote>
+<p>NOTE: See also my <code>tmux.conf</code> file <a href="https://github.com/sunaku/home/blob/master/.tmux.erb">template on GitHub</a> for reference.</p>
+</blockquote>
+<p>In <code>~/.tmux.conf</code> file (if you are using tmux 3.3 or newer):</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="c"># pass "Ptmux;" escape sequences through to the terminal</span>
+set-window-option <span class="nt">-g</span> allow-passthrough on
+</code></pre></div><p>In <code>~/.tmux.conf</code> file (if you are using tmux 2.4 or newer):</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="c"># transfer copied text to attached terminal with yank</span>
+bind-key <span class="nt">-T</span> copy-mode-vi Y send-keys <span class="nt">-X</span> copy-pipe <span class="s1">'yank &gt; #{pane_tty}'</span>
+
+<span class="c"># transfer most-recently copied text to attached terminal with yank</span>
+bind-key <span class="nt">-n</span> M-y run-shell <span class="s1">'tmux save-buffer - | yank &gt; #{pane_tty}'</span>
+
+<span class="c"># transfer previously copied text (chosen from a menu) to attached terminal</span>
+bind-key <span class="nt">-n</span> M-Y choose-buffer <span class="s1">'run-shell "tmux save-buffer -b \"%%%\" - | yank &gt; #{pane_tty}"'</span>
+</code></pre></div><p>In <code>~/.tmux.conf</code> file (if you are using tmux 2.3 or older):</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="c"># transfer copied text to attached terminal with yank</span>
+bind-key <span class="nt">-t</span> vi-copy y copy-pipe <span class="s1">'yank &gt; #{pane_tty}'</span>
+
+<span class="c"># transfer copied text to attached terminal with yank</span>
+bind-key <span class="nt">-n</span> M-y run-shell <span class="s1">'tmux save-buffer - | yank &gt; #{pane_tty}'</span>
+
+<span class="c"># transfer previously copied text (chosen from a menu) to attached terminal</span>
+bind-key <span class="nt">-n</span> M-Y choose-buffer <span class="s1">'run-shell "tmux save-buffer -b \"%%\" - | yank &gt; #{pane_tty}"'</span>
+</code></pre></div>
+<div id="configure-your-vimrc" class="section"></div><h3 class="heading">Configure your ~/.vimrc<a href="#configure-your-vimrc" class="permalink" title="Permalink"></a><a href="#__configure-your-vimrc__" class="uplink" title="Contents"></a></h3>
+<p>In <code>~/.vimrc</code> file:</p>
+<div class="highlight"><pre class="highlight viml"><code><span class="c">" copy to attached terminal using the yank(1) script:</span>
+<span class="c">" https://github.com/sunaku/home/blob/master/bin/yank</span>
+<span class="k">function</span><span class="p">!</span> Yank<span class="p">(</span>text<span class="p">)</span> abort
+  <span class="k">let</span> <span class="nb">escape</span> <span class="p">=</span> <span class="nb">system</span><span class="p">(</span><span class="s1">'yank'</span><span class="p">,</span> <span class="nv">a:text</span><span class="p">)</span>
+  <span class="k">if</span> <span class="k">v</span><span class="p">:</span>shell_error
+    <span class="k">echoerr</span> <span class="nb">escape</span>
+  <span class="k">else</span>
+    <span class="k">call</span> <span class="nb">writefile</span><span class="p">([</span><span class="nb">escape</span><span class="p">],</span> <span class="s1">'/dev/tty'</span><span class="p">,</span> <span class="s1">'b'</span><span class="p">)</span>
+  <span class="k">endif</span>
+<span class="k">endfunction</span>
+<span class="nb">noremap</span> <span class="p">&lt;</span><span class="k">silent</span><span class="p">&gt;</span> <span class="p">&lt;</span>Leader<span class="p">&gt;</span><span class="k">y</span> <span class="k">y</span><span class="p">:&lt;</span>C<span class="p">-</span>U<span class="p">&gt;</span><span class="k">call</span> Yank<span class="p">(</span>@<span class="m">0</span><span class="p">)&lt;</span>CR<span class="p">&gt;</span>
+
+<span class="c">" automatically run yank(1) whenever yanking in Vim</span>
+<span class="c">" (this snippet was contributed by Larry Sanderson)</span>
+<span class="k">function</span><span class="p">!</span> CopyYank<span class="p">()</span> abort
+  <span class="k">call</span> Yank<span class="p">(</span><span class="k">join</span><span class="p">(</span><span class="k">v</span><span class="p">:</span>event<span class="p">.</span>regcontents<span class="p">,</span> <span class="s2">"\n"</span><span class="p">))</span>
+<span class="k">endfunction</span>
+autocmd <span class="nb">TextYankPost</span> * <span class="k">call</span> CopyYank<span class="p">()</span>
+</code></pre></div>
+<div id="x11-forwarding-the-old-way" class="section"></div><h2 class="heading">X11 forwarding (the old way)<a href="#x11-forwarding-the-old-way" class="permalink" title="Permalink"></a><a href="#__x11-forwarding-the-old-way__" class="uplink" title="Contents"></a></h2>
+<p>The disadvantage of this X11 forwarding solution is that you need to run SSH with
+the <code>-X</code> or <code>-Y</code> options <em>while also keeping environment variables</em> like
+<code>$DISPLAY</code> and <code>$XAUTHORITY</code> up to date as you disconnect and reconnect your
+remote sessions.</p>
+
+<div id="configure-your-tmux-conf-1" class="section"></div><h3 class="heading">Configure your ~/.tmux.conf<a href="#configure-your-tmux-conf-1" class="permalink" title="Permalink"></a><a href="#__configure-your-tmux-conf-1__" class="uplink" title="Contents"></a></h3>
+<p>In <code>~/.tmux.conf</code> file:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="c"># transfer copied text to X primary selection</span>
+bind-key <span class="nt">-n</span> M-y run-shell <span class="s1">'tmux save-buffer - | xsel -p -i'</span>
+
+<span class="c"># transfer copied text to X clipboard selection</span>
+bind-key <span class="nt">-n</span> M-Y run-shell <span class="s1">'tmux save-buffer - | xsel -b -i'</span>
+
+<span class="c"># paste X primary selection</span>
+bind-key <span class="nt">-n</span> M-p run-shell <span class="s1">'xsel -p -o | tmux load-buffer - \; paste-buffer \; delete-buffer'</span>
+
+<span class="c"># paste X clipboard selection</span>
+bind-key <span class="nt">-n</span> M-P run-shell <span class="s1">'xsel -b -o | tmux load-buffer - \; paste-buffer \; delete-buffer'</span>
+</code></pre></div>
+<div id="configure-your-vimrc-1" class="section"></div><h3 class="heading">Configure your ~/.vimrc<a href="#configure-your-vimrc-1" class="permalink" title="Permalink"></a><a href="#__configure-your-vimrc-1__" class="uplink" title="Contents"></a></h3>
+<p>In <code>~/.vimrc</code> file:</p>
+<div class="highlight"><pre class="highlight viml"><code><span class="c">" copy to primary selection</span>
+<span class="nb">noremap</span> <span class="p">&lt;</span>Leader<span class="p">&gt;</span><span class="k">y</span> "*<span class="k">y</span>
+
+<span class="c">" copy to clipboard selection</span>
+<span class="nb">noremap</span> <span class="p">&lt;</span>Leader<span class="p">&gt;</span>Y "<span class="p">+</span><span class="k">y</span>
+
+<span class="c">" paste from primary selection</span>
+<span class="nb">noremap</span> <span class="p">&lt;</span>Leader<span class="p">&gt;</span><span class="k">p</span> "*<span class="k">p</span>
+
+<span class="c">" paste from clipboard selection</span>
+<span class="nb">noremap</span> <span class="p">&lt;</span>Leader<span class="p">&gt;</span>P "<span class="p">+</span><span class="k">p</span>
+</code></pre></div></div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2023-07-04T15:37:55-07:00"> 4 July 2023: </time></dt><dd class="content"><p>Updated the tmux configuration snippet to enable allow-passthrough for tmux 3.3
+and newer. Thanks to Jonathan Wheeler for <a href="https://github.com/sunaku/home/issues/6#issuecomment-1603608453">suggesting this solution</a>, which I had
+<a href="https://github.com/sunaku/home/commit/dfea3f4f6853ca1658118fc312152d5dcacdfcde">previously implemented in August 2022</a> but missed updating here.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2022-02-10T17:48:39-08:00">10 February 2022: </time></dt><dd class="content"><p>Verify the <code>$DISPLAY</code> environment variable before attempting <code>xsel</code> and <code>xclip</code>.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2021-09-28T23:04:01-07:00">28 September 2021: </time></dt><dd class="content"><p>Pipe the text to be copied into <code>tmux load-buffer</code> instead of passing it as an
+argument to <code>tmux set-buffer</code>, thereby avoiding any shell (mis)interpretation.
+Thanks to Jonathan Wheeler for reporting <a href="http://disq.us/p/2cucd4d">this issue</a>.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2021-08-17T21:39:36-07:00">17 August 2021: </time></dt><dd class="content"><p>Restored X11 support in the <code>yank</code> script because its removal didn&rsquo;t prevent
+the entire terminal screen to be copied to tmux clipboard when using Vim.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2021-06-26T12:11:06-07:00">26 June 2021: </time></dt><dd class="content"><p>Removed X11 support from the <code>yank</code> script because running it from within Vim
+caused the entire terminal screen to be copied to tmux clipboard. Also, removed
+the workaround of clearing the KiTTY terminal clipboard before yanking; use the
+<code>clipboard_control no-append</code> setting in <code>~/.config/kitty/kitty.conf</code> instead:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>clipboard_control write-clipboard write-primary no-append
+</code></pre></div></dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2020-04-02T13:06:00-07:00"> 2 April 2020: </time></dt><dd class="content"><p>Larry Sanderson contributed this Vim configuration snippet that <em>automates</em>
+yanking to system clipboard by calling the <code>yank(1)</code> script in this article:</p>
+<div class="highlight"><pre class="highlight viml"><code><span class="c">" Set it up so all yanks copy to system clipboard</span>
+<span class="k">function</span><span class="p">!</span> CopyYank<span class="p">()</span> abort
+  <span class="k">call</span> Yank<span class="p">(</span><span class="k">join</span><span class="p">(</span><span class="k">v</span><span class="p">:</span>event<span class="p">.</span>regcontents<span class="p">,</span> <span class="s2">"\n"</span><span class="p">))</span>
+<span class="k">endfunction</span>
+autocmd <span class="nb">TextYankPost</span> * <span class="k">call</span> CopyYank<span class="p">()</span>
+</code></pre></div></dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2018-09-27T21:25:21-07:00">27 September 2018: </time></dt><dd class="content"><p>Fixed tmux detection under nested SSH. Added support for <a href="https://sw.kovidgoyal.net/kitty/protocol-extensions.html#pasting-to-clipboard">KiTTY</a> terminal.</p>
+<p>When you start an SSH session from inside tmux, the <code>$TMUX</code> environment
+variable does not carry forward into that newly started SSH session.  As a
+result, when you run the <code>yank</code> script inside that SSH session, it doesn&rsquo;t
+realize that it&rsquo;s actually attached to a tmux client (since <code>$TMUX</code> is not set)
+and it therefore doesn&rsquo;t specially wrap the OSC 52 sequence for tmux.
+As a result, tmux discards the bare OSC 52 sequence and it all falls apart.</p>
+<p>To solve this, we instead look to the <code>$TERM</code> environment variable, which
+begins with the word &ldquo;screen&rdquo; for all terminal sessions started under tmux.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2018-08-08T16:35:07-07:00"> 8 August 2018: </time></dt><dd class="content"><p>Vim snippet now handles <code>/bin/sh: /dev/tty: No such device or address</code> errors
+on some systems by using <code>writefile()</code> instead of shell redirection.  It also
+provides a convenient <code>Yank()</code> function to abstract away the <code>yank</code> system call.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2017-04-29T10:44:40-07:00">29 April 2017: </time></dt><dd class="content"><p>Updated configuration snippet for tmux 2.4, using <code>send-keys -X copy-pipe</code>.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2016-01-16T21:21:57-08:00">16 January 2016: </time></dt><dd class="content"><p><a href="http://www.cs.unc.edu/%7Egb/">Gary Bishop</a> discovered that the Vim mapping
+presented in this article needed to <em>explicitly</em> redirect the OSC 52 escape
+sequence generated by the yank(1) script to the terminal device in order to
+work correctly in certain environments (Linux =&gt; tmux =&gt; ssh =&gt; Chromebook):</p>
+<div class="highlight"><pre class="highlight viml"><code><span class="p">:</span><span class="k">call</span> <span class="nb">system</span><span class="p">(</span><span class="s1">'yank &gt; /dev/tty'</span><span class="p">,</span> @<span class="m">0</span><span class="p">)</span>
+</code></pre></div><p>See the comments thread at the bottom of this article for more information.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2014-11-09T11:40:00-08:00"> 9 November 2014: </time></dt><dd class="content"><p>Updated yank(1) script. Added <code>M-Y</code> and <code>y</code> copy-pipe shortcuts for tmux.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2014-07-09T13:09:01-07:00"> 9 July 2014: </time></dt><dd class="content"><p>I have updated the yank(1) script in this article to copy its input text
+into tmux&rsquo;s clipboard <em>in addition to</em> the operating system clipboard.</p>
+</dd></dl></aside><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Copying to clipboard from tmux and Vim using OSC 52";
+var disqus_url = "https://sunaku.github.io/tmux-yank-osc52.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2014&ndash;2023 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

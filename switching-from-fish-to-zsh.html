@@ -1,0 +1,55 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><meta content="noarchive" name="robots" /><title>Switching from Fish to ZSH - The Terminal Programmer</title><meta content="2011-01-09T12:09:12-08:00" name="DCTERMS.created" /><meta content="2011-10-19T12:26:39-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="shell, linux, tool, change, fish, zsh" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="switching-from-fish-to-zsh" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#switching-from-fish-to-zsh" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Switching from Fish to ZSH</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2011-01-09T12:09:12-08:00"> 9 January 2011&nbsp;<span class="update_count"><a href="#updates" title="4 updates">&middot;&middot;&middot;&middot;&rarr;</a></span>&nbsp;19 October 2011</time></header><hr /><div class="description"></div><div class="content"><p>I recently migrated from <a href="http://fishshell.org">Fish</a> to <a href="http://zsh.org">ZSH</a> using the excellent <a href="https://github.com/robbyrussell/oh-my-zsh">oh-my-zsh</a> as the base configuration,
+plus my contributed <strong>fishy</strong> theme (shown below) for a Fish-like prompt
+with Git integration, and the <a href="https://github.com/zsh-users/zsh-syntax-highlighting/">zsh-syntax-highlighting</a> plugin for
+Fish-like syntax highlighting of the command line.</p>
+<img src="fishy-omz-theme.png" alt="My &quot;fishy&quot; theme for oh-my-zsh."><p>ZSH worked well, but I dearly missed Fish&rsquo;s ubiquitous up-arrow history
+search, which was the main feature that made Fish so productive for me:
+type any part of any command that you had entered in the past and press
+the up arrow key until you happen upon a suitable match.  Indispensable!</p>
+<p>Before succumbing to my overwhelming desire to implement this feature in
+ZSH and release it to the world as an open source project on GitHub, I
+briefly searched for existing solutions and found <a href="http://www.zsh.org/mla/users/2009/msg00818.html">a past attempt by Peter
+Stephenson</a> on the ZSH
+mailing list back in September 2009.  However, I was unable to install it
+properly into my ZSH configuration at the time.</p>
+<p>I was fiddling with the installation again yesterday when <a href="http://sourceforge.net/mailarchive/message.php?msg_id=26867328">Guido van Steen
+announced</a> on the fish-users mailing list that he had revised Stephenson&rsquo;s
+implementation and released it as part of <a href="http://sourceforge.net/projects/fizsh/">fizsh (Friendly Interactive
+ZSH)</a>.  Although I was slightly
+disappointed that someone beat me to it, I could not help but marvel at
+the collaborative power of the Internet and Open Source!  We truly live in
+amazing times.</p>
+<p>I downloaded the <strong>fizsh</strong> tarball, extracted the
+<code>etc/fizsh/fizsh-history-search-backward</code> file into my
+<code>~/.oh-my-zsh/functions/</code> directory, and copied the following activation
+logic from the extracted <code>etc/fizsh/fizshrc</code> file to the bottom of my
+<code>~/.zshrc</code> file:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>autoload -U fizsh-history-search-backward
+zle -N fizsh-history-search-forward fizsh-history-search-backward
+zle -N fizsh-history-search-backward
+
+bindkey '\e[A' fizsh-history-search-backward
+bindkey '\e[B' fizsh-history-search-forward
+</code></pre></div><p>I must say that I&rsquo;m very pleased with the results so far: I now have
+Fish&rsquo;s ubiquitous up-arrow history search feature natively in ZSH!  And
+with this, I can finally say goodbye to the Fish shell without regret: so
+long, old pal, and thanks for all the fish! ;-)</p>
+</div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2011-10-19T12:26:39-07:00">19 October 2011: </time></dt><dd class="content"><p>I ported <a href="https://github.com/sunaku/home/blob/master/.zsh/config/prompt.zsh">my <strong>sunaku</strong> prompt theme</a> from
+oh-my-zsh to plain old ZSH using the fantastic <a href="http://zsh.sourceforge.net/Doc/Release/User-Contributions.html#Version-Control-Information">vcs_info standard
+library</a>.  As shown in the screenshot below, it now features even more Git
+intelligence!</p>
+<img src="sunaku-zsh-prompt.png" alt="&quot;sunaku&quot; prompt for ZSH."></dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2011-10-18T22:33:37-07:00">18 October 2011: </time></dt><dd class="content"><p>The training wheels are off!  Today, I whispered my final goodbyes to
+<a href="https://github.com/robbyrussell/oh-my-zsh">oh-my-zsh</a> and created my
+own <a href="https://github.com/sunaku/home/compare/f9e0df6...42c9c21">plain old ZSH configuration</a> because I
+didn&rsquo;t really use OMZ&rsquo;s extra plugins and features.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2011-06-01T20:38:25-07:00"> 1 June 2011: </time></dt><dd class="content"><p>I simplified my previous <strong>fishy</strong> prompt theme for oh-my-zsh into a new
+one called <strong>sunaku</strong>.  It displays the exit status if nonzero, status
+and branch inside git clones, and the current working directory always.</p>
+<img src="sunaku-omz-theme.png" alt="&quot;sunaku&quot; theme for oh-my-zsh."></dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2011-05-25T19:35:41-07:00">25 May 2011: </time></dt><dd class="content"><p>I refactored fizsh 1.0.1&rsquo;s history-substring-search plugin heavily and
+repackaged it as <a href="https://github.com/robbyrussell/oh-my-zsh/pull/215">an oh-my-zsh plugin</a> and also as <a href="https://github.com/zsh-users/zsh-history-substring-search">an
+independently loadable ZSH script</a>.</p>
+</dd></dl></aside><div class="comments" id="comments"><script>var disqus_container_id = 'comments';
+var disqus_title = "Switching from Fish to ZSH";
+var disqus_url = "https://sunaku.github.io/switching-from-fish-to-zsh.html";</script><script async="" src="https://theterminalprogrammer.disqus.com/embed.js"></script></div><hr /><footer><p class="copyright">&copy; 2011 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>
