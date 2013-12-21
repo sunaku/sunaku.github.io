@@ -1,0 +1,28 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Breakthrough in Ruby-VPI&#39;s C extension and Ruby 1.9 support - The Terminal Programmer</title><meta content="2008-03-31T23:01:27-07:00" name="DCTERMS.created" /><meta content="2008-03-31T23:01:27-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="ruby, verilog, cosimulation" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="ruby-vpi-c-extension-breakthrough" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#ruby-vpi-c-extension-breakthrough" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Breakthrough in Ruby-VPI&#39;s C extension and Ruby 1.9 support</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2008-03-31T23:01:27-07:00">31 March 2008</time></header><hr /><div class="description"></div><div class="content"><p>Mikhail Ravkine suggested that regular development activity would stimulate
+this community, so I thought I&rsquo;d share some exciting news: for about a month
+now, I&rsquo;ve been working on adding support for Ruby 1.9, and this past weekend I
+finally made a breakthrough.</p>
+<p>Instead of running the Ruby interpreter (which in turn runs the executable
+specification) inside a pthread and using pthread mutex to transfer control
+between Ruby and Verilog, I would simply run the executable specification
+<em>inside a Ruby thread</em> and use Ruby&rsquo;s thread-safe Queue class (a mailbox) to
+perform <a href="http://blade.nagaokaut.ac.jp/cgi-bin/scat.rb/ruby/ruby-core/16066">the control transfer</a>.</p>
+<p>This approach has the advantage that we completely avoid the difficulties
+associated with initializing the Ruby interpreter&rsquo;s stack inside a pthread
+(since a pthread&rsquo;s stack is small compared to the main process).</p>
+<p>Furthermore, since the Ruby interpreter is compiled with support for the
+pthreads library on some systems, it becomes even more tricky to initialize
+the interpreter&rsquo;s stack correctly.</p>
+<p>Nevertheless, this new approach works well with VCS, CVER, and NCSIM.
+Unfortunately, it fails <em>completely</em> with VSIM reporting an internal
+simulation kernel failure. This leading me to believe that VSIM invokes all
+vlog<em>startup</em>routines somewhere outside the execution stack of the main
+process (perhaps inside a pthread or within its own threading implementation).</p>
+<p>Anyway, that&rsquo;s the latest news about the C extension. There&rsquo;s still some more
+work to be done on the Ruby side of Ruby-VPI before Ruby 1.9 is fully
+supported. I&rsquo;m planning to work on that this weekend and make a release in the
+middle of next week.</p>
+<p>Cheers.</p>
+</div><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2008 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

@@ -1,0 +1,46 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Continuous testing for Ruby with fork/eval - The Terminal Programmer</title><meta content="2010-10-09T20:45:08-07:00" name="DCTERMS.created" /><meta content="2012-01-23T03:12:30-08:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="ruby, testing, tool" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="test-loop" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#test-loop" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Continuous testing for Ruby with fork/eval</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2010-10-09T20:45:08-07:00"> 9 October 2010</time><br /><time class="date" datetime="2012-01-23T03:12:30-08:00"><a href="#updates" title="4 updates">23 January 2012</a></time></header><hr /><div class="description"></div><div class="content"><p><a href="http://www.extremeprogramming.org/rules/testfirst.html">Test Driven Development (TDD)</a> is by no doubt
+a cornerstone of the modern Software Engineering discipline, especially in the
+Ruby programming world.</p>
+<p>A few weeks ago, I felt that I had remained a TDD spectator for too long and
+decided to jump on the TDD bandwagon once and for all. Under TDD, my Ruby on
+Rails application progressed slowly but reliably and I experienced a newfound
+sense of confidence and euphoria whilst developing it.</p>
+<p>Alas, the good times soon turned sour, as my tests took longer to run with
+each passing day (and the number of new tests I wrote therein). Things could
+not go on this way if I were to continue practicing TDD, so I began looking
+for ways of continuously running tests using the fork/eval approach, where the
+test execution overhead would be absorbed by the continuous testing daemon and
+my tests would thereby run very quickly.</p>
+<p>I tried <a href="http://ph7spot.com/musings/getting-started-with-autotest">AutoTest</a>
+first, but soon noticed that it shelled-out to Ruby in order to run tests,
+meaning that it did not absorb the test execution overhead as I hoped.
+Instead, all it did was to automatically perform the equivalent of <code>rake test</code>
+whenever my source files changed.</p>
+<p>Next I tried <a href="https://web.archive.org/web/20100329004933/http://mynyml.com:80/ruby/flexible-continuous-testing">Watchr</a>,
+whose examples suggested that it, like autotest, was best for shelling-out to
+Ruby to run tests whenever my source files changed.</p>
+<p>Finally, I gave up on the search and instead created my own continuous testing
+tool called <a href="http://github.com/sunaku/test-loop">test-loop</a> which follows the
+forementioned fork/eval approach to speed up test execution. With this tool, I
+am now more productive with TDD than ever because my tests <em>finish running</em>
+within seconds after I save my source code! TDD FTW :-)</p>
+</div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2012-01-23T03:12:30-08:00">23 January 2012: </time></dt><dd class="content"><p>With permission from <a href="https://github.com/burns">Brian D. Burns</a>, I renamed
+this project from TestR to <a href="http://github.com/sunaku/tork">Tork</a>, which stands
+for &ldquo;test with fork&rdquo;, in order to better compete with rival projects, such as
+<a href="https://github.com/sporkrb/spork">Spork</a>.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2011-11-09T10:40:31-08:00"> 9 November 2011: </time></dt><dd class="content"><p>There is a new kid on the continuous testing block, called
+<a href="https://github.com/jstorimer/spin">Spin</a>, who has been getting a lot of
+attention lately. To quell my jealousy, I wrote <a href="https://gist.github.com/1352391">this simple 27-line
+script</a> to emulate its functionality by
+wrapping testr-master(1) from <a href="https://github.com/sunaku/testr">TestR</a>.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2011-10-09T18:41:46-07:00"> 9 October 2011: </time></dt><dd class="content"><p>I redesigned <a href="http://github.com/sunaku/test-loop">test-loop</a> according to the
+UNIX philosophy of small text-based programs that do one thing well and
+released the result as <a href="http://github.com/sunaku/testr">TestR</a>.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2010-10-10T01:03:44-07:00">10 October 2010: </time></dt><dd class="content"><p>I discovered a tool called <a href="https://web.archive.org/web/20100410154654/http://blog.segment7.net:80/articles/2006/04/08/speeding-up-test-runs-with-fork">ruby_fork</a> which follows the fork/eval approach to improve continuous
+testing efficiency just like my <a href="http://github.com/sunaku/test-loop">test-loop</a> tool. However, it uses a TCP based server/client model, where the
+continous testing daemon is the server and clients connect to it to schedule
+runs of particular tests. In my opinion, it has the right idea (fork/eval) but
+its implementation (server/client) seems to be overkill.</p>
+</dd></dl></aside><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2010&ndash;2012 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

@@ -1,0 +1,85 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Validating machine-generated YAML and JSON using Kwalify in Ruby 1.9 - The Terminal Programmer</title><meta content="2011-06-09T14:54:51-07:00" name="DCTERMS.created" /><meta content="2011-06-09T14:54:51-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="solution, yaml, json, validation, kwalify, ruby" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="yaml-json-validation-kwalify-ruby19" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#yaml-json-validation-kwalify-ruby19" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Validating machine-generated YAML and JSON using Kwalify in Ruby 1.9</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2011-06-09T14:54:51-07:00"> 9 June 2011</time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__problem__" href="#problem" class="downlink">Problem</a><ol></ol></li><li><a id="__approach__" href="#approach" class="downlink">Approach</a><ol></ol></li><li><a id="__solution__" href="#solution" class="downlink">Solution</a><ol></ol></li></ol>
+<div id="problem" class="section"></div><h1 class="heading">Problem<a href="#problem" class="permalink" title="Permalink"></a><a href="#__problem__" class="uplink" title="Contents"></a></h1>
+<p><a href="http://www.kuwata-lab.com/kwalify/">Kwalify</a> is a Ruby library for
+parsing and validating <a href="http://yaml.org">YAML</a> and <a href="http://json.org">JSON</a>
+documents.  However, it only supports a &ldquo;mostly YAML 1.0&rdquo; subset where the
+bodies of mappings (values associated with hash keys) must be indented;
+otherwise, the following error occurs:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>ERROR: file:line:1 [/] document end expected (maybe invalid tab char found).
+</code></pre></div><p>For example, this is Kwalify style:</p>
+<div class="highlight"><pre class="highlight yaml"><code><span class="na">language</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Ruby</span>
+    <span class="na">type</span><span class="pi">:</span> <span class="s">dynamic</span>
+    <span class="na">license</span><span class="pi">:</span>
+      <span class="pi">-</span> <span class="s">Ruby</span>
+      <span class="pi">-</span> <span class="s">GPL v2</span>
+</code></pre></div><p>In contrast, this is YAML 1.0+ style:</p>
+<div class="highlight"><pre class="highlight yaml"><code><span class="na">language</span><span class="pi">:</span>
+<span class="pi">-</span> <span class="na">name</span><span class="pi">:</span> <span class="s">Ruby</span>
+  <span class="na">type</span><span class="pi">:</span> <span class="s">dynamic</span>
+  <span class="na">license</span><span class="pi">:</span>
+  <span class="pi">-</span> <span class="s">Ruby</span>
+  <span class="pi">-</span> <span class="s">GPL v2</span>
+</code></pre></div><p>This poses a problem when validating machine-generated YAML documents in
+Ruby 1.9 because its <a href="http://freshmeat.net/projects/libyaml">libyaml</a>-based YAML library (known as &ldquo;Psych&rdquo;) only emits YAML 1.1 documents,
+which are not the &ldquo;mostly YAML 1.0&rdquo; kind that Kwalify expects.  For
+example, the last line in the following code raises the aforementioned
+error:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'kwalify'</span>
+
+<span class="n">schema</span> <span class="o">=</span> <span class="no">Kwalify</span><span class="o">::</span><span class="no">Yaml</span><span class="p">.</span><span class="nf">load_file</span><span class="p">(</span><span class="s1">'some_complex_schema.yaml'</span><span class="p">)</span>
+<span class="n">validator</span> <span class="o">=</span> <span class="no">Kwalify</span><span class="o">::</span><span class="no">Validator</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">schema</span><span class="p">)</span>
+<span class="n">parser</span> <span class="o">=</span> <span class="no">Kwalify</span><span class="o">::</span><span class="no">Yaml</span><span class="o">::</span><span class="no">Parser</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">validator</span><span class="p">)</span>
+
+<span class="n">yaml</span> <span class="o">=</span> <span class="n">some_complex_object</span><span class="p">.</span><span class="nf">to_yaml</span> <span class="c1"># machine-generate</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">parser</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="n">yaml</span><span class="p">)</span>          <span class="c1"># parse &amp; validate &lt;== FAIL</span>
+</code></pre></div>
+<div id="approach" class="section"></div><h1 class="heading">Approach<a href="#approach" class="permalink" title="Permalink"></a><a href="#__approach__" class="uplink" title="Contents"></a></h1>
+<p>I initially approached this problem by trying to make Ruby&rsquo;s YAML emitter
+indent the bodies of mappings as the Kwalify style requires:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'psych'</span>
+<span class="n">yaml</span> <span class="o">=</span> <span class="no">Psych</span><span class="p">.</span><span class="nf">dump</span><span class="p">(</span><span class="n">some_complex_object</span><span class="p">,</span> <span class="ss">indentation: </span><span class="mi">4</span><span class="p">).</span>
+       <span class="nf">gsub</span><span class="p">(</span><span class="sr">/^(\s*)-   (?=\S.*:)/</span><span class="p">,</span> <span class="s1">'\1  - '</span><span class="p">)</span>
+</code></pre></div><p>However, this did not address the incompatibility between Ruby&rsquo;s YAML 1.1
+emitter and Kwalify&rsquo;s &ldquo;mostly YAML 1.0&rdquo; parser.  For instance, Kwalify
+choked on the notation of multi-line strings as expressed in YAML 1.1.</p>
+<p>Defeated, I turned to the Kwalify user&rsquo;s guide for a hint and <a href="http://www.kuwata-lab.com/kwalify/ruby/users-guide.02.html#tips-json">found
+one</a>:</p>
+
+<blockquote>
+<p>JSON can be considered as a subset of YAML. It means that YAML
+parser can parse JSON and Kwalify can validate JSON document.</p>
+</blockquote>
+<p>Since Kwalify supports parsing and validating JSON documents, we can work
+around the problem by machine-generating JSON documents instead of YAML
+ones and then feed them into Kwalify for parsing and validation:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'json'</span>
+<span class="n">yaml</span> <span class="o">=</span> <span class="n">some_complex_object</span><span class="p">.</span><span class="nf">to_json</span>
+</code></pre></div><p>Unfortunately, Kwalify failed to parse the machine-generated JSON:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>Kwalify::SyntaxError: file: , line 1: mapping key is expected.
+</code></pre></div><p>How could this be?  The Kwalify user&rsquo;s guide even has examples of JSON
+parsing and validation.  I promptly tried them out, via copy and paste,
+and they worked exactly as advertised.  Strange.</p>
+<p>Upon further trails, I noticed the key difference between the examples
+shown in the Kwalify user&rsquo;s guide and our machine-generated JSON: the
+lack of <em>minification</em> in the former.  Armed with this knowledge, and
+<a href="http://stackoverflow.com/questions/86653#1823885">this helpful answer on StackOverflow</a>, I finally arrived at a
+workable solution:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'json'</span>
+<span class="n">yaml</span> <span class="o">=</span> <span class="no">JSON</span><span class="p">.</span><span class="nf">pretty_generate</span><span class="p">(</span><span class="n">some_complex_object</span><span class="p">)</span>
+</code></pre></div>
+<div id="solution" class="section"></div><h1 class="heading">Solution<a href="#solution" class="permalink" title="Permalink"></a><a href="#__solution__" class="uplink" title="Contents"></a></h1>
+<p>Putting this all together, the final solution to the original problem is:</p>
+<div class="highlight"><pre class="highlight ruby"><code><span class="nb">require</span> <span class="s1">'json'</span>
+<span class="nb">require</span> <span class="s1">'kwalify'</span>
+
+<span class="n">schema</span> <span class="o">=</span> <span class="no">Kwalify</span><span class="o">::</span><span class="no">Yaml</span><span class="p">.</span><span class="nf">load_file</span><span class="p">(</span><span class="s1">'some_complex_schema.yaml'</span><span class="p">)</span>
+<span class="n">validator</span> <span class="o">=</span> <span class="no">Kwalify</span><span class="o">::</span><span class="no">Validator</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">schema</span><span class="p">)</span>
+<span class="n">parser</span> <span class="o">=</span> <span class="no">Kwalify</span><span class="o">::</span><span class="no">Yaml</span><span class="o">::</span><span class="no">Parser</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">validator</span><span class="p">)</span>
+
+<span class="n">yaml</span> <span class="o">=</span> <span class="no">JSON</span><span class="p">.</span><span class="nf">pretty_generate</span><span class="p">(</span><span class="n">some_complex_object</span><span class="p">)</span> <span class="c1"># machine-generate</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">parser</span><span class="p">.</span><span class="nf">parse</span><span class="p">(</span><span class="n">yaml</span><span class="p">)</span>                        <span class="c1"># parse &amp; validate</span>
+</code></pre></div><p>Happy validating!</p>
+</div><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2011 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

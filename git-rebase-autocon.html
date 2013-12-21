@@ -1,0 +1,110 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Automatic merge conflict resolution for git-rebase(1) - The Terminal Programmer</title><meta content="2016-01-03T22:31:05-08:00" name="DCTERMS.created" /><meta content="2016-07-15T10:51:12-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="tool, git, shell, script" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="git-rebase-autocon" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#git-rebase-autocon" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Automatic merge conflict resolution for git-rebase(1)</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2016-01-03T22:31:05-08:00"> 3 January 2016</time><br /><time class="date" datetime="2016-07-15T10:51:12-07:00"><a href="#updates" title="3 updates">15 July 2016</a></time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__problem__" href="#problem" class="downlink">Problem</a><ol></ol></li><li><a id="__solution__" href="#solution" class="downlink">Solution</a><ol><li><a id="__bin-git-rebase-autocon__" href="#bin-git-rebase-autocon" class="downlink">~/bin/git-rebase-autocon</a><ol></ol></li></ol></li></ol>
+<div id="problem" class="section"></div><h1 class="heading">Problem<a href="#problem" class="permalink" title="Permalink"></a><a href="#__problem__" class="uplink" title="Contents"></a></h1>
+<p>Let&rsquo;s say you have a copy of some software (a clone of a Git repository, to be
+precise) that you&rsquo;ve modified in some way, locally.  Some time later, that
+software is changed upstream, thereby rendering your local copy <em>out of date</em>.
+How can you bring your local copy up to date <em>while also</em> retaining your
+local modifications?</p>
+<p>The answer is to <a href="http://git-scm.com/book/ch3-6.html">use git-rebase(1)</a>.
+However, if your local modifications conflict with any upstream changes, then
+you&rsquo;ll need to <a href="http://git-scm.com/book/en/v2/Git-Branching-Basic-Branching-and-Merging#Basic-Merge-Conflicts">resolve those conflicts</a>
+manually: a cumbersome process that can be daunting for inexperienced users.</p>
+<p>This is particularly problematic for configurable software distributed through
+Git, such as my <a href="https://github.com/sunaku/.vim#readme">text editor</a> and
+<a href="https://github.com/sunaku/wmiirc#readme">window manager</a> configurations,
+where the occasional need for manual conflict resolution greatly impedes users
+who aren&rsquo;t technically inclined or lack the time necessary to manually resolve
+such conflicts.</p>
+
+<div id="solution" class="section"></div><h1 class="heading">Solution<a href="#solution" class="permalink" title="Permalink"></a><a href="#__solution__" class="uplink" title="Contents"></a></h1>
+<p>The following shell script automates conflict resolution for git-rebase(1) by
+simply <em>setting aside</em> local modifications that conflict with upstream changes
+and by offering users a means of easily undoing such actions, through <code>git
+reset --hard</code>.</p>
+<p>Afterwards, the user may choose to inspect the automatically set-aside
+conflicts, recorded in empty-tree commits labeled &ldquo;fixup!&rdquo;, and restore
+portions thereof: thereby enacting manual conflict resolution, but willingly
+performed at one&rsquo;s leisure.</p>
+
+<div id="bin-git-rebase-autocon" class="section"></div><h2 class="heading">~/bin/git-rebase-autocon<a href="#bin-git-rebase-autocon" class="permalink" title="Permalink"></a><a href="#__bin-git-rebase-autocon__" class="uplink" title="Contents"></a></h2>
+<div class="highlight"><pre class="highlight shell"><code><span class="c">#!/bin/sh -e</span>
+<span class="c">#</span>
+<span class="c"># Usage: git-rebase-autocon [TARGET] [ARGUMENTS_FOR_GIT_REBASE...]</span>
+<span class="c">#</span>
+<span class="c"># Rebases the given TARGET while automatically resolving conflicts</span>
+<span class="c"># by substituting empty-tree commits labeled "fixup!" that log all</span>
+<span class="c"># conflicting hunks in their commit messages in git-diff(1) format.</span>
+<span class="c">#</span>
+<span class="c"># If TARGET is not specified, the upstream tracking branch is used.</span>
+<span class="c"># Optional ARGUMENTS_FOR_GIT_REBASE... are passed to git-rebase(1).</span>
+<span class="c">#</span>
+<span class="c"># Written in 2010 by Suraj N. Kurapati &lt;https://github.com/sunaku&gt;</span>
+<span class="c"># Documented at &lt;https://sunaku.github.io/git-rebase-autocon.html&gt;</span>
+
+<span class="c"># ensure working tree is clean</span>
+git rebase HEAD <span class="nt">--quiet</span>
+<span class="nv">commit</span><span class="o">=</span><span class="si">$(</span>git rev-parse <span class="nt">--short</span> HEAD<span class="si">)</span>
+
+<span class="c"># parse command-line arguments</span>
+<span class="nb">test</span> <span class="nv">$# </span><span class="nt">-gt</span> 0 <span class="o">&amp;&amp;</span> <span class="nv">target</span><span class="o">=</span><span class="nv">$1</span> <span class="o">&amp;&amp;</span> <span class="nb">shift</span> <span class="o">||</span> <span class="nv">target</span><span class="o">=</span><span class="s1">'@{u}'</span>
+<span class="nv">target</span><span class="o">=</span><span class="si">$(</span>git name-rev <span class="nt">--name-only</span> <span class="s2">"</span><span class="nv">$target</span><span class="s2">"</span><span class="si">)</span>
+<span class="nv">target</span><span class="o">=</span><span class="k">${</span><span class="nv">target</span><span class="p">#remotes/</span><span class="k">}</span>
+
+<span class="c"># rebase target and ensure that only merge conflicts made it fail</span>
+git rebase <span class="nt">--fork-point</span> <span class="s2">"</span><span class="nv">$target</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$@</span><span class="s2">"</span> <span class="o">&amp;&amp;</span> <span class="nb">exit</span> <span class="o">||</span> <span class="nb">test</span> <span class="nt">-d</span> .git/rebase-apply
+
+<span class="c"># solve merge conflicts by absorbing leftover commits from prior</span>
+<span class="c"># versions of the target or by setting aside conflicting commits</span>
+<span class="nb">trap</span> <span class="s1">'git rebase --abort'</span> TERM INT
+<span class="k">while </span><span class="nb">test</span> <span class="nt">-d</span> .git/rebase-apply<span class="p">;</span> <span class="k">do
+  </span><span class="nv">headline</span><span class="o">=</span><span class="si">$(</span><span class="nb">head</span> <span class="nt">-1</span> .git/rebase-apply/final-commit<span class="si">)</span>
+  <span class="nv">conflict</span><span class="o">=</span><span class="si">$(</span><span class="nb">cat</span> .git/rebase-apply/original-commit<span class="si">)</span>
+  <span class="nv">shortish</span><span class="o">=</span><span class="si">$(</span>git rev-parse <span class="nt">--short</span> <span class="s2">"</span><span class="nv">$conflict</span><span class="s2">"</span><span class="si">)</span>
+
+  <span class="c"># in place of each conflicting commit, record an empty commit whose</span>
+  <span class="c"># message contains the changes introduced by the conflicting commit</span>
+  git reset <span class="nt">--mixed</span> <span class="nt">--quiet</span> <span class="c"># empty the index so we can make a commit</span>
+  git commit <span class="nt">--allow-empty</span> <span class="nt">--reuse-message</span><span class="o">=</span><span class="s2">"</span><span class="nv">$conflict</span><span class="s2">"</span> <span class="nt">--quiet</span>
+  <span class="o">{</span>
+    <span class="nb">printf</span> <span class="s1">'fixup! %s %s\n\n'</span> <span class="s2">"</span><span class="nv">$shortish</span><span class="s2">"</span> <span class="s2">"</span><span class="nv">$headline</span><span class="s2">"</span>
+    git format-patch <span class="nt">--stdout</span> <span class="s2">"</span><span class="nv">$conflict</span><span class="s2">~..</span><span class="nv">$conflict</span><span class="s2">"</span>
+  <span class="o">}</span> |
+  git commit <span class="nt">--amend</span> <span class="nt">--allow-empty</span> <span class="nt">--file</span><span class="o">=</span>-
+
+  git rebase <span class="nt">--skip</span> <span class="o">&gt;</span>/dev/null 2&gt;&amp;1 <span class="o">||</span> :
+<span class="k">done
+
+</span><span class="nb">cat</span> <span class="o">&lt;&lt;</span><span class="no">END</span><span class="sh">
+
+    +-------------------------IMPORTANT!----------------------------+
+    |                                                               |
+    | Some of YOUR COMMITS WERE SET ASIDE to solve merge conflicts: |
+    | empty commits labeled as "fixup!" have now taken their place. |
+    | But rest assured, THEY STILL EXIST in Git history at </span><span class="nv">$commit</span><span class="sh">, |
+    | and your working tree has all changes from those commits too! |
+    |                                                               |
+    | You can UNDO THIS REBASE at any time by running this command: |
+    |                                                               |
+    |                  git reset --hard </span><span class="nv">$commit</span><span class="sh">                     |
+    |                                                               |
+    | You can SEE WHAT CHANGED from before by running this command: |
+    |                                                               |
+    |                      git diff </span><span class="nv">$commit</span><span class="sh">                         |
+    |                                                               |
+    +-------------------------IMPORTANT!----------------------------+
+</span><span class="no">
+END
+</span></code></pre></div></div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2016-07-15T10:51:12-07:00">15 July 2016: </time></dt><dd class="content"><p>Commits that were set aside had empty message bodies, caused by Git &gt; 2.3.6
+producing no output when <code>--</code> was specified just before the revision range.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2016-06-24T21:28:06-07:00">24 June 2016: </time></dt><dd class="content"><p>Use <code>--fork-point</code> option for <code>git rebase</code> instead of detecting leftovers.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2016-06-17T21:34:06-07:00">17 June 2016: </time></dt><dd class="content"><ul>
+<li>When a conflicting commit originates from a prior version of the target,
+we can safely absorb it via <code>git rebase --skip</code> to resolve the conflict.</li>
+<li>Apply proper patch(1) formatting when setting aside conflicting commits.</li>
+<li>Only show &ldquo;important&rdquo; message if any conflicting commits were set aside.</li>
+<li>Gracefully abort rebase when the script is terminated prematurely.</li>
+<li>Don&rsquo;t summarize any differences after rebasing: do one thing well.</li>
+</ul>
+</dd></dl></aside><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2016 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

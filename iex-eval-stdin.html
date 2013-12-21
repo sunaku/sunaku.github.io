@@ -1,0 +1,116 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Automating interactive Elixir evaluation via stdin - The Terminal Programmer</title><meta content="2018-10-28T17:33:46-07:00" name="DCTERMS.created" /><meta content="2018-10-28T17:33:46-07:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="solution, terminal, elixir, tool" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="iex-eval-stdin" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#iex-eval-stdin" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Automating interactive Elixir evaluation via stdin</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2018-10-28T17:33:46-07:00">28 October 2018</time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__problem__" href="#problem" class="downlink">Problem</a><ol></ol></li><li><a id="__approach__" href="#approach" class="downlink">Approach</a><ol></ol></li><li><a id="__solution__" href="#solution" class="downlink">Solution</a><ol></ol></li></ol>
+<div id="problem" class="section"></div><h1 class="heading">Problem<a href="#problem" class="permalink" title="Permalink"></a><a href="#__problem__" class="uplink" title="Contents"></a></h1>
+<p>Newcomers to the <a href="https://elixir-lang.org">Elixir language</a> begin their
+<a href="https://elixir-lang.org/getting-started/introduction.html">official instruction</a> using the <code>iex</code> tool,
+which places the user in Elixir&rsquo;s <a href="https://elixir-lang.org/getting-started/introduction.html#interactive-mode">interactive mode</a>.
+Inside this mode, all of the Elixir commands the user types in are short-lived,
+disappearing entirely (or only partially, if <a href="https://hexdocs.pm/iex/IEx.html#module-shell-history">history is enabled</a>) when the user quits the
+<code>iex</code> session.</p>
+<div class="highlight"><pre class="highlight elixir"><code><span class="err">$</span> <span class="n">iex</span>
+<span class="no">Erlang</span><span class="o">/</span><span class="no">OTP</span> <span class="mi">21</span> <span class="p">[</span><span class="n">erts</span><span class="o">-</span><span class="mf">10.1</span><span class="p">]</span> <span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="p">[</span><span class="mi">64</span><span class="o">-</span><span class="n">bit</span><span class="p">]</span> <span class="p">[</span><span class="ss">smp:</span><span class="mi">4</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="p">[</span><span class="ss">ds:</span><span class="mi">4</span><span class="p">:</span><span class="mi">4</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span> <span class="p">[</span><span class="n">async</span><span class="o">-</span><span class="ss">threads:</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="no">Interactive</span> <span class="no">Elixir</span> <span class="p">(</span><span class="mf">1.7</span><span class="o">.</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="n">press</span> <span class="no">Ctrl</span><span class="o">+</span><span class="no">C</span> <span class="n">to</span> <span class="k">exit</span> <span class="p">(</span><span class="n">type</span> <span class="n">h</span><span class="p">()</span> <span class="no">ENTER</span> <span class="n">for</span> <span class="n">help</span><span class="p">)</span>
+<span class="n">iex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">&gt;</span> <span class="mi">40</span> <span class="o">+</span> <span class="mi">2</span>
+<span class="mi">42</span>
+<span class="n">iex</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">&gt;</span> <span class="s2">"hello"</span> <span class="o">&lt;&gt;</span> <span class="s2">" world"</span>
+<span class="s2">"hello world"</span>
+<span class="n">iex</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">&gt;</span> <span class="o">^</span><span class="no">C</span>
+<span class="ss">BREAK:</span> <span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="n">bort</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="n">ontinue</span> <span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="n">roc</span> <span class="n">info</span> <span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="n">nfo</span> <span class="p">(</span><span class="n">l</span><span class="p">)</span><span class="n">oaded</span>
+       <span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="n">ersion</span> <span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="n">ill</span> <span class="p">(</span><span class="no">D</span><span class="p">)</span><span class="n">b</span><span class="o">-</span><span class="n">tables</span> <span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="n">istribution</span>
+<span class="n">a</span>
+</code></pre></div><p>To avoid repeating the manual labor of retyping all of their Elixir commands (or
+reinserting them from <a href="https://hexdocs.pm/iex/IEx.html#module-shell-history">saved history</a>) when starting a new <code>iex</code>
+session, the clever user naturally attempts to store all of their Elixir commands
+in a file and to then run that file with <code>iex</code>.  This way, each line in the file
+would be treated as if the user had manually typed it all in. :-)  Problem
+solved, right?</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span><span class="nb">cat </span>commands.txt
+40 + 2
+<span class="s2">"hello"</span> &lt;<span class="o">&gt;</span> <span class="s2">" world"</span>
+</code></pre></div><div class="highlight"><pre class="highlight elixir"><code><span class="err">$</span> <span class="n">iex</span> <span class="o">&lt;</span> <span class="n">commands</span><span class="o">.</span><span class="n">txt</span>
+<span class="no">Interactive</span> <span class="no">Elixir</span> <span class="p">(</span><span class="mf">1.7</span><span class="o">.</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="n">press</span> <span class="no">Ctrl</span><span class="o">+</span><span class="no">C</span> <span class="n">to</span> <span class="k">exit</span> <span class="p">(</span><span class="n">type</span> <span class="n">h</span><span class="p">()</span> <span class="no">ENTER</span> <span class="n">for</span> <span class="n">help</span><span class="p">)</span>
+<span class="n">iex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">&gt;</span> <span class="mi">42</span>
+<span class="n">iex</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">&gt;</span> <span class="s2">"hello world"</span>
+<span class="n">iex</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">&gt;</span> <span class="o">^</span><span class="no">C</span>
+<span class="ss">BREAK:</span> <span class="p">(</span><span class="n">a</span><span class="p">)</span><span class="n">bort</span> <span class="p">(</span><span class="n">c</span><span class="p">)</span><span class="n">ontinue</span> <span class="p">(</span><span class="n">p</span><span class="p">)</span><span class="n">roc</span> <span class="n">info</span> <span class="p">(</span><span class="n">i</span><span class="p">)</span><span class="n">nfo</span> <span class="p">(</span><span class="n">l</span><span class="p">)</span><span class="n">oaded</span>
+       <span class="p">(</span><span class="n">v</span><span class="p">)</span><span class="n">ersion</span> <span class="p">(</span><span class="n">k</span><span class="p">)</span><span class="n">ill</span> <span class="p">(</span><span class="no">D</span><span class="p">)</span><span class="n">b</span><span class="o">-</span><span class="n">tables</span> <span class="p">(</span><span class="n">d</span><span class="p">)</span><span class="n">istribution</span>
+</code></pre></div><p>Alas, <code>iex</code> merely prints <em>the results</em> of the clever user&rsquo;s Elixir commands. :-(
+Whereas this whole method of interaction would be far more useful if <code>iex</code> had
+<em>also</em> printed each of the user&rsquo;s Elixir commands along with their result, right?</p>
+<div class="highlight"><pre class="highlight elixir"><code><span class="err">$</span> <span class="n">iex</span><span class="o">-</span><span class="n">eval</span><span class="o">-</span><span class="n">stdin</span> <span class="o">&lt;</span> <span class="n">commands</span><span class="o">.</span><span class="n">txt</span>
+<span class="no">Erlang</span><span class="o">/</span><span class="no">OTP</span> <span class="mi">21</span> <span class="p">[</span><span class="n">erts</span><span class="o">-</span><span class="mf">10.1</span><span class="p">]</span> <span class="p">[</span><span class="n">source</span><span class="p">]</span> <span class="p">[</span><span class="mi">64</span><span class="o">-</span><span class="n">bit</span><span class="p">]</span> <span class="p">[</span><span class="ss">smp:</span><span class="mi">4</span><span class="p">:</span><span class="mi">4</span><span class="p">]</span> <span class="p">[</span><span class="ss">ds:</span><span class="mi">4</span><span class="p">:</span><span class="mi">4</span><span class="p">:</span><span class="mi">10</span><span class="p">]</span> <span class="p">[</span><span class="n">async</span><span class="o">-</span><span class="ss">threads:</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="no">Interactive</span> <span class="no">Elixir</span> <span class="p">(</span><span class="mf">1.7</span><span class="o">.</span><span class="mi">3</span><span class="p">)</span> <span class="o">-</span> <span class="n">press</span> <span class="no">Ctrl</span><span class="o">+</span><span class="no">C</span> <span class="n">to</span> <span class="k">exit</span> <span class="p">(</span><span class="n">type</span> <span class="n">h</span><span class="p">()</span> <span class="no">ENTER</span> <span class="n">for</span> <span class="n">help</span><span class="p">)</span>
+<span class="n">iex</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">&gt;</span> <span class="mi">40</span> <span class="o">+</span> <span class="mi">2</span>
+<span class="mi">42</span>
+<span class="n">iex</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span><span class="o">&gt;</span> <span class="s2">"hello"</span> <span class="o">&lt;&gt;</span> <span class="s2">" world"</span>
+<span class="s2">"hello world"</span>
+</code></pre></div><p>That would make it easier to learn Elixir, if <em>both</em> cause <em>and</em> effect were shown.</p>
+
+<div id="approach" class="section"></div><h1 class="heading">Approach<a href="#approach" class="permalink" title="Permalink"></a><a href="#__approach__" class="uplink" title="Contents"></a></h1>
+<p>Since <code>iex</code> is an interactive tool, it naturally expects to talk to the user&rsquo;s
+terminal device instead of the plain-text standard input and output streams.
+For example, syntax highlighting the user&rsquo;s Elixir command results only makes
+sense when <code>iex</code> is talking to a terminal device; not to the plain-text stdout.</p>
+<p>Thus, I needed to create a fake terminal device for <code>iex</code> to talk to, through
+which I would send each of the user&rsquo;s Elixir commands, read from stdin, to <code>iex</code>.
+Luckily, the <a href="https://core.tcl.tk/expect/">Expect tool</a> allows us to perform
+<em>exactly</em> this kind of automation.</p>
+<p>To start off, I wrote a Bourne shell function that generates an Expect script
+from the contents of the user&rsquo;s file (provided on stdin), taking care to escape
+each line of input so that Expect would pass them through as-is to <code>iex</code>:</p>
+<div class="highlight"><pre class="highlight shell"><code>iex_eval_stdin<span class="o">()</span> <span class="o">{</span>
+  <span class="o">{</span>
+    <span class="nb">echo </span>spawn iex <span class="s2">"</span><span class="nv">$@</span><span class="s2">"</span>
+    <span class="nb">echo</span> <span class="s1">'expect "iex(*)&gt; "'</span>
+    <span class="k">while </span><span class="nb">read</span> <span class="nt">-r</span> line<span class="p">;</span> <span class="k">do
+      </span><span class="nb">echo</span> <span class="s2">"</span><span class="nv">$line</span><span class="s2">"</span> | <span class="nb">sed</span> <span class="s1">'s/["$\[\\]/\\&amp;/g; s/^/send -- "/; s/$/\\r"/'</span>
+      <span class="nb">echo</span> <span class="s1">'expect "???(*)&gt; "'</span>
+    <span class="k">done</span>
+  <span class="o">}</span> | expect -
+  <span class="nb">echo</span> <span class="nt">-n</span> <span class="nt">-e</span> <span class="s1">'\033[2K\r'</span> <span class="c"># clear the very last prompt</span>
+<span class="o">}</span>
+</code></pre></div><p>Once this prototype was working, I translated it into Expect to avoid escaping.</p>
+
+<div id="solution" class="section"></div><h1 class="heading">Solution<a href="#solution" class="permalink" title="Permalink"></a><a href="#__solution__" class="uplink" title="Contents"></a></h1>
+<p>Below is my solution <code>iex-eval-stdin</code> script, which is also <a href="https://github.com/sunaku/home/blob/master/bin/iex-eval-stdin">available on
+GitHub</a>.</p>
+<div class="highlight"><pre class="highlight perl"><code><span class="c1">#!/usr/bin/expect -f</span>
+<span class="c1">#</span>
+<span class="c1"># Usage: iex-eval-stdin -- [ARGUMENTS_FOR_IEX...]</span>
+<span class="c1"># Usage: iex-eval-stdin &lt; YOUR_ELIXIR_SCRIPT_FILE</span>
+<span class="c1"># Usage: echo YOUR_ELIXIR_SCRIPT | iex-eval-stdin</span>
+<span class="c1">#</span>
+<span class="c1"># Runs each line from the standard input stream using iex(1), as if</span>
+<span class="c1"># each line were interactively typed into iex(1) in the first place.</span>
+<span class="c1">#</span>
+<span class="c1"># Written in 2018 by Suraj N. Kurapati &lt;https://github.com/sunaku&gt;</span>
+<span class="c1"># and documented at &lt;https://sunaku.github.io/iex-eval-stdin.html&gt;</span>
+
+<span class="nv">set</span> <span class="nv">prompt</span> <span class="p">{</span><span class="o">\</span><span class="nv">n</span><span class="p">(</span><span class="nv">iex</span><span class="o">|\.\.\.</span><span class="p">)(</span><span class="o">\</span><span class="p">(</span><span class="o">\</span><span class="nv">d</span><span class="o">+\</span><span class="p">)</span><span class="o">|\</span><span class="p">(</span><span class="o">.+</span><span class="err">@</span><span class="o">.+\</span><span class="p">)</span><span class="o">\</span><span class="nv">d</span><span class="o">+</span><span class="p">)</span><span class="o">&gt;</span> <span class="err">$</span><span class="p">}</span>
+
+<span class="nb">eval</span> <span class="nv">spawn</span> <span class="o">-</span><span class="nv">noecho</span> <span class="nv">iex</span> <span class="nv">$argv</span>
+<span class="k">while</span> <span class="p">{[</span><span class="nv">gets</span> <span class="nv">stdin</span> <span class="nv">line</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">}</span> <span class="p">{</span>
+  <span class="nv">expect</span> <span class="o">-</span><span class="nv">re</span> <span class="nv">$prompt</span>
+  <span class="nb">send</span> <span class="o">--</span> <span class="p">"</span><span class="si">$line</span><span class="se">\r</span><span class="p">"</span>
+<span class="p">}</span>
+<span class="nv">expect</span> <span class="o">-</span><span class="nv">re</span> <span class="nv">$prompt</span> <span class="p">;</span><span class="c1"># await last result</span>
+<span class="nv">puts</span> <span class="p">"</span><span class="se">\033\</span><span class="s2">[1K</span><span class="p">"</span>    <span class="p">;</span><span class="c1"># clear last prompt</span>
+</code></pre></div><p>To install this script, copy/paste it into a file or <a href="https://github.com/sunaku/home/raw/master/bin/iex-eval-stdin">download it</a> from GitHub.
+Then, mark it as executable so that you can run it just by typing in its name:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span><span class="nb">chmod</span> +x ./iex-eval-stdin
+</code></pre></div><p>Now, you can run it: (if you don&rsquo;t like typing the <code>./</code>, move it into your <code>$PATH</code>)</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="s1">'2 = 1 + 1'</span> | ./iex-eval-stdin
+Erlang/OTP 21 <span class="o">[</span>erts-10.1] <span class="o">[</span><span class="nb">source</span><span class="o">]</span> <span class="o">[</span>64-bit] <span class="o">[</span>smp:4:4] <span class="o">[</span>ds:4:4:10] <span class="o">[</span>async-threads:1]
+
+Interactive Elixir <span class="o">(</span>1.7.3<span class="o">)</span> - press Ctrl+C to <span class="nb">exit</span> <span class="o">(</span><span class="nb">type </span>h<span class="o">()</span> ENTER <span class="k">for </span><span class="nb">help</span><span class="o">)</span>
+iex<span class="o">(</span>1<span class="o">)&gt;</span> 2 <span class="o">=</span> 1 + 1
+2
+
+<span class="nv">$ </span>./iex-eval-stdin &lt; THE_FILESYSTEM_PATH_OF_YOUR_OWN_ELIXIR_SCRIPT_GOES_HERE
+</code></pre></div><p>If you get an error saying that Expect couldn&rsquo;t be found, try installing it:</p>
+<div class="highlight"><pre class="highlight shell"><code><span class="nv">$ </span><span class="nb">sudo </span>apt-get <span class="nb">install </span>expect
+</code></pre></div><p>That&rsquo;s all. :-) Enjoy learning Elixir!</p>
+</div><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2018 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

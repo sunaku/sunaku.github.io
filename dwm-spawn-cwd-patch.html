@@ -1,0 +1,90 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Spawn from current working directory in DWM - The Terminal Programmer</title><meta content="2011-11-24T13:58:05-08:00" name="DCTERMS.created" /><meta content="2011-11-24T13:58:05-08:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="dwm, patch, productivity, spatial locality" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="dwm-spawn-cwd-patch" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#dwm-spawn-cwd-patch" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Spawn from current working directory in DWM</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2011-11-24T13:58:05-08:00">24 November 2011</time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__problem__" href="#problem" class="downlink">Problem</a><ol></ol></li><li><a id="__solution__" href="#solution" class="downlink">Solution</a><ol></ol></li></ol>
+<div id="problem" class="section"></div><h1 class="heading">Problem<a href="#problem" class="permalink" title="Permalink"></a><a href="#__problem__" class="uplink" title="Contents"></a></h1>
+<p><a href="https://bbs.archlinux.org/viewtopic.php?pid=1019589#p1019589">I switched to DWM</a> recently
+after six productive years of WMII and one of the things I missed from my
+previous WMII configuration was the ability to open new programs in the
+currently focused client&rsquo;s working directory.</p>
+<p>Why?  It&rsquo;s all about <strong>spatial locality</strong>.  For example, when I&rsquo;m editing
+in Vim, I like to start some new terminals (or file managers) in the same
+working directory as the file I&rsquo;m editing to do additional things.  Or the
+scenario could be the opposite: when I&rsquo;m browsing the filesystem in a file
+manager, I want to start Vim inside the directory I am currently browsing.</p>
+<p>Without this feature, I have to <em>manually</em> navigate to that working
+directory in each helper application (terminal, file manager, or editor)
+that I launched.  This becomes tiresome and inefficient as time goes on.</p>
+<p>Thus, to correct this imbalance and regain my productivity, I dusted off
+my C knowledge and <a href="https://www.mail-archive.com/dev@suckless.org/msg10245.html">ported this feature to DWM</a> using just 27
+statement-lines of code (SLOC), as you can see in the patch below.</p>
+
+<div id="solution" class="section"></div><h1 class="heading">Solution<a href="#solution" class="permalink" title="Permalink"></a><a href="#__solution__" class="uplink" title="Contents"></a></h1>
+<p>This patch is <a href="https://github.com/sunaku/.dwm/compare/tip...spawn_cwd">also available on GitHub</a>.</p>
+<div class="highlight"><pre class="highlight diff"><code><span class="gh">diff --git a/dwm.c b/dwm.c
+index 1d78655..156ee60 100644
+</span><span class="gd">--- a/dwm.c
+</span><span class="gi">+++ b/dwm.c
+</span><span class="p">@@ -20,6 +20,7 @@</span>
+  *
+  * To understand everything else, start reading main().
+  */
+<span class="gi">+#include &lt;assert.h&gt;
+</span> #include &lt;errno.h&gt;
+ #include &lt;locale.h&gt;
+ #include &lt;stdarg.h&gt;
+<span class="p">@@ -28,6 +29,8 @@</span>
+ #include &lt;stdlib.h&gt;
+ #include &lt;string.h&gt;
+ #include &lt;unistd.h&gt;
+<span class="gi">+#include &lt;libgen.h&gt;
++#include &lt;sys/stat.h&gt;
+</span> #include &lt;sys/types.h&gt;
+ #include &lt;sys/wait.h&gt;
+ #include &lt;X11/cursorfont.h&gt;
+<span class="p">@@ -1661,11 +1664,45 @@</span> sigchld(int unused) {
+  while(0 &lt; waitpid(-1, NULL, WNOHANG));
+ }
+<span class="err">
+</span><span class="gi">+#define SPAWN_CWD_DELIM " []{}()&lt;&gt;\"':"
++
+</span> void
+ spawn(const Arg *arg) {
+  if(fork() == 0) {
+    if(dpy)
+      close(ConnectionNumber(dpy));
+<span class="gi">+       if(selmon-&gt;sel) {
++           const char* const home = getenv("HOME");
++           assert(home &amp;&amp; strchr(home, '/'));
++           const size_t homelen = strlen(home);
++           char *cwd, *pathbuf = NULL;
++           struct stat statbuf;
++
++           cwd = strtok(selmon-&gt;sel-&gt;name, SPAWN_CWD_DELIM);
++           /* NOTE: strtok() alters selmon-&gt;sel-&gt;name in-place,
++            * but that does not matter because we are going to
++            * exec() below anyway; nothing else will use it */
++           while(cwd) {
++               if(*cwd == '~') { /* replace ~ with $HOME */
++                   if(!(pathbuf = malloc(homelen + strlen(cwd)))) /* ~ counts for NULL term */
++                       die("fatal: could not malloc() %u bytes\n", homelen + strlen(cwd));
++                   strcpy(strcpy(pathbuf, home) + homelen, cwd + 1);
++                   cwd = pathbuf;
++               }
++
++               if(strchr(cwd, '/') &amp;&amp; !stat(cwd, &amp;statbuf)) {
++                   if(!S_ISDIR(statbuf.st_mode))
++                       cwd = dirname(cwd);
++
++                   if(!chdir(cwd))
++                       break;
++               }
++
++               cwd = strtok(NULL, SPAWN_CWD_DELIM);
++           }
++
++           free(pathbuf);
++       }
+</span>    setsid();
+    execvp(((char **)arg-&gt;v)[0], (char **)arg-&gt;v);
+    fprintf(stderr, "dwm: execvp %s", ((char **)arg-&gt;v)[0]);
+</code></pre></div></div><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2011 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

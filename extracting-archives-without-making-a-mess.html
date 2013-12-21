@@ -1,0 +1,240 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Extracting archives without making a mess - The Terminal Programmer</title><meta content="2006-08-25T00:00:00-07:00" name="DCTERMS.created" /><meta content="2013-01-16T22:22:00-08:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="ruby, tool, archive, extraction" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="extracting-archives-without-making-a-mess" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#extracting-archives-without-making-a-mess" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Extracting archives without making a mess</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2006-08-25T00:00:00-07:00">25 August 2006</time><br /><time class="date" datetime="2013-01-16T22:22:00-08:00"><a href="#updates" title="1 update">16 January 2013</a></time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__problem__" href="#problem" class="downlink">Problem</a><ol></ol></li><li><a id="__approach__" href="#approach" class="downlink">Approach</a><ol></ol></li><li><a id="__solution__" href="#solution" class="downlink">Solution</a><ol><li><a id="__before-the-tool__" href="#before-the-tool" class="downlink">Before the tool</a><ol></ol></li><li><a id="__after-the-tool__" href="#after-the-tool" class="downlink">After the tool</a><ol></ol></li><li><a id="__bin-extract-archive__" href="#bin-extract-archive" class="downlink">~/bin/extract-archive</a><ol></ol></li></ol></li></ol>
+<div id="problem" class="section"></div><h1 class="heading">Problem<a href="#problem" class="permalink" title="Permalink"></a><a href="#__problem__" class="uplink" title="Contents"></a></h1>
+<p>It is common practice to place all files related to a single project into
+a single directory, and then to make an archive of that directory.</p>
+<p>This practice ensures that the archive does not make a mess of someone&rsquo;s
+working directory when extracted.</p>
+<p>Unfortunately, such benevolence cannot always be expected of the archive
+creator, so care must be taken <em>by the user</em> to prevent a mess.</p>
+
+<div id="approach" class="section"></div><h1 class="heading">Approach<a href="#approach" class="permalink" title="Permalink"></a><a href="#__approach__" class="uplink" title="Contents"></a></h1>
+<p>Naturally, I automated this process by writing a script which takes care
+to <em>always</em> extract an archive neatly into its own subdirectory. This
+script remained as an example for my <a href="https://gna.org/projects/ff-bash/">For each File</a> project for a few years. However, I
+converted it into Ruby yesterday due to the inability of transforming a
+relative path into an absolute one in GNU BASH.</p>
+
+<div id="solution" class="section"></div><h1 class="heading">Solution<a href="#solution" class="permalink" title="Permalink"></a><a href="#__solution__" class="uplink" title="Contents"></a></h1>
+<p>Now, behold the sparkling powers of the <code>extract-archive</code> script, listed
+below and <a href="https://github.com/sunaku/home/raw/master/bin/extract-archive">available on GitHub</a>, and enjoy
+a tidy working directory. :-)</p>
+
+<div id="before-the-tool" class="section"></div><h2 class="heading">Before the tool<a href="#before-the-tool" class="permalink" title="Permalink"></a><a href="#__before-the-tool__" class="uplink" title="Contents"></a></h2>
+<p>Consider the two archives illustrated below.</p>
+<div class="highlight"><pre class="highlight plaintext"><code>$ tree
+.
+|-- good_archive.tar
+`-- evil_archive.tar
+
+0 directories, 2 files
+
+$ tar tf evil_archive.tar
+bar
+baz
+foo
+
+$ tar tf good_archive.tar
+good_archive/
+good_archive/bar
+good_archive/baz
+good_archive/foo
+</code></pre></div><p>Watch what happens to our working directory as we extract them.</p>
+<div class="highlight"><pre class="highlight plaintext"><code>$ tar xf evil_archive.tar
+
+$ tree
+.
+|-- bar
+|-- baz
+|-- good_archive.tar
+|-- foo
+`-- evil_archive.tar
+
+0 directories, 5 files
+
+$ tar xf good_archive.tar
+
+$ tree
+.
+|-- bar
+|-- baz
+|-- good_archive
+|   |-- bar
+|   |-- baz
+|   `-- foo
+|-- good_archive.tar
+|-- foo
+`-- evil_archive.tar
+
+1 directory, 8 files
+</code></pre></div><p>The evil archive carelessly littered its contents within our working
+directory, whereas the good archive politely placed its contents
+into its own subdirectory.</p>
+
+<div id="after-the-tool" class="section"></div><h2 class="heading">After the tool<a href="#after-the-tool" class="permalink" title="Permalink"></a><a href="#__after-the-tool__" class="uplink" title="Contents"></a></h2>
+<div class="highlight"><pre class="highlight plaintext"><code>$ tree
+.
+|-- good_archive.tar
+`-- evil_archive.tar
+
+0 directories, 2 files
+
+$ extract.rb *.tar
+extract.rb: `good_archive.tar' -&gt;`./good_archive'
+extract.rb: `evil_archive.tar' -&gt;`./evil_archive.tar+1156637503'
+
+$ tree
+.
+|-- good_archive
+|   |-- bar
+|   |-- baz
+|   `-- foo
+|-- good_archive.tar
+|-- evil_archive.tar`-- evil_archive.tar+1156637503
+|-- bar
+|-- baz
+`-- foo
+
+2 directories, 8 files
+</code></pre></div>
+<div id="bin-extract-archive" class="section"></div><h2 class="heading">~/bin/extract-archive<a href="#bin-extract-archive" class="permalink" title="Permalink"></a><a href="#__bin-extract-archive__" class="uplink" title="Contents"></a></h2>
+<div class="highlight"><pre class="highlight ruby"><code><span class="c1">#!/usr/bin/env ruby</span>
+<span class="c1">#</span>
+<span class="c1"># Extracts various compressed and uncompressed file archives (see</span>
+<span class="c1"># http://en.wikipedia.org/wiki/List_of_archive_formats) into their</span>
+<span class="c1"># *own* output directories so that they do not make a mess by</span>
+<span class="c1"># extracting directly into your working directory.</span>
+<span class="c1">#</span>
+<span class="c1"># Written in 2003 by Suraj N. Kurapati &lt;https://github.com/sunaku&gt;</span>
+
+<span class="nb">require</span> <span class="s1">'tmpdir'</span>
+
+<span class="nb">require</span> <span class="s1">'fileutils'</span>
+<span class="kp">include</span> <span class="no">FileUtils</span><span class="o">::</span><span class="no">Verbose</span>
+
+<span class="c1"># Extracts the given source archive relative to the given destination path,</span>
+<span class="c1"># and returns the path of the directory containing the extracted contents.</span>
+<span class="k">def</span> <span class="nf">extract</span> <span class="n">src_path</span><span class="p">,</span> <span class="n">dst_path</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">dirname</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
+  <span class="n">src_path</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">expand_path</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
+  <span class="n">src_name</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">basename</span><span class="p">(</span><span class="n">src_path</span><span class="p">)</span>
+  <span class="n">src_suffix</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">extname</span><span class="p">(</span><span class="n">src_name</span><span class="p">)</span>
+  <span class="n">src_prefix</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">basename</span><span class="p">(</span><span class="n">src_name</span><span class="p">,</span> <span class="n">src_suffix</span><span class="p">)</span>
+
+  <span class="no">Dir</span><span class="p">.</span><span class="nf">mktmpdir</span><span class="p">(</span><span class="kp">nil</span><span class="p">,</span> <span class="n">dst_path</span><span class="p">)</span> <span class="k">do</span> <span class="o">|</span><span class="n">tmp_dir</span><span class="o">|</span>
+    <span class="c1"># decompress the archive</span>
+    <span class="n">cd</span> <span class="n">tmp_dir</span> <span class="k">do</span>
+      <span class="k">case</span> <span class="n">src_name</span><span class="p">.</span><span class="nf">sub</span><span class="p">(</span><span class="sr">/\.part$/</span><span class="p">,</span> <span class="s1">''</span><span class="p">)</span>
+      <span class="k">when</span> <span class="sr">/\.(tar\.gz|tar\.Z|tgz|taz)$/i</span>
+        <span class="nb">system</span> <span class="s1">'tar'</span><span class="p">,</span> <span class="s1">'-zxf'</span><span class="p">,</span> <span class="n">src_path</span>
+
+      <span class="k">when</span> <span class="sr">/\.(tar\.bz|tar\.bz2|tbz|tbz2)$/i</span>
+        <span class="nb">system</span> <span class="s1">'tar'</span><span class="p">,</span> <span class="s1">'-jxf'</span><span class="p">,</span> <span class="n">src_path</span>
+
+      <span class="k">when</span> <span class="sr">/\.(tar\.xz|txz)$/i</span>
+        <span class="nb">system</span> <span class="s1">'tar'</span><span class="p">,</span> <span class="s1">'-Jxf'</span><span class="p">,</span> <span class="n">src_path</span>
+
+      <span class="k">when</span> <span class="sr">/\.(tar|cpio|gem)$/i</span>
+        <span class="nb">system</span> <span class="s1">'tar'</span><span class="p">,</span> <span class="s1">'-xf'</span><span class="p">,</span> <span class="n">src_path</span>
+
+      <span class="k">when</span> <span class="sr">/\.(tar.lzo|tzo)$/i</span>
+        <span class="nb">system</span> <span class="s2">"lzop -xc </span><span class="si">#{</span><span class="n">src_path</span><span class="p">.</span><span class="nf">inspect</span><span class="si">}</span><span class="s2"> | tar -xf -"</span>
+
+      <span class="k">when</span> <span class="sr">/\.(lzo)$/i</span>
+        <span class="nb">system</span> <span class="s1">'lzop'</span><span class="p">,</span> <span class="s1">'-x'</span><span class="p">,</span> <span class="n">src_path</span>
+
+      <span class="k">when</span> <span class="sr">/\.(gz)$/i</span>
+        <span class="nb">system</span> <span class="s2">"gunzip -c </span><span class="si">#{</span><span class="n">src_path</span><span class="p">.</span><span class="nf">inspect</span><span class="si">}</span><span class="s2"> &gt; </span><span class="si">#{</span><span class="n">src_prefix</span><span class="p">.</span><span class="nf">inspect</span><span class="si">}</span><span class="s2">"</span>
+
+      <span class="k">when</span> <span class="sr">/\.(bz|bz2)$/i</span>
+        <span class="nb">system</span> <span class="s2">"bunzip2 -c </span><span class="si">#{</span><span class="n">src_path</span><span class="p">.</span><span class="nf">inspect</span><span class="si">}</span><span class="s2"> &gt; </span><span class="si">#{</span><span class="n">src_prefix</span><span class="p">.</span><span class="nf">inspect</span><span class="si">}</span><span class="s2">"</span>
+
+      <span class="k">when</span> <span class="sr">/\.(shar)$/i</span>
+        <span class="nb">system</span> <span class="s1">'sh'</span><span class="p">,</span> <span class="n">src_path</span>
+
+      <span class="k">when</span> <span class="sr">/\.(7z)$/i</span>
+        <span class="nb">system</span> <span class="s1">'7zr'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="n">src_path</span>
+
+      <span class="k">when</span> <span class="sr">/\.(zip)$/i</span>
+        <span class="nb">system</span> <span class="s1">'unzip'</span><span class="p">,</span> <span class="n">src_path</span>
+
+      <span class="k">when</span> <span class="sr">/\.(jar)$/i</span>
+        <span class="nb">system</span> <span class="s1">'jar'</span><span class="p">,</span> <span class="s1">'xf'</span><span class="p">,</span> <span class="n">src_path</span>
+
+      <span class="k">when</span> <span class="sr">/\.(rz)$/i</span>
+        <span class="n">ln</span> <span class="n">src_path</span><span class="p">,</span> <span class="n">src_name</span> <span class="c1"># rzip removes the archive after extraction</span>
+        <span class="nb">system</span> <span class="s1">'rzip'</span><span class="p">,</span> <span class="s1">'-d'</span><span class="p">,</span> <span class="n">src_name</span>
+
+      <span class="k">when</span> <span class="sr">/\.(rar)$/i</span>
+        <span class="nb">system</span> <span class="s1">'unrar'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="n">src_path</span>
+
+      <span class="k">when</span> <span class="sr">/\.(ace)$/i</span>
+        <span class="nb">system</span> <span class="s1">'unace'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="n">src_path</span>
+
+      <span class="k">when</span> <span class="sr">/\.(arj)$/i</span>
+        <span class="nb">system</span> <span class="s1">'arj'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="n">src_path</span>
+
+      <span class="k">when</span> <span class="sr">/\.(arc)$/i</span>
+        <span class="nb">system</span> <span class="s1">'arc'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="n">src_path</span>
+
+      <span class="k">when</span> <span class="sr">/\.(lhz|lha)$/i</span>
+        <span class="nb">system</span> <span class="s1">'lha'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="n">src_path</span>
+
+      <span class="k">when</span> <span class="sr">/\.(a|ar)$/i</span>
+        <span class="nb">system</span> <span class="s1">'ar'</span><span class="p">,</span> <span class="s1">'-x'</span><span class="p">,</span> <span class="n">src_path</span>
+
+      <span class="k">when</span> <span class="sr">/\.(Z)$/</span>
+        <span class="nb">system</span> <span class="s2">"uncompress -c </span><span class="si">#{</span><span class="n">src_path</span><span class="p">.</span><span class="nf">inspect</span><span class="si">}</span><span class="s2"> &gt; </span><span class="si">#{</span><span class="n">src_prefix</span><span class="p">.</span><span class="nf">inspect</span><span class="si">}</span><span class="s2">"</span>
+
+      <span class="k">when</span> <span class="sr">/\.(z)$/</span>
+        <span class="nb">system</span> <span class="s2">"pcat </span><span class="si">#{</span><span class="n">src_path</span><span class="p">.</span><span class="nf">inspect</span><span class="si">}</span><span class="s2"> &gt; </span><span class="si">#{</span><span class="n">src_prefix</span><span class="p">.</span><span class="nf">inspect</span><span class="si">}</span><span class="s2">"</span>
+
+      <span class="k">when</span> <span class="sr">/\.(zoo)$/i</span>
+        <span class="nb">system</span> <span class="s1">'zoo'</span><span class="p">,</span> <span class="s1">'x//'</span><span class="p">,</span> <span class="n">src_path</span>
+
+      <span class="k">when</span> <span class="sr">/\.(cab)$/i</span>
+        <span class="nb">system</span> <span class="s1">'cabextract'</span><span class="p">,</span> <span class="n">src_path</span>
+
+      <span class="k">when</span> <span class="sr">/\.(deb)$/i</span>
+        <span class="nb">system</span> <span class="s1">'ar'</span><span class="p">,</span> <span class="s1">'x'</span><span class="p">,</span> <span class="n">src_path</span>
+
+      <span class="k">when</span> <span class="sr">/\.(rpm)$/i</span>
+        <span class="nb">system</span> <span class="s2">"rpm2cpio </span><span class="si">#{</span><span class="n">src_path</span><span class="p">.</span><span class="nf">inspect</span><span class="si">}</span><span class="s2"> | cpio -i --make-directories"</span>
+
+      <span class="k">else</span>
+        <span class="nb">warn</span> <span class="s2">"I do not know how to extract </span><span class="si">#{</span><span class="n">src_path</span><span class="p">.</span><span class="nf">inspect</span><span class="si">}</span><span class="s2">"</span>
+      <span class="k">end</span>
+    <span class="k">end</span>
+
+    <span class="c1"># clean any mess made by decompression</span>
+    <span class="n">manifest</span> <span class="o">=</span> <span class="no">Dir</span><span class="p">.</span><span class="nf">new</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">).</span><span class="nf">entries</span> <span class="o">-</span> <span class="sx">%w[ . .. ]</span>
+
+    <span class="k">if</span> <span class="n">manifest</span><span class="p">.</span><span class="nf">length</span> <span class="o">==</span> <span class="mi">1</span> <span class="c1"># there was no mess!</span>
+      <span class="n">adj_dst</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="n">dst_path</span><span class="p">,</span> <span class="n">manifest</span><span class="p">.</span><span class="nf">first</span><span class="p">)</span>
+      <span class="n">adj_src</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="n">tmp_dir</span><span class="p">,</span> <span class="n">manifest</span><span class="p">.</span><span class="nf">first</span><span class="p">)</span>
+    <span class="k">else</span>
+      <span class="n">adj_src</span> <span class="o">=</span> <span class="n">tmp_dir</span>
+      <span class="n">adj_dst</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">join</span><span class="p">(</span><span class="n">dst_path</span><span class="p">,</span> <span class="n">src_name</span><span class="p">[</span><span class="sr">/.*(?=\..*?)/</span><span class="p">])</span>
+    <span class="k">end</span>
+
+    <span class="n">adj_dst</span> <span class="o">&lt;&lt;</span> <span class="s2">"+</span><span class="si">#{</span><span class="no">Time</span><span class="p">.</span><span class="nf">now</span><span class="p">.</span><span class="nf">to_i</span><span class="si">}</span><span class="s2">"</span> <span class="k">until</span>
+      <span class="ow">not</span> <span class="no">File</span><span class="p">.</span><span class="nf">exist?</span> <span class="n">adj_dst</span> <span class="ow">and</span>
+      <span class="n">mv</span><span class="p">(</span><span class="n">adj_src</span><span class="p">,</span> <span class="n">adj_dst</span><span class="p">,</span> <span class="ss">:force</span> <span class="o">=&gt;</span> <span class="kp">true</span><span class="p">)</span>
+
+    <span class="n">touch</span> <span class="n">tmp_dir</span> <span class="c1"># give Dir.mktmpdir() something to remove</span>
+
+    <span class="n">adj_dst</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+
+<span class="k">if</span> <span class="vg">$0</span> <span class="o">==</span> <span class="kp">__FILE__</span>
+  <span class="n">prefix</span> <span class="o">=</span> <span class="no">File</span><span class="p">.</span><span class="nf">basename</span><span class="p">(</span><span class="kp">__FILE__</span><span class="p">)</span>
+
+  <span class="no">ARGV</span><span class="p">.</span><span class="nf">each</span> <span class="k">do</span> <span class="o">|</span><span class="n">src</span><span class="o">|</span>
+    <span class="n">dst</span> <span class="o">=</span> <span class="n">extract</span><span class="p">(</span><span class="n">src</span><span class="p">)</span>
+    <span class="nb">puts</span> <span class="s2">"</span><span class="si">#{</span><span class="n">prefix</span><span class="si">}</span><span class="s2">: '</span><span class="si">#{</span><span class="n">src</span><span class="si">}</span><span class="s2">' =&gt; '</span><span class="si">#{</span><span class="n">dst</span><span class="si">}</span><span class="s2">'"</span>
+  <span class="k">end</span>
+<span class="k">end</span>
+</code></pre></div></div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2013-01-16T22:22:00-08:00">16 January 2013: </time></dt><dd class="content"><p>I have stopped using my <code>extract.rb</code> script in favor of the <code>aunpack</code>
+program from the <a href="http://www.nongnu.org/atool/">atool</a> suite.</p>
+</dd></dl></aside><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2006&ndash;2013 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

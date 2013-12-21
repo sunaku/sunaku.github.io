@@ -1,0 +1,68 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Temporarily zooming panes in tmux - The Terminal Programmer</title><meta content="2013-02-26T20:39:08-05:00" name="DCTERMS.created" /><meta content="2013-04-30T17:32:09-04:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="solution, tmux" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="tmux-pane-zoom" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#tmux-pane-zoom" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Temporarily zooming panes in tmux</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2013-02-26T20:39:08-05:00">26 February 2013</time><br /><time class="date" datetime="2013-04-30T17:32:09-04:00"><a href="#updates" title="2 updates">30 April 2013</a></time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__obsolete__" href="#obsolete" class="downlink">Obsolete!</a><ol></ol></li><li><a id="__problem__" href="#problem" class="downlink">Problem</a><ol></ol></li><li><a id="__approach__" href="#approach" class="downlink">Approach</a><ol></ol></li><li><a id="__solution__" href="#solution" class="downlink">Solution</a><ol></ol></li></ol>
+<div id="obsolete" class="section"></div><h1 class="heading">Obsolete!<a href="#obsolete" class="permalink" title="Permalink"></a><a href="#__obsolete__" class="uplink" title="Contents"></a></h1>
+<p>The solution in this article was made obsolete by tmux version 1.8, which
+provides native support for zooming panes through the <code>resize-pane -Z</code> command.</p>
+
+<div id="problem" class="section"></div><h1 class="heading">Problem<a href="#problem" class="permalink" title="Permalink"></a><a href="#__problem__" class="uplink" title="Contents"></a></h1>
+<p>In my <a href="https://github.com/sunaku/wmiirc#readme">wmii configuration</a>, I
+often use the &ldquo;client zoom&rdquo; feature where a group of selected clients (or
+just the currently focused client if there is no selection) is <em>zoomed</em>
+onto a temporary view.  This allows me to focus on the task at hand while
+also giving more space to the client(s) that are relevant to that task.</p>
+
+<div id="approach" class="section"></div><h1 class="heading">Approach<a href="#approach" class="permalink" title="Permalink"></a><a href="#__approach__" class="uplink" title="Contents"></a></h1>
+<p>I ported that feature to tmux this evening, as shown below, by enhancing
+<a href="http://superuser.com/a/433702">an existing snippet</a>, which was written
+by an anonymous user known <a href="http://superuser.com/users/144321/akshay">only as &ldquo;akshay&rdquo;</a>, in the following ways:</p>
+
+<ul>
+<li><p>Use built-in <a href="http://www.softpanorama.org/Scripting/Shellorama/Reference/string_operations_in_shell.shtml">POSIX sh(1) string manipulation functions</a>
+instead of running sed(1), cut(1), etc. through process substitution.</p></li>
+<li><p>Reduce resource consumption by running a simple read-loop, as opposed to
+a complete interactive shell, in the zoomed pane&rsquo;s placeholder.</p></li>
+<li><p>Travel to an already zoomed pane by invoking this feature on the zoomed
+pane&rsquo;s placeholder.</p></li>
+<li><p>Allow the vertical bar delimiter (<code>|</code>) used in this feature to
+occur naturally in window names.</p></li>
+</ul>
+
+<div id="solution" class="section"></div><h1 class="heading">Solution<a href="#solution" class="permalink" title="Permalink"></a><a href="#__solution__" class="uplink" title="Contents"></a></h1>
+<div class="highlight"><pre class="highlight shell"><code><span class="nb">bind</span> <span class="nt">-n</span> M-m run <span class="s1">'set -e;                                            \
+  new_ip=$(tmux display-message -p "#I|#P");                        \
+  if ! tmux select-window -t "*$new_ip"; then                       \
+    old_wip=$(tmux display-message -p "#W");                        \
+    old_w=${old_wip%|[0-9]*|[0-9]*};                                \
+    if test "$old_w" != "$old_wip"; then                            \
+      old_i=${old_wip%|*}; old_i=${old_i##*|};                      \
+      old_p=${old_wip##*|};                                         \
+      cur_i=$(tmux display-message -p "#I");                        \
+      cur_p=$(tmux display-message -p "#P");                        \
+      tmux select-window -t ":$old_i";                              \
+      tmux select-pane -t ":$old_i.$old_p";                         \
+      tmux swap-pane -s ":$cur_i.$cur_p";                           \
+      if test "$(tmux list-panes -t ":$cur_i" | wc -l)" -le 1; then \
+        tmux kill-window -t ":$cur_i";                              \
+      fi;                                                           \
+    else                                                            \
+      new_wip="$old_wip|$new_ip";                                   \
+      tmux new-window -d -n "$new_wip" "sh -c \"                    \
+        trap : INT QUIT;                                            \
+        while :; do                                                 \
+          echo PLACEHOLDER;                                         \
+          cat &gt; /dev/null;                                          \
+        done                                                        \
+      \"";                                                          \
+      tmux swap-pane -s "$new_wip";                                 \
+      tmux select-window -t "$new_wip";                             \
+    fi;                                                             \
+  fi;                                                               \
+'</span>
+</code></pre></div></div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2013-04-30T17:32:09-04:00">30 April 2013: </time></dt><dd class="content"><p>The configuration snippet presented in this article was made obsolete by
+tmux version 1.8, which provides native support for zooming panes via
+the <code>resize-pane -Z</code> command.</p>
+</dd></dl></aside><aside class="update"><dl><dt class="title"><time datetime="2013-04-03T20:53:25-04:00"> 3 April 2013: </time></dt><dd class="content"><p>I have updated the command that is run inside the placeholder window to
+be resilient to the SIGQUIT signal (produced by pressing Ctrl-4) and
+also to not assume that the user&rsquo;s defaut shell is sh(1) compatible.</p>
+</dd></dl></aside><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2013 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

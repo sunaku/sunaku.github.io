@@ -1,0 +1,145 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Copyleft variation of the MIT license - The Terminal Programmer</title><meta content="2007-02-05T07:45:00-08:00" name="DCTERMS.created" /><meta content="2009-02-08T22:46:59-08:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="software, licensing, open source" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="copyleft-mit-license" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#copyleft-mit-license" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Copyleft variation of the MIT license</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2007-02-05T07:45:00-08:00"> 5 February 2007</time><br /><time class="date" datetime="2009-02-08T22:46:59-08:00"><a href="#updates" title="1 update">8 February 2009</a></time></header><hr /><div class="description"></div><div class="content"><ol class="table-of-contents"><li><a id="__beliefs__" href="#beliefs" class="downlink">Beliefs</a><ol></ol></li><li><a id="__candidates__" href="#candidates" class="downlink">Candidates</a><ol></ol></li><li><a id="__approach__" href="#approach" class="downlink">Approach</a><ol></ol></li><li><a id="__result__" href="#result" class="downlink">Result</a><ol></ol></li><li><a id="__analysis__" href="#analysis" class="downlink">Analysis</a><ol></ol></li></ol><p>I had been using the <a href="http://www.gnu.org/licenses/gpl.html">GNU General Public
+License</a> for some years now without
+fully understanding its implications. Recently, I spent some time thinking
+about my ethical beliefs regarding free software and discovered that the GPL
+does not satisfy them. I investigated other open source licenses, but nothing
+fit. So, with the help of others, I developed a copyleft variation of the
+famous <a href="http://www.opensource.org/licenses/mit-license.php">MIT license</a>.</p>
+
+<div id="beliefs" class="section"></div><h2 class="heading">Beliefs<a href="#beliefs" class="permalink" title="Permalink"></a><a href="#__beliefs__" class="uplink" title="Contents"></a></h2>
+<p>These are my ethical beliefs regarding open-source software:</p>
+
+<ul>
+<li><p>Source code should <em>always</em> be available for software because it allows the user to learn from and improve upon the software. In line with the academic spirit, this ensures that <em>everyone</em> has access to knowledge (the source code) &ndash; not just an elite few.</p></li>
+<li><p>The license should <em>only</em> govern my source code and derivatives of it &ndash; nothing more. In this manner, I avoid imposing my beliefs on software that simply uses my source code.</p></li>
+</ul>
+
+<div id="candidates" class="section"></div><h2 class="heading">Candidates<a href="#candidates" class="permalink" title="Permalink"></a><a href="#__candidates__" class="uplink" title="Contents"></a></h2>
+<p>The license that best embodies my ethical beliefs is the <a href="http://creativecommons.org/licenses/by-sa/3.0/">Creative Commons&rsquo;
+by-sa</a> (attribution + share-
+alike) license. In particular, I like by-sa because it ensures that my source
+code (and derivatives of it) will never be locked away or kept secret.</p>
+<p>Unfortunately, CC does not recommend using their licenses for software. A
+friend suggested that I try the <a href="http://www.opensource.org/licenses/sleepycat.php">SleepyCat
+license</a>, whose copyleft
+condition (the third condition) states:</p>
+
+<blockquote>
+<p>Redistributions in any form must be accompanied by information on how to
+obtain <strong>complete source code for the DB software <em>and</em> any accompanying
+software</strong> that uses the DB software. The source code must either be included
+in the distribution or be available for no more than the cost of distribution
+plus a nominal fee, and <strong>must be freely redistributable under <em>reasonable</em>
+conditions</strong>. For an executable file, complete source code means the source
+code for all modules it contains. It does not include source code for modules
+or files that typically accompany the major components of the operating system
+on which the executable file runs.</p>
+</blockquote>
+<p>I found this condition to be:</p>
+
+<ul>
+<li><p><em>too aggressive</em>: I only want the license to govern my source code and its derivatives. I do not wish to impose the copyleft condition on any accompanying software that uses my source code.</p></li>
+<li><p><em>too brittle</em>: In the phrase &ldquo;must be freely redistributable under <em>reasonable conditions</em>&rdquo;, what is considered to be <em>reasonable</em>?</p></li>
+</ul>
+<p>The term <em>reasonable</em> is very subjective, and I can easily imagine it being
+abused by evildoers. Ultimately, a judge will have to decide the meaning of
+this word in court.</p>
+<p>I looked at other licenses that fit the by-sa ideology (particularly MPL,
+CDDL, CPL, EPL) but found them all to be very lengthy and full of legalese. In
+contrast, I admire the short length and great comprehensibility of the MIT
+license and so, I decided to make a copyleft variation of it.</p>
+
+<div id="approach" class="section"></div><h2 class="heading">Approach<a href="#approach" class="permalink" title="Permalink"></a><a href="#__approach__" class="uplink" title="Contents"></a></h2>
+<p>The MIT license has the following properties (from <a href="http://blogs.zdnet.com/Burnette/?p=131">Ed Burnette&rsquo;s
+survey</a> of free software licenses):</p>
+
+<blockquote>
+<ol>
+<li>Code is protected by copyright? Yes</li>
+<li>Code can be used in closed source projects? Yes</li>
+<li>Program that uses (incorporates) the software can be sold commercially?  Yes</li>
+<li>Source to bug fixes and modifications must be released? No</li>
+<li>Provides explicit patent license? No</li>
+</ol>
+</blockquote>
+<p>My goal was to modify the condition paragraph of the MIT license so that
+question 4 above is given a &ldquo;Yes&rdquo; answer. The resulting license is a weak
+copyleft variation of the MIT license.</p>
+
+<div id="result" class="section"></div><h2 class="heading">Result<a href="#result" class="permalink" title="Permalink"></a><a href="#__result__" class="uplink" title="Contents"></a></h2>
+<div class="highlight"><pre class="highlight plaintext"><code>Copyright &lt;year&gt; &lt;holder&gt;
+
+Permission is hereby granted, free of charge, to any person obtaining a
+copy of this software and associated documentation files (the "Software"),
+to deal in the Software without restriction, including without limitation
+the rights to use, copy, modify, merge, publish, distribute, sublicense,
+and/or sell copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following conditions:
+* All copies and substantial portions of the Software (the "Derivatives")
+  and their corresponding machine-readable source code (the "Code") must
+  include the above copyright notice and this permission notice.
+
+* Upon distribution, the Derivatives must be accompanied by either the Code
+  or--provided that the Code is obtainable for no more than the cost of
+  distribution plus a nominal fee--information on how to obtain the Code.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS
+FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER
+IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
+CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+</code></pre></div><p>The license shown above is the end result of several revisions made in
+response to and with the help of friends and various people on the <a href="http://people.debian.org/%7Eterpstra/list/debian-legal.en.html">debian-
+legal</a> and
+<a href="http://www.crynwr.com/cgi-bin/ezmlm-cgi?3">license-discuss</a> mailing lists and
+the <a href="irc://irc.oftc.net/wmii">IRC chat room for the wmii project</a>.</p>
+<p>Many discouraged me from pursuing my own license because I was inadvertently
+contributing to the problem of <a href="http://lwn.net/Articles/124797/">license
+proliferation</a>, but I proceeded nonetheless
+because no existing license served my particular ethical beliefs so concisely
+as this.</p>
+<p>This license appears to satisfy the <a href="http://www.opensource.org/docs/osd">Open Source Definition
+(OSD)</a>, <a href="http://www.debian.org/social_contract#guidelines">Debian Free Software Guidelines
+(DFSG)</a>, the three tests
+(desert island, dissident, and tentacles of evil) outlined in the <a href="http://people.debian.org/%7Ebap/dfsg-faq.html">DFSG-
+FAQ</a>, and GPL compatibility
+which the Free Software Foundation (FSF) is presently in the process of
+verifying. However, only <a href="http://www.crynwr.com/cgi-bin/ezmlm-%0Acgi?3:mss:12667:200704:hphhhjdoecklcljgckno">OSD compliance has been
+verified</a> thus far.</p>
+
+<div id="analysis" class="section"></div><h2 class="heading">Analysis<a href="#analysis" class="permalink" title="Permalink"></a><a href="#__analysis__" class="uplink" title="Contents"></a></h2>
+<p>This license is literally <em>identical</em> to the MIT license except for:</p>
+
+<ol>
+<li><p>The removal of the <code>(c)</code> token from the copyright notice because it is <a href="http://www.copyright.gov/circs/circ03.html">not a legally recognized substitute</a> for the real &copy; symbol.</p></li>
+<li><p>The list of conditions, in the middle.</p></li>
+</ol>
+<p>Now, let us examine the list of conditions one by one.</p>
+
+<blockquote>
+<p>All copies and substantial portions of the Software (the &ldquo;Derivatives&rdquo;) and
+their corresponding machine-readable source code (the &ldquo;Code&rdquo;) must include the
+above copyright notice and this permission notice.</p>
+</blockquote>
+<p>This condition ensures that the copyright and permission notice are never
+removed from the software. Does this sound familiar? <em>Of course!</em> This
+condition is simply a restatement of the original MIT license&rsquo;s condition
+paragraph.</p>
+
+<blockquote>
+<p>Upon distribution, the Derivatives must be accompanied by either the Code or
+&ndash;provided that the Code is obtainable for no more than the cost of
+distribution plus a nominal fee&ndash;information on how to obtain the Code.</p>
+</blockquote>
+<p>This condition ensures access to the software&rsquo;s source code because the code
+is either (1) distributed along with the software or (2) obtainable by some
+other means. This is the primary innovation that makes this license a
+<em>copyleft</em> variation of the MIT license.</p>
+</div><hr /><h1 id="updates">Updates<a class="permalink" href="#updates" title="Permalink"></a></h1><aside class="update"><dl><dt class="title"><time datetime="2009-02-08T22:46:59-08:00"> 8 February 2009: </time></dt><dd class="content"><p>I gave up on this custom-crafted license because the risk of its invalidity in
+a court of law was too overbearing, and instead embraced the <a href="http://www.opensource.org/licenses/isc-license.txt">ISC
+license</a> for all of my
+present and future open-source projects. What a relief!</p>
+</dd></dl></aside><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2007&ndash;2009 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>

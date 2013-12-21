@@ -1,0 +1,512 @@
+<?xml version="1.0" encoding="utf-8" ?><feed xmlns="http://www.w3.org/2005/Atom"><id>https://sunaku.github.io/</id><link href="https://sunaku.github.io/" /><link href="https://sunaku.github.io/index.atom" rel="self" /><title>The Terminal Programmer</title><subtitle type="html"><![CDATA[<p><a href="about.html">
+<picture><source type="image/webp" srcset="www/afterglow.ie/LinuxZealot.webp"><img src="www/afterglow.ie/LinuxZealot.png" width="128" height="128" alt="This image is the &quot;Linux Zealot&quot; icon from the &quot;Forum Faces 2&quot; icon set by Cian Walsh of Afterglow Design (www.afterglow.ie)" title="This image is the &quot;Linux Zealot&quot; icon from the &quot;Forum Faces 2&quot; icon set by Cian Walsh of Afterglow Design (www.afterglow.ie)"></picture>
+</a></p>
+<p><a href="https://github.com/sunaku">I program</a>, incessantly,                     <br>
+and I fear it will be the <a href="the-cult-of-codethulu.html">end of me</a>.        <br>
+I cannot stop, for it commands my will,     <br>
+<a href="about.html">thus I am</a> the terminal programmer, <a href="4-reminders-6-paramitas-1-universe.html">nil</a>.   <br></p>
+]]></subtitle><updated>2026-01-30T08:10:48-05:00</updated><author><name>Suraj N. Kurapati</name></author><entry><id>https://sunaku.github.io/enthium-keyboard-layout.html</id><link href="https://sunaku.github.io/enthium-keyboard-layout.html" /><title>Enthium keyboard layout: Engrammer meets Hands Down Promethium</title><updated>2026-01-30T08:10:48-05:00</updated><published>2024-11-02T15:52:34-04:00</published><author><name>Suraj N. Kurapati</name></author><category term="keyboard"></category><category term="layout"></category><category term="ergonomics"></category><category term="optimization"></category><summary type="html"><![CDATA[<dl><dt class="title"><time datetime="2026-01-30T08:10:48-05:00">30 January 2026: </time></dt><dd class="content"><p>I&rsquo;m pleased <a href="https://www.reddit.com/r/KeyboardLayouts/comments/1qr58f0/enthium_v14/">to announce</a> that <strong>Enthium v14</strong> is now <a href="https://github.com/sunaku/enthium/releases/v14">officially released</a>:</p>
+
+<blockquote>
+<div class="highlight"><pre class="highlight plaintext"><code>  q y o u = x l d p z
+b c i a e - k h t n s w
+  ' , . ; / j m g f v
+            r
+</code></pre></div></blockquote>
+<p>This is a minor swap of <code>;/</code> compared to Enthium v13, restoring v12&rsquo;s order.
+Special thanks to <strong>~PK</strong> and the Glove80 community for testing candidate v14a.</p>
+
+<div></div>
+<p>Rationale:</p>
+
+<ul>
+<li><code>;</code> and <code>:</code> are much easier to access for programming.</li>
+<li><code>,</code> and <code>;</code> are easier to twiddle for Vim&rsquo;s f/F/t/T jumps.</li>
+<li><code>:/</code> flows logically from left-to-right when typing URLs.</li>
+</ul>
+
+<div></div>
+<p>Performance:</p>
+
+<ul>
+<li>Cyanophage <em>Effort</em> reduced from 416.42 to 415.46.</li>
+<li>AKL (Keygen Pro) <em>Lateral Stretch Bigrams</em> increased from 2.22% (P36) to 2.25% (P36) while maintaining the same percentile.</li>
+<li>AKL (Keygen Pro) <em>Lateral Stretch Skipgrams</em> increased from 2.84% (P20) to 2.91% (P23).</li>
+<li>Aside from the above, all else remains unchanged. ⚖️</li>
+</ul>
+</dd></dl><dl><dt class="title"><time datetime="2026-01-11T15:43:00-05:00">11 January 2026: </time></dt><dd class="content"><p>The &ldquo;Long Row Jumps (AKL ≥ 2u Δy)&rdquo; value in the Performance section has been updated to include both <em>discordant</em> and <em>concordant</em> values from AKL&rsquo;s Keygen Pro analyzer, following the investigation and correction by @cyanophage in <a href="https://www.reddit.com/r/KeyboardLayouts/comments/1pzpcul/enthium_v13_pwf/nwyfsdn/">this Reddit discussion</a>.  Previously, the figure referred only to the discordant component (which decreased from 0.40% in v12 to 0.19% in v13) and excluded the concordant component (which increased from 0.18% to 0.30%). When combined, the total value shows a net improvement of 15.5%, decreasing from 0.58% in v12 to 0.49% in v13.</p>
+</dd></dl><dl><dt class="title"><time datetime="2025-12-30T12:52:18-05:00">30 December 2025: </time></dt><dd class="content"><p>Nearly every day since releasing Enthium v12, I have experienced a moment of missing P on the upper row (its previous placement in Enthium v11) for its comfortable SP, PL, PH, XP rolls. 😅  However, swapping P and W (creating a PNW column) would break the vertical rakeability of the <em>WN</em> same-finger bigram! ⚖️  So each day, I went back to the drawing board, thinking up new and interesting ways to solve this conundrum&hellip; 🤔 only to retreat to Enthium v12, defeated&hellip; 🥼  That is, until now! 🤓✨</p>
+<p>I&rsquo;m pleased <a href="https://www.reddit.com/r/KeyboardLayouts/comments/1pzpcul/enthium_v13_pwf/">to announce</a> that <strong>Enthium v13</strong> is now <a href="https://github.com/sunaku/enthium/releases/v13">officially released</a>:</p>
+
+<blockquote>
+<div class="highlight"><pre class="highlight plaintext"><code>  q y o u = x l d p z
+b c i a e - k h t n s w
+  ' , . / ; j m g f v
+            r
+</code></pre></div><p>0.22%–0.55% SFBs, 0.07% LSBs, 0.16% scissors, 45.82% rolls, 1.48% redirects, 2.91% pinky off</p>
+</blockquote>
+<p>This is a clockwise rotation of <code>PWF</code> and a swap of <code>/;</code> compared to Enthium v12.
+It took me about <strong>8 minutes to unlock all v13 letters</strong> 🚀 on <a href="https://www.keybr.com/profile/y2mcke8">a fresh KeyBr profile</a>.
+See the <a href="https://github.com/sunaku/enthium/tree/v13#readme">project README for Enthium v13</a> for more information.</p>
+<p>Special thanks to <strong>~PK</strong> and the Glove80 community for testing v13 candidates. 🎉</p>
+</dd></dl><dl><dt class="title"><time datetime="2025-12-05T00:25:00-05:00"> 5 December 2025: </time></dt><dd class="content"><p>While working toward my goal of <a href="https://www.typelit.io/chapters/Twelve_Years_a_Slave">typing out <strong><em>Twelve Years A Slave</em> by Solomon Northup</strong> on TypeLit</a>, I observed that having <code>W</code> on the left pinky lateral key (traditional CapsLock key) creates a lot of busyness on my left hand at sustained high speeds. 😩  Summoned back to the drawing board, I revisited earlier designs and evaluated 10 new variations, leading me to <a href="https://github.com/sunaku/enthium/releases/v12">Enthium v12</a>:</p>
+
+<div></div>
+<p><a href="https://github.com/sunaku/enthium/tree/v12#readme">This release</a> improves hand balance, weak redirects, pinky load, and Vim/programming sensibility.</p>
+
+<blockquote>
+<p>0.25%–0.54% SFBs, 0.07% LSBs, 0.16% scissors, 45.87% rolls, 1.49% redirects, 3.22% pinky off</p>
+<div class="highlight"><pre class="highlight plaintext"><code>  q y o u = x l d w z
+b c i a e - k h t n s f
+  ' , . ; / j m g p v
+            r
+</code></pre></div></blockquote>
+<p>Rationale:</p>
+
+<ul>
+<li>Moves <code>W</code> to right hand for better balance in English.</li>
+<li>Eliminates <code>E.</code> same-finger bigram (even if rakeable).</li>
+<li>Restores <code>-=</code> cluster for zooming and app shortcuts.</li>
+<li>Forms the <code>&#39;,.</code> Dvorak sequence on the same fingers.</li>
+</ul>
+<p>Performance:</p>
+
+<ul>
+<li>Cyanophage <em>Pinky Off</em> reduced from 3.31% to 3.22%</li>
+<li>AKL <em>weak redirects</em> reduced from 0.37% to 0.29%</li>
+<li>AKL <em>weakish redirects</em> reduced from 0.73% to 0.58%</li>
+</ul>
+<p>Adaptation:</p>
+
+<ul>
+<li>Coming from <a href="https://github.com/sunaku/enthium/releases/v11">Enthium v11</a>, it took me less than <strong>15 minutes to unlock all letters</strong> 🚀 on <a href="https://www.keybr.com/profile/u2cxgjc">a fresh KeyBr (typing training) profile</a>.</li>
+<li>QUE (QU inward roll to UE downward rake) and QUA (QU inward roll to UA index-middle roll) are <em>super fast</em> to execute and feel powerful! ⚡  This is the fastest I&rsquo;ve ever typed them! 🤯</li>
+<li>B/W and Q/Z and X are back at their former <a href="https://github.com/sunaku/enthium/releases/v9">Enthium v9</a> locations, which is friendlier for Vim.  Also, XP rolls feel stronger now. 💪</li>
+</ul>
+<p>Special thanks to <strong>~Mitsec</strong> for <a href="https://discord.com/channels/807843650717483049/807843651304161342/1444420280108974111">suggesting layout improvements on the AKL discord</a>. 🎉</p>
+</dd></dl><dl><dt class="title"><time datetime="2025-11-01T09:38:46-04:00"> 1 November 2025: </time></dt><dd class="content"><p>A whole year after embarking on this journey, I&rsquo;m pleased to announce that,
+<a href="#valarauka-suggestions">inspired by community feedback</a>,
+I have released <a href="https://github.com/sunaku/enthium/releases/v11">Enthium v11</a>, which
+makes same-hand rolls more comfortable while restoring <strong>YOU</strong> and <code>,./;</code> familiarity.</p>
+</dd></dl><dl><dt class="title"><time datetime="2025-08-10T05:20:00-04:00">10 August 2025: </time></dt><dd class="content"><p>With <a href="https://github.com/sunaku/enthium/issues/6">community feedback and extensive testing</a>, I have released <a href="https://github.com/sunaku/enthium/releases/v10">Enthium v10</a>:</p>
+
+<blockquote>
+<p>0.42% SFBs, 0.15% LSBs, 0.08% scissors, 46.53% rolls, 2.18% redirects, 3.31% pinky off</p>
+<div class="highlight"><pre class="highlight plaintext"><code>  z y u o ; q l d p x
+w c i e a , k h t n s f
+  ' - = . / j m g b v
+            r
+</code></pre></div></blockquote>
+
+<table><thead>
+<tr>
+<th>Metric</th>
+<th>v10</th>
+<th>v9</th>
+<th>Change</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>SFBs</td>
+<td>0.42%</td>
+<td>0.48%</td>
+<td>Improved ✅</td>
+</tr>
+<tr>
+<td>LSBs</td>
+<td>0.15%</td>
+<td>0.18%</td>
+<td>Improved ✅</td>
+</tr>
+<tr>
+<td>Scissors</td>
+<td>0.08%</td>
+<td>0.08%</td>
+<td>Same ⚖️</td>
+</tr>
+<tr>
+<td>Skipgrams (2u)</td>
+<td>0.32%</td>
+<td>0.35%</td>
+<td>Improved ✅</td>
+</tr>
+<tr>
+<td>Rolls</td>
+<td>46.53%</td>
+<td>45.30%</td>
+<td>Improved ✅</td>
+</tr>
+<tr>
+<td>Redirects</td>
+<td>2.18%</td>
+<td>2.06%</td>
+<td>Slight ↑ ⚠️</td>
+</tr>
+<tr>
+<td>Pinky/Ring Scissors</td>
+<td>0.37%</td>
+<td>0.35%</td>
+<td>Slight ↑ ⚠️</td>
+</tr>
+<tr>
+<td>PinkyOff</td>
+<td>3.31%</td>
+<td>3.51%</td>
+<td>Improved ✅</td>
+</tr>
+</tbody></table>
+<p>See <a href="https://github.com/sunaku/enthium/tree/v10#readme">https://github.com/sunaku/enthium/tree/v10#readme</a> for more information.
+Special thanks 🙇‍♂️ to @jcbql for performance suggestions in <a href="https://github.com/sunaku/enthium/issues/6">GitHub issue 6</a>.</p>
+</dd></dl><dl><dt class="title"><time datetime="2025-06-25T22:18:27-04:00">25 June 2025: </time></dt><dd class="content"><p>I&rsquo;ve released <a href="https://github.com/sunaku/enthium/releases/v9">Enthium v9</a>, maximizing performance and shortcut convenience:</p>
+
+<blockquote>
+<p>0.48% SFBs, 0.18% LSBs, 0.08% scissors, 45.30% rolls, 2.83% redirects &ndash; with these results from Cyanophage&rsquo;s analyzer, Enthium now takes first place 🥇 in all 3 categories (SFBs, LSBs, and scissors) in Pascal Getreuer&rsquo;s performance ranking table! 🤯</p>
+<div class="highlight"><pre class="highlight plaintext"><code>  q y u o / x l d w z
+b c i e a , k h t n s v
+  ' - = . ; j m g p f
+            r
+</code></pre></div></blockquote>
+
+<ul>
+<li><p>Minus and equals are clustered for intuitive zooming in/out with Ctrl.</p></li>
+<li><p>Though period and comma are reversed in terms of their shifted symbols
+<code>&gt;</code> and <code>&lt;</code>, this arrangement helps to reduce lateral stretch bigrams
+while clustering <code>&gt;</code> with minus and equals for <code>-&gt;</code> and <code>=&gt;</code> arrows
+and stacking them vertically on traditional row-staggered keyboards.</p></li>
+<li><p>Swap O and U (changing the inward-rolling YOU into a redirecting YUO) to
+distribute finger workload more evenly (especially for the middle finger)
+and to avoid same-finger bigrams on AU (as in &ldquo;<em>au</em>thor&rdquo;) and EO (as in &ldquo;p<em>eo</em>ple&rdquo;).
+This improvement was <a href="https://reddit.com/r/KeyboardLayouts/comments/1l5ei0j/_/mwgusgt/">suggested by</a> the great @cyanophage himself! 🧙✨</p></li>
+</ul>
+<p>See <a href="https://github.com/sunaku/enthium/tree/v9#readme">https://github.com/sunaku/enthium/tree/v9#readme</a> for more information.</p>
+</dd></dl><dl><dt class="title"><time datetime="2025-01-17T11:06:50-05:00">17 January 2025: </time></dt><dd class="content"><p>Inspired by the ongoing discussion and feedback I&rsquo;ve received on the importance of pinky usage in the Engram family of layouts, I have decided to follow my intuition to <a href="#b-and-v">better accommodate shorter/weak pinkies</a> in <a href="https://github.com/sunaku/enthium/tree/v5">Enthium v5</a>, which needs less reaching up and allows more &ldquo;home row&rdquo; typing.</p>
+</dd></dl><dl><dt class="title"><time datetime="2024-12-06T10:48:31-05:00"> 6 December 2024: </time></dt><dd class="content"><p>The placement of Q on the vowel hand has been bothering me sometimes when typing the QU sequence which is often followed by more vowels, incurring even more one-handed activity. 😞  Consequently, I have <a href="#q-and-z">decided to swap Q and Z</a> to restore Q to the consonant hand just like in Arno&rsquo;s Engram 2.0 layout.</p>
+</dd></dl><dl><dt class="title"><time datetime="2024-11-27T07:00:36-05:00">27 November 2024: </time></dt><dd class="content"><p>The placement of <code>/</code> and <code>.</code> has been bothering me for <code>./</code> and <code>../</code>
+filesystem paths, conflicting with Engrammer familiarity (which has <code>/</code> on
+the lower row and <code>;</code> on the upper row), and deviating from Vim&rsquo;s HL directionality
+where I <em>reach up</em> with my right index finger from <code>H</code> to <code>L</code> for the <em>next
+character</em> but then <em>reach down</em> with my left index finger from <code>A</code> to <code>;</code> for the
+<em>next jump</em>. 😅</p>
+<p>Thus I <a href="https://github.com/sunaku/enthium/commit/d88c59331ae8a9a2080555289b920a9c2642cb80">swapped <code>/</code> with <code>;</code></a> and it didn&rsquo;t hinder the layout&rsquo;s performance:</p>
+
+<ul>
+<li>KeySolve analyzer&rsquo;s HSB% score increased by +0.02% from 5.62% to 5.64%</li>
+<li>KeySolve analyzer&rsquo;s HSS% score increased by +0.03% from 5.47% to 5.50%</li>
+<li>Cyanophage analyzer&rsquo;s Effort score fell by -0.13 from 398.47 to 398.34</li>
+<li>Everything else remained the same! 🏆</li>
+</ul>
+<p>It&rsquo;s a funny thing again with intuition: I actually <a href="https://github.com/sunaku/enthium/commit/d77870739450b62d0f3623fba75115f351958216">had Semicolon stacked
+above Slash</a> in Enthium, and Backspace on T1 and Enter on T5 in <a href="https://github.com/sunaku/glove80-keymaps">Glorious Engrammer</a> during
+the early iterations.  And now I&rsquo;m slowly gravitating back to the origins,
+having strayed from the path of least surprise (intuition).</p>
+</dd></dl>]]></summary></entry><entry><id>https://sunaku.github.io/moergo-glove80-keyboard.html</id><link href="https://sunaku.github.io/moergo-glove80-keyboard.html" /><title>Glove80 programmable ergonomic keyboard with &quot;Glorious Engrammer&quot; keymap</title><updated>2026-01-24T23:50:17-05:00</updated><published>2023-07-04T05:00:41-07:00</published><author><name>Suraj N. Kurapati</name></author><category term="typing"></category><category term="keyboard"></category><category term="layout"></category><category term="ergonomics"></category><category term="programming"></category><summary type="html"><![CDATA[<dl><dt class="title"><time datetime="2026-01-24T23:50:17-05:00">24 January 2026: </time></dt><dd class="content"><p>Updated article, <a href="#layers">interactive layers map</a> to reflect <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v42-rc9">v42-rc9 preview release</a>.</p>
+</dd></dl><dl><dt class="title"><time datetime="2025-01-13T11:37:01-05:00">13 January 2025: </time></dt><dd class="content"><p>I&rsquo;ve published a new <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v41">version 41</a> of this keymap that adds dynamic speed controls and natural scrolling for mouse emulation, improves the per-key RGB illumination scheme for better visual feedback on layer activation, restores much of the v39 thumb cluster design for more comfortable typing of the &ldquo;R&rdquo; thumb letter in the <a href="enthium-keyboard-layout.html">Enthium alpha layout</a>, improves consistency for better memorability, adds a new French letter in the World layer, and much more!</p>
+</dd></dl><dl><dt class="title"><time datetime="2024-12-31T17:05:02-05:00">31 December 2024: </time></dt><dd class="content"><p>I&rsquo;ve published a new <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v40">version 40</a> of this keymap that adds support for AZERTY and similar locales, simplifies key repetition and one-shot sticky shift, revamps the Gaming layer, adds options for thumb layer access key forgiveness, modernizes the alpha layout selection, standardizes a common thumb cluster and function row design across all alpha layouts, and much more! This also features the most beautiful keyboard photo I&rsquo;ve ever taken:</p>
+<p><picture><source type="image/webp" srcset="moergo-glove80-keyboard-photograph.webp"><img src="moergo-glove80-keyboard-photograph.jpg" width="4000" height="1848" alt="Photograph of my MoErgo Glove80 keyboard with Enthium layout and per-key RGB illumination." title="Photograph of my MoErgo Glove80 keyboard with Enthium layout and per-key RGB illumination."></picture>
+</p>
+<p>In addition, you can now choose an alpha layout for the base layer (Enthium, Engrammer, Engram, QWERTY, template) in the <a href="#layers">interactive layer map</a> to match your personal alpha layout choice, as commonly requested by users.</p>
+</dd></dl><dl><dt class="title"><time datetime="2024-11-12T22:52:00-05:00">12 November 2024: </time></dt><dd class="content"><p>I&rsquo;ve published a new <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v39">version 39</a> of this keymap that introduces the <a href="enthium-keyboard-layout.html">Enthium alpha layout</a> and adjusts the Number, Function, and System layers accordingly; improves thumb key timing, adds per-key RGB indicators (requires PR30 beta firmware) for home row mods and Miryoku layer activation, inward-rolling sticky modifiers for character selection in the World layer, and much more!</p>
+<p><picture><source type="image/webp" srcset="moergo-glove80-keyboard-base-layer.webp"><img src="moergo-glove80-keyboard-base-layer.png" width="2256" height="1265" alt="Enthium alpha layout" title="Enthium alpha layout"></picture>
+</p>
+</dd></dl><dl><dt class="title"><time datetime="2024-10-05T01:07:48-04:00"> 5 October 2024: </time></dt><dd class="content"><p>I&rsquo;ve published a new <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v38">version 38</a> of this keymap that introduces an optional &ldquo;Shift forgiveness&rdquo; setting to handle a home row shift nuance, restores the Symbol layer&rsquo;s layout as shown in my video tour and adjusts the Number layer to harmonize, adds a combo for sticky &ldquo;Meh&rdquo; modifiers on the base layer, improves the default timing, and more!</p>
+<img src="https://github.com/user-attachments/assets/5f39f233-3938-4077-a7d0-7fe77b0bf8ce" alt="Symbol layer" title="Symbol layer"></dd></dl><dl><dt class="title"><time datetime="2024-09-15T23:51:39-04:00">15 September 2024: </time></dt><dd class="content"><p>I&rsquo;ve published a new <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v37">version 37</a> of this keymap that adds new combo shortcuts on the base layer, tunes home row mod timing according to finger strength differences, makes it easier to tune all home row mod timing parameters together as a group, reworks the difficulty levels for consistency, and much more!</p>
+</dd></dl><dl><dt class="title"><time datetime="2024-02-18T12:40:02Z">18 February 2024: </time></dt><dd class="content"><p>I&rsquo;ve swapped <code>~</code> TILDE and <code>@</code> AT on the Symbol layer in <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v35">version 35</a>, making the latter easier to reach and the former a bit more comfortable for typing <code>~/</code> UNIX home paths.</p>
+<img src="https://github.com/sunaku/glove80-keymaps/assets/9863/ebd23300-d0a7-4e29-bf73-26547795ad47" alt="Symbol layer changes" title="Symbol layer changes"></dd></dl><dl><dt class="title"><time datetime="2023-12-01T18:12:00-08:00"> 1 December 2023: </time></dt><dd class="content"><p>I&rsquo;ve published a video tour of my symbol layer, with examples in Vim:</p>
+
+<blockquote>
+<p><a class="embed_youtube_video" href="https://www.youtube.com/embed/uuSR81wc6WQ?autoplay=1&cc_load_policy=1&modestbranding=1"><img src="https://i.ytimg.com/vi/uuSR81wc6WQ/hqdefault.jpg" alt="Click to watch video" width="480" height="360"></a></p>
+</blockquote>
+</dd></dl><dl><dt class="title"><time datetime="2023-11-24T09:05:12-08:00">24 November 2023: </time></dt><dd class="content"><p>I&rsquo;ve released <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v31">version 31</a> featuring mouse keys (keyboard control of mouse pointer &amp; wheel), Unicode curly quotes, and improved Number layer affinity.</p>
+</dd></dl><dl><dt class="title"><time datetime="2023-11-13T23:46:35-08:00">13 November 2023: </time></dt><dd class="content"><p>I&rsquo;ve released <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v30">version 30</a> featuring an improved symbol layer with balanced triangles and <a href="#spacegrams">support for spacegrams</a>; and support for QWERTY and a few other popular keyboard layouts (which you can activate dynamically via Magic+N or set as the base layer when compiling your keymap) in order to welcome other layout users on the path to a glorious typing experience. 🖖</p>
+<img src="https://github.com/sunaku/glove80-keymaps/assets/9863/9258583e-6035-4e0b-921a-da90e02be6cf" alt="symbol layer" title="symbol layer"></dd></dl><dl><dt class="title"><time datetime="2023-11-08T00:27:32-08:00"> 8 November 2023: </time></dt><dd class="content"><p>I&rsquo;ve released <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v29">version 29</a> featuring
+an improved symbol layer (as follows), and I&rsquo;ve <a href="#symbol-layer">added an
+explanation</a> of the design methodology I appear to follow.
+Also, I&rsquo;ve added interactive usage examples to most of the layer diagrams.</p>
+<img src="https://github.com/sunaku/glove80-keymaps/assets/9863/608a145c-511d-41e1-805c-44ad8f7123da" alt="cursor layer changes" title="cursor layer changes"></dd></dl><dl><dt class="title"><time datetime="2023-10-17T03:33:33-04:00">17 October 2023: </time></dt><dd class="content"><p>I released <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v25">version 25</a> featuring Emoji, international characters, and more!</p>
+
+<ul>
+<li>Added <a href="#emoji-layer">Emoji layer</a> and <a href="#world-layer">World layer</a>, activated by thumbs&rsquo; satellite keys.</li>
+<li>Symbol layer: swap backtick and double quotes so that I can inward roll from equals to double quote in one swoop.
+
+<ul>
+<li><code>(&quot;</code> for starting a string value argument for a function call.</li>
+<li><code>=&quot;</code> for HTML attributes and Bourne shell variable assignments.</li>
+</ul></li>
+<li>Cursor layer: easier one-handed SelectAll -&gt; Cut/Copy/Paste; put undo/redo on same upper row as right hand; adjust find keys accordingly.</li>
+</ul>
+</dd></dl><dl><dt class="title"><time datetime="2023-10-01T18:18:55-07:00"> 1 October 2023: </time></dt><dd class="content"><p>I&rsquo;ve observed that I don&rsquo;t really use <code>,</code> and <code>;</code> from the bottom row in
+practice for navigating Vim&rsquo;s f/F/t/T jumps, so I&rsquo;ve been thinking about
+a better use for them.  Having comma and dot paired together on a single
+hand (like their relative positioning in QWERTY) might be useful for
+shortcuts that assume their adjacency &mdash; for instance, I have Alt+<code>,</code>
+and Alt+<code>.</code> navigate to the prev/next window in tmux.  And apostrophe
+has been missing from the symbol layer because it&rsquo;s readily accessible
+from the base layer, but it may be nice to add it anyway for
+completeness.  Hence this design iteration:</p>
+
+<ul>
+<li><a href="#symbol-layer">Symbol layer</a>: put apostrophe, comma, dot (like the Dvorak layout) on
+bottom row.  The comma and dot align with the angle brackets above them.
+The apostrophe is just there for completeness; and <code>&#39;&lt;,&#39;&gt;</code> ranges in Vim.</li>
+</ul>
+</dd></dl><dl><dt class="title"><time datetime="2023-09-09T00:29:39-07:00"> 9 September 2023: </time></dt><dd class="content"><p>A minor semantic tweak to the symbol layer (backslash on <code>ESC</code> key) and some documentation about index finger home row mods (as inward-rolling chords):</p>
+
+<ul>
+<li>Symbol layer: swap backslash and percentage to place backslash on the same key as ESC.  Percentage acts as the &ldquo;matchit&rdquo; operator in Vim.</li>
+<li>Custom Defined Behaviors: add a CAUTION note about the inward-rolling requirement for index fingers, which disable <code>hold-trigger-on-release</code>:</li>
+</ul>
+
+<blockquote>
+<p>CAUTION: You&rsquo;ll need to perform inward rolls from pinky-&gt;ring-&gt;middle
+fingers toward the index fingers when activating multiple modifiers
+because <code>hold-trigger-on-release</code> is disabled for the index fingers.
+Otherwise, you may be surprised that the index fingers&rsquo; modifier is
+sent immediately without the rest of your multi-mod chord when you
+perform outward rolls from your index fingers toward your pinkies.</p>
+</blockquote>
+</dd></dl><dl><dt class="title"><time datetime="2023-08-25T07:15:28-07:00">25 August 2023: </time></dt><dd class="content"><p>Improved the gaming layer and right-handed mousing on the cursor layer. Also
+added <a href="#lower-layer">lower</a>, <a href="#gaming-layer">gaming</a>, and
+<a href="#typing-layer">typing</a> layers to the interactive layer map.</p>
+
+<ul>
+<li>Gaming layer: Move <code>ZXCV</code> to bottom-most row; add <code>BNM</code> on the top row of home block; put ESC/Enter/Win on thumb cluster; restore tilde above tab; move Pause to furthest key in lower arc of thumb cluster.</li>
+<li>Cursor layer: Move left half&rsquo;s undo/redo keys to J/K position. Add word/line selection macros and find/next/prev/replace keys on left half for right-handed mouse usage. Also remove the ScrollLock shortcut from the Cursor layer (it&rsquo;s still available on the left thumb cluster of the System layer).  Thanks to <a href="https://discord.com/channels/877392805654306816/1111469812850380831/1141801333230411866">@luminous_echidna for the suggestions</a>.</li>
+</ul>
+</dd></dl><dl><dt class="title"><time datetime="2023-08-15T23:38:24-07:00">15 August 2023: </time></dt><dd class="content"><p>Better right-handed mouse usage, easier Vim line/column jumping, and more:</p>
+
+<ul>
+<li>Miryoku: Move ring finger AltGr modifiers to upper row to avoid accidental triggers since I tend to hold X/F down longer than necessary when curling my ring fingers compared to when I extend them out to reach Y/W on the upper row.</li>
+<li>Base layer: Swap <code>=</code> and <code>\</code> so that <code>=</code> alternates with space bar on right thumb when typing <code>=</code> assignments.</li>
+<li>Cursor layer: Move insert to rightmost bottom key and replace with backspace above left arrow on home row.</li>
+<li>Cursor layer: Mirror cut/copy/paste and undo/redo keys on left hand for right-handed mouse usage. Thanks to @n0rvegan for <a href="https://discord.com/channels/877392805654306816/1111469812850380831/1135463552484900906">this great idea!</a></li>
+<li>Cursor layer: Surround find prev/next keys with find and find/replace.</li>
+<li>Symbol layer: Wrap parentheses <code>()</code> with square brackets <code>[]</code> and replace innermost <code>,</code> position with <code>;</code>.  This splits the <code>();</code> sequence apart but still maintains it as an inward roll.  This also establishes Vim&rsquo;s <code>,;</code> order for f/F/t/T jump repetition.</li>
+<li>Number layer: Replace <code>&lt;&gt;=</code> in rightmost column with <code>kjG</code> for jumping to line numbers in Vim.</li>
+<li>Number layer: Add <code>|</code> on the rightmost bottom corner key for jumping to column numbers in Vim.</li>
+</ul>
+</dd></dl>]]></summary></entry><entry><id>https://sunaku.github.io/vegan-for-life.html</id><link href="https://sunaku.github.io/vegan-for-life.html" /><title>Vegan: Healthy, Sustainable, Compassionate Living</title><updated>2025-06-16T12:04:00-07:00</updated><published>2017-01-30T19:29:13-08:00</published><author><name>Suraj N. Kurapati</name></author><category term="life"></category><category term="ethics"></category><category term="health"></category><category term="science"></category><category term="nutrition"></category><category term="climate"></category><summary type="html"><![CDATA[<dl><dt class="title"><time datetime="2025-06-16T12:04:00-07:00">16 June 2025: </time></dt><dd class="content"><p>Added important information about plant-based milk nutrition in the &ldquo;<a href="#dont-we-need-milk">Don&rsquo;t we need milk?</a>&rdquo; section by pediatrician and renowned author, Reshma Shah MD.</p>
+</dd></dl><dl><dt class="title"><time datetime="2018-06-12T19:45:53-07:00">12 June 2018: </time></dt><dd class="content"><p>Reorganized article structure for accessibility, plus new expanded content.</p>
+</dd></dl><dl><dt class="title"><time datetime="2018-06-09T21:07:39-07:00"> 9 June 2018: </time></dt><dd class="content"><p>Added official tagline descriptions for all the Nutritionfacts.org videos.
+Added dairy industry videos for both USA and India (<a href="https://youtu.be/jXfTJRoX_zE">a special case?</a> <a href="https://sharan-india.org/cattle-in-india/">nope!</a>).</p>
+</dd></dl><dl><dt class="title"><time datetime="2018-06-02T20:21:51-07:00"> 2 June 2018: </time></dt><dd class="content"><p>Added <a href="https://is.gd/cahiwi">https://is.gd/cahiwi</a> cloud drive containing electronic copies of
+educational materials presented in this article.  Also added <a href="https://youtu.be/Zzfq2AAYn38">Humanity&rsquo;s True
+Purpose</a> short film which eloquently frames the
+struggle between human nature and our species&rsquo; future from planet Earth&rsquo;s
+perspective.</p>
+</dd></dl><dl><dt class="title"><time datetime="2017-10-08T11:03:50-07:00"> 8 October 2017: </time></dt><dd class="content"><p>Added Dr. Neal Barnard&rsquo;s lecture on &ldquo;Plant-Based Nutrition Essentials&rdquo; (meant
+for doctors but <em>anyone</em> can understand it) under the <a href="#to-boost-nutrition">What about
+nutrition?</a> section.</p>
+</dd></dl><dl><dt class="title"><time datetime="2017-04-22T12:22:13-07:00">22 April 2017: </time></dt><dd class="content"><p>Added <a href="https://www.cowspiracy.com/earthday">Cowspiracy&rsquo;s infographic for Earth Day</a> under the <a href="#sustainable-living">environment section</a>.</p>
+</dd></dl>]]></summary></entry><entry><id>https://sunaku.github.io/engram-keyboard-layout.html</id><link href="https://sunaku.github.io/engram-keyboard-layout.html" /><title>Switching to Arno&#39;s Engram 2.0 keyboard layout</title><updated>2024-02-04T23:34:44-08:00</updated><published>2021-05-07T06:45:13Z</published><author><name>Suraj N. Kurapati</name></author><category term="keyboard"></category><category term="layout"></category><category term="ergonomics"></category><category term="optimization"></category><summary type="html"><![CDATA[<dl><dt class="title"><time datetime="2024-02-04T23:34:44-08:00"> 4 February 2024: </time></dt><dd class="content"><p>Added new sections on <a href="#learning">Learning</a> and <a href="#adaptation">Adaptation</a>.</p>
+</dd></dl><dl><dt class="title"><time datetime="2023-12-12T12:07:00-08:00">12 December 2023: </time></dt><dd class="content"><p>Added <a href="#variations">Z/Q and B/V variations</a> to address pinky finger load and reachability.</p>
+</dd></dl><dl><dt class="title"><time datetime="2023-07-09T17:49:54-07:00"> 9 July 2023: </time></dt><dd class="content"><p>Added a new <a href="#comparison">Comparison</a> section with my feedback posted online about Engram.</p>
+</dd></dl>]]></summary></entry><entry><id>https://sunaku.github.io/home-row-mods.html</id><link href="https://sunaku.github.io/home-row-mods.html" /><title>Taming home row mods with bilateral combinations</title><updated>2024-01-01T18:47:17-05:00</updated><published>2022-10-16T05:06:31-07:00</published><author><name>Suraj N. Kurapati</name></author><category term="typing"></category><category term="keyboard"></category><category term="ergonomics"></category><category term="optimization"></category><category term="firmware"></category><summary type="html"><![CDATA[<dl><dt class="title"><time datetime="2024-01-01T18:47:17-05:00"> 1 January 2024: </time></dt><dd class="content"><p>I&rsquo;ve finally <a href="#bilateral-combinations-enforcement">implemented <strong>bilateral combinations</strong> in
+ZMK!</a> ❤️‍🔥  It&rsquo;s still a hair shy 🧐
+(lacking multi-key chord unrolling during unilateral cancellation) compared to
+my QMK endgame patch, but that&rsquo;s such a theoretical corner case that I don&rsquo;t
+think anyone would actually notice in practice. 🙃  Enjoy!</p>
+</dd></dl><dl><dt class="title"><time datetime="2023-11-08T00:09:28-05:00"> 8 November 2023: </time></dt><dd class="content"><p>In my ZMK port:</p>
+
+<ul>
+<li>Allow the user to override all <code>#define</code>s at the very top of the &ldquo;Custom
+Defined Behaviors&rdquo; ZMK snippet, by guarding each <code>#define</code> with <code>#ifdef</code>.</li>
+</ul>
+</dd></dl><dl><dt class="title"><time datetime="2023-10-27T07:06:23Z">27 October 2023: </time></dt><dd class="content"><p>In my ZMK port, I&rsquo;ve incorporated the new <code>require-prior-idle-ms</code> feature that
+was recently merged into ZMK to produce the <em>crispest</em>, most responsive typing
+I&rsquo;ve ever experienced outside of the typing layer! 🫰🤯✨ ZMK docs say this can
+eliminate input lag when typing quickly, and they&rsquo;re right! 💯</p>
+<p>Additionally, what this gives us in terms of configuration is the separation of
+streak vs. repeat decay timers &mdash; specifically for homey mods and index finger
+shifts, but potentially also for thumbs and any other hold-taps imaginable! ️ Thanks to Bryan Forbes for <a href="https://discord.com/channels/877392805654306816/1111469812850380831/1167358619973603388">the use-case behind this</a>.</p>
+</dd></dl><dl><dt class="title"><time datetime="2023-10-17T03:33:33-04:00">17 October 2023: </time></dt><dd class="content"><p>I&rsquo;ve released <a href="https://github.com/sunaku/glove80-keymaps/releases/tag/v25">version 25 of my ZMK snippet</a> with improved spacebar handling.</p>
+
+<ul>
+<li>Thumb keys: disable retro-tap for all thumb keys except spacebar.  The backspace thumb key for cursor layer was accidentally navigating the browser back in history for me sometimes.</li>
+<li>Thumb keys: increase hold time to 200ms for non-space thumb keys to avoid layer activation where they map you into <code>&amp;none</code>.</li>
+<li>Thumb keys: increase repeat decay time to 300ms for non-space thumb keys so it&rsquo;s easier to hold backspace for repetition.</li>
+<li>Rename <code>INDEX_*</code> settings to <code>SHIFT_*</code> because it&rsquo;s semantically shift: it needs to be fast regardless of the finger it&rsquo;s on (not just the indexes).  Also rename <code>&amp;thumb_space</code> to <code>&amp;space</code> for same reason.</li>
+</ul>
+</dd></dl><dl><dt class="title"><time datetime="2023-09-26T23:57:40-07:00">26 September 2023: </time></dt><dd class="content"><p>I was able to enable typing streaks for index finger shifts while still
+maintaining fast activation for CamelCase typing. 😤  Next, I separated
+index fingers&rsquo; typing streak from the other home row mods and fine-tuned
+the timing per my taste: apparently, 70ms is my magic number&hellip; 🪄 it
+just boosted me to my highest raw speed ever (115) <em>measured with</em> home
+row mods enabled! 🤩  The typefeel is also very <em>crisp</em> 🫰 now, and I
+must say that I&rsquo;m quite pleased with this. 👌  See updated ZMK snippet
+in the <a href="#porting-to-zmk">Porting to ZMK</a> section.</p>
+</dd></dl><dl><dt class="title"><time datetime="2023-09-19T07:21:44-04:00">19 September 2023: </time></dt><dd class="content"><p>Still not completely satisfied by the robustness of home row mods
+disambiguation in my ZMK port, I&rsquo;ve switched back from the &ldquo;balanced&rdquo;
+flavor of hold-tap to the purely time-based &ldquo;tap-preferred&rdquo; flavor in
+order to be more in line with my endgame QMK patch&hellip; and oh my, am I
+impressed! 😍</p>
+<p>This change has significantly improved typing responsiveness (less delay
+from keystroke to letter showing up on the computer screen) and also
+increased my <em>confidence</em> in the home row mods disambiguation system.
+😎👌  I mean, typing is <em>fun</em> now &mdash; it&rsquo;s unexpectedly satisfying to
+see letters appear instantly on the screen when I press a key. 👏
+Hooray for latency! ✨</p>
+</dd></dl><dl><dt class="title"><time datetime="2023-08-16T07:28:10-07:00">16 August 2023: </time></dt><dd class="content"><p>I have added <a href="#porting-to-zmk">a ZMK port</a> of my QMK patches for home row mods disambiguation.</p>
+</dd></dl><dl><dt class="title"><time datetime="2023-03-05T10:38:00-08:00"> 5 March 2023: </time></dt><dd class="content"><p>Inspired by <a href="https://zmk.dev/docs/behaviors/hold-tap#global-quick-tap">ZMK&rsquo;s global-quick-tap</a> feature, I&rsquo;ve
+implemented a <em>typing streak timeout</em> setting that suppresses home row mods
+while actively typing.</p>
+<div class="highlight"><pre class="highlight c"><code><span class="cp">#define BILATERAL_COMBINATIONS_TYPING_STREAK_TIMEOUT 160  </span><span class="cm">/* ms */</span><span class="cp">
+</span></code></pre></div><p>However, this obstructs the Shift modifier when typing parentheses or
+punctuation marks such as <code>!</code> and <code>?</code> at the end of a sentence; and it requires
+a dedicated Shift key as a workaround, per <a href="https://github.com/urob/zmk-config#timeless-homerow-mods">@urob&rsquo;s &ldquo;timeless&rdquo; mods for
+ZMK</a>. So I went on to
+exempt Shift modifiers from typing streaks using a bitmask:</p>
+<div class="highlight"><pre class="highlight c"><code><span class="cp">#define BILATERAL_COMBINATIONS_TYPING_STREAK_MODMASK (~MOD_MASK_SHIFT)
+</span></code></pre></div><p>With all this, typing feels natural again!  No more unconscious fears
+about accidentally triggering home row mods. 😌  It&rsquo;s a complete game changer! 🤩</p>
+</dd></dl><dl><dt class="title"><time datetime="2023-01-29T02:49:08Z">29 January 2023: </time></dt><dd class="content"><p>I have fixed some corner cases, simplified the configuration, improved chording support, and upgraded to QMK 0.19.10.  Eager mods are now enabled by default (so that mod-clicks <em>Just Work</em> out of the box) but you can delay them via <code>#define</code> settings.</p>
+
+<ul>
+<li>Removed <code>CHORDSIZE</code> setting since it&rsquo;s now hard-coded to the maximum allowed value in QMK.</li>
+<li>Removed <code>EAGERMODS</code> setting since &ldquo;eager mods&rdquo; are now always enabled by default.</li>
+<li>Renamed <code>EAGERMASK</code> setting to <code>DELAY_MODS_THAT_MATCH</code> and thereby inverted its meaning (it now specifies modifiers that should be delayed, not made eager).</li>
+<li>Renamed <code>DEFERMODS</code> setting to <code>DELAY_MATCHED_MODS_BY</code>.</li>
+<li>Renamed <code>CROSSOVER</code> setting to <code>ALLOW_CROSSOVER_AFTER</code>.</li>
+<li>Renamed <code>SAMESIDED</code> setting to <code>ALLOW_SAMESIDED_AFTER</code>.</li>
+</ul>
+<p>For example, here is a diff showing how my personal configuration has changed since my last update to this article and associated set of patches:</p>
+<div class="highlight"><pre class="highlight diff"><code><span class="gd">-#define BILATERAL_COMBINATIONS_EAGERMODS 1
+-#define BILATERAL_COMBINATIONS_EAGERMASK (~MOD_MASK_GUI)
+-#define BILATERAL_COMBINATIONS_DEFERMODS 100
+-#define BILATERAL_COMBINATIONS_CROSSOVER 75
+-#define BILATERAL_COMBINATIONS_SAMESIDED 3000
+-#define BILATERAL_COMBINATIONS_CHORDSIZE 4 // one side GUI, Alt, Shift, Control
+</span><span class="gi">+#define BILATERAL_COMBINATIONS_DELAY_MODS_THAT_MATCH MOD_MASK_GUI
++#define BILATERAL_COMBINATIONS_DELAY_MATCHED_MODS_BY 100
++#define BILATERAL_COMBINATIONS_ALLOW_CROSSOVER_AFTER 75
++#define BILATERAL_COMBINATIONS_ALLOW_SAMESIDED_AFTER 3000
+</span></code></pre></div></dd></dl><dl><dt class="title"><time datetime="2022-11-19T12:30:19-08:00">19 November 2022: </time></dt><dd class="content"><p>I have added support for chord tapping (multiple mod keys) and <a href="https://getreuer.info/posts/keyboards/achordion/#achordion_eager_mod">&ldquo;eager mods&rdquo;</a> for
+mod-click mouse usage.  The overall logic is illustrated visually as a
+<a href="#solution">flowchart</a> and the <a href="#settings">various <code>#define</code> settings</a> are now
+documented here as well.</p>
+<p>This is, by far, the <em>crispest</em> typing experience I&rsquo;ve felt in years! :)</p>
+</dd></dl><dl><dt class="title"><time datetime="2022-10-27T23:41:10-07:00">27 October 2022: </time></dt><dd class="content"><p>I have replaced the <code>FLASHMODS</code> mask definition with a
+new <code>DEFERMODS</code> timeout in order to implement <a href="https://github.com/manna-harbour/qmk_firmware/pull/48#issuecomment-1271070490">Miryoku&rsquo;s
+suggestion</a> of (1) suppressing all modifiers as &ldquo;flashing mods&rdquo; and
+(2) registering them later, after a timeout, for mod-click mouse usage.</p>
+<div class="highlight"><pre class="highlight diff"><code><span class="gd">-#define BILATERAL_COMBINATIONS_FLASHMODS MOD_MASK_GUI
+</span><span class="gi">+#define BILATERAL_COMBINATIONS_DEFERMODS 100
+</span></code></pre></div></dd></dl>]]></summary></entry><entry><id>https://sunaku.github.io/tmux-yank-osc52.html</id><link href="https://sunaku.github.io/tmux-yank-osc52.html" /><title>Copying to clipboard from tmux and Vim using OSC 52</title><updated>2023-07-04T15:37:55-07:00</updated><published>2014-04-19T13:04:46-07:00</published><author><name>Suraj N. Kurapati</name></author><category term="solution"></category><category term="tmux"></category><category term="vim"></category><category term="terminal"></category><category term="clipboard"></category><category term="yank"></category><summary type="html"><![CDATA[<dl><dt class="title"><time datetime="2023-07-04T15:37:55-07:00"> 4 July 2023: </time></dt><dd class="content"><p>Updated the tmux configuration snippet to enable allow-passthrough for tmux 3.3
+and newer. Thanks to Jonathan Wheeler for <a href="https://github.com/sunaku/home/issues/6#issuecomment-1603608453">suggesting this solution</a>, which I had
+<a href="https://github.com/sunaku/home/commit/dfea3f4f6853ca1658118fc312152d5dcacdfcde">previously implemented in August 2022</a> but missed updating here.</p>
+</dd></dl><dl><dt class="title"><time datetime="2022-02-10T17:48:39-05:00">10 February 2022: </time></dt><dd class="content"><p>Verify the <code>$DISPLAY</code> environment variable before attempting <code>xsel</code> and <code>xclip</code>.</p>
+</dd></dl><dl><dt class="title"><time datetime="2021-09-28T23:04:01-04:00">28 September 2021: </time></dt><dd class="content"><p>Pipe the text to be copied into <code>tmux load-buffer</code> instead of passing it as an
+argument to <code>tmux set-buffer</code>, thereby avoiding any shell (mis)interpretation.
+Thanks to Jonathan Wheeler for reporting <a href="http://disq.us/p/2cucd4d">this issue</a>.</p>
+</dd></dl><dl><dt class="title"><time datetime="2021-08-17T21:39:36-07:00">17 August 2021: </time></dt><dd class="content"><p>Restored X11 support in the <code>yank</code> script because its removal didn&rsquo;t prevent
+the entire terminal screen to be copied to tmux clipboard when using Vim.</p>
+</dd></dl><dl><dt class="title"><time datetime="2021-06-26T12:11:06-04:00">26 June 2021: </time></dt><dd class="content"><p>Removed X11 support from the <code>yank</code> script because running it from within Vim
+caused the entire terminal screen to be copied to tmux clipboard. Also, removed
+the workaround of clearing the KiTTY terminal clipboard before yanking; use the
+<code>clipboard_control no-append</code> setting in <code>~/.config/kitty/kitty.conf</code> instead:</p>
+<div class="highlight"><pre class="highlight plaintext"><code>clipboard_control write-clipboard write-primary no-append
+</code></pre></div></dd></dl><dl><dt class="title"><time datetime="2020-04-02T13:06:00-04:00"> 2 April 2020: </time></dt><dd class="content"><p>Larry Sanderson contributed this Vim configuration snippet that <em>automates</em>
+yanking to system clipboard by calling the <code>yank(1)</code> script in this article:</p>
+<div class="highlight"><pre class="highlight viml"><code><span class="c">" Set it up so all yanks copy to system clipboard</span>
+<span class="k">function</span><span class="p">!</span> CopyYank<span class="p">()</span> abort
+  <span class="k">call</span> Yank<span class="p">(</span><span class="k">join</span><span class="p">(</span><span class="k">v</span><span class="p">:</span>event<span class="p">.</span>regcontents<span class="p">,</span> <span class="s2">"\n"</span><span class="p">))</span>
+<span class="k">endfunction</span>
+autocmd <span class="nb">TextYankPost</span> * <span class="k">call</span> CopyYank<span class="p">()</span>
+</code></pre></div></dd></dl><dl><dt class="title"><time datetime="2018-09-27T21:25:21-04:00">27 September 2018: </time></dt><dd class="content"><p>Fixed tmux detection under nested SSH. Added support for <a href="https://sw.kovidgoyal.net/kitty/protocol-extensions.html#pasting-to-clipboard">KiTTY</a> terminal.</p>
+<p>When you start an SSH session from inside tmux, the <code>$TMUX</code> environment
+variable does not carry forward into that newly started SSH session.  As a
+result, when you run the <code>yank</code> script inside that SSH session, it doesn&rsquo;t
+realize that it&rsquo;s actually attached to a tmux client (since <code>$TMUX</code> is not set)
+and it therefore doesn&rsquo;t specially wrap the OSC 52 sequence for tmux.
+As a result, tmux discards the bare OSC 52 sequence and it all falls apart.</p>
+<p>To solve this, we instead look to the <code>$TERM</code> environment variable, which
+begins with the word &ldquo;screen&rdquo; for all terminal sessions started under tmux.</p>
+</dd></dl><dl><dt class="title"><time datetime="2018-08-08T16:35:07-07:00"> 8 August 2018: </time></dt><dd class="content"><p>Vim snippet now handles <code>/bin/sh: /dev/tty: No such device or address</code> errors
+on some systems by using <code>writefile()</code> instead of shell redirection.  It also
+provides a convenient <code>Yank()</code> function to abstract away the <code>yank</code> system call.</p>
+</dd></dl><dl><dt class="title"><time datetime="2017-04-29T10:44:40-04:00">29 April 2017: </time></dt><dd class="content"><p>Updated configuration snippet for tmux 2.4, using <code>send-keys -X copy-pipe</code>.</p>
+</dd></dl><dl><dt class="title"><time datetime="2016-01-16T21:21:57-08:00">16 January 2016: </time></dt><dd class="content"><p><a href="http://www.cs.unc.edu/%7Egb/">Gary Bishop</a> discovered that the Vim mapping
+presented in this article needed to <em>explicitly</em> redirect the OSC 52 escape
+sequence generated by the yank(1) script to the terminal device in order to
+work correctly in certain environments (Linux =&gt; tmux =&gt; ssh =&gt; Chromebook):</p>
+<div class="highlight"><pre class="highlight viml"><code><span class="p">:</span><span class="k">call</span> <span class="nb">system</span><span class="p">(</span><span class="s1">'yank &gt; /dev/tty'</span><span class="p">,</span> @<span class="m">0</span><span class="p">)</span>
+</code></pre></div><p>See the comments thread at the bottom of this article for more information.</p>
+</dd></dl><dl><dt class="title"><time datetime="2014-11-09T11:40:00-08:00"> 9 November 2014: </time></dt><dd class="content"><p>Updated yank(1) script. Added <code>M-Y</code> and <code>y</code> copy-pipe shortcuts for tmux.</p>
+</dd></dl><dl><dt class="title"><time datetime="2014-07-09T13:09:01-04:00"> 9 July 2014: </time></dt><dd class="content"><p>I have updated the yank(1) script in this article to copy its input text
+into tmux&rsquo;s clipboard <em>in addition to</em> the operating system clipboard.</p>
+</dd></dl>]]></summary></entry><entry><id>https://sunaku.github.io/ergohaven-remnant-keyboard.html</id><link href="https://sunaku.github.io/ergohaven-remnant-keyboard.html" /><title>Ergohaven Remnant programmable ergonomic keyboard</title><updated>2023-01-28T23:57:21-08:00</updated><published>2023-01-28T23:57:21-08:00</published><author><name>Suraj N. Kurapati</name></author><category term="typing"></category><category term="keyboard"></category><category term="layout"></category><category term="ergonomics"></category><category term="programming"></category></entry><entry><id>https://sunaku.github.io/dactyl-manuform-5x6-keyboard.html</id><link href="https://sunaku.github.io/dactyl-manuform-5x6-keyboard.html" /><title>Dactyl Manuform 5x6 programmable ergonomic keyboard</title><updated>2022-10-23T03:29:39-07:00</updated><published>2022-10-23T03:29:39-07:00</published><author><name>Suraj N. Kurapati</name></author><category term="typing"></category><category term="keyboard"></category><category term="layout"></category><category term="ergonomics"></category><category term="programming"></category></entry><entry><id>https://sunaku.github.io/engrammer-keyboard-layout.html</id><link href="https://sunaku.github.io/engrammer-keyboard-layout.html" /><title>Engrammer - Arno&#39;s Engram layout for programmers</title><updated>2022-08-28T09:50:40Z</updated><published>2022-08-28T09:50:40Z</published><author><name>Suraj N. Kurapati</name></author><category term="keyboard"></category><category term="layout"></category><category term="ergonomics"></category><category term="optimization"></category></entry><entry><id>https://sunaku.github.io/tmux-select-pane.html</id><link href="https://sunaku.github.io/tmux-select-pane.html" /><title>Intelligently navigating tmux panes and Vim splits</title><updated>2020-04-25T22:03:25-07:00</updated><published>2015-05-05T17:43:38-04:00</published><author><name>Suraj N. Kurapati</name></author><category term="solution"></category><category term="usability"></category><category term="tmux"></category><category term="vim"></category><summary type="html"><![CDATA[<dl><dt class="title"><time datetime="2020-04-25T22:03:25-07:00">25 April 2020: </time></dt><dd class="content"><p>I&rsquo;ve published the code in this article as an installable tmux/Vim plugin:</p>
+
+<ul>
+<li><a href="https://github.com/sunaku/tmux-navigate">https://github.com/sunaku/tmux-navigate</a></li>
+</ul>
+<p>Thanks to <a href="https://github.com/bradleyharden">@bradleyharden</a> for contributing a
+working example of TPM plugin conversion and giving me the opportunity to host
+this plugin in my GitHub.</p>
+</dd></dl><dl><dt class="title"><time datetime="2019-08-01T13:57:00-07:00"> 1 August 2019: </time></dt><dd class="content"><p>Erase stray ESC + hjkl keys for panes that are misidentified as containing Vim.
+This occurs when holding down the shortcut keys or using an old Vim that leaves
+behind a dirty window title labeled &ldquo;Thanks for flying Vim!&rdquo;.</p>
+</dd></dl><dl><dt class="title"><time datetime="2019-06-27T21:24:32-04:00">27 June 2019: </time></dt><dd class="content"><p>Use the <code>#{q:}</code> shell quoting directive in tmux-2.9a when interpolating tmux
+variables to properly support pane titles that contain quotation marks.</p>
+</dd></dl><dl><dt class="title"><time datetime="2019-02-20T21:39:36-05:00">20 February 2019: </time></dt><dd class="content"><p>When Vim is launched from within <code>git commit</code> as the editor for a git commit
+message, the value of <code>#{pane_current_command}</code> is <code>git</code> instead of <code>vim</code>.</p>
+</dd></dl><dl><dt class="title"><time datetime="2019-02-14T19:01:28-08:00">14 February 2019: </time></dt><dd class="content"><p><a href="https://www.reddit.com/r/vim/comments/akxado/_/egf6fic">Use</a> <code>-b</code> option for <code>run-shell</code> instead of the <code>&amp;</code> shell background operator:</p>
+<div class="highlight"><pre class="highlight shell"><code>bind-key <span class="nt">-n</span> M-h run-shell <span class="nt">-b</span> <span class="s2">"</span><span class="nv">$navigate_left</span><span class="s2">"</span>
+bind-key <span class="nt">-n</span> M-j run-shell <span class="nt">-b</span> <span class="s2">"</span><span class="nv">$navigate_down</span><span class="s2">"</span>
+bind-key <span class="nt">-n</span> M-k run-shell <span class="nt">-b</span> <span class="s2">"</span><span class="nv">$navigate_up</span><span class="s2">"</span>
+bind-key <span class="nt">-n</span> M-l run-shell <span class="nt">-b</span> <span class="s2">"</span><span class="nv">$navigate_right</span><span class="s2">"</span>
+bind-key <span class="nt">-n</span> M-<span class="se">\ </span>run-shell <span class="nt">-b</span> <span class="s2">"</span><span class="nv">$navigate_back</span><span class="s2">"</span>
+</code></pre></div></dd></dl><dl><dt class="title"><time datetime="2019-01-31T08:07:31-05:00">31 January 2019: </time></dt><dd class="content"><p>Fixed a <a href="https://www.reddit.com/r/neovim/comments/akxmyn/_/efc4u0k">corner case</a> of NeoVim not clearing title quickly enough upon exit.</p>
+</dd></dl><dl><dt class="title"><time datetime="2019-01-30T12:28:41-08:00">30 January 2019: </time></dt><dd class="content"><p>Renamed <code>M-;</code> to <code>M-\</code> to fix a tmux configuration error in QWERTY shortcuts:</p>
+<div class="highlight"><pre class="highlight shell"><code>.tmux.conf: usage: bind-key <span class="o">[</span><span class="nt">-cnr</span><span class="o">]</span> <span class="o">[</span><span class="nt">-T</span> key-table] key <span class="nb">command</span> <span class="o">[</span>arguments]
+</code></pre></div><p>Simpler shortcut definitions and faster execution by running in background:</p>
+<div class="highlight"><pre class="highlight shell"><code>bind-key <span class="nt">-n</span> M-h run-shell <span class="s2">"</span><span class="nv">$navigate_left</span><span class="s2">  &amp;"</span>
+bind-key <span class="nt">-n</span> M-j run-shell <span class="s2">"</span><span class="nv">$navigate_down</span><span class="s2">  &amp;"</span>
+bind-key <span class="nt">-n</span> M-k run-shell <span class="s2">"</span><span class="nv">$navigate_up</span><span class="s2">    &amp;"</span>
+bind-key <span class="nt">-n</span> M-l run-shell <span class="s2">"</span><span class="nv">$navigate_right</span><span class="s2"> &amp;"</span>
+bind-key <span class="nt">-n</span> M-<span class="se">\ </span>run-shell <span class="s2">"</span><span class="nv">$navigate_back</span><span class="s2">  &amp;"</span>
+</code></pre></div></dd></dl><dl><dt class="title"><time datetime="2019-01-21T12:19:21-05:00">21 January 2019: </time></dt><dd class="content"><p>Added support for seamless navigation of embedded NeoVim terminal sessions.</p>
+</dd></dl><dl><dt class="title"><time datetime="2018-09-06T23:22:36-04:00"> 6 September 2018: </time></dt><dd class="content"><p>I&rsquo;ve rolled my own replacement for the <a href="https://github.com/christoomey/vim-tmux-navigator">vim-tmux-navigator</a> plugin: the tmux
+keybindings presented in this article now handle Vim navigation without the
+need for any special Vim plugins (or configuration thereof). It <em>Just Works!</em></p>
+<p>To illustrate, here is how the code used to appear before this update:</p>
+<div class="highlight"><pre class="highlight viml"><code><span class="c">" in ~/.vimrc</span>
+nnoremap <span class="p">&lt;</span><span class="k">silent</span><span class="p">&gt;</span> <span class="p">&lt;</span>A<span class="p">-</span><span class="k">h</span><span class="p">&gt;</span> <span class="p">:</span>TmuxNavigateLeft<span class="p">&lt;</span>Return<span class="p">&gt;</span>
+nnoremap <span class="p">&lt;</span><span class="k">silent</span><span class="p">&gt;</span> <span class="p">&lt;</span>A<span class="p">-</span><span class="k">j</span><span class="p">&gt;</span> <span class="p">:</span>TmuxNavigateDown<span class="p">&lt;</span>Return<span class="p">&gt;</span>
+nnoremap <span class="p">&lt;</span><span class="k">silent</span><span class="p">&gt;</span> <span class="p">&lt;</span>A<span class="p">-</span><span class="k">k</span><span class="p">&gt;</span> <span class="p">:</span>TmuxNavigateUp<span class="p">&lt;</span>Return<span class="p">&gt;</span>
+nnoremap <span class="p">&lt;</span><span class="k">silent</span><span class="p">&gt;</span> <span class="p">&lt;</span>A<span class="p">-</span><span class="k">l</span><span class="p">&gt;</span> <span class="p">:</span>TmuxNavigateRight<span class="p">&lt;</span>Return<span class="p">&gt;</span>
+nnoremap <span class="p">&lt;</span><span class="k">silent</span><span class="p">&gt;</span> <span class="p">&lt;</span>A<span class="p">-</span>;<span class="p">&gt;</span> <span class="p">:</span>TmuxNavigatePrevious<span class="p">&lt;</span>Return<span class="p">&gt;</span>
+</code></pre></div><div class="highlight"><pre class="highlight shell"><code><span class="c"># in ~/.tmux.conf</span>
+bind-key <span class="nt">-n</span> M-h run-shell <span class="s1">'                                  \
+  case "#{pane_current_command}" in (*vim*) inside=1;; esac; \
+  case "${inside:-0}#{window_zoomed_flag}" in                \
+  (00) tmux select-pane -L                          ;;       \
+  (10) tmux send-keys M-h                           ;;       \
+  (11) tmux send-keys C-w h                         ;;       \
+  esac                                                       \
+'</span>
+</code></pre></div></dd></dl><dl><dt class="title"><time datetime="2018-07-24T17:24:38-07:00">24 July 2018: </time></dt><dd class="content"><p>Improved the specificity of the glob pattern for detecting Vim&rsquo;s presence.</p>
+</dd></dl><dl><dt class="title"><time datetime="2016-10-08T14:38:34-07:00"> 8 October 2016: </time></dt><dd class="content"><p>Replaced the positional argument arithmetic with <code>case</code> statements.  The code
+still uses binary encoding but it&rsquo;s more compact and easier to read now. :)</p>
+<p>To illustrate, here is how the code appeared before this change:</p>
+<div class="highlight"><pre class="highlight shell"><code>bind-key <span class="nt">-n</span> M-h run-shell                                     <span class="s1">' \
+  test #{window_zoomed_flag} -eq 0; max=$?;                     \
+  cmd="#{pane_current_command}"; test -n "${cmd#*vim}"; vim=$?; \
+  set --                                                        \
+    "tmux select-pane -L"                                       \
+    ""                                                          \
+    "tmux send-keys M-h"                                        \
+    "tmux send-keys C-w h";                                     \
+  shift $(( 2*vim + max ));                                     \
+  eval "$1";                                                    \
+'</span>
+</code></pre></div><p>In contrast, here is how the code appears now, after the change:</p>
+<div class="highlight"><pre class="highlight shell"><code>bind-key <span class="nt">-n</span> M-h run-shell                              <span class="s1">' \
+  case "#{pane_current_command}" in (*vi*) vim=1;; esac; \
+  case "${vim:-0}#{window_zoomed_flag}" in               \
+  (00) tmux select-pane -L                            ;; \
+  (10) tmux send-keys M-h                             ;; \
+  (11) tmux send-keys C-w h                           ;; \
+  esac                                                   \
+'</span>
+</code></pre></div><p>I&rsquo;ll need to update the explanation section accordingly, someday!</p>
+</dd></dl>]]></summary></entry><entry><id>https://sunaku.github.io/gruvbox-terminal-color-scheme.html</id><link href="https://sunaku.github.io/gruvbox-terminal-color-scheme.html" /><title>Gruvbox terminal color scheme</title><updated>2018-12-20T19:17:07-05:00</updated><published>2016-03-03T16:37:00-05:00</published><author><name>Suraj N. Kurapati</name></author><category term="terminal"></category><category term="color"></category><category term="vim"></category><category term="linux"></category><summary type="html"><![CDATA[<dl><dt class="title"><time datetime="2018-12-20T19:17:07-05:00">20 December 2018: </time></dt><dd class="content"><p>Changed blacks to grays because they were unreadable against background.</p>
+</dd></dl>]]></summary></entry></feed>

@@ -1,0 +1,64 @@
+<!DOCTYPE html><html><head><meta charset="utf-8" /><title>Enabling shifted page keys in hterm - The Terminal Programmer</title><meta content="2018-02-04T14:19:57-08:00" name="DCTERMS.created" /><meta content="2018-02-04T14:19:57-08:00" name="DCTERMS.modified" /><meta content="Suraj N. Kurapati" name="author" /><meta content="solution, terminal, ChromeOS" name="keywords" /><meta content="width=device-width, initial-scale=1" name="viewport" /><meta content="Readably https://github.com/sunaku/readably" name="generator" /><link href="style.css" rel="stylesheet" type="text/css" /><link href="index.atom" rel="alternate" title="feed" type="application/atom+xml" /><script src="js/jquery.slim.min.js"></script></head><body><article data-entry-id="hterm-shift-pageup" id="body"><header><div class="navigation"><a class="rootlink" href="index.html#hterm-shift-pageup" title="The Terminal Programmer"><span>The Terminal Programmer</span></a></div><h1 class="title">Enabling shifted page keys in hterm</h1><div class="author">Suraj N. Kurapati</div><time class="date" datetime="2018-02-04T14:19:57-08:00"> 4 February 2018</time></header><hr /><div class="description"></div><div class="content"><p><a href="https://chromium.googlesource.com/apps/libapps/+/HEAD/hterm">hterm</a> binds Shift+PageUp/Down keys for scrolling its own backbuffer by default.
+To <a href="https://chromium.googlesource.com/apps/libapps/+/master/hterm/doc/KeyboardBindings.md">override</a> those defaults and allow the underlying terminal session to receive
+those keys, while also adding support for Alt and Control modifier keys, simply:</p>
+
+<ol>
+<li>open the <a href="https://chromium.googlesource.com/apps/libapps/+/HEAD/nassh">nassh</a> extension&rsquo;s options page</li>
+<li>open Chrome Developer Tools (Ctrl+Shift+I)</li>
+<li>paste the following snippet in the console:</li>
+</ol>
+<div class="highlight"><pre class="highlight javascript"><code><span class="nx">term_</span><span class="p">.</span><span class="nx">prefs_</span><span class="p">.</span><span class="nf">set</span><span class="p">(</span><span class="dl">"</span><span class="s2">keybindings</span><span class="dl">"</span><span class="p">,</span> <span class="p">{</span>
+  <span class="dl">"</span><span class="s2">Shift-PGUP</span><span class="dl">"</span><span class="p">:</span>          <span class="dl">"</span><span class="s2">'</span><span class="se">\</span><span class="s2">u001b[5;2~'</span><span class="dl">"</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">Shift-PGDN</span><span class="dl">"</span><span class="p">:</span>          <span class="dl">"</span><span class="s2">'</span><span class="se">\</span><span class="s2">u001b[6;2~'</span><span class="dl">"</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">Alt-Shift-PGUP</span><span class="dl">"</span><span class="p">:</span>      <span class="dl">"</span><span class="s2">'</span><span class="se">\</span><span class="s2">u001b[5;4~'</span><span class="dl">"</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">Alt-Shift-PGDN</span><span class="dl">"</span><span class="p">:</span>      <span class="dl">"</span><span class="s2">'</span><span class="se">\</span><span class="s2">u001b[6;4~'</span><span class="dl">"</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">Ctrl-Shift-PGUP</span><span class="dl">"</span><span class="p">:</span>     <span class="dl">"</span><span class="s2">'</span><span class="se">\</span><span class="s2">u001b[5;6~'</span><span class="dl">"</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">Ctrl-Shift-PGDN</span><span class="dl">"</span><span class="p">:</span>     <span class="dl">"</span><span class="s2">'</span><span class="se">\</span><span class="s2">u001b[6;6~'</span><span class="dl">"</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">Ctrl-Alt-Shift-PGUP</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">'</span><span class="se">\</span><span class="s2">u001b[5;8~'</span><span class="dl">"</span><span class="p">,</span>
+  <span class="dl">"</span><span class="s2">Ctrl-Alt-Shift-PGDN</span><span class="dl">"</span><span class="p">:</span> <span class="dl">"</span><span class="s2">'</span><span class="se">\</span><span class="s2">u001b[6;8~'</span><span class="dl">"</span>
+<span class="p">});</span>
+</code></pre></div><p>For example, I commonly use Shift+PageUp as a convenient shortcut to enter tmux&rsquo;s
+copy mode and then immediately scroll up by one page (<code>tmux copy-mode -u</code>):</p>
+<div class="highlight"><pre class="highlight shell"><code>bind-key <span class="nt">-n</span> S-PPage copy-mode <span class="nt">-u</span>
+</code></pre></div><p>But how could I possibly have known those esoteric keycodes in the first place?
+:-) It was only possible with the help of arcane knowledge in <a href="https://github.com/mintty/mintty/wiki/Keycodes#modifier-key-encodings">this MinTTY wiki</a>, which
+explained the notation of <a href="https://github.com/mintty/mintty/wiki/Keycodes#editing-keys">special editing keys</a> and how they are
+modified:</p>
+
+<blockquote>
+<p>modifier keys Shift, Alt and Ctrl are &hellip; encoded as a <em>one-digit number</em> that becomes part of the keycode. To obtain that number, add the numbers for each pressed modifier to 1:
+Shift=1,
+Alt=2,
+Ctrl=4.</p>
+</blockquote>
+
+<table><thead>
+<tr>
+<th>Key</th>
+<th>plain</th>
+<th>modified</th>
+</tr>
+</thead><tbody>
+<tr>
+<td>PgUp</td>
+<td><code>^[[5~</code></td>
+<td><code>^[[5;</code><em>m</em><code>~</code></td>
+</tr>
+<tr>
+<td>PgDn</td>
+<td><code>^[[6~</code></td>
+<td><code>^[[6;</code><em>m</em><code>~</code></td>
+</tr>
+</tbody></table>
+<p>Using that formula, I calculated the <em>one-digit numbers</em> for my modifier combos:</p>
+
+<ul>
+<li>Shift: (1) + 1 = 2</li>
+<li>Alt+Shift: (2 + 1) + 1 = 4</li>
+<li>Ctrl+Shift: (4 + 1) + 1 = 6</li>
+<li>Ctrl+Alt+Shift: (4 + 2 + 1) + 1 = 8</li>
+</ul>
+<p>With these results, I was able to override the hterm keybindings setting above.</p>
+</div><h1>Comments<a class="permalink" href="#comments" title="Permalink"></a></h1><div class="comments" id="comments"><script async="" crossorigin="anonymous" data-category="Announcements" data-category-id="DIC_kwDOANb_yM4CuLmK" data-emit-metadata="0" data-input-position="top" data-lang="en" data-mapping="pathname" data-reactions-enabled="0" data-repo="sunaku/sunaku.github.io" data-repo-id="MDEwOlJlcG9zaXRvcnkxNDA5MDE4NA==" data-strict="0" data-theme="catppuccin_frappe" src="https://giscus.app/client.js"></script></div><hr /><footer><p class="copyright">&copy; 2018 Suraj N. Kurapati</p><p class="credits"><a href="https://github.com/sunaku/readably">Readably</a> written, <a href="https://github.com/sainnhe/everforest">Everforest</a> colored. </p><p>Like my work? 👍 Please <a href="vegan-for-life.html">spare a life</a> today as
+thanks! 🐮🐷🐔🐟🙊✌💞</p>
+</footer><!--[if lt IE 9]><script src="js/html5shiv.min.js"></script><script src="js/html5shiv-printshiv.min.js"></script><![endif]--><script src="index.js"></script></article></body></html>
