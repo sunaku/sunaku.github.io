@@ -1,0 +1,29 @@
+diff -bcr -x config.mk wmii-3.1.orig/cmd/wm/client.c wmii-3.1.new/cmd/wm/client.c
+*** wmii-3.1.orig/cmd/wm/client.c	2006-06-17 04:44:30.000000000 -0700
+--- wmii-3.1.new/cmd/wm/client.c	2006-09-14 00:53:55.000000000 -0700
+***************
+*** 633,638 ****
+--- 633,639 ----
+  void
+  swap_client(Client *c, char *arg)
+  {
++   const char *errstr;
+    Frame *f1 = c->frame.data[c->sel], *f2;
+    Area *o, *a = f1->area;
+    View *v = a->view;
+***************
+*** 681,686 ****
+--- 682,694 ----
+      a->frame.data[j] = a->frame.data[i];
+      a->frame.data[i] = f1;
+    }
++   else {
++     j = cext_strtonum(arg, 1, v->area.size - 1, &errstr);
++     if(errstr)
++       return;
++     o = v->area.data[j];
++     goto Swaparea;
++   }
+    arrange_column(a, False);
+    focus_client(c, True);
+    flush_masked_events(EnterWindowMask);

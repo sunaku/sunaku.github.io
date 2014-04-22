@@ -1,0 +1,435 @@
+Newsgroups: soc.culture.indian.telugu
+From: kishore@argo.rice.edu (Ananda Kishore)
+Subject: The Rice Transliteration Standard for Telugu
+Message-ID: <Bv0A9M.27B@rice.edu>
+Sender: news@rice.edu (News)
+Organization: Rice University
+Date: Wed, 23 Sep 1992 00:48:58 GMT
+Lines: 424
+
+
+
+The Rice Transliteration Standard for Roman Transliteration of Telugu
+                           
+Roman transliteration of Telugu simply means writing Telugu using
+English (Roman) alphabet. Modern Telugu text has Telugu words, English
+words written in Roman or Telugu script, and modern punctuation marks.
+Transliteration is merely a way to represent modern Telugu text using
+English alphabet. Transliteration is not a software; it is a form of
+information representation. Transliteration is (typically) done by
+humans, resulting in a file written with English alphabets and
+punctuation marks.
+
+Inverse transliteration is an operation that extracts Telugu and
+English from this file. Inverse transliteration function can be
+realized as a software. It is this software we refer to in this
+document. The output of this software is a file, which when printed
+contains Telugu written in Telugu script and English written either in
+Roman script or Telugu script, and is an approximation to the text
+that was transliterated in the first place. It is this output we refer
+to here. 
+
+There can be (and are) several such transliteration schemes. We are
+proposing the following scheme as a standard. In this scheme, many
+letters can be transliterated in more than one way.  Some of them are
+designed to cater to varying intuition, some to increase speed, and
+some to be fault-tolerant. For the sake of a later reference, the
+preferred form of the transliteration of the Telugu alphabet is
+presented first. We emphasize that one doesn't need to stick to Table
+1, and it is only a part of the standard.
+
+Table 1:
+-------
+vowels:       a  aa  i  ee  u  oo  R  Ru  e  ea  ai  o  oe  ou  
+
+
+plosives 
+and nasals:              
+              k  kh  g  gh  ~m
+    
+              c  C   j  jh  ~n
+
+              T  Th  D  Dh  N
+      
+              t  th  d  dh  n
+
+              p  f   b  bh  m
+
+fluids:
+
+              y  r  l  v  S  sh  s  h  L  x  ~r
+
+
+where S is "melika sa" and ~r is "banDi ra". 
+
+
+Examples:
+
+     English meaning       Transliteration
+
+     uncle                 maama
+     ant                   cheema
+     monkey                koeti
+     play                  aaTa
+     old                   paata
+     important             mukhyam
+     saw (n)               rampam
+     eggplant              vankaaya
+     order                 aaj~na
+
+Software takes care of "guDintaalu" (consonant-vowel combinations) and
+"vattulu" (consonant-consonant combinations) automatically. This is
+not the only way to transliterate these words, though. There are
+several other ways. Many letters have alternatives (equivalents), as
+in the following table.
+
+Table RTS:
+_____________________________________________________________________
+
+
+    a    aa=aaa=a'    i    ee=ii=ia=i'    u    oo=uu=U=ua=u'
+
+    R    Ru    e     ea=ae=E=e'    ai   o    oe=O=oa=o'    au=ou
+
+
+
+    k         kh=K=Kh        g        gh=G=Gh      ~m
+
+    c=ch      C=Ch           j        jh=J=Jh      ~n
+
+    T=t'      Th=th'         D=d'     Dh=dh'       N=nh
+
+    t         th             d        dh           n
+
+    p         f=P=ph=Ph      b        bh=B=Bh      m
+
+
+
+    y   r   l   v=w   S   sh   s   h   L=lh=Lh   x=ksh   ~r
+
+
+Throughout, h  = H.
+alu (archaic)  = ~l
+aloo (archaic) = ~L
+arasunna = @M
+visarga  = @h
+avagraha (used in Sanskrit) = @2
+na pollu (arachaic) = @n
+null operation = _  (underscore) (see below)
+ 
+Syllable break = ^  (see below)
+Force combination = & (see below)
+For "sunnaa", see below.
+
+tcha (allophone of c, now extinct) = ~c
+tja  (allophone of j, now extnict) = ~j
+
+________________________________________________________________________
+
+
+Example. Telugu word meaning monkey can be transliterated as any of
+the following: koati, koeti, kOti, ko'ti. The same information is
+represented by all of them. Any of these can be chosen, based on
+personal preference or convenience.
+
+
+Notes.
+
+1. The following symbols are treated as both Telugu and English symbols:
+, < . > / ? : * ; + ] } [ { ` " ! $ % ( ) - = 1 2 3 4 5 6 7 8 9 0.
+These symbols are transliteration-invariant. That is, these symbols
+retain their meaning:
+
+     mana de'Saaniki "svaatantryam" 1947 lo' vaccindi. kaanii idi
+     nijangaa svaatantryamaa? 
+
+
+2. The following are special characters:  ~ @ & ' _ ^ #
+
+They have special meanings, as can be noted from Table RTS. (However,
+there is a way to print them in the output, as explained later.)
+
+3. Both ' and "a" serve as a vowel-elongation suffix. That is,
+"short vowel followed by ' or "a" becomes a long vowel." 
+
+    ceema = ciima = ci'ma = ciama, pOru = poeru = po'ru = poaru
+
+4. There is a retroflex suffix, namely '. That is, "dental plosive
+followed by ' becomes a retroflex." 
+
+                  aaTa = aat'a, enDa = end'a
+
+
+5. "sunnaa" Generation (Nasal Contraction): 
+------------------------------------------
+
+All nasals are contracted before plosives as in Rule 1 below. Rule 2,
+like Rule 1, improves typo-tolerance.
+
+Rule 1. Whenever the letter n or m is followed by one of {k, K, g,
+G, c, C, j, J, T, Th, D, Dh, t, th, d, dh, p, P, b, B} (or their
+alternatives), it will be converted to sunnaa.
+
+Rule 2. Also, whenever the letter m is followed by one of {l, v, s, S}, 
+it will be converted to "sunnaa" automatically.
+
+Example: vankaaya, vamkaaya, lankhaNam, lamkhaNam, anga, amga, kance,
+kamce, manTa, mamTa, SunTha, SumTha, enDa, emDa, santa, samta,
+panthaa, pamthaa, undi, umdi, kampa, kanpa, cembu, cenbu, kaalamloe,
+samvatsaram, hamsa, amSa - all generate a "sunnaa" automatically.
+
+Force combination: 
+-----------------
+The "sunnaa" generation rules produce unwanted results in rare cases.
+The Sanskrit word for acid "aamla" doesn't have a "sunnaa" in it -
+we need to force "la-vattu" under ma. Similarly, "kaanpu, "paanpu"
+don't have a "sunnaa" in them: we need to force "pa-vattu" under na.
+This is done by using "&", as in "aam&la", "kaan&pu", "paan&pu". We
+emphasize that & is used only rarely, in special cases such as above.
+
+Syllable break: 
+--------------
+Suppose we want to write "wrong number" in Telugu script as one word.
+If we write "raangnembar", there will be a "na-vattu" under "ge". But
+writing "raang^nembar" breaks the syllable after "raang" and writes
+"nembar" next to it, without producing the (unwanted)
+consonant-consonant combination. That is, k^ is the "praaNa" (pure)
+form of ka (without any vowel added to it). [In particular, typing ^
+after m generates a "sunnaa".] However, a word ending in a consonant
+always assumes ^ at the end by default. That is, we write "shaap" (for
+shop), "lak" (for luck) and not "shaap^", "lak^".
+
+Null-operation: 
+-------------- 
+
+"poruguvaad'iki toeDupad'avoeyi" is perhaps too tough on the eye.  For
+human readability, it maybe typed as "porugu_vaad'iki
+toeDu_paDa_voeyi". Both represent the same information, including
+white spaces. The symbol _ is invisible to the software, that is why
+we call it a null-op.  (However, _ serves another purpose, as will be
+explained later.) We recommend using null-op only when the
+transliterated text is supposed to be processed by humans. Otherwise,
+typing effort is wasted by breaking the words by null-op, since it
+is transparent to the software.
+
+More equivalents:
+----------------
+
+j~n = jn
+d'd' = dd'
+t't' = tt' 
+
+How to represent English words:
+------------------------------
+
+Consider
+
+           naa flight delay ayindi
+
+in which it is obvious that the second and third words are English.
+So, normally there is no need to take any special action when using
+English words (which are to be printed in Roman script). Software
+should normally be able to handle such a representation. You can skip
+the next section which may be read when you run into an unusual
+problem.
+
+Automatic determination of English words:
+---------------------------------------- 
+
+Since Rice Transliteration Standard as defined in Table RTS is almost
+orthogonal to English [1], we provide automatic determination of
+English words. However, there are some rare cases in which it is not
+clear whether a word is Telugu or English:
+
+   me'm ekkad'ikee poem. Sree Sree poem caduvutuu ikkad'e' unt'aam
+
+where poem in the first instance is Telugu, in the second English.
+There are a few more Telugu words, which when transliterated become
+valid English words: are, gala, mana, nee, poem, eg.  Based on their
+potential frequency, we treat some of them as Telugu and some as
+English, by default.  For example, we treat "mana" as a Telugu word,
+and "are" as an English word, by default. What if we want to use
+"mana" as an English word? We simply enclose it by #s thus: # mana #.
+Text enclosed between #s is inverse-transliteration-invariant. That
+is, it will be printed as it is.
+
+Similarly, we write _are to use "are" as a Telugu word. That is, we
+have a way to force Telugu using _.  In other words, just as we force English
+words by enclosing them with #, we force certain Telugu words (rare
+cases) by prepending them with _ .  Finally, the defaults associated to
+the conflicting words can be changed by the users.  That is, if a user
+wants to change "are" default to Telugu, (s)he can do so by editing a
+defaults file.
+
+
+How to represent Special Characters:
+-----------------------------------
+
+We noted that @, ~, ^, &, ', _, # are special characters. Suppose the text
+to be transliterated has these characters. How do we represent them in
+transliteration? We enclose them by #s.  That is, # is an ESCAPE
+character that toggles transliteration off and on. In other words,
+text enclosed between #s is inverse-transliteration-invariant. It will
+be printed as it is.
+
+Example: #'# prints ', ### prints #, #Hello!# prints Hello!.  However,
+the single quote ' retains its meaning when it doesn't follow a, i, u,
+e, o, t, th, d, dh. Hopefully, future software, in most cases,
+determines automatically whether ' is a quote (punctuation mark) or
+whether it is a suffix.
+
+
+Line-breaks and Verse Environment:
+---------------------------------
+
+When typing we may or may not hit return. The `return' key strokes in
+the input file have nothing to do with where the line breaks in the
+output (except in the verse environment. See below).  We start new
+paragraphs after a blank line. There is a verse environment, delimited
+by |'s, where 'return' keystroke means line break in the output
+(equivalent to \obeylines in TeX).
+ 
+
+Examples:
+--------
+
+     English meaning       Transliteration, with alternatives
+
+     uncle                 maama,  ma'ma
+     ant                   cheema, ceema, chiima, ciama
+     monkey                kOti, koati, koeti, ko'ti
+     play                  aaTa, aat'a
+     old                   paata
+     important             mukhyam, muKyam
+     saw (n)               rampam, ranpam
+     eggplant              vankaaya,  vamkaaya
+     order                 aaj~na, aajna
+     
+Examples containing English words:
+
+ Nobody is doing that nowadays and'ee, e'mant'aaru?
+
+ Modern culture loe TV, videos part and parcel ayipoeyaayand'ee!
+
+Examples containing English words written in Telugu:
+
+krist'afar kaad'vel aa maat'a eppud'oe ceppad'u.
+san^set' bulevaard' meeda oka kaameraa shaap undi.
+
+The following is an example file.
+-------------------------------------------------------------------
+Free verse movement was spearheaded by Kundurti Anjaneyulu . The
+movement can be traced back to the 1930s, but it really took off only
+recently. The eighties have seen a number of good Telugu poets writing
+excellent free verse. But free verse is not necessarily easily
+understood. The reason for this is that modern poetry, like modern
+life, is complex. While using increasingly complex imagery, modern
+poetry also tends to shift its frame of reference to outside, rather
+than keeping it inside. Poetry of # Nannaya # and # Peddana # can be
+understood (with the help of a dictionary) without references to the
+outside society or history. Contrast this with the poetry of  T. S.
+Eliot. However, this shift is  a hallmark of modern poetry, and not
+something peculiar to free verse. 
+
+Some examples of modern free verse follow. In the first example, the
+poet expresses his closeness to soil, with which his umblical cord is
+still attached.
+
+|
+   nagna bhoommeeda nagna de'hantoe Sayaninci_nappaTi anubhavam.
+   naa naraalu ekkad'oe bhoomi loepali poralloe modalai
+   naaloeki vyaapinci_natt'u -
+   bhoomi hRdayamloe janmistunna agni
+   naa gund'egaa vikasistu_nnatt'u
+   naakoo bhoomikee oka avinaa_bhaava sambandham
+....
+   bhoomi vittu   andu_loenci ne' putt'u_kostaa.
+   bhoomi oka naxatra pushpam
+   andu_loenci ne' parima_Listaa
+   bhoomi oka nayanam   andu_loenci ne' dRshTi saaristaa
+....
+|
+
+ (by  K. Siva Reddy,  `nagna bhoomeeda ', in 
+a collection of his poems "mOhanaa! O mOhanaa!", 1988) 
+--------------------------------------------------------------------
+
+Note `Kundurti Anjaneyulu' is not enclosed by #s, whereas `Nannaya'
+and `Peddana' are. The reason is that software should be able to
+recognize modern names and handle them appropriately.  However, if we
+write `kundurti aanjanEyulu', it will be printed in Telugu script.
+
+Software:
+--------
+
+We will present the inverse transliteration software, called Rice
+Inverse Transliterator (RIT), in a separate posting.
+
+
+we now state Rice Internal Representation below. This is used as a
+common platform for all subsequent text processing tasks such as
+type-setting, spell-checking. It is not necessary to know this
+representation for transliteration purposes. Only software enthusiasts
+may find this useful. Others may skip this section.
+
+
+
+
+                  The Rice Internal Representation
+                  --------------------------------
+
+Text processing becomes simpler if each Telugu character is
+represented by a single ASCII character. Furthermore, the internal
+representation serves as a canonical one-to-one mapping between Telugu
+alphabet and ASCII. For example, "Th" and "th'" are both represented
+internally by "Q". Since the internal representation is not meant to be
+read, only to be processed by the software, intuition does not play a
+role here. The Rice Internal Representation follows. 
+
+
+
+         a A i I u U R H e E y o O w 
+
+         k K g G V
+         c C j J W
+         T Q D Z N
+         t q d z n
+         p f b B m
+
+      
+         Y r l v S P s h L x F
+
+
+
+
+The Special Characters: 
+
+sunnaa	 = M
+visarga	 = X
+alu      =  ASCII(1)
+aloo     =  ASCII(2)
+arasunna =  ASCII(5)
+avagraha =  ASCII(6)
+na pollu =  ASCII(11)
+Syllable break =  ASCII(30)
+tcha	 = ^P ASCII (16)
+tja      = ^Y ASCII (25)
+
+
+Since the internal representation is not intended to be read by
+humans, we need to be able to produce a human readable representation
+from this. In case we need to do so, we represent the information
+using Table 1, given in the beginning of this document.
+
+
+Reference: Ananda Kishore, "On Roman Transliteration of Telugu,"
+soc.culture.indian.telugu, revised after posting.
+
+
+- Ananda Kishore 
+  Rama Rao Kanneganti 
+
+
+
+
+

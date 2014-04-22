@@ -1,0 +1,102 @@
+diff -bcr wmii-3.1.orig/cmd/wm/fs.c wmii-3.1.new/cmd/wm/fs.c
+*** wmii-3.1.orig/cmd/wm/fs.c	2006-06-17 04:44:30.000000000 -0700
+--- wmii-3.1.new/cmd/wm/fs.c	2006-09-17 15:34:31.000000000 -0700
+***************
+*** 1319,1326 ****
+  		case FsDroot:
+  			if(!strncmp(buf, "quit", 5))
+  				srv.running = 0;
+! 			else if(!strncmp(buf, "view ", 5))
+  				select_view(&buf[5]);
+  			else
+  				return Enocommand;
+  			break;
+--- 1319,1328 ----
+      case FsDroot:
+        if(!strncmp(buf, "quit", 5))
+          srv.running = 0;
+!       else if(!strncmp(buf, "view ", 5)) {
+!         cext_trim(&buf[5], " \t/");
+          select_view(&buf[5]);
++       }
+        else
+          return Enocommand;
+        break;
+diff -bcr wmii-3.1.orig/cmd/wm/view.c wmii-3.1.new/cmd/wm/view.c
+*** wmii-3.1.orig/cmd/wm/view.c	2006-06-17 04:44:30.000000000 -0700
+--- wmii-3.1.new/cmd/wm/view.c	2006-09-17 15:34:59.000000000 -0700
+***************
+*** 167,176 ****
+  void
+  select_view(char *arg)
+  {
+! 	View *v = view_of_name(arg);
+! 	if(!v)
+! 		return;
+! 	focus_view(v);
+  }
+  
+  static Bool
+--- 167,174 ----
+  void
+  select_view(char *arg)
+  {
+!   focus_view(get_view(arg));
+!   update_views();
+  }
+  
+  static Bool
+***************
+*** 337,348 ****
+  	return False;
+  }
+  
+  static View *
+! next_empty_view()
+  {
+  	unsigned int i;
+  	for(i = 0; i < view.size; i++)
+! 		if(is_empty(view.data[i]))
+  			return view.data[i];
+  	return nil;
+  }
+--- 335,351 ----
+    return False;
+  }
+  
++ /**
++   Finds and returns the next empty view.
++   If the given view happens to be empty,
++   then it is ignored (not returned).
++ */
+  static View *
+! next_empty_view(View* v)
+  {
+    unsigned int i;
+    for(i = 0; i < view.size; i++)
+!     if(is_empty(view.data[i]) && view.data[i] != v)
+        return view.data[i];
+    return nil;
+  }
+***************
+*** 372,382 ****
+  		}
+  	}
+  
+! 	while((v = next_empty_view())) {
+! 		if(v == old)
+! 			old = nil;
+  		destroy_view(v);
+- 	}
+  
+  	if(old)
+  		focus_view(old);
+--- 375,382 ----
+      }
+    }
+  
+!   while((v = next_empty_view(old)))
+      destroy_view(v);
+  
+    if(old)
+      focus_view(old);

@@ -1,0 +1,32 @@
+diff -bcr wmii-3.1.orig/cmd/wm/client.c wmii-3.1.new/cmd/wm/client.c
+*** wmii-3.1.orig/cmd/wm/client.c	2006-06-17 04:44:30.000000000 -0700
+--- wmii-3.1.new/cmd/wm/client.c	2006-09-12 12:52:03.000000000 -0700
+***************
+*** 726,739 ****
+  		else
+  			to = v->area.data[1];
+  	}
+! 	else if(i) {
+  		i = cext_strtonum(arg, 0, v->area.size - 1, &errstr);
+  		if(errstr)
+  			return;
+  		to = v->area.data[i];
+  	}
+- 	else
+- 		return;
+  	send_to_area(to, a, c);
+  	flush_masked_events(EnterWindowMask);
+  }
+--- 726,737 ----
+      else
+        to = v->area.data[1];
+    }
+!   else {
+      i = cext_strtonum(arg, 0, v->area.size - 1, &errstr);
+      if(errstr)
+        return;
+      to = v->area.data[i];
+    }
+    send_to_area(to, a, c);
+    flush_masked_events(EnterWindowMask);
+  }

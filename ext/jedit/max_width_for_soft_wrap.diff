@@ -1,0 +1,46 @@
+Index: org/gjt/sp/jedit/textarea/TextArea.java
+===================================================================
+--- org/gjt/sp/jedit/textarea/TextArea.java	(revision 11614)
++++ org/gjt/sp/jedit/textarea/TextArea.java	(working copy)
+@@ -5775,6 +5775,41 @@
+ 	{
+ 		this.maxLineLen = maxLineLen;
+ 
++		/**
++			Makes soft word-wrap mode behave like the CSS "max-width" property:
++
++			1. When the window width is less than the maximum, the wrapping
++			   behaves like wrap-margin is 0 (fits to the window).
++
++			2. When the window width is greater than the maximum, the wrapping behaves
++			   like fixed wrap-margin (wrapping restricted to the maximum width).
++
++			@see discussion of this feature at:
++			     http://sourceforge.net/mailarchive/forum.php?thread_id=31224167&forum_id=5663
++		*/
++		if(softWrap)
++		{
++			// determine width of maximum rendered line
++			char[] foo = new char[maxLineLen];
++			for(int i = 0; i < foo.length; i++)
++			{
++				foo[i] = ' ';
++			}
++
++			int maxRenderedLineLen = (int)painter.getFont().getStringBounds(
++				foo,0,foo.length,
++				painter.getFontRenderContext())
++				.getWidth();
++
++
++			if(painter.getWidth() < maxRenderedLineLen)
++			{
++				wrapToWidth = true;
++				wrapMargin = painter.getWidth() - charWidth * 3;
++				return;
++			}
++		}
++
+ 		if(maxLineLen <= 0)
+ 		{
+ 			if(softWrap)

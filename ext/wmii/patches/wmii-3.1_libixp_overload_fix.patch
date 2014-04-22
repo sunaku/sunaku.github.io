@@ -1,0 +1,14 @@
+diff -x config.mk -bcr wmii-3.1.orig/cmd/wm/fs.c wmii-3.1/cmd/wm/fs.c
+*** wmii-3.1.orig/cmd/wm/fs.c	2006-06-17 04:44:30.000000000 -0700
+--- wmii-3.1/cmd/wm/fs.c	2006-09-19 15:11:34.000000000 -0700
+***************
+*** 1603,1608 ****
+--- 1603,1610 ----
+  				if(ixp_server_respond_fcall(c, &c->pending))
+  					return;
+  			}
++ 
++                         c->is_pending = 0;
+  		}
+  	}
+  }

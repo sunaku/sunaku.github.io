@@ -1,0 +1,573 @@
+;; te-rts.mim -- Telugu input method with RTS method
+
+;; Copyright (C) 2003, 2004, 2005, 2006
+;;   National Institute of Advanced Industrial Science and Technology (AIST)
+;;   Registration Number H15PRO112
+;; Copyright 2005, 2006, 2010 Suraj N. Kurapati <sunaku@gmail.com>
+;; Copyright 2006 Chaitanya Kamisetty <chaitanya@atc.tcs.co.in>
+
+
+;; This file is part of the m17n contrib; a sub-part of the m17n
+;; library.
+
+;; The m17n library is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU Lesser General Public License
+;; as published by the Free Software Foundation; either version 2.1 of
+;; the License, or (at your option) any later version.
+
+;; The m17n library is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; Lesser General Public License for more details.
+
+;; You should have received a copy of the GNU Lesser General Public
+;; License along with the m17n library; if not, write to the Free
+;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+;; Boston, MA 02110-1301, USA.
+
+
+(input-method te rts)
+
+(description "Input method for Telugu script with RTS method.
+For the detail of RTS, see the page:
+  <http://groups.google.com/groups?selm=Bv0A9M.27B@rice.edu>.
+
+This input method is based on the Telugu Rice Transliteration Standard (RTS)
+specification[1] and its Rice Inverse Transliterator (RIT) supplement[2].
+
+The original RTS specification was written by Ananda Kishore and Rama Rao
+Kanneganti in 1992 and can presently be accessed in the archives[1] of the
+'soc.culture.indian.telugu' USENET newsgroup.
+
+The RIT supplement[2] enriches RTS with alternative combinations.  However,
+in cases where RIT and RTS define conflicting mappings for the same
+combination, such as 'ea', only the RTS mapping is honored.
+
+Finally, this input method deviates from the RTS in the following ways:
+
+* The combination '\@n' yields '�' because its corresponding glyph does not
+  yet exist in the Telugu unicode chart.
+
+* The combination 'm' yields 'ం' if it appears at the end of a word.  The
+  user can type 'm&' to bypass this behavior and force 'm' to yield 'మ్'.
+
+* The sunna prevention operator '&' can be used to force a more literal
+  transliteration of consonant compounds such as 'jn' by writing 'j&n'.
+
+[1]: http://groups.google.com/groups?selm=Bv0A9M.27B@rice.edu
+[2]: http://www.teluguworld.org/RIT/rit3.0/manual.html
+")
+
+(title "క")
+
+(map
+ (starter
+  ((S-\ )) ((C-@))
+
+  ("a") ("b") ("c") ("d") ("e") ("f") ("g") ("h") ("i") ("j")
+  ("k") ("l") ("m") ("n") ("o") ("p") ("r") ("s") ("t") ("u")
+  ("v") ("w") ("x") ("y") ("z")
+
+  ("A") ("B") ("C") ("D") ("E") ("G") ("H") ("I") ("J") ("K")
+  ("L") ("M") ("N") ("O") ("P") ("R") ("S") ("T") ("U") ("V")
+  ("W")
+
+  ("0") ("1") ("2") ("3") ("4") ("5") ("6") ("7") ("8") ("9")
+
+  ("@") ("|") ("~") ("#")
+ )
+
+ (consonant
+
+  ;-------------------------------------------------------------------------
+  ; row 1 - క ఖ గ ఘ ఙ
+  ;-------------------------------------------------------------------------
+
+  ("k" "క్")
+
+  ("kh" "ఖ్")
+  ("kH" "ఖ్")
+  ("K" "ఖ్")
+  ("Kh" "ఖ్")
+  ("KH" "ఖ్")
+
+  ("g" "గ్")
+
+  ("gh" "ఘ్")
+  ("gH" "ఘ్")
+  ("G" "ఘ్")
+  ("Gh" "ఘ్")
+  ("GH" "ఘ్")
+
+  ("~m" "ఙ్")
+
+  ;-------------------------------------------------------------------------
+  ; row 2 - చ ఛ జ ఝ ఞ
+  ;-------------------------------------------------------------------------
+
+  ("c" "చ్")
+  ("ch" "చ్")
+  ("cH" "చ్")
+
+  ("~c" "ౘ")
+
+  ("C" "ఛ్")
+  ("Ch" "ఛ్")
+  ("CH" "ఛ్")
+  ("c'" "ఛ్") ; from RIT 2.0, 3.0
+
+  ("j" "జ్")
+  ("z" "జ్") ; from RIT 3.0
+
+  ("~j" "ౙ")
+
+  ("jh" "ఝ్")
+  ("jH" "ఝ్")
+  ("J" "ఝ్")
+  ("Jh" "ఝ్")
+  ("JH" "ఝ్")
+
+  ("~n" "ఞ్")
+
+  ;-------------------------------------------------------------------------
+  ; row 3 - ట ఠ డ ఢ ణ
+  ;-------------------------------------------------------------------------
+
+  ("T" "ట్")
+  ("t'" "ట్")
+
+  ("Th" "ఠ్")
+  ("TH" "ఠ్")
+  ("th'" "ఠ్")
+  ("tH'" "ఠ్")
+
+  ("D" "డ్")
+  ("d'" "డ్")
+
+  ("Dh" "ఢ్")
+  ("DH" "ఢ్")
+  ("dh'" "ఢ్")
+  ("dH'" "ఢ్")
+
+  ("N" "ణ్")
+  ("nh" "ణ్")
+  ("nH" "ణ్")
+  ("n'" "ణ్") ; from RIT 2.0, 3.0
+
+  ;-------------------------------------------------------------------------
+  ; row 4 - త థ ద ధ న
+  ;-------------------------------------------------------------------------
+
+  ("t" "త్")
+
+  ("th" "థ్")
+  ("tH" "థ్")
+
+  ("d" "ద్")
+
+  ("dh" "ధ్")
+  ("dH" "ధ్")
+
+  ;-------------------------------------------------------------------------
+  ; row 5 - ప ఫ బ భ మ
+  ;-------------------------------------------------------------------------
+
+  ("p" "ప్")
+
+  ("f" "ఫ్")
+  ("P" "ఫ్")
+  ("ph" "ఫ్")
+  ("pH" "ఫ్")
+  ("Ph" "ఫ్")
+  ("PH" "ఫ్")
+
+  ("b" "బ్")
+
+  ("bh" "భ్")
+  ("bH" "భ్")
+  ("B" "భ్")
+  ("Bh" "భ్")
+  ("BH" "భ్")
+
+  ;-------------------------------------------------------------------------
+  ; row 6 - య ర ల వ శ ష స హ ళ క్ష ఱ
+  ;-------------------------------------------------------------------------
+
+  ; ("y" "య్") is defined below in consonant-without-sunna
+
+  ; ("r" "ర్") is defined below in consonant-without-sunna
+
+  ("l" "ల్")
+
+  ("v" "వ్")
+  ("V" "వ్") ; from RIT 3.0
+  ("w" "వ్")
+  ("W" "వ్") ; from RIT 3.0
+
+  ("S" "శ్")
+  ("s'" "శ్") ; from RIT 2.0, 3.0
+
+  ("sh" "ష్")
+  ("sH" "ష్")
+  ("Sh" "ష్") ; from RIT 3.0
+  ("SH" "ష్") ; from RIT 3.0
+
+  ("s" "స్")
+
+  ("h" "హ్")
+  ("H" "హ్")
+
+  ("L" "ళ్")
+  ("lh" "ళ్")
+  ("lH" "ళ్")
+  ("Lh" "ళ్")
+  ("LH" "ళ్")
+  ("l'" "ళ్") ; from RIT 2.0, 3.0
+
+  ("x" "క్ష్")
+  ("ksh" "క్ష్")
+  ("ksH" "క్ష్")
+  ("ks" "క్స్") ; disambiguation for this input method's 1-character lookahead
+
+  ("~r" "ఱ్")
+  ("r''" "ఱ్") ; from RIT 2.0, 3.0
+
+  ;---------------------------------------------------------------------------
+  ; compounds
+  ;---------------------------------------------------------------------------
+
+  ("jn" "జ్ఞ్")
+  ("j&n" "జ్న్") ; apply sunna prevention operator to produce literal compound
+
+  ("dd'" "డ్డ్") ; from RIT 3.0
+  ("dd" "ద్ద్") ; disambiguation for this input method's 1-character lookahead
+
+  ("tt'" "ట్ట్") ; from RIT 3.0
+  ("tt" "త్త్") ; disambiguation for this input method's 1-character lookahead
+ )
+
+ (consonant-without-sunna
+
+  ; Quotation from "sunna generation" section of RIT 3.0 specification:
+  ;
+  ;   when 'n' or 'm' is followed by a consonant except 'r' or 'y' RIT
+  ;   assumes it to be a sunna
+  ;
+  ("r" "ర్")
+  ("y" "య్")
+
+  ; Quotation from "sunna generation" section of RIT 3.0 specification:
+  ;
+  ;   You can prevent a sunna generation by writing 'n&' or 'm&'.
+  ;
+  ("n&" "న్")
+  ("m&" "మ్")
+ )
+
+ (sunna-inside-word
+  ("n" "న్")
+  ("m" "మ్")
+ )
+
+ (sunna-endof-word
+
+  ;-------------------------------------------------------------------------
+  ; whitespace
+  ;-------------------------------------------------------------------------
+
+  ("m " "ం ")
+  ((m Tab) "ం\t")
+  ((m Return) "ం\n")
+
+  ;-------------------------------------------------------------------------
+  ; punctuation
+  ;-------------------------------------------------------------------------
+  ;
+  ; The sequences below are generated by this Bourne shell script:
+  ;
+  ;     for ch in '!' '\"' '#' '$' '%' "'" '(' ')' '*' '+' ',' '-' '.' \
+  ;               '/' '\\' ':' ';' '<' '=' '>' '?' '[' ']' '_' '`' '{' '}'
+  ;     do echo "  (\"m${ch}\" \"ం${ch}\")"; done
+  ;
+  ; Sequences ending with '^' '&' '|' '@' '~' are omitted from the above
+  ; loop because those punctuation marks already serve a purpose in this
+  ; input method.
+  ;
+  ("m!" "ం!")
+  ("m\"" "ం\"")
+  ("m#" "ం#")
+  ("m$" "ం$")
+  ("m%" "ం%")
+  ("m'" "ం'")
+  ("m(" "ం(")
+  ("m)" "ం)")
+  ("m*" "ం*")
+  ("m+" "ం+")
+  ("m," "ం,")
+  ("m-" "ం-")
+  ("m." "ం.")
+  ("m/" "ం/")
+  ("m\\" "ం\\")
+  ("m:" "ం:")
+  ("m;" "ం;")
+  ("m<" "ం<")
+  ("m=" "ం=")
+  ("m>" "ం>")
+  ("m?" "ం?")
+  ("m[" "ం[")
+  ("m]" "ం]")
+  ("m_" "ం_")
+  ("m`" "ం`")
+  ("m{" "ం{")
+  ("m}" "ం}")
+ )
+
+ (independent
+  ((S-\ ) "‌")
+  ((C-@) "‍")
+
+  ;-------------------------------------------------------------------------
+  ; vowels
+  ;-------------------------------------------------------------------------
+
+  ("a" "అ")
+
+  ("aa" "ఆ")
+  ("a'" "ఆ")
+  ("A" "ఆ") ; from RIT 2.0, 3.0
+
+  ("i" "ఇ")
+
+  ("ee" "ఈ")
+  ("ii" "ఈ")
+  ("ia" "ఈ")
+  ("i'" "ఈ")
+  ("I" "ఈ") ; from RIT 2.0, 3.0
+
+  ("u" "ఉ")
+
+  ("oo" "ఊ")
+  ("uu" "ఊ")
+  ("U" "ఊ")
+  ("ua" "ఊ")
+  ("u'" "ఊ")
+
+  ("R" "ఋ")
+  ("r'" "ఋ") ; from RIT 2.0
+
+  ("Ru" "ౠ")
+  ("r'u" "ౠ") ; from RIT 2.0
+
+  ("~l" "ౢ")
+
+  ("~L" "ౣ")
+
+  ("e" "ఎ")
+
+  ("ea" "ఏ")
+  ("ae" "ఏ")
+  ("E" "ఏ")
+  ("e'" "ఏ")
+
+  ("ai" "ఐ")
+  ("ei" "ఐ") ; from RIT 3.0
+
+  ("o" "ఒ")
+
+  ("oe" "ఓ")
+  ("O" "ఓ")
+  ("oa" "ఓ")
+  ("o'" "ఓ")
+
+  ("au" "ఔ")
+  ("ou" "ఔ")
+  ("ow" "ఔ") ; from RIT 3.0
+
+  ; This combination is defined in the "internal representation" section of
+  ; RTS.  It was widely used in early RTS implementations which lacked the
+  ; automatic sunna generation capability and has thus became the defacto
+  ; way of producing a sunna manually.
+  ("M" "ం")
+
+  ("@M" "ఁ")
+  ("@m" "ఁ") ; from RIT 3.0
+
+  ("@h" "ః")
+
+  ("@n" "�")
+  ("@N" "�") ; from RIT 3.0
+
+  ("@2" "ఽ")
+
+  ;-------------------------------------------------------------------------
+  ; digits
+  ;-------------------------------------------------------------------------
+
+  ("0" "౦")
+  ("1" "౧")
+  ("2" "౨")
+  ("3" "౩")
+  ("4" "౪")
+  ("5" "౫")
+  ("6" "౬")
+  ("7" "౭")
+  ("8" "౮")
+  ("9" "౯")
+
+  ;-------------------------------------------------------------------------
+  ; punctuation
+  ;-------------------------------------------------------------------------
+
+  ; The characters at the right-hand-side of these mappings are borrowed
+  ; from the Devanagiri unicode chart because they do not yet exist in the
+  ; Telugu unicode chart.
+  ("|" "।") ; from RIT 3.0
+  ("||" "॥") ; from Yudit
+ )
+
+ (dependent
+  ("^" (delete @-) "్‌")
+
+  ;-------------------------------------------------------------------------
+  ; vowels
+  ;-------------------------------------------------------------------------
+
+  ("a" (delete @-) "")
+
+  ("aa" (delete @-) "ా")
+  ("a'" (delete @-) "ా")
+  ("A" (delete @-) "ా") ; from RIT 3.0
+
+  ("i" (delete @-) "ి")
+
+  ("ee" (delete @-) "ీ")
+  ("ii" (delete @-) "ీ")
+  ("ia" (delete @-) "ీ")
+  ("i'" (delete @-) "ీ")
+  ("I" (delete @-) "ీ") ; from RIT 3.0
+
+  ("u" (delete @-) "ు")
+
+  ("oo" (delete @-) "ూ")
+  ("uu" (delete @-) "ూ")
+  ("U" (delete @-) "ూ")
+  ("ua" (delete @-) "ూ")
+  ("u'" (delete @-) "ూ")
+
+  ("R" (delete @-) "ృ")
+  ("r'" (delete @-) "ృ") ; from RIT 2.0
+
+  ("Ru" (delete @-) "ౄ")
+  ("r'u" (delete @-) "ౄ") ; from RIT 2.0
+
+  ("~l" (delete @-) "ౢ")
+
+  ("~L" (delete @-) "ౣ")
+
+  ("e" (delete @-) "ె")
+
+  ("ea" (delete @-) "ే")
+  ("ae" (delete @-) "ే")
+  ("E" (delete @-) "ే")
+  ("e'" (delete @-) "ే")
+
+  ("ai" (delete @-) "ై")
+  ("ei" (delete @-) "ై") ; from RIT 3.0
+
+  ("o" (delete @-) "ొ")
+
+  ("oe" (delete @-) "ో")
+  ("O" (delete @-) "ో")
+  ("oa" (delete @-) "ో")
+  ("o'" (delete @-) "ో")
+
+  ("au" (delete @-) "ౌ")
+  ("ou" (delete @-) "ౌ")
+  ("ow" (delete @-) "ౌ") ; from RIT 3.0
+ )
+
+ (single_hash
+  ("#" "")
+ )
+
+ (triple_hash
+  ("###" "#")
+ )
+
+ (invariant
+  ("a" "a") ("b" "b") ("c" "c") ("d" "d") ("e" "e") ("f" "f") ("g" "g")
+  ("h" "h") ("i" "i") ("j" "j") ("k" "k") ("l" "l") ("m" "m") ("n" "n")
+  ("o" "o") ("p" "p") ("q" "q") ("r" "r") ("s" "s") ("t" "t") ("u" "u")
+  ("v" "v") ("w" "w") ("x" "x") ("y" "y") ("z" "z")
+
+  ("A" "A") ("B" "B") ("C" "C") ("D" "D") ("E" "E") ("F" "F") ("G" "G")
+  ("H" "H") ("I" "I") ("J" "J") ("K" "K") ("L" "L") ("M" "M") ("N" "N")
+  ("O" "O") ("P" "P") ("Q" "Q") ("R" "R") ("S" "S") ("T" "T") ("U" "U")
+  ("V" "V") ("W" "W") ("X" "X") ("Y" "Y") ("Z" "Z")
+
+  ("0" "0") ("1" "1") ("2" "2") ("3" "3") ("4" "4") ("5" "5") ("6" "6")
+  ("7" "7") ("8" "8") ("9" "9")
+
+  ("~" "~") ("`" "`") ("!" "!") ("@" "@") ("$" "$") ("%" "%") ("^" "^")
+  ("&" "&") ("*" "*") ("(" "(") (")" ")") ("_" "_") ("-" "-") ("+" "+")
+  ("=" "=") ("{" "{") ("[" "[") ("}" "}") ("]" "]") ("|" "|" ) ("\\" "\\")
+  (":" ":") (";" ";") ("\"" "\"") ("\'" "\'") ("<" "<") ("," ",") (">" ">")
+  ("." ".") ("?" "?") ("/" "/")
+
+  (" " " ") ((Tab) ("\t")) ((BackSpace) (undo)) ((Return) ("\n"))
+ )
+
+ (return
+  ((Return)))
+
+ (backspace
+  ((BackSpace) (undo)))
+)
+
+(state
+ (init
+  (starter (pushback 1) (shift intermediate))
+ )
+
+ (intermediate
+  (consonant (shift second))
+  (consonant-without-sunna (shift second))
+  (sunna-inside-word (shift second-sunna-inside-word))
+  (sunna-endof-word (shift init))
+  (independent (shift init))
+  (single_hash (shift no_transliteration))
+  (triple_hash (shift init))
+  (backspace)
+  (return (shift init))
+ )
+
+ (second
+  (consonant)
+  (consonant-without-sunna)
+  (sunna-inside-word (shift second-sunna-inside-word))
+  (sunna-endof-word (shift init))
+  (dependent (shift init))
+  (backspace)
+  (return (shift init))
+ )
+
+ (second-sunna-inside-word
+  (t (mark p))
+  (consonant (move p) (delete @-) (delete @-) "ం" (move @>) (shift second))
+  (consonant-without-sunna (shift second))
+  (sunna-inside-word)
+  (sunna-endof-word (shift init))
+  (dependent (shift init))
+  (backspace)
+ )
+
+ (no_transliteration
+  (single_hash (shift init))
+  (invariant)
+ )
+)
+
+;; Local Variables:
+;; coding: utf-8
+;; mode: emacs-lisp
+;; End:

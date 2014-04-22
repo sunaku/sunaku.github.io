@@ -1,0 +1,91 @@
+diff -dbur wmii-3.1.orig/cmd/wm/client.c wmii-3.1/cmd/wm/client.c
+--- wmii-3.1.orig/cmd/wm/client.c	2006-06-17 04:44:30.000000000 -0700
++++ wmii-3.1/cmd/wm/client.c	2006-09-10 12:31:07.000000000 -0700
+@@ -622,9 +622,16 @@
+ 	}
+ 	else {
+ 		const char *errstr;
+-		i = cext_strtonum(arg, 0, a->frame.size - 1, &errstr);
++
++    i = cext_strtonum(arg, 0, client.size - 1, &errstr);
++
+ 		if(errstr)
+ 			return;
++
++    i = client_idx_to_frame_idx(a, i);
++
++    if (i < 0 || i >= a->frame.size)
++      return;
+ 	}
+ 	focus_client(a->frame.data[i]->client, True);
+ 	flush_masked_events(EnterWindowMask);
+@@ -802,3 +809,20 @@
+ 	}
+ }
+ 
++/**
++  Transforms the given client index back into a frame index.
++  @return -1 upon failure
++*/
++int client_idx_to_frame_idx(Area *aArea, int aClientIdx) {
++  int j;
++
++  if (client.size && aClientIdx >= 0 && aClientIdx < client.size) {
++    for (j = 0; j < aArea->frame.size; j++) {
++      if (aArea->frame.data[j]->client == client.data[aClientIdx]) {
++        return j;
++      }
++    }
++  }
++
++  return -1;
++}
+diff -dbur wmii-3.1.orig/cmd/wm/fs.c wmii-3.1/cmd/wm/fs.c
+--- wmii-3.1.orig/cmd/wm/fs.c	2006-06-17 04:44:30.000000000 -0700
++++ wmii-3.1/cmd/wm/fs.c	2006-09-10 12:28:45.000000000 -0700
+@@ -400,8 +400,15 @@
+ 			}
+ 			else {
+ 				i = cext_strtonum(name, 0, 0xffff, &errstr);
+-				if(errstr || (i >= a->frame.size))
++
++        if(errstr)
+ 					return nil;
++
++        i = client_idx_to_frame_idx(a, i);
++
++        if(i < 0 || (i >= a->frame.size))
++          return nil;
++
+ 				new.path = pack_qpath(FsDclient, p->id, a->id, a->frame.data[i]->id);
+ 			}
+ 		}
+@@ -924,7 +931,7 @@
+ 			}
+ 			/* offset found, proceeding */
+ 			for(; i < view.data[i1]->area.data[i2]->frame.size; i++) {
+-				snprintf(buf, sizeof(buf), "%u", i);
++        snprintf(buf, sizeof(buf), "%u", idx_of_client_id(view.data[i1]->area.data[i2]->frame.data[i]->client->id));
+ 				len = stat_of_name(&stat, buf, m->wqid, m->sel);
+ 				if(fcall->count + len > fcall->iounit)
+ 					break;
+@@ -1097,7 +1104,7 @@
+ 				p = ixp_pack_stat(p, &stat);
+ 			}
+ 			for(i = 0; i < view.data[i1]->area.data[i2]->frame.size; i++) {
+-				snprintf(buf, sizeof(buf), "%u", i);
++        snprintf(buf, sizeof(buf), "%u", idx_of_client_id(view.data[i1]->area.data[i2]->frame.data[i]->client->id));
+ 				len = stat_of_name(&stat, buf, m->wqid, m->sel);
+ 				if(fcall->count + len > fcall->iounit)
+ 					break;
+diff -dbur wmii-3.1.orig/cmd/wm/wm.h wmii-3.1/cmd/wm/wm.h
+--- wmii-3.1.orig/cmd/wm/wm.h	2006-06-17 04:44:30.000000000 -0700
++++ wmii-3.1/cmd/wm/wm.h	2006-09-09 10:56:45.000000000 -0700
+@@ -242,6 +242,7 @@
+ void swap_client(Client *c, char *arg);
+ Client *sel_client();
+ int idx_of_client_id(unsigned short id);
++int client_idx_to_frame_idx(Area *aArea, int aClientIdx);
+ Client *client_of_win(Window w);
+ void draw_clients();
+ void update_client_grab(Client *c, Bool is_sel);

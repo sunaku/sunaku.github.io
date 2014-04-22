@@ -1,0 +1,12 @@
+diff -bur wmii-3.1.orig/cmd/wm/client.c wmii-3.1.two/cmd/wm/client.c
+--- wmii-3.1.orig/cmd/wm/client.c	2006-06-17 04:44:30.000000000 -0700
++++ wmii-3.1.two/cmd/wm/client.c	2006-09-10 15:17:29.000000000 -0700
+@@ -731,6 +731,8 @@
+ 		if(errstr)
+ 			return;
+ 		to = v->area.data[i];
++    if(to == a)
++      return;
+ 	}
+ 	else
+ 		return;

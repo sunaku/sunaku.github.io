@@ -1,0 +1,99 @@
+# This is the template file for creating symbols with tragesym
+# every line starting with '#' is a comment line.
+
+[options]
+# rotate_labels rotates the pintext of top and bottom pins
+# wordswap swaps labels if the pin is on the right side an looks like this:
+# "PB1 (CLK)"
+wordswap=yes
+rotate_labels=no
+sort_labels=yes
+generate_pinseq=yes
+sym_width=2400
+pinwidthvertikal=400
+pinwidthhorizontal=400
+
+[geda_attr]
+# name will be printed in the top of the symbol
+# if you have a device with slots, you'll have to use slot= and slotdef=
+# use comment= if there are special information you want to add
+version=20050420
+name=MC68HC811E2
+device=MC68HC811E2
+refdes=U?
+footprint=DIP48
+description=M68HC11 E-series microcontroller
+documentation=http://www.freescale.com/files/microcontrollers/doc/data_sheet/M68HC11E.pdf
+author=Suraj Kurapati
+numslots=0
+#slot=1
+#slotdef=1:
+#slotdef=2:
+#slotdef=3:
+#slotdef=4:
+#comment=
+#comment=
+#comment=
+
+[pins]
+# tabseparated list of pin descriptions
+# pinnr is the physical number of the pin
+# seq is the pinseq= attribute, leave it blank if it doesn't matter
+# type can be (in, out, io, oc, oe, pas, tp, tri, clk, pwr)
+# style can be (line,dot,clk,dotclk,none). none if only want to add a net
+# posit. can be (l,r,t,b) or empty for nets
+# net specifies the name of the Vcc or GND name
+# label represents the pinlabel. 
+#	negation lines can be added with _Q_ 
+#	if you want to add a "_" or "\" use "\_" and "\\" as escape sequences
+#-----------------------------------------------------
+#pinnr	seq	type	style	posit.	net	label	
+#-----------------------------------------------------
+1		out	line	r		PA7/PAI/OC1
+2		out	line	r		PA6/OC2/OC1
+3		out	line	r		PA5/OC3/OC1
+4		out	line	r		PA4/OC4/OC1
+5		out	line	r		PA3/OC5/IC4/OC1
+6		out	line	r		PA2/IC1
+7		out	line	r		PA1/IC2
+8		out	line	r		PA0/IC3
+9		out	line	r		PB7/ADDR15
+10		out	line	r		PB6/ADDR14
+11		out	line	r		PB5/ADDR13
+12		out	line	r		PB4/ADDR12
+13		out	line	r		PB3/ADDR11
+14		out	line	r		PB2/ADDR10
+15		out	line	r		PB1/ADDR9
+16		out	line	r		PB0/ADDR8
+17		out	line	r		PE0/AN0
+18		out	line	r		PE1/AN1
+19		out	line	r		PE2/AN2
+20		out	line	r		PE3/AN3
+21		in	line	l		VRL
+22		in	line	l		VRH
+23		pwr	line	l		VSS
+24		in	line	l		MODB/VSTBY
+48		pwr	line	l		VDD
+47		out	line	r		PD5/_SS_
+46		out	line	r		PD4/SCK
+45		out	line	r		PD3/MOSI
+44		out	line	r		PD2/MISO
+43		out	line	r		PD1/TxD
+42		out	line	r		PD0/RxD
+41		in	line	l		_IRQ_
+40		in	line	l		_XIRQ_
+39		in	line	l		_RESET_
+38		out	line	r		PC7/ADDR7/DATA7
+37		out	line	r		PC6/ADDR6/DATA6
+36		out	line	r		PC5/ADDR5/DATA5
+35		out	line	r		PC4/ADDR4/DATA4
+34		out	line	r		PC3/ADDR3/DATA3
+33		out	line	r		PC2/ADDR2/DATA2
+32		out	line	r		PC1/ADDR1/DATA1
+31		out	line	r		PC0/ADDR0/DATA0
+30		in	line	l		XTAL
+29		in	line	l		EXTAL
+28		out	line	r		STRB/R/_W_
+27		out	line	r		E
+26		out	line	r		STRA/AS
+25		in	line	l		MODA/_LIR_

@@ -1,0 +1,25 @@
+From a52dc91c6d911515c53d1fe931aca3f792709b60 Mon Sep 17 00:00:00 2001
+From: Suraj N. Kurapati <sunaku@gmail.com>
+Date: Fri, 6 Nov 2009 23:06:54 -0800
+Subject: [PATCH] even simpler solution to the multi-row tab alignment problem
+
+---
+ fmt/xhtml/jquery/jquery-ui-1.7.2.custom.css |    2 +-
+ 1 files changed, 1 insertions(+), 1 deletions(-)
+
+diff --git a/fmt/xhtml/jquery/jquery-ui-1.7.2.custom.css b/fmt/xhtml/jquery/jquery-ui-1.7.2.custom.css
+index 444486b..126a63c 100644
+--- a/fmt/xhtml/jquery/jquery-ui-1.7.2.custom.css
++++ b/fmt/xhtml/jquery/jquery-ui-1.7.2.custom.css
+@@ -397,7 +397,7 @@
+ ----------------------------------*/
+ .ui-tabs { padding: .2em; zoom: 1; }
+ .ui-tabs .ui-tabs-nav { list-style: none; position: relative; padding: .2em .2em 0; }
+-.ui-tabs .ui-tabs-nav li { position: relative; float: left; border-bottom-width: 0 !important; margin: 0 .2em -1px 0; padding: 0; }
++.ui-tabs .ui-tabs-nav li { position: relative; float: left; margin: 0 .2em -1px 0; padding: 0; }
+ .ui-tabs .ui-tabs-nav li a { float: left; text-decoration: none; padding: .5em 1em; }
+ .ui-tabs .ui-tabs-nav li.ui-tabs-selected { padding-bottom: 1px; border-bottom-width: 0; }
+ .ui-tabs .ui-tabs-nav li.ui-tabs-selected a, .ui-tabs .ui-tabs-nav li.ui-state-disabled a, .ui-tabs .ui-tabs-nav li.ui-state-processing a { cursor: text; }
+-- 
+1.6.5.2
+

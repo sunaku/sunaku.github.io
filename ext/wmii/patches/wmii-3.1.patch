@@ -1,0 +1,217 @@
+diff -x config.mk -bur wmii-3.1.orig/cmd/wm/area.c wmii-3.1/cmd/wm/area.c
+--- wmii-3.1.orig/cmd/wm/area.c	2006-06-17 04:44:30.000000000 -0700
++++ wmii-3.1/cmd/wm/area.c	2006-09-17 16:10:26.000000000 -0700
+@@ -112,15 +112,17 @@
+ 		else
+ 			i = 1;
+ 	} else if(!strncmp(arg, "prev", 5)) {
+-		if(i <= 1)
++		if (i == 0)
+ 			return;
++		else if(i <= 1)
++			i = v->area.size - 1;
+ 		else
+ 			i--;
+ 	} else if(!strncmp(arg, "next", 5)) {
+-		if(i > 0 && (i + 1 < v->area.size))
+-			i++;
+-		else
++		if (i == 0)
+ 			return;
++		else
++			i = (i % (v->area.size - 1)) + 1;
+ 	}
+ 	else {
+ 		const char *errstr;
+diff -x config.mk -bur wmii-3.1.orig/cmd/wm/client.c wmii-3.1/cmd/wm/client.c
+--- wmii-3.1.orig/cmd/wm/client.c	2006-06-17 04:44:30.000000000 -0700
++++ wmii-3.1/cmd/wm/client.c	2006-09-17 16:20:09.000000000 -0700
+@@ -622,9 +622,12 @@
+ 	}
+ 	else {
+ 		const char *errstr;
+-		i = cext_strtonum(arg, 0, a->frame.size - 1, &errstr);
++		i = cext_strtonum(arg, 0, client.size - 1, &errstr);
+ 		if(errstr)
+ 			return;
++		i = client_idx_to_frame_idx(a, i);
++		if (i < 0 || i >= a->frame.size)
++			return;
+ 	}
+ 	focus_client(a->frame.data[i]->client, True);
+ 	flush_masked_events(EnterWindowMask);
+@@ -633,6 +636,7 @@
+ void
+ swap_client(Client *c, char *arg)
+ {
++	const char *errstr;
+ 	Frame *f1 = c->frame.data[c->sel], *f2;
+ 	Area *o, *a = f1->area;
+ 	View *v = a->view;
+@@ -681,6 +685,13 @@
+ 		a->frame.data[j] = a->frame.data[i];
+ 		a->frame.data[i] = f1;
+ 	}
++	else {
++		j = cext_strtonum(arg, 1, v->area.size - 1, &errstr);
++		if(errstr)
++			return;
++		o = v->area.data[j];
++		goto Swaparea;
++	}
+ 	arrange_column(a, False);
+ 	focus_client(c, True);
+ 	flush_masked_events(EnterWindowMask);
+@@ -726,14 +737,14 @@
+ 		else
+ 			to = v->area.data[1];
+ 	}
+-	else if(i) {
++	else {
+ 		i = cext_strtonum(arg, 0, v->area.size - 1, &errstr);
+ 		if(errstr)
+ 			return;
+ 		to = v->area.data[i];
+-	}
+-	else
++		if(to == a) /* prevent segfault */
+ 		return;
++	}
+ 	send_to_area(to, a, c);
+ 	flush_masked_events(EnterWindowMask);
+ }
+@@ -802,3 +813,20 @@
+ 	}
+ }
+ 
++/**
++	Transforms the given client index back into a frame index.
++	@return -1 upon failure
++*/
++int client_idx_to_frame_idx(Area *aArea, int aClientIdx) {
++	int j;
++
++	if (client.size && aClientIdx >= 0 && aClientIdx < client.size) {
++		for (j = 0; j < aArea->frame.size; j++) {
++			if (aArea->frame.data[j]->client == client.data[aClientIdx]) {
++				return j;
++			}
++		}
++	}
++
++	return -1;
++}
+diff -x config.mk -bur wmii-3.1.orig/cmd/wm/fs.c wmii-3.1/cmd/wm/fs.c
+--- wmii-3.1.orig/cmd/wm/fs.c	2006-06-17 04:44:30.000000000 -0700
++++ wmii-3.1/cmd/wm/fs.c	2006-09-20 02:33:00.000000000 -0700
+@@ -400,7 +400,10 @@
+ 			}
+ 			else {
+ 				i = cext_strtonum(name, 0, 0xffff, &errstr);
+-				if(errstr || (i >= a->frame.size))
++				if(errstr)
++					return nil;
++				i = client_idx_to_frame_idx(a, i);
++				if(i < 0 || (i >= a->frame.size))
+ 					return nil;
+ 				new.path = pack_qpath(FsDclient, p->id, a->id, a->frame.data[i]->id);
+ 			}
+@@ -924,7 +927,7 @@
+ 			}
+ 			/* offset found, proceeding */
+ 			for(; i < view.data[i1]->area.data[i2]->frame.size; i++) {
+-				snprintf(buf, sizeof(buf), "%u", i);
++				snprintf(buf, sizeof(buf), "%u", idx_of_client_id(view.data[i1]->area.data[i2]->frame.data[i]->client->id));
+ 				len = stat_of_name(&stat, buf, m->wqid, m->sel);
+ 				if(fcall->count + len > fcall->iounit)
+ 					break;
+@@ -1097,7 +1100,7 @@
+ 				p = ixp_pack_stat(p, &stat);
+ 			}
+ 			for(i = 0; i < view.data[i1]->area.data[i2]->frame.size; i++) {
+-				snprintf(buf, sizeof(buf), "%u", i);
++				snprintf(buf, sizeof(buf), "%u", idx_of_client_id(view.data[i1]->area.data[i2]->frame.data[i]->client->id));
+ 				len = stat_of_name(&stat, buf, m->wqid, m->sel);
+ 				if(fcall->count + len > fcall->iounit)
+ 					break;
+@@ -1319,8 +1322,10 @@
+ 		case FsDroot:
+ 			if(!strncmp(buf, "quit", 5))
+ 				srv.running = 0;
+-			else if(!strncmp(buf, "view ", 5))
++			else if(!strncmp(buf, "view ", 5)) {
++				cext_trim(&buf[5], " \t/");
+ 				select_view(&buf[5]);
++			}
+ 			else
+ 				return Enocommand;
+ 			break;
+@@ -1603,6 +1608,8 @@
+ 				if(ixp_server_respond_fcall(c, &c->pending))
+ 					return;
+ 			}
++
++			c->is_pending = 0; /* fixes libixp overload bug */
+ 		}
+ 	}
+ }
+diff -x config.mk -bur wmii-3.1.orig/cmd/wm/view.c wmii-3.1/cmd/wm/view.c
+--- wmii-3.1.orig/cmd/wm/view.c	2006-06-17 04:44:30.000000000 -0700
++++ wmii-3.1/cmd/wm/view.c	2006-09-17 16:10:28.000000000 -0700
+@@ -167,10 +167,8 @@
+ void
+ select_view(char *arg)
+ {
+-	View *v = view_of_name(arg);
+-	if(!v)
+-		return;
+-	focus_view(v);
++	focus_view(get_view(arg));
++	update_views();
+ }
+ 
+ static Bool
+@@ -337,12 +335,17 @@
+ 	return False;
+ }
+ 
++/**
++	Finds and returns the next empty view.
++	If the given view happens to be empty,
++	then it is ignored (not returned).
++*/
+ static View *
+-next_empty_view()
++next_empty_view(View* v)
+ {
+ 	unsigned int i;
+ 	for(i = 0; i < view.size; i++)
+-		if(is_empty(view.data[i]))
++		if(is_empty(view.data[i]) && view.data[i] != v)
+ 			return view.data[i];
+ 	return nil;
+ }
+@@ -372,11 +375,8 @@
+ 		}
+ 	}
+ 
+-	while((v = next_empty_view())) {
+-		if(v == old)
+-			old = nil;
++	while((v = next_empty_view(old)))
+ 		destroy_view(v);
+-	}
+ 
+ 	if(old)
+ 		focus_view(old);
+diff -x config.mk -bur wmii-3.1.orig/cmd/wm/wm.h wmii-3.1/cmd/wm/wm.h
+--- wmii-3.1.orig/cmd/wm/wm.h	2006-06-17 04:44:30.000000000 -0700
++++ wmii-3.1/cmd/wm/wm.h	2006-09-17 16:00:22.000000000 -0700
+@@ -242,6 +242,7 @@
+ void swap_client(Client *c, char *arg);
+ Client *sel_client();
+ int idx_of_client_id(unsigned short id);
++int client_idx_to_frame_idx(Area *aArea, int aClientIdx);
+ Client *client_of_win(Window w);
+ void draw_clients();
+ void update_client_grab(Client *c, Bool is_sel);
