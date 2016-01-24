@@ -1,0 +1,336 @@
+[
+  {
+    "css": "/* front legend */\n.keylabel10 div { \n    font-size: xx-small;\n    font-style: italic;\n    text-shadow: 1px 1px 2px #FFD600;\n}\n/* description */\ncenter h2 {\n    margin-top: 1em;\n    font-weight: bold;\n}\ncenter ul {\n    padding-left: 0;\n    margin-top: 1em;\n    padding-top: 1em;\n    font-size: smaller;\n}\ncenter ul li {\n    margin-top: 1ex;\n    list-style-type: none;\n}\ncenter ul li a {\n    font-weight: bold;\n}\ncenter .permalink {\n    font-size: x-small;\n}\ncenter em {\n    font-weight: normal;\n    font-style: normal;\n}\nsub, sup {\n    font-size: xx-small;\n    margin-left: -0.25ex;\n}\naside {\n    color: red;\n    margin-left: 1em !important;\n}"
+  },
+  [
+    {
+      "g": true,
+      "p": "CHICKLET",
+      "a": 7
+    },
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    {
+      "x": 1.5,
+      "c": "#FFFDE7",
+      "g": false,
+      "p": "FLAT",
+      "a": 4,
+      "f": 6,
+      "w": 4,
+      "h": 1.5
+    },
+    "LALT\nLCTL\nRALT\nRCTL\n️‍‍\n\n\n\nRSFT\n✨ <b><i>Legend</i></b> ✨\nBase",
+    {
+      "x": 1.5,
+      "c": "#cccccc",
+      "t": "#EEEEEE",
+      "g": true,
+      "p": "CHICKLET",
+      "a": 7,
+      "f": 3
+    },
+    "Reset",
+    {
+      "t": "#000000"
+    },
+    "F7",
+    "F8",
+    "F9",
+    {
+      "t": "#EEEEEE"
+    },
+    "Boot loader"
+  ],
+  [
+    {
+      "t": "#000000",
+      "a": 5
+    },
+    "+\n=",
+    {
+      "a": 7,
+      "fa": [
+        4
+      ]
+    },
+    "¡",
+    "¿",
+    {
+      "f": 3
+    },
+    "J",
+    {
+      "f": 3
+    },
+    "K",
+    {
+      "a": 5,
+      "f": 3
+    },
+    "º\n5",
+    {
+      "g": false,
+      "a": 4,
+      "f": 4,
+      "w": 5,
+      "h": 4,
+      "d": true
+    },
+    "<center><h2>World Layer</h2><p>MoErgo Glove80 keyboard</p><ul><li><a href='https://github.com/manna-harbour/miryoku'>Miryoku</a> layers & home row mods</li><li><a href='https://github.com/sunaku/glove80-keymaps'>Glorious Engrammer</a> keymap</li><li>See <a href='https://is.gd/sunaku_glove80'>is.gd/sunaku_glove80</a></li></ul></center>",
+    {
+      "g": true,
+      "a": 5,
+      "f": 3
+    },
+    "^\n6",
+    "&\n7",
+    "*\n8",
+    "(\n9",
+    ")\n0",
+    "|\n\\"
+  ],
+  [
+    "~\n`",
+    {
+      "g": false,
+      "a": 7,
+      "f": 6
+    },
+    "°",
+    {
+      "a": 4
+    },
+    "\nÿ\n\n\n\n\n\n\n\n\ný",
+    "õ\nö\nø\nô\n\n\n\n\nò\n\nó",
+    "\nü\n\n\n\n\n\n\nù\n\nú",
+    {
+      "g": true
+    },
+    "«<sub>\n“\n「\n‘\n\n\n\n\n`<sub>´</sub>\n\n'<sub>\"</sub>",
+    {
+      "x": 5,
+      "a": 5,
+      "f": 3
+    },
+    ":\n;",
+    {
+      "a": 7
+    },
+    "L",
+    {
+      "g": false,
+      "p": "SPACE"
+    },
+    "LALT <small>(sticky)</small>\n\n\n\nAlt",
+    "RALT <small>(sticky)</small>\n\n\n\nRAlt",
+    {
+      "g": true,
+      "p": "CHICKLET"
+    },
+    "V",
+    "Z"
+  ],
+  [
+    {
+      "g": false,
+      "a": 4,
+      "f": 6
+    },
+    "\n<sup>™<sub>℠</sub></sup>\n\n\n\n\n\n\n\n\n<sup>©<sub>®</sub></sup>",
+    "\nñ\n\nß\nWin\n\n\n\n\n\nç",
+    "\nï\n\nî\n\n\n\n\nì\n\ní",
+    {
+      "a": 0
+    },
+    "œ\në\næ\nê\n\næ\n\n\nè\n\né\nè",
+    {
+      "a": 4,
+      "n": true
+    },
+    "ã\nä\nå\nâ\n\n\n\n\nà\n\ná",
+    {
+      "g": true,
+      "a": 5,
+      "f": 3
+    },
+    "<\n,",
+    {
+      "x": 5
+    },
+    ">\n.",
+    {
+      "g": false,
+      "p": "SPACE",
+      "a": 7,
+      "n": true
+    },
+    "LSFT <small>(sticky)</small>\n\n\n\nShift",
+    "LCTL <small>(sticky)</small>\n\n\n\nCtrl",
+    "RCTL <small>(sticky)</small>\n\n\n\nRCtrl",
+    "RSFT <small>(sticky)</small>\n\n\n\nRShift",
+    {
+      "g": true,
+      "p": "CHICKLET"
+    },
+    "P"
+  ],
+  [
+    {
+      "g": false,
+      "a": 4,
+      "f": 6,
+      "fa": [
+        0,
+        0,
+        3
+      ]
+    },
+    "¥\n€\n₩\n£\n\n\n\n\n¤<sup><sup>₿</sup></sup>\n\n$<sub>¢</sub>",
+    {
+      "f": 6
+    },
+    "<sup>「<sup>﹁</sup></sup>\n‘<sub>“</sub>\n<sup>『<sup>﹃</sub></sup>\n‚<sup>„</sup>\n\n\n\n\n`\n\n‹<sub>«</sub>",
+    {
+      "a": 7
+    },
+    "¡",
+    "¿",
+    {
+      "a": 4,
+      "f": 6
+    },
+    "<sup>」<sub>﹂</sub></sup>\n’<sub>”</sub>\n<sup>』<sub>﹄</sub></sup>\n‚<sup>„</sup>\nAltGr\n\n\n\n´\n\n›<sub>»</sub>",
+    {
+      "g": true,
+      "a": 7,
+      "f": 3
+    },
+    "Shift",
+    {
+      "x": 5,
+      "a": 5
+    },
+    "?\n/",
+    {
+      "a": 7
+    },
+    "R",
+    "M",
+    "F",
+    "Hyper",
+    "Shift"
+  ],
+  [
+    {
+      "y": -0.04999999999999982,
+      "x": 6.95,
+      "c": "#FFFF8D",
+      "p": "FLAT",
+      "f": 2,
+      "w": 1.1,
+      "h": 2.7,
+      "d": true
+    },
+    ""
+  ],
+  [
+    {
+      "y": -0.9500000000000002,
+      "c": "#cccccc",
+      "g": false,
+      "p": "CHICKLET",
+      "f": 6
+    },
+    "µ",
+    "§",
+    "¶",
+    "º",
+    "ª",
+    {
+      "g": true,
+      "f": 3
+    },
+    "Escape\n\n\n\nFunction",
+    {
+      "fa": [
+        9
+      ]
+    },
+    "&uArr;",
+    {
+      "c": "#757575",
+      "t": "#EEEEEE",
+      "g": false,
+      "f": 3
+    },
+    "Unlock layer",
+    {
+      "x": 1,
+      "f": 3
+    },
+    "Unlock layer",
+    {
+      "c": "#ffff8d",
+      "t": "#000000",
+      "p": "SPACE",
+      "f": 9,
+      "n": true
+    },
+    "<img src=\"https://openclipart.org/download/278214/fingerprint.svg\" width=\"36\" height=\"36\" />\n\n\n\nLayer",
+    {
+      "c": "#cccccc",
+      "g": true,
+      "p": "CHICKLET",
+      "a": 5,
+      "f": 3
+    },
+    "<\n(",
+    {
+      "a": 7
+    },
+    "&rArr;",
+    {
+      "a": 5
+    },
+    "{\n[",
+    "}\n]",
+    ">\n)",
+    {
+      "t": "#EEEEEE",
+      "a": 7
+    },
+    "Magic"
+  ],
+  [
+    {
+      "x": 5,
+      "t": "#000000",
+      "n": true
+    },
+    "Back space\n\n\n\nCursor",
+    "Delete\n\n\n\nNumber",
+    {
+      "fa": [
+        9
+      ]
+    },
+    "&dArr;",
+    {
+      "x": 1
+    },
+    "&lArr;",
+    {
+      "f": 3
+    },
+    "Tab\n\n\n\nMouse",
+    {
+      "f": 3,
+      "n": true
+    },
+    "Space\n\n\n\nSymbol"
+  ]
+]
