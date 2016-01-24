@@ -1,0 +1,146 @@
+[
+  {
+    "css": "li {\n    list-style-type: none;\n}"
+  },
+  [
+    {
+      "x": 1,
+      "c": "#bbdefb",
+      "a": 7,
+      "f": 5
+    },
+    "Z",
+    {
+      "c": "#FFECB3"
+    },
+    "Y",
+    {
+      "c": "#bbdefb"
+    },
+    "U",
+    "O",
+    {
+      "c": "#dcedc8",
+      "a": 5
+    },
+    ":\n;",
+    {
+      "x": 0.5,
+      "c": "#bbdefb",
+      "a": 7
+    },
+    "Q",
+    {
+      "c": "#FFECB3"
+    },
+    "L",
+    "D",
+    {
+      "c": "#dcedc8"
+    },
+    "P",
+    {
+      "c": "#bbdefb"
+    },
+    "X"
+  ],
+  [
+    "W",
+    {
+      "c": "#FFECB3"
+    },
+    "C",
+    "I",
+    "E",
+    {
+      "n": true
+    },
+    "A",
+    {
+      "c": "#ffecb3",
+      "a": 5
+    },
+    "<\n,",
+    {
+      "x": 0.5,
+      "c": "#dcedc8",
+      "a": 7
+    },
+    "K",
+    {
+      "c": "#FFECB3",
+      "n": true
+    },
+    "H",
+    "T",
+    {
+      "c": "#DCEDC8"
+    },
+    "N",
+    "S",
+    {
+      "c": "#bbdefb"
+    },
+    "F"
+  ],
+  [
+    {
+      "x": 1,
+      "c": "#BBDEFB",
+      "a": 5
+    },
+    "\"\n'",
+    {
+      "c": "#bbdefb"
+    },
+    "_\n-",
+    "+\n=",
+    {
+      "c": "#dcedc8"
+    },
+    ">\n.",
+    {
+      "c": "#BBDEFB",
+      "f": 4
+    },
+    "?\n/",
+    {
+      "x": 0.5,
+      "c": "#dcedc8",
+      "a": 7,
+      "f": 5
+    },
+    "J",
+    {
+      "c": "#cccccc"
+    },
+    "M",
+    {
+      "c": "#dcedc8"
+    },
+    "G",
+    {
+      "c": "#bbdefb"
+    },
+    "B",
+    {
+      "c": "#dcedc8"
+    },
+    "V"
+  ],
+  [
+    {
+      "y": 0.25,
+      "x": 6.5
+    },
+    "R",
+    {
+      "x": -1,
+      "c": "#cccccc",
+      "f": 3,
+      "w": 6,
+      "d": true
+    },
+    "<ul><li>R is on right thumb.</li><li>W is on left pinky (CapsLock key).</li><li>F is on right pinky (Apostrophe key).</li></ul>"
+  ]
+]
