@@ -1,0 +1,203 @@
+digraph BILATERAL_COMBINATIONS {
+	graph [
+		label=<
+			Miryoku's Bilateral Combinations
+				<br/>
+			for Home Row Mods in QMK
+				<br/>
+				<font face="Times-Italic" point-size="24">
+			as tamed by Suraj N. Kurapati
+				</font>
+				<br/>
+				<font face="Courier-Bold" point-size="14" color="blue3">
+			https://sunaku.github.io/home-row-mods.html
+				</font>
+				<br/>
+				<br/>
+		>,
+		labelloc=t,
+		fontsize=30,
+		fontname="Helvetica-Bold",
+		layout=dot
+	]
+	node [fontname="Helvetica"]
+	edge [fontname="Helvetica"]
+
+	subgraph user_config {
+		node [shape=folder, style=filled, fillcolor=thistle1]
+		BILATERAL_COMBINATIONS_LIMIT_CHORD_TO_N_KEYS [label="#define\n BILATERAL_COMBINATIONS_\nLIMIT_CHORD_TO_N_KEYS\n (maximum number of keys in chord)"]
+		BILATERAL_COMBINATIONS_ALLOW_SAMESIDED_AFTER [label="#define\n BILATERAL_COMBINATIONS_\nALLOW_SAMESIDED_AFTER\n (amount of time in milliseconds)"]
+		BILATERAL_COMBINATIONS_ALLOW_CROSSOVER_AFTER [label="#define\n BILATERAL_COMBINATIONS_\nALLOW_CROSSOVER_AFTER\n (amount of time in milliseconds)"]
+		BILATERAL_COMBINATIONS_DELAY_MATCHED_MODS_BY [label="#define\n BILATERAL_COMBINATIONS_\nDELAY_MATCHED_MODS_BY\n (amount of time in milliseconds)"]
+		BILATERAL_COMBINATIONS_DELAY_MODS_THAT_MATCH [label="#define\n BILATERAL_COMBINATIONS_\nDELAY_MODS_THAT_MATCH\n (bitwise mask of modifier flags)"]
+		BILATERAL_COMBINATIONS_TYPING_STREAK_TIMEOUT [label="#define\n BILATERAL_COMBINATIONS_\nTYPING_STREAK_TIMEOUT\n (amount of time in milliseconds)"]
+		BILATERAL_COMBINATIONS_TYPING_STREAK_MODMASK [label="#define\n BILATERAL_COMBINATIONS_\nTYPING_STREAK_MODMASK\n (bitwise mask of modifier flags)"]
+	}
+
+	subgraph user_events {
+		graph [rank=same]
+		node [shape=tripleoctagon, style=filled, fillcolor=palegreen1]
+		hold_event    [label="mod key is held"]
+		tap_event     [label="any key is tapped"]
+		release_event [label="mod key is released"]
+	}
+
+	subgraph QMK_syscalls {
+		node [shape=component, style=filled, fillcolor=lightgoldenrod1]
+		register_mods        [label="CALL register_mods()"]
+		del_mods             [label="CALL del_mods()"]
+		unregister_mods      [label="CALL unregister_mods()"]
+		tap_code             [label="CALL tap_code()"]
+		defer_exec           [label="CALL defer_exec()"]
+		cancel_deferred_exec [label="CALL cancel_deferred_exec()"]
+	}
+
+	subgraph major_states {
+		node [style=filled, fillcolor=paleturquoise, fontname="Times-BoldItalic", fontsize=22]
+		BEGIN
+		EXTEND
+		END
+	}
+
+	subgraph state_mutations {
+		node [shape=box, style=filled]
+		SET_active_true       [label="SET active = true"]
+		SET_active_false      [label="SET active = false"]
+		STORE_beginning_key   [label="STORE this key as\n the beginning key"]
+		APPEND_key_to_chord   [label="APPEND\n key to chord"]
+		DELETE_key_from_chord [label="DELETE\n key from chord"]
+		SET_flushed_true      [label="SET flushed = true"]
+		SET_flushed_false     [label="SET flushed = false"]
+		UPDATE_streak_timer   [label="UPDATE\n activity timer"]
+	}
+
+	subgraph holding {
+		hold_event -> hold_check_if_active
+
+		hold_check_if_active [label="are we active?", shape=diamond]
+		hold_check_if_active -> hold_check_if_typing_streak [label="no"]
+		hold_check_if_active -> EXTEND [label="yes"]
+
+		hold_check_if_typing_streak [label="are we in the middle\n of a typing streak?\n (check activity timer,\n as configured by...)", shape=diamond]
+		hold_check_if_typing_streak -> BILATERAL_COMBINATIONS_TYPING_STREAK_TIMEOUT [label="configured by", arrowhead=onormal]
+		hold_check_if_typing_streak -> hold_check_if_match_typing_streak_modmask [label="yes"]
+		hold_check_if_typing_streak -> BEGIN [label="no"]
+
+		hold_check_if_match_typing_streak_modmask [label="do the held key's mods\n match this bitwise mask?\n (as configured by...)", shape=diamond]
+		hold_check_if_match_typing_streak_modmask -> BILATERAL_COMBINATIONS_TYPING_STREAK_MODMASK [label="configured by", arrowhead=onormal]
+		hold_check_if_match_typing_streak_modmask -> tap_code [label="yes"]
+		hold_check_if_match_typing_streak_modmask -> BEGIN [label="no"]
+
+		// HOLD: a single key is held
+		subgraph chord_begin {
+			BEGIN -> SET_active_true     [label="#1"]
+			BEGIN -> SET_flushed_false   [label="#2"]
+			BEGIN -> STORE_beginning_key [label="#3"]
+			BEGIN -> APPEND_key_to_chord [label="#4"]
+			BEGIN -> UPDATE_streak_timer [label="#5"]
+			BEGIN -> SCHEDULE            [label="#6"]
+
+			SCHEDULE [label="SCHEDULE\n mods registration"]
+			SCHEDULE -> SCHEDULE_check_if_mods_match_delay_mask
+
+			SCHEDULE_check_if_mods_match_delay_mask [label="do the held key's mods\n match this bitwise mask?\n (as configured by...)", shape=diamond]
+			SCHEDULE_check_if_mods_match_delay_mask -> BILATERAL_COMBINATIONS_DELAY_MODS_THAT_MATCH [label="configured by", arrowhead=onormal]
+			SCHEDULE_check_if_mods_match_delay_mask -> defer_exec [label="yes (delay mods registration)"]
+			SCHEDULE_check_if_mods_match_delay_mask -> register_mods [label="no (don't delay registration)"]
+
+			defer_exec -> BILATERAL_COMBINATIONS_DELAY_MATCHED_MODS_BY [label="configured by", arrowhead=onormal]
+			defer_exec -> CALLBACK_defer_exec [label="call (later on...\n as scheduled)", style=dashed, arrowhead=vee]
+
+			CALLBACK_defer_exec [label="CALLBACK\n for defer_exec()"]
+			// CALLBACK_defer_exec -> APPLY_chord_mods [label="ONLY if we're active"]
+			CALLBACK_defer_exec -> CALLBACK_defer_exec_check_if_active
+			CALLBACK_defer_exec_check_if_active [label="are we active?", shape=diamond]
+			CALLBACK_defer_exec_check_if_active -> APPLY_chord_mods [label="yes"]
+			CALLBACK_defer_exec_check_if_active -> IGNORE [label="no"]
+		}
+
+		// CHORD: multiple keys are held
+		subgraph chord_extend {
+			EXTEND -> EXTEND_chord_check_if_same_side
+			EXTEND_chord_check_if_same_side [label="is the held key\n on the same side as\n the beginning key?", shape=diamond]
+			EXTEND_chord_check_if_same_side -> APPEND_key_to_chord [label="yes"]
+			EXTEND_chord_check_if_same_side -> CONVERT_hold_to_tap [label="no"]
+
+			APPEND_key_to_chord -> BILATERAL_COMBINATIONS_LIMIT_CHORD_TO_N_KEYS [label="configured by", arrowhead=onormal]
+
+			CONVERT_hold_to_tap [label="CONVERT\n hold to tap"]
+			CONVERT_hold_to_tap -> FLUSH_chord_taps [label="#1"]
+			CONVERT_hold_to_tap  -> tap_code [label="#2"]
+
+			FLUSH_chord_taps [label="FLUSH\n chord keys as taps"]
+			FLUSH_chord_taps -> FLUSH_chord_taps_check_if_flushed
+
+			FLUSH_chord_taps_check_if_flushed [label="did we flush\n anything yet?", shape=diamond]
+			FLUSH_chord_taps_check_if_flushed -> PASSTHROUGH [label="yes"]
+			FLUSH_chord_taps_check_if_flushed -> CONVERT_chord_to_taps [label="no"]
+
+			PASSTHROUGH [label="PASSTHROUGH\n key will be registered\n with the current mods"]
+
+			CONVERT_chord_to_taps [label="CONVERT\n chord to taps"]
+			CONVERT_chord_to_taps -> SET_flushed_true [label="#1"]
+			CONVERT_chord_to_taps -> del_mods [label="#2. for each\n key in chord"]
+			CONVERT_chord_to_taps -> tap_code [label="#3. for each\n key in chord"]
+		}
+	}
+
+	subgraph tapping {
+		tap_event -> tap_check_if_active
+
+		tap_check_if_active [label="are we active?", shape=diamond]
+		tap_check_if_active -> tap_track_typing_streak [label="no"]
+		tap_check_if_active -> tap_check_hold_time [label="yes"]
+
+		tap_track_typing_streak [label="TRACK\n typing streak"]
+		tap_track_typing_streak -> UPDATE_streak_timer [label="#1"]
+		tap_track_typing_streak -> tap_code [label="#2"]
+
+		tap_check_hold_time [label="has the beginning key\n been held long enough?\n (as configured by...)", shape=diamond]
+		tap_check_hold_time -> FLUSH_chord_taps [label="no"]
+		tap_check_hold_time -> FLUSH_chord_mods [label="yes"]
+		tap_check_hold_time -> tap_check_hold_time_config_if_same_side [label="configured by", arrowhead=onormal]
+
+		tap_check_hold_time_config_if_same_side [label="is the tapped key\n on the same side as\n the beginning key?", shape=diamond]
+		tap_check_hold_time_config_if_same_side -> BILATERAL_COMBINATIONS_ALLOW_SAMESIDED_AFTER [label="yes"]
+		tap_check_hold_time_config_if_same_side -> BILATERAL_COMBINATIONS_ALLOW_CROSSOVER_AFTER [label="no"]
+
+		FLUSH_chord_mods [label="FLUSH\n chorded mods"]
+		FLUSH_chord_mods -> APPLY_chord_mods [label="#1"]
+		FLUSH_chord_mods -> SET_flushed_true [label="#2"]
+
+		APPLY_chord_mods [label="APPLY\n chorded mods"]
+		APPLY_chord_mods -> APPLY_chord_mods_check_if_flushed
+		APPLY_chord_mods_check_if_flushed [label="did we flush\n anything yet?", shape=diamond]
+		APPLY_chord_mods_check_if_flushed -> PASSTHROUGH [label="yes"]
+		APPLY_chord_mods_check_if_flushed -> register_mods [label="no"]
+	}
+
+	subgraph releasing {
+		release_event -> release_check_if_active
+
+		release_check_if_active [label="are we active?", shape=diamond]
+		release_check_if_active -> release_check_if_beginning_key [label="yes"]
+		release_check_if_active -> unregister_mods [label="no"]
+
+		release_check_if_beginning_key [label="is the released key\n the same one as\n the beginning key?", shape=diamond]
+		release_check_if_beginning_key -> release_check_if_beginning_mods [label="no"]
+		release_check_if_beginning_key -> END [label="yes"]
+
+		release_check_if_beginning_mods [label="are the released key's\n mods the same as the\n beginning key's mods?", shape=diamond]
+		release_check_if_beginning_mods -> RELEASE [label="no"]
+		release_check_if_beginning_mods -> IGNORE [label="yes"]
+
+		RELEASE -> DELETE_key_from_chord [label="#1"]
+		RELEASE -> unregister_mods [label="#2"]
+
+		END -> SET_active_false [label="#1"]
+		END -> cancel_deferred_exec [label="#2"]
+		END -> unregister_mods [label="#3"]
+
+		cancel_deferred_exec -> CALLBACK_defer_exec [label="cancel", style=dashed, arrowhead=vee]
+	}
+}
