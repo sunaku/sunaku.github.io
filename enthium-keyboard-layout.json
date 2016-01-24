@@ -1,0 +1,130 @@
+[
+  {
+    "css": "h6 /* backtick */ {\n    margin-top: 0px;\n    font-size: x-large;\n}\n\n/* front legend */\n.keylabel10 div { \n    font-size: xx-small;\n    font-style: italic;\n    text-shadow: 1px 1px 2px #FFD600;\n}\n/* description */\ncenter h2 {\n    margin-top: 1em;\n}\ncenter ul {\n    padding-left: 0;\n    margin-top: 1em;\n    padding-top: 1em;\n    font-size: smaller;\n}\ncenter ul li {\n    margin-top: 1ex;\n    list-style-type: none;\n}\ncenter ul li a {\n    font-weight: bold;\n}\ncenter .permalink {\n    font-size: x-small;\n}\ncenter em {\n    font-weight: normal;\n    font-style: normal;\n}"
+  },
+  [
+    {
+      "x": 1,
+      "c": "#FFECB3",
+      "p": "CHICKLET",
+      "a": 7,
+      "f": 4
+    },
+    "B",
+    "Y",
+    "O",
+    "U",
+    {
+      "c": "#BBDEFB",
+      "a": 5
+    },
+    "?\n/",
+    {
+      "x": 1,
+      "c": "#bbdefb",
+      "a": 7
+    },
+    "X",
+    {
+      "c": "#FFECB3"
+    },
+    "L",
+    "D",
+    "W",
+    "V"
+  ],
+  [
+    {
+      "c": "#ffcdd2"
+    },
+    "Q",
+    {
+      "c": "#FFECB3"
+    },
+    "C",
+    "I",
+    "E",
+    {
+      "n": true
+    },
+    "A",
+    {
+      "c": "#ffecb3",
+      "a": 5
+    },
+    "<\n,",
+    {
+      "x": 1,
+      "c": "#bbdefb",
+      "a": 7
+    },
+    "K",
+    {
+      "c": "#FFECB3",
+      "n": true
+    },
+    "H",
+    "T",
+    {
+      "c": "#DCEDC8"
+    },
+    "N",
+    "S",
+    {
+      "c": "#bbdefb"
+    },
+    "Z"
+  ],
+  [
+    {
+      "x": 1,
+      "c": "#BBDEFB",
+      "a": 5,
+      "f": 5
+    },
+    "\"\n'",
+    {
+      "c": "#bbdefb",
+      "f": 4
+    },
+    "_\n-",
+    {
+      "f": 5
+    },
+    "+\n=",
+    {
+      "c": "#BBDEFB",
+      "f": 4
+    },
+    ">\n.",
+    {
+      "c": "#bbdefb"
+    },
+    ":\n;",
+    {
+      "x": 1,
+      "a": 7
+    },
+    "J",
+    {
+      "c": "#cccccc"
+    },
+    "M",
+    {
+      "c": "#bbdefb"
+    },
+    "G",
+    {
+      "c": "#DCEDC8"
+    },
+    "P",
+    "F"
+  ],
+  [
+    {
+      "x": 7,
+      "c": "#bbdefb"
+    },
+    "R"
+  ]
+]
