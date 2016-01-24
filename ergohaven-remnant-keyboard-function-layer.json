@@ -1,0 +1,221 @@
+[
+  {
+    "css": "/* front legend */\n.keylabel10 div { \n    font-size: xx-small;\n    font-style: italic;\n    text-shadow: 1px 1px 2px #FFD600;\n}\n/* description */\ncenter h2 {\n    margin-top: 1em;\n}\ncenter ul {\n    padding-left: 0;\n    margin-top: 1em;\n    padding-top: 1em;\n    font-size: smaller;\n}\ncenter ul li {\n    margin-top: 1ex;\n    list-style-type: none;\n}\ncenter ul li a {\n    font-weight: bold;\n}\ncenter .permalink {\n    font-size: x-small;\n}\ncenter em {\n    font-weight: normal;\n    font-style: normal;\n}"
+  },
+  [
+    {
+      "c": "#757575",
+      "t": "#EEEEEE",
+      "p": "CHICKLET",
+      "a": 7
+    },
+    "Reset",
+    {
+      "c": "#cccccc",
+      "t": "#000000",
+      "g": true,
+      "a": 5
+    },
+    "!\n1",
+    "@\n2",
+    "#\n3",
+    "$\n4",
+    {
+      "c": "#757575",
+      "t": "#EEEEEE",
+      "g": false,
+      "a": 7
+    },
+    "<small>EEPROM</small> reset",
+    {
+      "c": "#cccccc",
+      "t": "#000000",
+      "a": 4,
+      "f": 4,
+      "w": 5,
+      "h": 4,
+      "d": true
+    },
+    "<center><h2>Function Layer</h2><p>Ergohaven Remnant keyboard</p><ul><li><a href='https://github.com/manna-harbour/miryoku'>Miryoku</a> layers & home row mods</li><li><a href='https://engram.dev'>Engram</a><a href='https://github.com/sunaku/engrammer'><em>&middot;mer</em></a> keyboard layout</li><li>See <a href='https://is.gd/sunaku_remnant'>is.gd/sunaku_remnant</a></li></ul></center>",
+    {
+      "c": "#bbdefb",
+      "a": 7,
+      "f": 3
+    },
+    "Media player",
+    "Play",
+    "Prev-ious",
+    "Next",
+    "Stop",
+    "Eject"
+  ],
+  [
+    {
+      "c": "#cccccc",
+      "g": true,
+      "a": 5
+    },
+    "|\n\\",
+    {
+      "a": 7
+    },
+    "B",
+    "Y",
+    "O",
+    "U",
+    {
+      "a": 5
+    },
+    "\"\n'",
+    {
+      "x": 5,
+      "c": "#FFECB3",
+      "g": false,
+      "a": 7
+    },
+    "Web <small>browser</small>",
+    {
+      "c": "#dcedc8",
+      "f": 4
+    },
+    "F7",
+    "F8",
+    "F9",
+    {
+      "c": "#ffccbc"
+    },
+    "F10",
+    {
+      "c": "#d1c4e9",
+      "f": 3
+    },
+    "F13"
+  ],
+  [
+    {
+      "c": "#e1bee7"
+    },
+    "Scroll lock",
+    {
+      "c": "#cccccc"
+    },
+    "Win\n\n\n\nWin",
+    "Alt\n\n\n\nAlt",
+    "Ctrl\n\n\n\nCtrl",
+    {
+      "n": true
+    },
+    "Shift\n\n\n\nShift",
+    {
+      "g": true,
+      "a": 5
+    },
+    "<\n,",
+    {
+      "x": 5,
+      "c": "#FFECB3",
+      "g": false,
+      "a": 7
+    },
+    "Calc<small>-ulator</small>",
+    {
+      "c": "#dcedc8",
+      "f": 4,
+      "n": true
+    },
+    "F4\n\n\n\nShift",
+    "F5\n\n\n\nCtrl",
+    "F6\n\n\n\nAlt",
+    {
+      "c": "#ffccbc"
+    },
+    "F11\n\n\n\nWin",
+    {
+      "c": "#d1c4e9",
+      "f": 3
+    },
+    "F14"
+  ],
+  [
+    {
+      "c": "#ffecb3"
+    },
+    "Sticky layer <small>toggle</small>",
+    {
+      "c": "#cccccc",
+      "g": true
+    },
+    "G",
+    {
+      "g": false
+    },
+    "AltGr\n\n\n\nAltGr",
+    {
+      "g": true
+    },
+    "J",
+    "K",
+    {
+      "c": "#757575",
+      "t": "#EEEEEE",
+      "g": false
+    },
+    "Debug",
+    {
+      "x": 5,
+      "c": "#FFECB3",
+      "t": "#000000"
+    },
+    "My PC",
+    {
+      "c": "#dcedc8",
+      "f": 4
+    },
+    "F1",
+    "F2",
+    "F3\n\n\n\nAltGr",
+    {
+      "c": "#ffccbc"
+    },
+    "F12",
+    {
+      "c": "#d1c4e9",
+      "f": 3
+    },
+    "F15"
+  ],
+  [
+    {
+      "x": 2,
+      "c": "#cccccc",
+      "g": true
+    },
+    "Page up",
+    "Page down",
+    {
+      "x": 1,
+      "c": "#D1C4E9",
+      "p": "SPACE"
+    },
+    "Cursor",
+    "Num-ber",
+    {
+      "g": false
+    },
+    "Func-tion",
+    {
+      "x": 1,
+      "c": "#bbdefb",
+      "p": "CHICKLET"
+    },
+    "Mute\n\n\n\nSymbol",
+    "Volume down\n\n\n\nLight",
+    "Volume up\n\n\n\nMouse",
+    {
+      "x": 1,
+      "c": "#ffcdd2"
+    },
+    "Bright-ness down",
+    "Bright-ness up"
+  ]
+]

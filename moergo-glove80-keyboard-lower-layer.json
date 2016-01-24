@@ -1,0 +1,326 @@
+[
+  {
+    "css": "/* front legend */\n.keylabel10 div { \n    font-size: xx-small;\n    font-style: italic;\n    text-shadow: 1px 1px 2px #FFD600;\n}\n/* description */\ncenter h2 {\n    margin-top: 1em;\n    font-weight: bold;\n}\ncenter ul {\n    padding-left: 0;\n    margin-top: 1em;\n    padding-top: 1em;\n    font-size: smaller;\n}\ncenter ul li {\n    margin-top: 1ex;\n    list-style-type: none;\n}\ncenter ul li a {\n    font-weight: bold;\n}\ncenter .permalink {\n    font-size: x-small;\n}\ncenter em {\n    font-weight: normal;\n    font-style: normal;\n}\nsub, sup {\n    font-size: xx-small;\n    margin-left: -0.25ex;\n}\naside {\n    color: red;\n    margin-left: 1em !important;\n}"
+  },
+  [
+    {
+      "p": "CHICKLET",
+      "a": 7
+    },
+    "Bright ➖",
+    "Bright ➕",
+    "Prev track",
+    "Next track",
+    "Play / pause",
+    {
+      "x": 7
+    },
+    "Mute\n\n\n\nSymbol",
+    "Vol ➖\n\n\n\nLight",
+    {
+      "n": true
+    },
+    "Vol ➕\n\n\n\nMouse",
+    {
+      "g": true
+    },
+    "F9",
+    {
+      "g": false
+    },
+    "Pause break"
+  ],
+  [
+    {
+      "a": 5,
+      "f": 5
+    },
+    "+\n=",
+    {
+      "g": true,
+      "f": 3
+    },
+    "!\n1",
+    "@\n2",
+    "#\n3",
+    "$\n4",
+    {
+      "g": false,
+      "a": 7
+    },
+    "Home",
+    {
+      "a": 4,
+      "f": 4,
+      "w": 5,
+      "h": 4,
+      "d": true
+    },
+    "<center><h2>Lower Layer</h2><p>MoErgo Glove80 keyboard</p><ul><li><a href='https://github.com/manna-harbour/miryoku'>Miryoku</a> layers & home row mods</li><li><a href='https://github.com/sunaku/glove80-keymaps'>Glorious Engrammer</a> keymap</li><li>See <a href='https://is.gd/sunaku_glove80'>is.gd/sunaku_glove80</a></li></ul></center>",
+    {
+      "a": 7
+    },
+    "(",
+    {
+      "f": 3
+    },
+    "Num lock",
+    {
+      "a": 5
+    },
+    "Num pad\n=",
+    "Num pad\n/",
+    "Num pad\n*",
+    {
+      "a": 7
+    },
+    "Print screen"
+  ],
+  [
+    "Tab",
+    {
+      "g": true
+    },
+    "B",
+    "Y\n\n\n\nAltGr",
+    {
+      "g": false,
+      "f": 9
+    },
+    "&uarr;",
+    {
+      "g": true,
+      "f": 3
+    },
+    "U",
+    {
+      "g": false
+    },
+    "End",
+    {
+      "x": 5,
+      "f": 4
+    },
+    ")",
+    {
+      "a": 5,
+      "f": 3
+    },
+    "Num pad\n7",
+    "Num pad\n8\n\n\nAltGr",
+    "Num pad\n9",
+    "Num pad\n-",
+    {
+      "a": 7
+    },
+    "Scroll lock"
+  ],
+  [
+    "Escape",
+    {
+      "g": true
+    },
+    "C\n\n\n\nWin",
+    {
+      "g": false,
+      "f": 9
+    },
+    "&larr;",
+    "&darr;",
+    {
+      "n": true
+    },
+    "&rarr;",
+    {
+      "f": 3
+    },
+    "Page up",
+    {
+      "x": 5,
+      "f": 4
+    },
+    "%",
+    {
+      "a": 5,
+      "f": 3,
+      "n": true
+    },
+    "Num pad\n4\n\n\nShift",
+    "Num pad\n5\n\n\nCtrl",
+    "Num pad\n6\n\n\nAlt",
+    "Num pad\n+\n\n\nWin",
+    {
+      "c": "#FFCDD2",
+      "a": 7
+    },
+    "Num lock"
+  ],
+  [
+    {
+      "c": "#cccccc",
+      "a": 5,
+      "f": 5
+    },
+    "~\n`",
+    {
+      "a": 7,
+      "f": 3
+    },
+    "<small>Context</small> menu",
+    {
+      "g": true
+    },
+    "X",
+    {
+      "g": false
+    },
+    "F11",
+    "F12",
+    "Page down\n\n\n\nAltGr",
+    {
+      "x": 5,
+      "a": 5,
+      "f": 4
+    },
+    "<\n,",
+    {
+      "f": 3
+    },
+    "Num pad\n1",
+    "Num pad\n2",
+    "Num pad\n3",
+    "Num pad\nEnter",
+    {
+      "c": "#ffcdd2",
+      "p": "SPACE",
+      "a": 7
+    },
+    "Alt\n\n\n\nAlt"
+  ],
+  [
+    {
+      "y": -0.04999999999999982,
+      "x": 6.95,
+      "c": "#BBDEFB",
+      "g": true,
+      "p": "FLAT",
+      "f": 2,
+      "w": 1.1,
+      "h": 2.7,
+      "d": true
+    },
+    ""
+  ],
+  [
+    {
+      "y": -0.9500000000000002,
+      "c": "#757575",
+      "t": "#EEEEEE",
+      "g": false,
+      "p": "SPACE",
+      "f": 3
+    },
+    "Magic",
+    {
+      "c": "#cccccc",
+      "t": "#000000",
+      "p": "CHICKLET"
+    },
+    "Caps lock",
+    "Insert",
+    "F11",
+    {
+      "c": "#dcedc8"
+    },
+    "Typing layer lock",
+    {
+      "c": "#D1C4E9"
+    },
+    "<small>Function</small> layer lock",
+    "Emoji layer lock",
+    {
+      "c": "#ffff8d",
+      "p": "SPACE",
+      "fa": [
+        9
+      ],
+      "n": true
+    },
+    "<img src=\"https://openclipart.org/download/278214/fingerprint.svg\" width=\"36\" height=\"36\" />\n\n\n\nLayer",
+    {
+      "x": 1,
+      "n": true
+    },
+    "<img src=\"https://openclipart.org/download/278214/fingerprint.svg\" width=\"36\" height=\"36\" />\n\n\n\nLayer",
+    {
+      "c": "#D1C4E9",
+      "p": "CHICKLET",
+      "f": 3
+    },
+    "World layer lock",
+    {
+      "f": 3
+    },
+    "System layer lock",
+    {
+      "c": "#dcedc8",
+      "f": 3
+    },
+    "Typing layer lock",
+    {
+      "c": "#cccccc",
+      "a": 5,
+      "f": 3
+    },
+    "Num pad\n0",
+    {
+      "f": 3
+    },
+    "Num pad\n.",
+    {
+      "f": 3
+    },
+    "Num pad\nEnter",
+    {
+      "c": "#757575",
+      "t": "#EEEEEE",
+      "p": "SPACE",
+      "a": 7,
+      "f": 3
+    },
+    "Magic"
+  ],
+  [
+    {
+      "x": 5,
+      "c": "#D1C4E9",
+      "t": "#000000",
+      "p": "CHICKLET",
+      "f": 3
+    },
+    "Cursor layer lock",
+    {
+      "f": 3
+    },
+    "<small>Number</small> layer lock",
+    {
+      "c": "#ffccbc",
+      "f": 3
+    },
+    "<small>Gaming</small> layer lock",
+    {
+      "x": 1,
+      "f": 3
+    },
+    "<small>Gaming</small> layer lock",
+    {
+      "c": "#D1C4E9",
+      "f": 3
+    },
+    "Mouse layer lock",
+    {
+      "f": 3
+    },
+    "Symbol layer lock"
+  ]
+]
