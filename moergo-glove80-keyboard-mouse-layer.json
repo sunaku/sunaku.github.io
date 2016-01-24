@@ -1,0 +1,345 @@
+[
+  {
+    "css": "/* front legend */\n.keylabel10 div { \n    font-size: xx-small;\n    font-style: italic;\n    text-shadow: 1px 1px 2px #FFD600;\n}\n/* description */\ncenter h2 {\n    margin-top: 1em;\n    font-weight: bold;\n}\ncenter ul {\n    padding-left: 0;\n    margin-top: 1em;\n    padding-top: 1em;\n    font-size: smaller;\n}\ncenter ul li {\n    margin-top: 1ex;\n    list-style-type: none;\n}\ncenter ul li a {\n    font-weight: bold;\n}\ncenter .permalink {\n    font-size: x-small;\n}\ncenter em {\n    font-weight: normal;\n    font-style: normal;\n}"
+  },
+  [
+    {
+      "g": true,
+      "p": "CHICKLET",
+      "a": 7
+    },
+    "F1",
+    "F2",
+    "F3",
+    "F4",
+    "F5",
+    {
+      "x": 7,
+      "t": "#EEEEEE"
+    },
+    "Reset",
+    {
+      "t": "#000000"
+    },
+    "F7",
+    "F8",
+    "F9",
+    {
+      "t": "#EEEEEE"
+    },
+    "Boot loader"
+  ],
+  [
+    {
+      "t": "#000000",
+      "a": 5
+    },
+    "|\n\\",
+    "!\n1",
+    "@\n2",
+    "#\n3",
+    "$\n4",
+    "%\n5",
+    {
+      "g": false,
+      "a": 4,
+      "f": 4,
+      "w": 5,
+      "h": 4,
+      "d": true
+    },
+    "<center><h2>Mouse Layer</h2><p>MoErgo Glove80 keyboard</p><ul><li><a href='https://github.com/manna-harbour/miryoku'>Miryoku</a> layers & home row mods</li><li><a href='https://github.com/sunaku/glove80-keymaps'>Glorious Engrammer</a> keymap</li><li>See <a href='https://is.gd/sunaku_glove80'>is.gd/sunaku_glove80</a></li></ul></center>",
+    {
+      "g": true,
+      "a": 5,
+      "f": 3
+    },
+    "^\n6",
+    {
+      "g": false,
+      "p": "SPACE",
+      "a": 7
+    },
+    "Shift <small>(sticky)</small>\n\n\n\nShift",
+    "Ctrl <small>(sticky)</small>\n\n\n\nCtrl",
+    "Alt <small>(sticky)</small>\n\n\n\nAlt",
+    "Win <small>(sticky)</small>\n\n\n\nWin",
+    {
+      "g": true,
+      "p": "CHICKLET",
+      "a": 5
+    },
+    "+\n="
+  ],
+  [
+    "~\n`",
+    {
+      "a": 7
+    },
+    "B",
+    {
+      "c": "#dcedc8",
+      "g": false
+    },
+    "Wheel left",
+    {
+      "c": "#BBDEFB",
+      "f": 9
+    },
+    "&uarr;",
+    {
+      "c": "#dcedc8",
+      "f": 3
+    },
+    "Wheel right",
+    {
+      "c": "#c5cae9"
+    },
+    "Cut",
+    {
+      "x": 5
+    },
+    "Cut",
+    {
+      "c": "#dcedc8"
+    },
+    "Wheel left",
+    "Wheel up",
+    "Wheel down",
+    "Wheel right",
+    {
+      "c": "#cccccc",
+      "g": true
+    },
+    "Z"
+  ],
+  [
+    {
+      "a": 5,
+      "fa": [
+        1
+      ]
+    },
+    "Caps lock\nCaps word",
+    {
+      "c": "#dcedc8",
+      "g": false,
+      "a": 7,
+      "f": 3
+    },
+    "Wheel up",
+    {
+      "c": "#BBDEFB",
+      "f": 9
+    },
+    "&larr;",
+    "&darr;",
+    {
+      "n": true
+    },
+    "&rarr;",
+    {
+      "c": "#c5cae9",
+      "f": 3
+    },
+    "Copy",
+    {
+      "x": 5
+    },
+    "Copy",
+    {
+      "c": "#ffcdd2",
+      "n": true
+    },
+    "Fast speed",
+    "Warp speed",
+    "Slow speed",
+    {
+      "c": "#c5cae9"
+    },
+    "<small>Context</small> menu",
+    {
+      "c": "#cccccc",
+      "g": true
+    },
+    "Q"
+  ],
+  [
+    "Shift",
+    {
+      "c": "#dcedc8",
+      "g": false
+    },
+    "Wheel down",
+    {
+      "c": "#ffcdd2"
+    },
+    "Slow speed",
+    "Warp speed",
+    "Fast speed",
+    {
+      "c": "#c5cae9"
+    },
+    "Paste",
+    {
+      "x": 5
+    },
+    "Paste",
+    {
+      "c": "#BBDEFB",
+      "f": 9
+    },
+    "&larr;",
+    "&uarr;",
+    "&darr;",
+    "&rarr;",
+    {
+      "c": "#cccccc",
+      "g": true,
+      "f": 3
+    },
+    "Shift"
+  ],
+  [
+    {
+      "y": -0.04999999999999982,
+      "x": 6.95,
+      "c": "#FFFF8D",
+      "p": "FLAT",
+      "f": 2,
+      "w": 1.1,
+      "h": 2.7,
+      "d": true
+    },
+    ""
+  ],
+  [
+    {
+      "y": -0.9500000000000002,
+      "c": "#cccccc",
+      "t": "#EEEEEE",
+      "p": "CHICKLET",
+      "f": 3
+    },
+    "Magic",
+    {
+      "t": "#000000"
+    },
+    "Home",
+    "Page up",
+    "Page down",
+    "End",
+    {
+      "c": "#e1bee7",
+      "g": false,
+      "f": 5,
+      "fa": [
+        3
+      ]
+    },
+    "Middle click",
+    {
+      "c": "#c5cae9",
+      "f": 3
+    },
+    "<small>Context</small> menu",
+    {
+      "c": "#d1c4e9",
+      "f": 5,
+      "fa": [
+        3
+      ]
+    },
+    "Mouse button 5",
+    {
+      "x": 1,
+      "c": "#757575",
+      "t": "#EEEEEE",
+      "f": 3
+    },
+    "Unlock layer",
+    {
+      "c": "#cccccc",
+      "t": "#000000",
+      "g": true,
+      "fa": [
+        9
+      ]
+    },
+    "&rArr;",
+    {
+      "f": 3
+    },
+    "Enter\n\n\n\nSystem",
+    {
+      "c": "#ffecb3",
+      "g": false,
+      "f": 5,
+      "fa": [
+        3
+      ]
+    },
+    "Left click",
+    {
+      "c": "#ffccbc"
+    },
+    "Right click",
+    {
+      "c": "#e1bee7"
+    },
+    "Middle click",
+    {
+      "c": "#d1c4e9",
+      "f": 3
+    },
+    "Mouse button 4",
+    "Mouse button 5"
+  ],
+  [
+    {
+      "x": 5,
+      "c": "#ffecb3",
+      "f": 5,
+      "fa": [
+        3
+      ],
+      "n": true
+    },
+    "Left click",
+    {
+      "c": "#ffccbc"
+    },
+    "Right click",
+    {
+      "c": "#d1c4e9",
+      "t": "#0000000000",
+      "f": 3
+    },
+    "Mouse button 4",
+    {
+      "x": 1,
+      "c": "#cccccc",
+      "t": "#000000",
+      "g": true,
+      "fa": [
+        9
+      ]
+    },
+    "&lArr;",
+    {
+      "c": "#ffff8d",
+      "g": false,
+      "p": "SPACE",
+      "n": true
+    },
+    "<img src=\"https://openclipart.org/download/278214/fingerprint.svg\" width=\"36\" height=\"36\" />\n\n\n\nLayer",
+    {
+      "c": "#cccccc",
+      "g": true,
+      "p": "CHICKLET",
+      "f": 3,
+      "n": true
+    },
+    "Space\n\n\n\nSymbol"
+  ]
+]
