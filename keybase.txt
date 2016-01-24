@@ -1,0 +1,73 @@
+==================================================================
+https://keybase.io/sunaku
+--------------------------------------------------------------------
+
+I hereby claim:
+
+  * I am an admin of https://sunaku.github.io
+  * I am sunaku (https://keybase.io/sunaku) on keybase.
+  * I have a public key with fingerprint C585 6860 BEDC 7A05 09E1  A6D6 F3DE 10FB E930 37E2
+
+To do so, I am signing this object:
+
+{
+    "body": {
+        "key": {
+            "eldest_kid": "0101563dad218b98ed868caca6cda60b78b56a4fd2fbc70b87199510a7f8a197a62b0a",
+            "fingerprint": "c5856860bedc7a0509e1a6d6f3de10fbe93037e2",
+            "host": "keybase.io",
+            "key_id": "f3de10fbe93037e2",
+            "kid": "0101563dad218b98ed868caca6cda60b78b56a4fd2fbc70b87199510a7f8a197a62b0a",
+            "uid": "27ed7da5281836841def0715e602cb19",
+            "username": "sunaku"
+        },
+        "service": {
+            "hostname": "sunaku.github.io",
+            "protocol": "https:"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "ctime": 1472775118,
+    "expire_in": 157680000,
+    "prev": "1390bfd92bdabb2bef8dacca95b35c8dc72c5973d1590c08c641c1ddacb1ef33",
+    "seqno": 3,
+    "tag": "signature"
+}
+
+which yields the signature:
+
+-----BEGIN PGP MESSAGE-----
+
+owGtUmlMHVUUfixlE+hjEaGkRoeqFF9fZ2G2l8ZC4UEo2gYSwADymOUObwLMTGeG
+zQdaoCY1xFQLxSglhtaEpm2a2kWtbYBI2UStXSBPBVPaKFAaWS1G2ugM1h8m/vT+
+ubnnfN93z3fOeTfMzxLis/yTdW0WJu/4jM6yloLhfq8HYmW+DnJ4oHKwfoEKHmi6
+q1zkIQcEIzCCExjP8ChCsTQFeIqgOIZjCI5nCJglKRYnmGSBRwWWI2GWIhGaxhGY
+IQWKQWiSIVAWZiAbJIhSGVAVVZR0Q5bDKZygDD7gOZKBcZgGCEPwhIDxAIEFFtAY
+jJEANYhuWTMZRnEsowG7KBsx4+FaL+8/8P9z3VXrcigJeJJncJRCKIygkhEeCDCJ
+4ICAUY5FaBOoAVViKoGB1qokprwKarBBRqxa5IDZVtPHv/L2MlF3V7F/O1JUWZc5
+ucLIunVd0RwmW69TTHgNYF2PhVysKPFGJw1GNVA1UZYgB2IgOV00lZFkEiVJHEEo
+GwRqFVEFLtFE4CRBwcYx/wHVhiSC0TBbKPA0yvIMy6IsECie4TiGxlkM5yhjKiiH
+0yTGIzgNczDFEckIh/AGhkWAgGGQ6W2fJEMOzKiTKTNdiWUSo1epAGoIedu33t/i
+E2IRNviaO+aK3m8xjt2SKGpaFVC3CYqaIsk6oxsONLusAEkpU+yCKOhut6xqoJKR
+7BLQ0x6vyS5nehqZaq6JE0kl0okMLN2JwBm7nOtjd6KWkGDrP4ut9Fotg/3Og4Ni
+i6dXpRO687NqgrPznANfvXKzaEdXN1r8Z9P4CD2ZW/1iyVLzjyDqnSC1NfD2vsyU
+U8svcMW2rD1SaGkAzBxYDIp/OTJp5wh279GVzOiEB/f11syE3mNPvPltX0lrd3UH
+mgH7M2jn1Oa6HaGRB77EBq59t4R1nI2N7QxsWXRnnHnrcyhoTB8+cTI/uS8qy92Y
+E0aFHRzOPtd+P33m0lTAkVdXehZKPD4P9E8up+0F3R9MbsprTMm4UNP+W3jX76pz
+d/30DVp73+0a6mPvlvzRNPGh1+mNO/9z6RBhF0+xE/ExQwXW+b0hbVL45e1bV0ZO
+ULvl+ZrEVjI+f4hO6D90dXqOvwKywESOX1ASNhIqb9655fnFz6JuPTUZM/7MnWv2
+lwpWzm7Ana2rP0Crb2x3Lx3xao1px3OfFWs+3X+4NqLy9EfRc1kb8xeKvv5lzt8z
+M01cHLx72zbVMLmn7eOOtbyTyjDmUW9ld/aEZZG+TzvmhaD2o8qj3HQHtfbeobba
+uPDF8Ruz19eO3Wwsiq2Yien65uHwc2hEtda2cWAre7S+DMoOv2DryTvedFHMbJ9L
+jZuwWHNUaaxgMtEbGuvw87p7rStPuuGSni9OR94bbbk09tr3Z/jzEV1T3qRzW5pL
+Hw68XtzUEhA4X9i8Wris/7rNd5M2ev1qQPPhheC/AA==
+=ocYr
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of this host by posting or
+appending to this document.
+
+View my publicly-auditable identity here: https://keybase.io/sunaku
+
+==================================================================

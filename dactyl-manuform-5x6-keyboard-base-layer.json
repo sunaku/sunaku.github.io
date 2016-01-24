@@ -1,0 +1,219 @@
+[
+  {
+    "css": "/* front legend */\n.keylabel10 div { \n    font-size: xx-small;\n    font-style: italic;\n    text-shadow: 1px 1px 2px #FFD600;\n}\n/* description */\ncenter h2 {\n    margin-top: 1em;\n}\ncenter ul {\n    padding-left: 0;\n    margin-top: 1em;\n    padding-top: 1em;\n    font-size: smaller;\n}\ncenter ul li {\n    margin-top: 1ex;\n    list-style-type: none;\n}\ncenter ul li a {\n    font-weight: bold;\n}\ncenter .permalink {\n    font-size: x-small;\n}"
+  },
+  [
+    {
+      "p": "CHICKLET",
+      "a": 5
+    },
+    "~\n`",
+    "!\n1",
+    "@\n2",
+    "#\n3",
+    "$\n4",
+    "%\n5",
+    {
+      "a": 4,
+      "f": 4,
+      "w": 5,
+      "h": 4,
+      "d": true
+    },
+    "<center><h2>Base Layer</h2><p>Dactyl Manuform 5x6</p><ul><li><a href='https://github.com/manna-harbour/miryoku'>Miryoku</a> layers & home row mods</li><li><a href='https://github.com/sunaku/engrammer'>Engram[mer]</a> keyboard layout</li><li>See <a href='https://is.gd/sunaku_dm5x6'>is.gd/sunaku_dm5x6</a></li></ul></center>",
+    {
+      "a": 5,
+      "f": 3
+    },
+    "^\n6",
+    "&\n7",
+    "*\n8",
+    "(\n9",
+    ")\n0",
+    "+\n="
+  ],
+  [
+    "|\n\\",
+    {
+      "a": 7
+    },
+    "B",
+    "Y",
+    "O",
+    "U",
+    {
+      "a": 5
+    },
+    "\"\n'",
+    {
+      "x": 5
+    },
+    ":\n;",
+    {
+      "a": 7
+    },
+    "L",
+    "D",
+    "W",
+    "V",
+    "Z"
+  ],
+  [
+    "Caps word",
+    {
+      "c": "#FFCDD2",
+      "p": "SPACE"
+    },
+    "C\n\n\n\nWin",
+    {
+      "c": "#FFCCBC"
+    },
+    "I\n\n\n\nAlt",
+    {
+      "c": "#FFECB3"
+    },
+    "E\n\n\n\nCtrl",
+    {
+      "c": "#DCEDC8",
+      "n": true
+    },
+    "A\n\n\n\nShift",
+    {
+      "c": "#cccccc",
+      "p": "CHICKLET",
+      "a": 5
+    },
+    "<\n,",
+    {
+      "x": 5
+    },
+    ">\n.",
+    {
+      "c": "#DCEDC8",
+      "p": "SPACE",
+      "a": 7,
+      "n": true
+    },
+    "H\n\n\n\nShift",
+    {
+      "c": "#FFECB3"
+    },
+    "T\n\n\n\nCtrl",
+    {
+      "c": "#FFCCBC"
+    },
+    "S\n\n\n\nAlt",
+    {
+      "c": "#FFCDD2"
+    },
+    "N\n\n\n\nWin",
+    {
+      "c": "#cccccc",
+      "p": "CHICKLET"
+    },
+    "Q"
+  ],
+  [
+    "Shift",
+    "G",
+    {
+      "c": "#BBDEFB",
+      "p": "SPACE"
+    },
+    "X\n\n\n\nAltGr",
+    {
+      "c": "#cccccc",
+      "p": "CHICKLET"
+    },
+    "J",
+    "K",
+    {
+      "a": 5
+    },
+    "_\n-",
+    {
+      "x": 5
+    },
+    "?\n/",
+    {
+      "a": 7
+    },
+    "R",
+    "M",
+    {
+      "c": "#BBDEFB",
+      "p": "SPACE"
+    },
+    "F\n\n\n\nAltGr",
+    {
+      "c": "#cccccc",
+      "p": "CHICKLET"
+    },
+    "P",
+    "Shift"
+  ],
+  [
+    {
+      "x": 2
+    },
+    "Page up",
+    "Page down",
+    {
+      "x": 1,
+      "c": "#D1C4E9",
+      "p": "SPACE"
+    },
+    "Back space\n\n\n\nCursor",
+    "Escape\n\n\n\nNumber",
+    {
+      "c": "#cccccc",
+      "p": "CHICKLET",
+      "f": 9
+    },
+    "&rArr;",
+    {
+      "x": 1
+    },
+    "&uArr;",
+    {
+      "c": "#D1C4E9",
+      "p": "SPACE",
+      "f": 3
+    },
+    "Enter\n\n\n\nMouse",
+    "Space\n\n\n\nSymbol",
+    {
+      "x": 1,
+      "c": "#cccccc",
+      "p": "CHICKLET",
+      "a": 5
+    },
+    "{\n[",
+    "}\n]"
+  ],
+  [
+    {
+      "x": 6,
+      "c": "#D1C4E9",
+      "p": "SPACE",
+      "a": 7
+    },
+    "Delete\n\n\n\nFunction",
+    {
+      "c": "#cccccc",
+      "p": "CHICKLET",
+      "f": 9
+    },
+    "&lArr;",
+    {
+      "x": 1
+    },
+    "&dArr;",
+    {
+      "c": "#D1C4E9",
+      "p": "SPACE",
+      "f": 3
+    },
+    "Tab\n\n\n\nLight"
+  ]
+]

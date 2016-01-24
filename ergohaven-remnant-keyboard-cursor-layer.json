@@ -1,0 +1,209 @@
+[
+  {
+    "css": "/* front legend */\n.keylabel10 div { \n    font-size: xx-small;\n    font-style: italic;\n    text-shadow: 1px 1px 2px #FFD600;\n}\n/* description */\ncenter h2 {\n    margin-top: 1em;\n}\ncenter ul {\n    padding-left: 0;\n    margin-top: 1em;\n    padding-top: 1em;\n    font-size: smaller;\n}\ncenter ul li {\n    margin-top: 1ex;\n    list-style-type: none;\n}\ncenter ul li a {\n    font-weight: bold;\n}\ncenter .permalink {\n    font-size: x-small;\n}\ncenter em {\n    font-weight: normal;\n    font-style: normal;\n}"
+  },
+  [
+    {
+      "c": "#757575",
+      "t": "#EEEEEE",
+      "p": "CHICKLET",
+      "a": 7
+    },
+    "Reset",
+    {
+      "c": "#cccccc",
+      "t": "#000000",
+      "g": true,
+      "a": 5
+    },
+    "!\n1",
+    "@\n2",
+    "#\n3",
+    "$\n4",
+    {
+      "c": "#757575",
+      "t": "#EEEEEE",
+      "g": false,
+      "a": 7
+    },
+    "<small>EEPROM</small> reset",
+    {
+      "c": "#cccccc",
+      "t": "#000000",
+      "a": 4,
+      "f": 4,
+      "w": 5,
+      "h": 4,
+      "d": true
+    },
+    "<center><h2>Cursor Layer</h2><p>Ergohaven Remnant keyboard</p><ul><li><a href='https://github.com/manna-harbour/miryoku'>Miryoku</a> layers & home row mods</li><li><a href='https://engram.dev'>Engram</a><a href='https://github.com/sunaku/engrammer'><em>&middot;mer</em></a> keyboard layout</li><li>See <a href='https://is.gd/sunaku_remnant'>is.gd/sunaku_remnant</a></li></ul></center>",
+    {
+      "g": true,
+      "a": 5,
+      "f": 3
+    },
+    "^\n6",
+    "&\n7",
+    "*\n8",
+    "(\n9",
+    ")\n0",
+    "+\n="
+  ],
+  [
+    "|\n\\",
+    {
+      "a": 7
+    },
+    "B",
+    "Y",
+    "O",
+    "U",
+    {
+      "a": 5
+    },
+    "\"\n'",
+    {
+      "x": 5,
+      "c": "#ffecb3",
+      "g": false,
+      "a": 7
+    },
+    "Cut",
+    {
+      "c": "#e1bee7"
+    },
+    "Back space",
+    {
+      "c": "#ffccbc"
+    },
+    "Undo",
+    "Redo",
+    {
+      "c": "#e1bee7"
+    },
+    "Delete",
+    "Insert\n\n\n\nSymbol"
+  ],
+  [
+    "Caps lock",
+    {
+      "c": "#cccccc"
+    },
+    "Win\n\n\n\nWin",
+    "Alt\n\n\n\nAlt",
+    "Ctrl\n\n\n\nCtrl",
+    {
+      "n": true
+    },
+    "Shift\n\n\n\nShift",
+    {
+      "g": true,
+      "a": 5
+    },
+    "<\n,",
+    {
+      "x": 5,
+      "c": "#ffecb3",
+      "g": false,
+      "a": 7
+    },
+    "Copy",
+    {
+      "c": "#bbdefb",
+      "f": 9,
+      "n": true
+    },
+    "&lArr;\n\n\n\nShift",
+    "&uArr;\n\n\n\nCtrl",
+    "&dArr;\n\n\n\nAlt",
+    "&rArr;\n\n\n\nWin",
+    {
+      "c": "#e1bee7",
+      "f": 3
+    },
+    "Print screen"
+  ],
+  [
+    {
+      "c": "#ffecb3"
+    },
+    "Sticky layer <small>toggle</small>",
+    {
+      "c": "#cccccc",
+      "g": true
+    },
+    "G",
+    {
+      "g": false
+    },
+    "AltGr\n\n\n\nAltGr",
+    {
+      "g": true
+    },
+    "J",
+    "K",
+    {
+      "c": "#757575",
+      "t": "#EEEEEE",
+      "g": false
+    },
+    "Debug",
+    {
+      "x": 5,
+      "c": "#ffecb3",
+      "t": "#000000"
+    },
+    "Paste",
+    {
+      "c": "#dcedc8"
+    },
+    "Home",
+    "Page up",
+    "Page down\n\n\n\nAltGr",
+    "End",
+    {
+      "c": "#ffccbc"
+    },
+    "Find & replace\n\n\n\nMouse"
+  ],
+  [
+    {
+      "x": 2,
+      "c": "#cccccc",
+      "g": true
+    },
+    "Page up",
+    "Page down",
+    {
+      "x": 1,
+      "c": "#D1C4E9",
+      "g": false,
+      "p": "SPACE"
+    },
+    "Cursor",
+    {
+      "g": true
+    },
+    "Number",
+    {
+      "c": "#d1c4e9",
+      "f": 9
+    },
+    "&rArr;",
+    {
+      "x": 1,
+      "c": "#ffccbc",
+      "g": false,
+      "p": "CHICKLET",
+      "f": 3
+    },
+    "Select URL",
+    "Select all",
+    "Select word <small>or line</small>",
+    {
+      "x": 1
+    },
+    "Find",
+    "Find next"
+  ]
+]
